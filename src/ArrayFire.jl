@@ -3,11 +3,12 @@ module ArrayFire
 using Cxx
 using Base.Meta
 
-import Base: rand, show, randn, ones, diag, eltype, size, elsize, sizeof, length, showarray, convert
+import Base: rand, show, randn, ones, diag, eltype, size, elsize,
+    sizeof, length, showarray, convert, ndims
 import Cxx: CppEnum
 export AFArray
 
-init_library() = Libdl.dlopen("./src/backend/opencl/libafopencl.dylib",Libdl.RTLD_GLOBAL)
+init_library() = Libdl.dlopen(Pkg.dir("ArrayFire","deps","src","arrayfire","src","backend","opencl","libafopencl.dylib"),Libdl.RTLD_GLOBAL)
 init_library()
 
 __init__() = init_library()
@@ -93,16 +94,30 @@ function af_promote{T,S}(::Type{T},::Type{S})
     end
 end
 
-immutable AFArray{T} <: AbstractArray{T,4}
+abstract AFAbstractArray{T} <: AbstractArray{T,4}
+
+immutable AFArray{T} <: AFAbstractArray{T}
     array::vcpp"af::array"
 end
-Cxx.cppconvert{T}(x::AFArray{T}) = x.array
+immutable AFSubArray{T} <: AFAbstractArray{T}
+    array::vcpp"af::array::array_proxy"
+end
 
-eltype{T}(x::AFArray{T}) = T
-backend_eltype(x::AFArray) = jltype(icxx"$x.type();")
-sizeof{T}(a::AFArray{T}) = elsize(a) * length(a)
+call{T}(::Type{AFAbstractArray{T}}, proxy::vcpp"af::array::array_proxy") =
+    AFSubArray{T}(proxy)
+call{T}(::Type{AFAbstractArray{T}}, arr::vcpp"af::array") =
+    AFArray{T}(arr)
 
-function convert{T}(::Type{Array{T}},x::AFArray{T})
+Cxx.cppconvert{T}(x::AFAbstractArray{T}) = x.array
+
+convert{T}(::Type{AFArray{T}}, arr::AFSubArray{T}) =
+    AFArray{T}(icxx"(af::array)$arr")
+
+eltype{T}(x::AFAbstractArray{T}) = T
+backend_eltype(x::AFAbstractArray) = jltype(icxx"$x.type();")
+sizeof{T}(a::AFAbstractArray{T}) = elsize(a) * length(a)
+
+function convert{T}(::Type{Array{T}},x::AFAbstractArray{T})
     ret = Array(Uint8,sizeof(x))
     icxx"$x.host($(pointer(ret)));"
     ret = reinterpret(T, ret)
@@ -113,15 +128,19 @@ end
 # Show this array, by getting a data pointer to it and using julia's printing
 # mechanism. ArrayFire copies internally anyway, so there is nothing to be gained
 # by using it's printing
-function showarray{T}(io::IO, X::AFArray{T};
+function showarray{T}(io::IO, X::AFAbstractArray{T};
                    header::Bool=true, kwargs...)
     header && print(io, summary(X))
     !isempty(X) && println(io,":")
     showarray(io, convert(Array{T},X); header = false, kwargs...)
 end
 
-af_print(X::AFArray) = icxx"""af::print("",$X);"""
+af_print(X::AFAbstractArray) = icxx"""af::print("",$X);"""
 
+# Translate dimensions. Note that we need to translate between 0 and 1 based
+# indexing
+ndims(dim4) = icxx"$dim4.ndims();"
+ndims(A::AFAbstractArray) = ndims(icxx"$A.dims();")
 function dims_to_dim4(dims)
     if length(dims) == 1
         icxx"af::dim4($(dims[1]));"
@@ -136,7 +155,7 @@ function dims_to_dim4(dims)
     end
 end
 function dim4_to_dims(dim4)
-    d = icxx"$dim4.ndims();"
+    d = ndims(dim4)
     t = (Int(icxx"(int)$dim4[0];"),)
     d == 1 && return t
     t = tuple(t...,Int(icxx"(int)$dim4[1];"))
@@ -148,7 +167,7 @@ function dim4_to_dims(dim4)
     error("Bad dim4 object")
 end
 
-size(x::AFArray) = dim4_to_dims(icxx"($x).dims();")
+size(x::AFAbstractArray) = dim4_to_dims(icxx"($x).dims();")
 
 rand{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(icxx"af::randu($(dims_to_dim4(dims)),$(aftype(T)));")
 randn{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(icxx"af::randn($(dims_to_dim4(dims)),$(aftype(T)));")
@@ -157,32 +176,32 @@ diag{T}(x::AFArray{T}, k = 0) = AFArray{T}(icxx"af::diag($(dims_to_dim4(dims)),$
 
 for op in (:sin, :cos, :tan, :asin, :acos, :log, :log1p, :log10, :sqrt, :transpose,
     :exp, :expm1, :erf, :erfc, :cbrt, :lgamma, :transpose)
-    @eval Base.($(quot(op))){T}(x::AFArray{T}) = AFArray{T}(@cxx af::($op)(x.array))
+    @eval Base.($(quot(op))){T}(x::AFAbstractArray{T}) = AFArray{T}(@cxx af::($op)(x.array))
 end
 
-Base.gamma{T}(x::AFArray{T}) = AFArray{T}(@cxx af::tgamma(x))
+Base.gamma{T}(x::AFAbstractArray{T}) = AFArray{T}(@cxx af::tgamma(x))
 
 #
 import Base: +, -
 
 # Resolve conflicts
-+(x::AFArray{Bool},y::Bool) = AFArray{Bool}(@cxx +(x.array,y))
-+(y::Bool,x::AFArray{Bool}) = AFArray{Bool}(@cxx +(y,x.array))
--(x::AFArray{Bool},y::Bool) = AFArray{Bool}(@cxx -(x.array,y))
--(y::Bool,x::AFArray{Bool}) = AFArray{Bool}(@cxx -(y,x.array))
++(x::AFAbstractArray{Bool},y::Bool) = AFArray{Bool}(@cxx +(x.array,y))
++(y::Bool,x::AFAbstractArray{Bool}) = AFArray{Bool}(@cxx +(y,x.array))
+-(x::AFAbstractArray{Bool},y::Bool) = AFArray{Bool}(@cxx -(x.array,y))
+-(y::Bool,x::AFAbstractArray{Bool}) = AFArray{Bool}(@cxx -(y,x.array))
 
 
 for (op,cppop) in ((:+,:+),(:(.+),:+),(:-,:-),(:(.-),:-),(:.*,:*),(:./,:/),(:.>>,:>>),(:.<<,:<<))
-    @eval function Base.($(quot(op))){T,S}(x::AFArray{T}, y::AFArray{S})
+    @eval function Base.($(quot(op))){T,S}(x::AFAbstractArray{T}, y::AFAbstractArray{S})
         a1 = x.array
         a2 = y.array
         AFArray{af_promote(T,S)}(@cxx ($(cppop))(a1,a2))
     end
-    @eval function Base.($(quot(op))){T,S<:Number}(x::AFArray{T}, y::S)
+    @eval function Base.($(quot(op))){T,S<:Number}(x::AFAbstractArray{T}, y::S)
         a = x.array
         AFArray{af_promote(T,S)}(@cxx ($(cppop))(a, y))
     end
-    @eval function Base.($(quot(op))){T,S<:Number}(y::S, x::AFArray{T})
+    @eval function Base.($(quot(op))){T,S<:Number}(y::S, x::AFAbstractArray{T})
         a = x.array
         AFArray{af_promote(T,S)}(@cxx ($(cppop))(y, a))
     end
@@ -191,19 +210,123 @@ end
 
 import Base: getindex
 
-to_af_idx(x::Real) = convert(Cint, x)
-to_af_idx(x::Range) = icxx"af::seq($(first(x)),$(last(x)),$(step(x)));"
-to_af_idx(x::Colon) = icxx"af::span"
+# Note that we need to translate between 0 and 1 based indexing
+to_af_idx(x::Real) = convert(Cint, x-1)
+to_af_idx(x::Range) = icxx"af::seq($(first(x))-1,$(last(x))-1,$(step(x)));"
+to_af_idx(x::Colon) = icxx"af::span;"
 const tis = to_af_idx
 
 IS = Union(Real,Range,Colon)
 
-getindex{T}(x::AFArray{T},y::AFArray) = AFArray{T}(icxx"$x($y);")
-getindex{T}(x::AFArray{T},s0::Real) = AFArray{T}(icxx"$x($(tis(s0)));") # Avoid an ambiguity
-getindex{T}(x::AFArray{T},s0::IS) = AFArray{T}(icxx"$x($(tis(s0)));")
-getindex{T}(x::AFArray{T},s0::IS,s1::IS) = AFArray{T}(icxx"$x($(tis(s0)),$(tis(s1)));")
-getindex{T}(x::AFArray{T},s0::IS,s1::IS,s2::IS) = AFArray{T}(icxx"$x($(tis(s0)),$(tis(s1)),$(tis(s2)));")
-getindex{T}(x::AFArray{T},s0::IS,s1::IS,s2::IS, s3::IS) =
-    AFArray{T}(icxx"$x($(tis(s0)),$(tis(s1)),$(tis(s2)),$(tis(s3)));")
+_getindex{T}(x::AFAbstractArray{T},y::AFAbstractArray)   = icxx"$x($y-1);"
+# Avoid an ambiguity
+_getindex{T}(x::AFAbstractArray{T},s0::Real)             = icxx"$x($(tis(s0)));"
+
+_getindex{T}(x::AFAbstractArray{T},s0::IS)               = icxx"$x($(tis(s0)));"
+
+_getindex{T}(x::AFAbstractArray{T},s0::IS,s1::IS)        = icxx"$x($(tis(s0)),
+                                                                   $(tis(s1)));"
+
+_getindex{T}(x::AFAbstractArray{T},s0::IS,s1::IS,s2::IS) = icxx"$x($(tis(s0)),
+                                                                   $(tis(s1)),
+                                                                   $(tis(s2)));"
+_getindex{T}(x::AFAbstractArray{T},
+                    s0::IS,s1::IS,s2::IS, s3::IS)        = icxx"$x($(tis(s0)),
+                                                                   $(tis(s1)),
+                                                                   $(tis(s2)),
+                                                                   $(tis(s3)));"
+
+function getindex{T}(x::AFAbstractArray{T}, idxs...)
+    proxy = _getindex(x,idxs...)
+    AFSubArray{T}(proxy)
+end
+
+function setindex!{T}(x::AFAbstractArray{T}, val, idxs...)
+    proxy = _getindex(x,idxs...)
+    icxx"$proxy = $val;"
+end
+
+# BLAS operations
+
+import Base: dot, A_mul_Bt, At_mul_B, At_mul_Bt, A_mul_Bc,
+    Ac_mul_B, Ac_mul_Bc, transpose, ctranspose, transpose!, ctranspose!
+
+dot{T,S}(lhs::AFAbstractArray{T}, rhs::AFAbstractArray{S}) =
+    icxx"dot($lhs, $rhs);"
+
+# Matmul
+*(a::AFAbstractArray, b::AFAbstractArray) =
+    icxx"matmult($a, $b);"
+*(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray) =
+    icxx"matmult($a, $b, $c);"
+*(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray, d::AFAbstractArray) =
+    icxx"matmult($a, $b, $c, $d);"
+
+function _matmult(a::AFAbstractArray, b::AFAbstractArray;
+    lhsProp = AF_MAT_NONE, rhsProp = AF_MAT_NONE)
+    icxx"matmul($a,$b,$lhsProp,$rhsProp);"
+end
+
+# with transpose
+A_mul_Bt(a::AFAbstractArray, b::AFAbstractArray) =
+    icxx"matmulNT($a,$b);"
+
+At_mul_B(a::AFAbstractArray, b::AFAbstractArray) =
+    icxx"matmulTN($a,$b);"
+
+At_mul_Bt(a::AFAbstractArray, b::AFAbstractArray) =
+    icxx"matmulTT($a,$b);"
+
+# with complex conjugate
+A_mul_Bc(a::AFAbstractArray, b::AFAbstractArray) =
+    _matmult(a,b,rhsProp=AF_MAT_CTRANS)
+Ac_mul_B(a::AFAbstractArray, b::AFAbstractArray) =
+    _matmult(a,b,lhsProp=AF_MAT_CTRANS)
+Ac_mul_Bc(a::AFAbstractArray, b::AFAbstractArray) =
+    _matmult(a,b,lhsProp=AF_MAT_CTRANS,rhsProp=AF_MAT_CTRANS)
+
+# transpose
+
+transpose(x::AFAbstractArray) = icxx"af::transpose($x);"
+ctranspose(x::AFAbstractArray) = icxx"af::transpose($x,true);"
+
+transpose!(x::AFAbstractArray) = icxx"af::transposeInPlace($x);"
+ctranspose!(x::AFAbstractArray) = icxx"af::transposeInPlace($x,true);"
+
+# solve
+
+# TODO: The documentation says only AF_MAT_LOWER/AF_MAT_UPPER are supported
+# once AF_MAT_(C)TRANS is supported this could be useful for A_rdiv, etc
+\(a::AFAbstractArray, b::AFAbstractArray) = icxx"af::solve($a,$b);"
+
+# Factorizations
+import Base.LinAlg: chol, chol!, PosDefException, UpperTriangular,
+    LowerTriangular, lufact!, lufact
+
+function _chol{T}(a::AFAbstractArray{T}, is_upper::Bool)
+    out = similar(a)
+    info = icxx"af::cholesky($out,$a,$is_upper);"
+    info > 0 && throw(PosDefException(info))
+    AFArray{T}(out)
+end
+
+function _chol!{T}(a::AFAbstractArray{T}, is_upper::Bool)
+    info = icxx"af::choleskyInPlace($a,$is_upper);"
+    info > 0 && throw(PosDefException(info))
+    a
+end
+
+chol(a::AFAbstractArray, ::Type{Val{:U}}) = UpperTriangular(_chol(a), true)
+chol(a::AFAbstractArray, ::Type{Val{:L}}) = LowerTriangular(_chol(a), false)
+chol(a::AFAbstractArray) = chol(A,Val{:U})
+
+chol!(a::AFAbstractArray, ::Type{Val{:U}}) = UpperTriangular(_chol!(a), true)
+chol!(a::AFAbstractArray, ::Type{Val{:L}}) = LowerTriangular(_chol!(a), false)
+chol!(a::AFAbstractArray) = chol!(A,Val{:U})
+
+# Fourier Transforms
+# TODO: Multidimensional
+import Base: fft
+fft{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"fft($a);")
 
 end # module
