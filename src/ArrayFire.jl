@@ -8,8 +8,11 @@ import Base: rand, show, randn, ones, diag, eltype, size, elsize,
 import Cxx: CppEnum
 export AFArray
 
+# If you have a crash, enable this
+const AF_DEBUG = true
+
 function init_library()
-	Libdl.dlopen(Pkg.dir("ArrayFire","deps","build","arrayfire","src","backend","opencl","libafopencl.so"),Libdl.RTLD_GLOBAL)
+	Libdl.dlopen(Pkg.dir("ArrayFire","deps","build","arrayfire","src","backend","opencl","libafopencl"),Libdl.RTLD_GLOBAL)
 	addHeaderDir(Pkg.dir("ArrayFire","deps","src","arrayfire","include");kind = C_System)
 end
 init_library()
@@ -101,9 +104,23 @@ abstract AFAbstractArray{T} <: AbstractArray{T,4}
 
 immutable AFArray{T} <: AFAbstractArray{T}
     array::vcpp"af::array"
+    function AFArray(array::vcpp"af::array")
+        ret = new(array)
+        if AF_DEBUG
+            @assert backend_eltype(ret) == T
+        end
+        ret
+    end
 end
 immutable AFSubArray{T} <: AFAbstractArray{T}
     array::vcpp"af::array::array_proxy"
+    function AFSubArray(array::vcpp"af::array::array_proxy")
+        ret = new(array)
+        if AF_DEBUG
+            @assert backend_eltype(ret) == T
+        end
+        ret
+    end
 end
 
 call{T}(::Type{AFAbstractArray{T}}, proxy::vcpp"af::array::array_proxy") =
@@ -351,6 +368,7 @@ chol!(a::AFAbstractArray) = chol!(A,Val{:U})
 # Fourier Transforms
 # TODO: Multidimensional
 import Base: fft
-fft{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"fft($a);")
+fft{T}(a::AFAbstractArray{T}) = AFArray{Complex{T}}(icxx"fft($a);")
+fft{T<:Complex}(a::AFAbstractArray{T}) = AFArray{T}(icxx"fft($a);")
 
 end # module
