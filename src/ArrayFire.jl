@@ -8,7 +8,10 @@ import Base: rand, show, randn, ones, diag, eltype, size, elsize,
 import Cxx: CppEnum
 export AFArray
 
-init_library() = Libdl.dlopen(Pkg.dir("ArrayFire","deps","src","arrayfire","src","backend","opencl","libafopencl.dylib"),Libdl.RTLD_GLOBAL)
+function init_library()
+	Libdl.dlopen(Pkg.dir("ArrayFire","deps","build","arrayfire","src","backend","opencl","libafopencl.so"),Libdl.RTLD_GLOBAL)
+	addHeaderDir(Pkg.dir("ArrayFire","deps","src","arrayfire","include");kind = C_System)
+end
 init_library()
 
 __init__() = init_library()
@@ -117,6 +120,7 @@ eltype{T}(x::AFAbstractArray{T}) = T
 backend_eltype(x::AFAbstractArray) = jltype(icxx"$x.type();")
 sizeof{T}(a::AFAbstractArray{T}) = elsize(a) * length(a)
 
+# GPU to Host
 function convert{T}(::Type{Array{T}},x::AFAbstractArray{T})
     ret = Array(Uint8,sizeof(x))
     icxx"$x.host($(pointer(ret)));"
@@ -124,6 +128,15 @@ function convert{T}(::Type{Array{T}},x::AFAbstractArray{T})
     ret = reshape(ret, size(x)...)
     ret
 end
+convert{T}(::Type{Array},x::AFAbstractArray{T}) = convert(Array{T},x)
+
+# Host to GPU
+function convert{T}(::Type{AFArray{T}}, x::Array{T})
+    AFArray{T}(icxx"return af::array{$(dims_to_dim4(size(x))),$(pointer(x)),afHost};")
+end
+convert{T}(::Type{AFArray}, x::Array{T}) = convert(AFArray{T}, x)
+
+
 
 # Show this array, by getting a data pointer to it and using julia's printing
 # mechanism. ArrayFire copies internally anyway, so there is nothing to be gained
@@ -143,13 +156,13 @@ ndims(dim4) = icxx"$dim4.ndims();"
 ndims(A::AFAbstractArray) = ndims(icxx"$A.dims();")
 function dims_to_dim4(dims)
     if length(dims) == 1
-        icxx"af::dim4($(dims[1]));"
+        icxx"af::dim4{$(dims[1])};"
     elseif length(dims) == 2
-        icxx"af::dim4($(dims[1]),$(dims[2]));"
+        icxx"af::dim4{$(dims[1]),$(dims[2])};"
     elseif length(dims) == 3
-        icxx"af::dim4($(dims[1]),$(dims[2]),$(dims[3]));"
+        icxx"af::dim4{$(dims[1]),$(dims[2]),$(dims[3])};"
     elseif length(dims) == 4
-        icxx"af::dim4($(dims[1]),$(dims[2]),$(dims[3]),$(dims[4]));"
+        icxx"af::dim4{$(dims[1]),$(dims[2]),$(dims[3]),$(dims[4])};"
     else
         error("Too many dimensions")
     end
@@ -245,6 +258,17 @@ function setindex!{T}(x::AFAbstractArray{T}, val, idxs...)
     proxy = _getindex(x,idxs...)
     icxx"$proxy = $val;"
 end
+
+# Sorting
+import Base: sort
+
+function sort{T}(A::AFArray{T}; rev = false)
+    ndims(A) == 1 ||
+        error("Must explicitly specify dimension when sorting mutlidimensional array")
+    icxx"af::sort($A,0,$(!rev));"
+end
+sort{T}(A::AFArray{T}, dim; rev = false) = icxx"af::sort($A,$dim,$(!rev));"
+
 
 # BLAS operations
 
