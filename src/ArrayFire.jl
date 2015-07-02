@@ -106,8 +106,8 @@ immutable AFArray{T} <: AFAbstractArray{T}
     array::vcpp"af::array"
     function AFArray(array::vcpp"af::array")
         ret = new(array)
-        if AF_DEBUG
-            @assert backend_eltype(ret) == T
+        if AF_DEBUG && backend_eltype(ret) != T
+            error("Tried to create AFArray{$T} with array of eltype $(backend_eltype(ret))")
         end
         ret
     end
@@ -116,8 +116,8 @@ immutable AFSubArray{T} <: AFAbstractArray{T}
     array::vcpp"af::array::array_proxy"
     function AFSubArray(array::vcpp"af::array::array_proxy")
         ret = new(array)
-        if AF_DEBUG
-            @assert backend_eltype(ret) == T
+        if AF_DEBUG && backend_eltype(ret) != T
+            error("Tried to create AFArray{$T} with array of eltype $(backend_eltype(ret))")
         end
         ret
     end
@@ -229,11 +229,15 @@ for (op,cppop) in ((:+,:+),(:(.+),:+),(:-,:-),(:(.-),:-),(:.*,:*),(:./,:/),(:.>>
     end
     @eval function Base.($(quot(op))){T,S<:Number}(x::AFAbstractArray{T}, y::S)
         a = x.array
-        AFArray{af_promote(T,S)}(@cxx ($(cppop))(a, y))
+        # This is special behavior hardcoded in arrayfire for real floats
+        ST = S <: FloatingPoint ? T : S
+        AFArray{af_promote(T,ST)}(@cxx ($(cppop))(a, y))
     end
     @eval function Base.($(quot(op))){T,S<:Number}(y::S, x::AFAbstractArray{T})
         a = x.array
-        AFArray{af_promote(T,S)}(@cxx ($(cppop))(y, a))
+        # This is special behavior hardcoded in arrayfire for real floats
+        ST = S <: FloatingPoint ? T : S
+        AFArray{af_promote(T,ST)}(@cxx ($(cppop))(y, a))
     end
 end
 # TODO: add! using +=, etc.
@@ -370,5 +374,11 @@ chol!(a::AFAbstractArray) = chol!(A,Val{:U})
 import Base: fft
 fft{T}(a::AFAbstractArray{T}) = AFArray{Complex{T}}(icxx"fft($a);")
 fft{T<:Complex}(a::AFAbstractArray{T}) = AFArray{T}(icxx"fft($a);")
+
+# Exception handling
+import Base: showerror
+@exception function showerror(io::IO, e::rcpp"af::exception")
+    println(io, bytestring(icxx"$e.what();"))
+end
 
 end # module
