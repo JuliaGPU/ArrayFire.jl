@@ -301,13 +301,13 @@ dot{T,S}(lhs::AFAbstractArray{T}, rhs::AFAbstractArray{S}) =
 
 # Matmul
 *(a::AFAbstractArray, b::AFAbstractArray) =
-    icxx"matmult($a, $b);"
+    icxx"matmul($a, $b);"
 *(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray) =
-    icxx"matmult($a, $b, $c);"
+    icxx"matmul($a, $b, $c);"
 *(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray, d::AFAbstractArray) =
-    icxx"matmult($a, $b, $c, $d);"
+    icxx"matmul($a, $b, $c, $d);"
 
-function _matmult(a::AFAbstractArray, b::AFAbstractArray;
+function _matmul(a::AFAbstractArray, b::AFAbstractArray;
     lhsProp = AF_MAT_NONE, rhsProp = AF_MAT_NONE)
     icxx"matmul($a,$b,$lhsProp,$rhsProp);"
 end
@@ -324,11 +324,11 @@ At_mul_Bt(a::AFAbstractArray, b::AFAbstractArray) =
 
 # with complex conjugate
 A_mul_Bc(a::AFAbstractArray, b::AFAbstractArray) =
-    _matmult(a,b,rhsProp=AF_MAT_CTRANS)
+    _matmul(a,b,rhsProp=AF_MAT_CTRANS)
 Ac_mul_B(a::AFAbstractArray, b::AFAbstractArray) =
-    _matmult(a,b,lhsProp=AF_MAT_CTRANS)
+    _matmul(a,b,lhsProp=AF_MAT_CTRANS)
 Ac_mul_Bc(a::AFAbstractArray, b::AFAbstractArray) =
-    _matmult(a,b,lhsProp=AF_MAT_CTRANS,rhsProp=AF_MAT_CTRANS)
+    _matmul(a,b,lhsProp=AF_MAT_CTRANS,rhsProp=AF_MAT_CTRANS)
 
 # transpose
 
