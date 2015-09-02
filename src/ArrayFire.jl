@@ -300,12 +300,12 @@ dot{T,S}(lhs::AFAbstractArray{T}, rhs::AFAbstractArray{S}) =
     icxx"dot($lhs, $rhs);"
 
 # Matmul
-*(a::AFAbstractArray, b::AFAbstractArray) =
-    icxx"matmul($a, $b);"
-*(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray) =
-    icxx"matmul($a, $b, $c);"
-*(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray, d::AFAbstractArray) =
-    icxx"matmul($a, $b, $c, $d);"
+*{T,S}(a::AFAbstractArray{T}, b::AFAbstractArray{S}) =
+    AFArray{af_promote(T,S)}(icxx"matmul($a, $b);")
+*{T,S,V}(a::AFAbstractArray{T}, b::AFAbstractArray{S}, c::AFAbstractArray{V}) =
+    AFArray{af_promote(af_promote(T,S), V)}(icxx"matmul($a, $b, $c);")
+*{T,S,V,W}(a::AFAbstractArray{T}, b::AFAbstractArray{S}, c::AFAbstractArray{V}, d::AFAbstractArray{W}) =
+    AFArray{af_promte(af_promote(af_promote(T,S), V), W)}(icxx"matmul($a, $b, $c, $d);")
 
 function _matmul(a::AFAbstractArray, b::AFAbstractArray;
     lhsProp = AF_MAT_NONE, rhsProp = AF_MAT_NONE)
