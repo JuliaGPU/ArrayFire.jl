@@ -360,21 +360,22 @@ function _chol{T}(a::AFAbstractArray{T}, is_upper::Bool)
     out = AFArray(similar(a))
     info = icxx"af::cholesky($out,$a,$is_upper);"
     info > 0 && throw(PosDefException(info))
-    Array{T}(out)
+    out = is_upper ? (AFArray{T}(icxx"af::upper($out);")) : (AFArray{T}(icxx"af::lower($out)"))
 end
 
 function _chol!{T}(a::AFAbstractArray{T}, is_upper::Bool)
     info = icxx"af::choleskyInPlace($a,$is_upper);"
     info > 0 && throw(PosDefException(info))
-    Array(a)
+    b = is_upper ? (AFArray{T}(icxx"af::upper($a);")) : (AFArray{T}(icxx"af::lower($a)"))
+    return b 
 end
 
-chol(a::AFAbstractArray, ::Type{Val{:U}}) = UpperTriangular(_chol(a, true))
-chol(a::AFAbstractArray, ::Type{Val{:L}}) = LowerTriangular(_chol(a, false))
+chol(a::AFAbstractArray, ::Type{Val{:U}}) = _chol(a, true)
+chol(a::AFAbstractArray, ::Type{Val{:L}}) = _chol(a, false)
 chol(a::AFAbstractArray) = chol(a,Val{:U})
 
-chol!(a::AFAbstractArray, ::Type{Val{:U}}) = UpperTriangular(_chol!(a, true))
-chol!(a::AFAbstractArray, ::Type{Val{:L}}) = LowerTriangular(_chol!(a, false))
+chol!(a::AFAbstractArray, ::Type{Val{:U}}) = _chol!(a, true)
+chol!(a::AFAbstractArray, ::Type{Val{:L}}) = _chol!(a, false)
 chol!(a::AFAbstractArray) = chol!(a,Val{:U})
 
 # Fourier Transforms
