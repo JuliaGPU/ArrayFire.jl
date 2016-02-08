@@ -6,7 +6,7 @@ using Base.Meta
 import Base: rand, show, randn, ones, diag, eltype, size, elsize,
     sizeof, length, showarray, convert, ndims
 import Cxx: CppEnum
-export AFArray, chol!
+export AFArray, chol!, constant
 
 # If you have a crash, enable this
 const AF_DEBUG = true
@@ -199,6 +199,8 @@ end
 
 size(x::AFAbstractArray) = dim4_to_dims(icxx"($x).dims();")
 
+#Functions to generate arrays
+constant(val::Real, dims::Integer...) = AFArray{typeof(val)}(icxx"af::constant($val, $(dims_to_dim4(dims)), $(aftype(typeof(val))));")
 rand{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(icxx"af::randu($(dims_to_dim4(dims)),$(aftype(T)));")
 randn{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(icxx"af::randn($(dims_to_dim4(dims)),$(aftype(T)));")
 eye{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(icxx"af::identity($(dims_to_dim4(dims)),$(aftype(T)));")
