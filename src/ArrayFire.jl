@@ -6,7 +6,7 @@ using Base.Meta
 import Base: rand, show, randn, ones, diag, eltype, size, elsize,
     sizeof, length, showarray, convert, ndims
 import Cxx: CppEnum
-export AFArray
+export AFArray, chol!
 
 # If you have a crash, enable this
 const AF_DEBUG = true
@@ -355,25 +355,25 @@ import Base.LinAlg: chol, chol!, PosDefException, UpperTriangular,
     LowerTriangular, lufact!, lufact
 
 function _chol{T}(a::AFAbstractArray{T}, is_upper::Bool)
-    out = similar(a)
+    out = AFArray(similar(a))
     info = icxx"af::cholesky($out,$a,$is_upper);"
     info > 0 && throw(PosDefException(info))
-    AFArray{T}(out)
+    Array{T}(out)
 end
 
 function _chol!{T}(a::AFAbstractArray{T}, is_upper::Bool)
     info = icxx"af::choleskyInPlace($a,$is_upper);"
     info > 0 && throw(PosDefException(info))
-    a
+    Array(a)
 end
 
-chol(a::AFAbstractArray, ::Type{Val{:U}}) = UpperTriangular(_chol(a), true)
-chol(a::AFAbstractArray, ::Type{Val{:L}}) = LowerTriangular(_chol(a), false)
-chol(a::AFAbstractArray) = chol(A,Val{:U})
+chol(a::AFAbstractArray, ::Type{Val{:U}}) = UpperTriangular(_chol(a, true))
+chol(a::AFAbstractArray, ::Type{Val{:L}}) = LowerTriangular(_chol(a, false))
+chol(a::AFAbstractArray) = chol(a,Val{:U})
 
-chol!(a::AFAbstractArray, ::Type{Val{:U}}) = UpperTriangular(_chol!(a), true)
-chol!(a::AFAbstractArray, ::Type{Val{:L}}) = LowerTriangular(_chol!(a), false)
-chol!(a::AFAbstractArray) = chol!(A,Val{:U})
+chol!(a::AFAbstractArray, ::Type{Val{:U}}) = UpperTriangular(_chol!(a, true))
+chol!(a::AFAbstractArray, ::Type{Val{:L}}) = LowerTriangular(_chol!(a, false))
+chol!(a::AFAbstractArray) = chol!(a,Val{:U})
 
 # Fourier Transforms
 # TODO: Multidimensional
