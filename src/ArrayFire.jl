@@ -339,7 +339,7 @@ Ac_mul_Bc(a::AFAbstractArray, b::AFAbstractArray) =
 # transpose
 
 transpose(x::AFAbstractArray) = icxx"af::transpose($x);"
-ctranspose(x::AFAbstractArray) = icxx"af::transpose($x,true);"
+ctranspose{T}(x::AFAbstractArray{T}) = AFAbstractArray{T}(icxx"af::transpose($x,true);")
 
 transpose!(x::AFAbstractArray) = icxx"af::transposeInPlace($x);"
 ctranspose!(x::AFAbstractArray) = icxx"af::transposeInPlace($x,true);"
