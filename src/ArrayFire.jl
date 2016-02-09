@@ -356,8 +356,9 @@ ctranspose!(x::AFAbstractArray) = icxx"af::transposeInPlace($x,true);"
 import Base.LinAlg: chol, chol!, PosDefException, UpperTriangular,
     LowerTriangular, lufact!, lufact
 
+#Cholesky
 function _chol{T}(a::AFAbstractArray{T}, is_upper::Bool)
-    out = AFArray(similar(a))
+    out = rand(AFArray{T}, size(a)[1], size(a)[2])
     info = icxx"af::cholesky($out,$a,$is_upper);"
     info > 0 && throw(PosDefException(info))
     out = is_upper ? (AFArray{T}(icxx"af::upper($out);")) : (AFArray{T}(icxx"af::lower($out)"))
