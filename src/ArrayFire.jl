@@ -4,9 +4,9 @@ using Cxx
 using Base.Meta
 
 import Base: rand, show, randn, ones, diag, eltype, size, elsize,
-    sizeof, length, showarray, convert, ndims
+    sizeof, length, showarray, convert, ndims, lu, qr
 import Cxx: CppEnum
-export AFArray, chol!, constant, lu
+export AFArray, chol!, constant
 
 # If you have a crash, enable this
 const AF_DEBUG = true
