@@ -1,7 +1,9 @@
 
 #Image
-export loadImage, saveImage, rotate, scale, transform, skew, translate
+export loadImage, saveImage, rotate, scale, transform, skew, translate,
+        regions, rgb2gray, gray2rgb, rgb2hsv, hsv2rgb, rgb2ycbcr, ycbcr2rgb
 
+#Image Utils
 "Load image as an AFArray"
 function loadImage(path::AbstractString; color = false)
 	return AFArray{Float32}(icxx"loadImage($path, $color);")
@@ -12,6 +14,7 @@ function saveImage(path::AbstractString, a::AFAbstractArray)
 	icxx"saveImage($path, $a);"
 end
 
+#Image Transformation
 "Rotate image by theta radians"
 function rotate{T}(a::AFAbstractArray{T}, theta)
 	AFArray{T}(icxx"rotate($a, $theta);")
@@ -35,3 +38,15 @@ end
 function transform{T}(a::AFAbstractArray{T}, b::AFAbstractArray)
 	AFArray{T}(icxx"transform($a, $b);")
 end
+
+#Image labelling
+regions{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::regions($a.as(b8));")
+
+#Colorspace conversions
+gray2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::gray2rgb($a);")
+hsv2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::hsv2rgb($a);")
+rgb2gray{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::rgb2gray($a);")
+rgb2hsv{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::rgb2hsv($a);")
+rgb2ycbcr{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::rgb2ycbcr($a);")
+ycbcr2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::ycbcr2rgb($a);")
+
