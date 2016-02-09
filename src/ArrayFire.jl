@@ -379,6 +379,17 @@ chol!(a::AFAbstractArray, ::Type{Val{:U}}) = _chol!(a, true)
 chol!(a::AFAbstractArray, ::Type{Val{:L}}) = _chol!(a, false)
 chol!(a::AFAbstractArray) = chol!(a,Val{:U})
 
+#LU 
+function lu{T}(a::AFAbstractArray{T})
+    sz1 = size(a, 1)
+    sz2 = size(a, 2)
+    L = rand(AFArray{T}, sz1, sz2)
+    U = rand(AFArray{T}, sz1, sz2)
+    p = rand(AFArray{T}, sz2)
+    icxx"af::lu($L, $U, $p, $a);"
+    L, U, p
+end
+
 # Fourier Transforms
 # TODO: Multidimensional
 import Base: fft
