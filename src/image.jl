@@ -78,3 +78,10 @@ function meanShift{T}(a::AFAbstractArray{T}, spatial_sigma::Real, chromatic_sigm
     AFArray{T}(icxx"af::meanShift($a, $spatial_sigma, $chromatic_sigma, $iter)")
 end
 
+#Histogram
+import Base: hist
+hist{T}(a::AFAbstractArray{T}, nbins::Integer) = AFArray{T}(icxx"af::histogram($a, $nbins);")
+hist{T}(a::AFAbstractArray{T}, nbins::Integer, minval::Real, maxval::Real) = AFArray{T}(icxx"af::histogram($a, $nbins, $minval, $maxval);")
+
+"Histogram equalization of input image"
+histEqual{T}(a::AFAbstractArray{T}, hist::AFAbstractArray{T}) = AFArray{T}(icxx"af::histEqual($a, $hist)")
