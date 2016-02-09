@@ -437,4 +437,8 @@ import Base: showerror
     println(io, bytestring(icxx"$e.what();"))
 end
 
+#import other files
+include("image.jl")
+include("stats.jl")
+
 end # module
