@@ -4,7 +4,7 @@ using Cxx
 using Base.Meta
 
 import Base: rand, show, randn, ones, diag, eltype, size, elsize,
-    sizeof, length, showarray, convert, ndims, lu, qr
+    sizeof, length, showarray, convert, ndims, lu, qr, svd
 import Cxx: CppEnum
 export AFArray, chol!, constant
 
@@ -399,6 +399,17 @@ function qr{T}(a::AFAbstractArray{T})
     tau = rand(AFArray{T}, sz2)
     icxx"af::qr($Q, $R, $tau, $a);"
     Q, R, tau
+end
+
+#SVD
+function svd{T}(a::AFAbstractArray{T})
+    sz1 = size(a, 1)
+    sz2 = size(a, 2)
+    U = rand(AFArray{T}, sz1, sz2)
+    Vt = rand(AFArray{T}, sz1, sz2)
+    S = rand(AFArray{T}, sz2)
+    icxx"af::svd($U, $S, $Vt, $a);"
+    U, S, Vt
 end
 
 # Fourier Transforms
