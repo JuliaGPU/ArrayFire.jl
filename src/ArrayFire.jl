@@ -390,6 +390,17 @@ function lu{T}(a::AFAbstractArray{T})
     L, U, p
 end
 
+#QR
+function qr{T}(a::AFAbstractArray{T})
+    sz1 = size(a, 1)
+    sz2 = size(a, 2)
+    Q = rand(AFArray{T}, sz1, sz2)
+    R = rand(AFArray{T}, sz1, sz2)
+    tau = rand(AFArray{T}, sz2)
+    icxx"af::qr($Q, $R, $tau, $a);"
+    Q, R, tau
+end
+
 # Fourier Transforms
 # TODO: Multidimensional
 import Base: fft
