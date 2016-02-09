@@ -80,8 +80,17 @@ end
 
 #Histogram
 import Base: hist
+export histEqual
 hist{T}(a::AFAbstractArray{T}, nbins::Integer) = AFArray{T}(icxx"af::histogram($a, $nbins);")
 hist{T}(a::AFAbstractArray{T}, nbins::Integer, minval::Real, maxval::Real) = AFArray{T}(icxx"af::histogram($a, $nbins, $minval, $maxval);")
 
 "Histogram equalization of input image"
 histEqual{T}(a::AFAbstractArray{T}, hist::AFAbstractArray{T}) = AFArray{T}(icxx"af::histEqual($a, $hist)")
+
+#Morphological ops
+export dilate, dilate3, erode, erode3
+
+dilate{T}(a::AFAbstractArray{T}, mask::AFAbstractArray{T}) = AFArray{T}(icxx"af::dilate($a, $mask);")
+dilate3{T}(a::AFAbstractArray{T}, mask::AFAbstractArray{T}) = AFArray{T}(icxx"af::dilate3($a, $mask);")
+erode{T}(a::AFAbstractArray{T}, mask::AFAbstractArray{T}) = AFArray{T}(icxx"af::erode($a, $mask);")
+erode3{T}(a::AFAbstractArray{T}, mask::AFAbstractArray{T}) = AFArray{T}(icxx"af::erode3($a, $mask);")
