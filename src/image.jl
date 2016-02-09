@@ -50,3 +50,31 @@ rgb2hsv{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::rgb2hsv($a);")
 rgb2ycbcr{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::rgb2ycbcr($a);")
 ycbcr2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::ycbcr2rgb($a);")
 
+#Filters
+export SAT, bilateral, maxfilt, medfilt, minfilt, sobel, meanShift
+
+"Summed Area Tables"
+SAT{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::sat($a);")
+
+"Apply bilateral filter on image"
+function bilateral{T}(a::AFAbstractArray{T}, spatial_sigma::Real, chromatic_sigma::Real)
+    AFArray{T}(icxx"af::bilateral($a, $spatial_sigma, $chromatic_sigma)")
+end
+
+"For every pixel, find max value from a window"
+maxfilt{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::maxfilt($a);")
+
+"For every pixel, find median value from a window"
+medfilt{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::medfilt($a);")
+
+"For every pixel, find minimum value from a window"
+minfilt{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::minfilt($a);")
+
+"Sobel operator on image"
+sobel{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::sobel($a);")
+
+"Meanshift filter"
+function meanShift{T}(a::AFAbstractArray{T}, spatial_sigma::Real, chromatic_sigma::Real, iter::Integer = 100)
+    AFArray{T}(icxx"af::meanShift($a, $spatial_sigma, $chromatic_sigma, $iter)")
+end
+
