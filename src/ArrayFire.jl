@@ -6,7 +6,7 @@ using Base.Meta
 import Base: rand, show, randn, ones, diag, eltype, size, elsize,
     sizeof, length, showarray, convert, ndims
 import Cxx: CppEnum
-export AFArray, chol!, constant
+export AFArray, chol!, constant, lu
 
 # If you have a crash, enable this
 const AF_DEBUG = true
