@@ -98,3 +98,15 @@ function sortIndex(a::AFArray, dim = 1; rev = false)
 end
 
 
+#Set Operations
+
+import Base: setdiff, union, unique
+
+#Setdiff
+setdiff{T}(a::AFAbstractArray{T} , b::AFAbstractArray{T}) = AFArray{T}(icxx"af::setIntersect($a, $b);")
+
+#Union
+union{T}(a::AFAbstractArray{T}, b::AFAbstractArray{T}) = AFArray{T}(icxx"af::setUnion($a, $b);")
+
+#Unique
+unique{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::setUnique($a);")
