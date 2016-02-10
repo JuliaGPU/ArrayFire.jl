@@ -106,4 +106,22 @@ function svd(a::AFAbstractArray)
     AFArray{backend_eltype(u)}(u), AFArray{backend_eltype(s)}(s), AFArray{backend_eltype(vt)}(vt)
 end
 
+#Mat ops
 
+import Base: det, inv
+
+function det{T}(a::AFAbstractArray{T}) 
+    if ndims(a) != 2
+        throw(DimensionMismatch("Input isn't a matrix"))
+    else
+        return icxx"af::det<float>($a);"
+    end
+end
+
+function inv(a::AFAbstractArray)
+    if ndims(a) != 2
+        throw(DimensionMismatch("Input isn't a matrix"))
+    else
+        return AFArray{Float32}(icxx"af::inverse($a);")
+    end
+end
