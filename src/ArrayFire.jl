@@ -430,5 +430,6 @@ end
 #import other files
 include("image.jl")
 include("stats.jl")
+include("vector.jl")
 
 end # module
