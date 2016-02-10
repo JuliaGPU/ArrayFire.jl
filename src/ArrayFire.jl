@@ -123,6 +123,8 @@ immutable AFSubArray{T} <: AFAbstractArray{T}
     end
 end
 
+AFArray() = icxx"af::array();"
+
 call{T}(::Type{AFAbstractArray{T}}, proxy::vcpp"af::array::array_proxy") =
     AFSubArray{T}(proxy)
 call{T}(::Type{AFAbstractArray{T}}, arr::vcpp"af::array") =
@@ -134,7 +136,7 @@ convert{T}(::Type{AFArray{T}}, arr::AFSubArray{T}) =
     AFArray{T}(icxx"(af::array)$arr")
 
 eltype{T}(x::AFAbstractArray{T}) = T
-backend_eltype(x::AFAbstractArray) = jltype(icxx"$x.type();")
+backend_eltype(x) = jltype(icxx"$x.type();")
 sizeof{T}(a::AFAbstractArray{T}) = elsize(a) * length(a)
 
 # GPU to Host
@@ -358,16 +360,16 @@ import Base.LinAlg: chol, chol!, PosDefException, UpperTriangular,
 
 #Cholesky
 function _chol{T}(a::AFAbstractArray{T}, is_upper::Bool)
-    out = rand(AFArray{T}, size(a)[1], size(a)[2])
+    out = AFArray()
     info = icxx"af::cholesky($out,$a,$is_upper);"
     info > 0 && throw(PosDefException(info))
-    out = is_upper ? (AFArray{T}(icxx"af::upper($out);")) : (AFArray{T}(icxx"af::lower($out)"))
+    out = is_upper ? (AFArray{T}(icxx"af::upper($out);")) : (AFArray{T}(icxx"af::lower($out);"))
 end
 
 function _chol!{T}(a::AFAbstractArray{T}, is_upper::Bool)
     info = icxx"af::choleskyInPlace($a,$is_upper);"
     info > 0 && throw(PosDefException(info))
-    b = is_upper ? (AFArray{T}(icxx"af::upper($a);")) : (AFArray{T}(icxx"af::lower($a)"))
+    b = is_upper ? (AFArray{T}(icxx"af::upper($a);")) : (AFArray{T}(icxx"af::lower($a):"))
     return b 
 end
 
@@ -380,36 +382,30 @@ chol!(a::AFAbstractArray, ::Type{Val{:L}}) = _chol!(a, false)
 chol!(a::AFAbstractArray) = chol!(a,Val{:U})
 
 #LU 
-function lu{T}(a::AFAbstractArray{T})
-    sz1 = size(a, 1)
-    sz2 = size(a, 2)
-    L = rand(AFArray{T}, sz1, sz2)
-    U = rand(AFArray{T}, sz1, sz2)
-    p = rand(AFArray{T}, sz2)
-    icxx"af::lu($L, $U, $p, $a);"
-    L, U, p
+function lu(a::AFAbstractArray)
+    l = AFArray() 
+    u = AFArray()
+    p = AFArray()
+    icxx"af::lu($l, $u, $p, $a);"
+    AFArray{backend_eltype(l)}(l), AFArray{backend_eltype(u)}(u), (AFArray{backend_eltype(p)}(p) + 1)
 end
 
 #QR
-function qr{T}(a::AFAbstractArray{T})
-    sz1 = size(a, 1)
-    sz2 = size(a, 2)
-    Q = rand(AFArray{T}, sz1, sz2)
-    R = rand(AFArray{T}, sz1, sz2)
-    tau = rand(AFArray{T}, sz2)
-    icxx"af::qr($Q, $R, $tau, $a);"
-    Q, R, tau
+function qr(a::AFAbstractArray)
+    q = AFArray()
+    r = AFArray()
+    tau = AFArray()
+    icxx"af::qr($q, $r, $tau, $a);"
+    AFArray{backend_eltype(q)}(q), AFArray{backend_eltype(r)}(r), AFArray{backend_eltype(tau)}(tau)
 end
 
 #SVD
-function svd{T}(a::AFAbstractArray{T})
-    sz1 = size(a, 1)
-    sz2 = size(a, 2)
-    U = rand(AFArray{T}, sz1, sz2)
-    Vt = rand(AFArray{T}, sz1, sz2)
-    S = rand(AFArray{T}, sz2)
-    icxx"af::svd($U, $S, $Vt, $a);"
-    U, S, Vt
+function svd(a::AFAbstractArray)
+    u = AFArray()
+    s = AFArray()
+    vt = AFArray()
+    icxx"af::svd($u, $s, $vt, $a);"
+    AFArray{backend_eltype(u)}(u), AFArray{backend_eltype(s)}(s), AFArray{backend_eltype(vt)}(vt)
 end
 
 # Fourier Transforms
