@@ -284,17 +284,6 @@ function setindex!{T}(x::AFAbstractArray{T}, val, idxs...)
     icxx"$proxy = $val;"
 end
 
-# Sorting
-import Base: sort
-
-function sort{T}(A::AFArray{T}; rev = false)
-    ndims(A) == 1 ||
-        error("Must explicitly specify dimension when sorting mutlidimensional array")
-    icxx"af::sort($A,0,$(!rev));"
-end
-sort{T}(A::AFArray{T}, dim; rev = false) = icxx"af::sort($A,$dim,$(!rev));"
-
-
 # BLAS operations
 
 import Base: dot, A_mul_Bt, At_mul_B, At_mul_Bt, A_mul_Bc,
