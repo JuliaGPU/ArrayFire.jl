@@ -4,8 +4,8 @@
 import Base: dot, A_mul_Bt, At_mul_B, At_mul_Bt, A_mul_Bc,
     Ac_mul_B, Ac_mul_Bc, transpose, ctranspose, transpose!, ctranspose!
 
-dot{T,S}(lhs::AFAbstractArray{T}, rhs::AFAbstractArray{S}) =
-    icxx"dot($lhs, $rhs);"
+dot{T,S}(lhs::AFAbstractArray{T}, rhs::AFAbstractArray{S}) = 
+        AFArray{af_promote(T,S)}(icxx"dot($lhs, $rhs);")
 
 # Matmul
 *{T,S}(a::AFAbstractArray{T}, b::AFAbstractArray{S}) =
