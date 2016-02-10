@@ -35,3 +35,14 @@ alltrue(a::AFAbstractArray{T}, dim::Integer) = AFArray{Bool}(icxx"af::allTrue($a
 #Count 
 countnz{T}(a::AFAbstractArray{T}) = icxx"af::count<float>($a);"
 countnz{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{UInt32}(icxx"af::count($a, $(dim -1);")
+
+
+#Inclusive Scan Operations
+
+import Base: cumsum, find
+
+#Cumsum
+cumsum{T}(a::AFAbstractArray{T}, dim::Integer = 1) = AFArray{T}(icxx"af::accum($a, $(dim - 1);")
+
+#Find
+find(a::AFAbstractArray{T}) = AFArray{UInt32}(icxx"af::where($a);")
