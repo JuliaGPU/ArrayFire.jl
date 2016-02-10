@@ -141,7 +141,7 @@ sizeof{T}(a::AFAbstractArray{T}) = elsize(a) * length(a)
 
 # GPU to Host
 function convert{T}(::Type{Array{T}},x::AFAbstractArray{T})
-    ret = Array(Uint8,sizeof(x))
+    ret = Array(UInt8,sizeof(x))
     icxx"$x.host($(pointer(ret)));"
     ret = reinterpret(T, ret)
     ret = reshape(ret, size(x)...)
@@ -254,7 +254,7 @@ to_af_idx(x::Range) = icxx"af::seq($(first(x))-1,$(last(x))-1,$(step(x)));"
 to_af_idx(x::Colon) = icxx"af::span;"
 const tis = to_af_idx
 
-IS = Union(Real,Range,Colon)
+IS = Union{Real,Range,Colon}
 
 _getindex{T}(x::AFAbstractArray{T},y::AFAbstractArray)   = icxx"$x($y-1);"
 # Avoid an ambiguity
