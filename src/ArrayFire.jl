@@ -311,12 +311,6 @@ dot{T,S}(lhs::AFAbstractArray{T}, rhs::AFAbstractArray{S}) =
 *{T,S,V,W}(a::AFAbstractArray{T}, b::AFAbstractArray{S}, c::AFAbstractArray{V}, d::AFAbstractArray{W}) =
     AFArray{af_promte(af_promote(af_promote(T,S), V), W)}(icxx"matmul($a, $b, $c, $d);")
 
-#Image
-function loadImage(str::String)
-	a = pointer(str)
-	return AFArray{Float32}(icxx"loadImage($a);")
-end
-
 function _matmul(a::AFAbstractArray, b::AFAbstractArray;
     lhsProp = AF_MAT_NONE, rhsProp = AF_MAT_NONE)
     icxx"matmul($a,$b,$lhsProp,$rhsProp);"
