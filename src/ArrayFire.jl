@@ -335,7 +335,7 @@ ctranspose!(x::AFAbstractArray) = icxx"af::transposeInPlace($x,true);"
 
 # TODO: The documentation says only AF_MAT_LOWER/AF_MAT_UPPER are supported
 # once AF_MAT_(C)TRANS is supported this could be useful for A_rdiv, etc
-\(a::AFAbstractArray, b::AFAbstractArray) = icxx"af::solve($a,$b);"
+\{S,T}(a::AFAbstractArray{S}, b::AFAbstractArray{T}) = AFArray{af_promote(T,S)}(icxx"af::solve($a,$b);")
 
 # Factorizations
 import Base.LinAlg: chol, chol!, PosDefException, UpperTriangular,
