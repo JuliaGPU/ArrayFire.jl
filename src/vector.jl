@@ -5,7 +5,7 @@
 
 #Reduction operations
 
-import Base: sum, maximum, minimum, any 
+import Base: sum, maximum, minimum, any, max, min
 export product, alltrue
 
 #Sum 
@@ -16,7 +16,7 @@ sum{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(icxx"af::sum($a, $(dim 
 product{T}(a::AFAbstractArray{T}) = icxx"af::product<float>($a);"
 product{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(icxx"af::product($a, $(dim - 1));")
 
-#Max
+#Maximum
 maximum{T}(a::AFAbstractArray{T}) = icxx"af::max<float>($a);"
 function maximum{T}(a::AFAbstractArray{T}, dim::Integer) 
     AFArray{T}(icxx"""
@@ -24,12 +24,32 @@ function maximum{T}(a::AFAbstractArray{T}, dim::Integer)
                 af::max($a, dim);""")
 end
 
-#Min
+#Minimum
 minimum{T}(a::AFAbstractArray{T}) = icxx"af::min<float>($a);"
 function minimum{T}(a::AFAbstractArray{T}, dim::Integer) 
     AFArray{T}(icxx"""
                 int dim = $dim - 1;
                 af::min($a, dim);""")
+end
+
+#Max
+function max(a::AFAbstractArray, val::Real)
+    out = AFArray();
+    icxx"""
+        float val = $val;
+        $out = af::max($a, val);
+    """
+    AFArray{backend_eltype(out)}(out)
+end
+
+#Min
+function min(a::AFAbstractArray, val::Real)
+    out = AFArray();
+    icxx"""
+        float val = $val;
+        $out = af::min($a, val);
+    """
+    AFArray{backend_eltype(out)}(out)
 end
 
 #Any
