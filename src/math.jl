@@ -68,3 +68,5 @@ function min(a::AFAbstractArray, val::Real)
 end
 min(val::Real, a::AFAbstractArray) = min(a, val)
 
+#Negation
+-{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"-$a;")
