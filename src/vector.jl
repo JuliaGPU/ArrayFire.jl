@@ -5,7 +5,7 @@
 
 #Reduction operations
 
-import Base: sum, maximum, min, any 
+import Base: sum, maximum, minimum, any 
 export product, alltrue
 
 #Sum 
@@ -18,11 +18,19 @@ product{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(icxx"af::product($a
 
 #Max
 maximum{T}(a::AFAbstractArray{T}) = icxx"af::max<float>($a);"
-maximum{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(icxx"af::max($a, $(dim - 1));")
+function maximum{T}(a::AFAbstractArray{T}, dim::Integer) 
+    AFArray{T}(icxx"""
+                int dim = $dim -1;
+                af::max($a, dim);""")
+end
 
 #Min
-min{T}(a::AFAbstractArray{T}) = icxx"af::min<float>($a);"
-min{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(icxx"af::min($a, $(dim - 1));")
+minimum{T}(a::AFAbstractArray{T}) = icxx"af::min<float>($a);"
+function minimum{T}(a::AFAbstractArray{T}, dim::Integer) 
+    AFArray{T}(icxx"""
+                int dim = $dim - 1;
+                af::min($a, dim);""")
+end
 
 #Any
 any{T}(a::AFAbstractArray{T}) = icxx"af::anyTrue<boolean_t>($a);" != 0
