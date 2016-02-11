@@ -216,7 +216,7 @@ end
 Base.gamma{T}(x::AFAbstractArray{T}) = AFArray{T}(@cxx af::tgamma(x))
 
 #
-import Base: +, -
+import Base: +, -, abs
 
 # Resolve conflicts
 +(x::AFAbstractArray{Bool},y::Bool) = AFArray{Bool}(@cxx +(x.array,y))
@@ -245,6 +245,12 @@ for (op,cppop) in ((:+,:+),(:(.+),:+),(:-,:-),(:(.-),:-),(:.*,:*),(:./,:/),(:.>>
     end
 end
 # TODO: add! using +=, etc.
+
+function abs(a::AFAbstractArray)
+    b = AFArray()
+    icxx"$b = af::abs($a);"
+    AFArray{backend_eltype(b)}(b)
+end
 
 import Base: getindex
 

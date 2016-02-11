@@ -109,7 +109,7 @@ end
 
 #Mat ops
 
-import Base: det, inv
+import Base: det, inv, norm
 
 function det{T}(a::AFAbstractArray{T}) 
     if ndims(a) != 2
@@ -126,3 +126,6 @@ function inv(a::AFAbstractArray)
         return AFArray{Float32}(icxx"af::inverse($a);")
     end
 end
+
+norm(a::AFAbstractArray) = icxx"af::norm($a);"
+rank(a::AFAbstractArray) = icxx"af::rank($a);"
