@@ -26,13 +26,13 @@ for (op,cppop) in ((:+,:+),(:(.+),:+),(:-,:-),(:(.-),:-),(:.*,:*),(:./,:/),(:.>>
     @eval function Base.($(quot(op))){T,S<:Number}(x::AFAbstractArray{T}, y::S)
         a = x.array
         # This is special behavior hardcoded in arrayfire for real floats
-        ST = S <: FloatingPoint ? T : S
+        ST = S <: AbstractFloat ? T : S
         AFArray{af_promote(T,ST)}(@cxx ($(cppop))(a, y))
     end
     @eval function Base.($(quot(op))){T,S<:Number}(y::S, x::AFAbstractArray{T})
         a = x.array
         # This is special behavior hardcoded in arrayfire for real floats
-        ST = S <: FloatingPoint ? T : S
+        ST = S <: AbstractFloat ? T : S
         AFArray{af_promote(T,ST)}(@cxx ($(cppop))(y, a))
     end
 end
