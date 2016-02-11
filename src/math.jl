@@ -70,3 +70,22 @@ min(val::Real, a::AFAbstractArray) = min(a, val)
 
 #Negation
 -{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"-$a;")
+
+#Logical ops
+import Base: ==, .==, .>, .<, .>=, .<=
+
+#Equals
+==(a::AFAbstractArray, b::AFAbstractArray) = icxx"$a == $b;"
+.==(a::AFAbstractArray, val::Real) = AFArray{Bool}(icxx"$a == $val;")
+
+#Greater
+.>(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(icxx"$a > $b;")
+.>(a::AFAbstractArray, b::Real) = AFArray{Bool}(icxx"$a > $b;")
+.>=(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(icxx"$a >= $b;")
+.>=(a::AFAbstractArray, b::Real) = AFArray{Bool}(icxx"$a >= $b;")
+
+#Lesser
+.<(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(icxx"$a < $b;")
+.<(a::AFAbstractArray, b::Real) = AFArray{Bool}(icxx"$a < $b;")
+.<=(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(icxx"$a <= $b;")
+.<=(a::AFAbstractArray, b::Real) = AFArray{Bool}(icxx"$a <= $b")
