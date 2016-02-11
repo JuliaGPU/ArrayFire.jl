@@ -2,11 +2,11 @@
 
 [![Build Status](https://travis-ci.org/Keno/ArrayFire.jl.svg?branch=master)](https://travis-ci.org/Keno/ArrayFire.jl)
 
-ArrayFire is a library for GPU and accelerated computing in Julia. It is a wrapper around [arrayfire](https://github.com/arrayfire/arrayfire), a C++ library. 
+ArrayFire is a library for GPU and accelerated computing in Julia. It is a wrapper around [arrayfire](https://github.com/arrayfire/arrayfire), a C++ library, using [Cxx.jl](https://github.com/Keno/Cxx.jl).
 
 ##Installation 
 
-First make sure you build Julia with special flags in accordance with Cxx.jl. The instructions for doing that are [here](https://github.com/Keno/Cxx.jl.git). Then build Cxx by doing `Pkg.build(Cxx.jl`)
+First make sure you build Julia with special flags in accordance with Cxx.jl. The instructions for doing that are [here](https://github.com/Keno/Cxx.jl.git). Then build Cxx by doing `Pkg.build("Cxx"`).
 
 Then clone the ArrayFire package by doing:
 ```julia
