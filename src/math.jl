@@ -43,3 +43,24 @@ function abs(a::AFAbstractArray)
     icxx"$b = af::abs($a);"
     AFArray{backend_eltype(b)}(b)
 end
+
+#Max
+function max(a::AFAbstractArray, val::Real)
+    out = AFArray();
+    icxx"""
+        float val = $val;
+        $out = af::max($a, val);
+    """
+    AFArray{backend_eltype(out)}(out)
+end
+
+#Min
+function min(a::AFAbstractArray, val::Real)
+    out = AFArray();
+    icxx"""
+        float val = $val;
+        $out = af::min($a, val);
+    """
+    AFArray{backend_eltype(out)}(out)
+end
+

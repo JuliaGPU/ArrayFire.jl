@@ -32,26 +32,6 @@ function minimum{T}(a::AFAbstractArray{T}, dim::Integer)
                 af::min($a, dim);""")
 end
 
-#Max
-function max(a::AFAbstractArray, val::Real)
-    out = AFArray();
-    icxx"""
-        float val = $val;
-        $out = af::max($a, val);
-    """
-    AFArray{backend_eltype(out)}(out)
-end
-
-#Min
-function min(a::AFAbstractArray, val::Real)
-    out = AFArray();
-    icxx"""
-        float val = $val;
-        $out = af::min($a, val);
-    """
-    AFArray{backend_eltype(out)}(out)
-end
-
 #Any
 any{T}(a::AFAbstractArray{T}) = icxx"af::anyTrue<boolean_t>($a);" != 0
 any(a::AFAbstractArray, dim::Integer) = AFArray{Bool}(icxx"af::anyTrue($a, $(dim - 1));")
