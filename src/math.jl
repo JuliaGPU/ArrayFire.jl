@@ -38,6 +38,8 @@ for (op,cppop) in ((:+,:+),(:(.+),:+),(:-,:-),(:(.-),:-),(:.*,:*),(:./,:/),(:.>>
 end
 # TODO: add! using +=, etc.
 
+import Base: abs, min, max
+
 function abs(a::AFAbstractArray)
     b = AFArray()
     icxx"$b = af::abs($a);"

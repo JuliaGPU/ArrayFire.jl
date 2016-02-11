@@ -246,6 +246,13 @@ function setindex!{T}(x::AFAbstractArray{T}, val, idxs...)
     icxx"$proxy = $val;"
 end
 
+#Helper functions
+import Base: isnan
+
+function isnan(a::AFAbstractArray)
+    AFArray{Bool}(icxx"af::isNaN($a);")
+end
+
 # Fourier Transforms
 # TODO: Multidimensional
 import Base: fft
@@ -272,6 +279,7 @@ import Base: showerror
 end
 
 #import other files
+include("math.jl")
 include("image.jl")
 include("stats.jl")
 include("vector.jl")
