@@ -17,3 +17,51 @@ Then, you must build arrayfire for your system. Follow the instructions to build
 Then, once you have built the library, copy all the build files into the `deps` folder in `~/.julia/v0.5/ArrayFire/deps/build/`
 
 If all goes correctly, `using ArrayFire` should work without errors.
+
+## Usage
+ArrayFire creates pointers to GPU memory using the `AFArray` type. Operations on `AFArray` types return `AFArray` types, thereby keeping data on the GPU.
+
+```julia
+using ArrayFire
+
+#Random number generation
+a = rand(AFArray{Float64}, 100, 100)
+b = randn(AFArray{Float64}, 100, 100)
+
+#Transfer to device from the CPU
+host_to_device = AFArray(rand(100,100))
+
+#Transfer back to CPU
+device_to_host = Array(host_to_device)
+
+#Basic arithmetic operations
+c = sin(a) + 0.5
+d = a * 5
+
+#Logical operations
+c = a .> b
+any_trues = any(c)
+
+#Reduction operations
+total_max = maximum(a)
+colwise_min = min(a,2)
+
+#Matrix operations
+determinant = det(a)
+b_positive = abs(b)
+product = a * b
+dot_product = a .* b
+transposer = a'
+
+#Linear Algebra
+lu_fact = lu(a)
+cholesky_fact = chol(a*a') #Multiplied to create a positive definite matrix
+qr_fact = qr(a)
+svd_fact = svd(a)
+
+#FFT
+fast_fourier = fft(a)
+
+```
+
+Please contribute to the development of this package by filing issues [here](https://github.com/JuliaComputing/ArrayFire.jl/issues). 
