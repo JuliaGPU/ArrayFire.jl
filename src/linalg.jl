@@ -1,5 +1,7 @@
 
 # BLAS operations
+const AF_MAT_NONE = icxx"AF_MAT_NONE;"
+const AF_MAT_CTRANS = icxx"AF_MAT_CTRANS;"
 
 import Base: dot, A_mul_Bt, At_mul_B, At_mul_Bt, A_mul_Bc,
     Ac_mul_B, Ac_mul_Bc, transpose, ctranspose, transpose!, ctranspose!
@@ -17,18 +19,29 @@ dot{T,S}(lhs::AFAbstractArray{T}, rhs::AFAbstractArray{S}) =
 
 function _matmul(a::AFAbstractArray, b::AFAbstractArray;
     lhsProp = AF_MAT_NONE, rhsProp = AF_MAT_NONE)
-    icxx"matmul($a,$b,$lhsProp,$rhsProp);"
+    out = AFArray()
+    icxx"$out = matmul($a,$b,$lhsProp,$rhsProp);"
+    AFArray{backend_eltype(out)}(out)
 end
 
 # with transpose
-A_mul_Bt(a::AFAbstractArray, b::AFAbstractArray) =
-    icxx"matmulNT($a,$b);"
+function A_mul_Bt(a::AFAbstractArray, b::AFAbstractArray)
+    out = AFArray()
+    icxx"$out = matmulNT($a,$b);"
+    AFArray{backend_eltype(out)}(out)
+end
 
-At_mul_B(a::AFAbstractArray, b::AFAbstractArray) =
-    icxx"matmulTN($a,$b);"
+function At_mul_B(a::AFAbstractArray, b::AFAbstractArray)
+    out = AFArray()
+    icxx"$out = matmulTN($a,$b);"
+    AFArray{backend_eltype(out)}(out)
+end
 
-At_mul_Bt(a::AFAbstractArray, b::AFAbstractArray) =
-    icxx"matmulTT($a,$b);"
+function At_mul_Bt(a::AFAbstractArray, b::AFAbstractArray)
+    out = AFArray()
+    icxx"$out = matmulTT($a,$b);"
+    AFArray{backend_eltype(out)}(out)
+end
 
 # with complex conjugate
 A_mul_Bc(a::AFAbstractArray, b::AFAbstractArray) =
