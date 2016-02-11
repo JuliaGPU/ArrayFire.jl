@@ -69,7 +69,8 @@ end
 min(val::Real, a::AFAbstractArray) = min(a, val)
 
 #Negation
--{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"-$a;")
+-{T}(a::AFArray{T}) = AFArray{T}(icxx"-$a;")
+-{T}(a::AFSubArray{T}) = AFArray{T}(icxx"0-$a;")
 
 #Logical ops
 import Base: ==, .==, .>, .<, .>=, .<=
