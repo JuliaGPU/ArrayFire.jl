@@ -238,7 +238,12 @@ _getindex{T}(x::AFAbstractArray{T},
 
 function getindex{T}(x::AFAbstractArray{T}, idxs...)
     proxy = _getindex(x,idxs...)
-    AFSubArray{T}(proxy)
+    num_elems = icxx"$proxy.elements();"
+    if num_elems == 1
+        return Array(AFSubArray{T}(proxy))[1]
+    else
+        return AFSubArray{T}(proxy)
+    end
 end
 
 function setindex!{T}(x::AFAbstractArray{T}, val, idxs...)
