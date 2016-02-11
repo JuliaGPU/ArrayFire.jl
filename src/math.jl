@@ -55,6 +55,7 @@ function max(a::AFAbstractArray, val::Real)
     """
     AFArray{backend_eltype(out)}(out)
 end
+max(val::Real, a::AFAbstractArray) = max(a, val)
 
 #Min
 function min(a::AFAbstractArray, val::Real)
@@ -65,4 +66,5 @@ function min(a::AFAbstractArray, val::Real)
     """
     AFArray{backend_eltype(out)}(out)
 end
+min(val::Real, a::AFAbstractArray) = min(a, val)
 
