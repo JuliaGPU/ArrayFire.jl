@@ -93,4 +93,3 @@ import Base: ==, .==, .>, .<, .>=, .<=
 
 #Or
 |(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(icxx"$a|$b;")
-||(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(icxx"$a||$b;")
