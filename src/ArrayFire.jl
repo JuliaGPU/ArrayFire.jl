@@ -246,6 +246,12 @@ function getindex{T}(x::AFAbstractArray{T}, idxs...)
     end
 end
 
+function getindex(x::AFAbstractArray, b::AFAbstractArray{Bool})
+    out = AFArray()
+    icxx"$out = $x($b);"
+    AFArray{backend_eltype(out)}(out)
+end
+
 function setindex!{T}(x::AFAbstractArray{T}, val, idxs...)
     proxy = _getindex(x,idxs...)
     icxx"$proxy = $val;"
