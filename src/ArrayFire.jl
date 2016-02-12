@@ -246,15 +246,29 @@ function getindex{T}(x::AFAbstractArray{T}, idxs...)
     end
 end
 
+#TODO : return 0-element array when b is all falses
 function getindex(x::AFAbstractArray, b::AFAbstractArray{Bool})
     out = AFArray()
-    icxx"$out = $x($b);"
-    AFArray{backend_eltype(out)}(out)
+    if any(b)
+        icxx"$out = $x($b);"
+        AFArray{backend_eltype(out)}(out)
+    else
+        return 0
+    end
 end
 
 function setindex!{T}(x::AFAbstractArray{T}, val, idxs...)
     proxy = _getindex(x,idxs...)
     icxx"$proxy = $val;"
+end
+
+# Avoid crash when referencing with boolean arrays with all falses 
+function setindex!(x::AFAbstractArray, val, b::AFAbstractArray{Bool})
+    if any(b) 
+        icxx"$x($b) = $val;"
+    else
+        return val
+    end
 end
 
 #Helper functions
