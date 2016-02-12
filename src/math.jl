@@ -90,3 +90,7 @@ import Base: ==, .==, .>, .<, .>=, .<=
 .<(a::AFAbstractArray, b::Real) = AFArray{Bool}(icxx"$a < $b;")
 .<=(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(icxx"$a <= $b;")
 .<=(a::AFAbstractArray, b::Real) = AFArray{Bool}(icxx"$a <= $b")
+
+#Or
+|(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(icxx"$a|$b;")
+||(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(icxx"$a||$b;")
