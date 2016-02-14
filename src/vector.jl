@@ -33,7 +33,7 @@ function minimum{T}(a::AFAbstractArray{T}, dim::Integer)
 end
 
 #Any
-any{T}(a::AFAbstractArray{T}) = icxx"af::anyTrue<boolean_t>($a);" != 0
+any{T}(a::AFAbstractArray{T}) = icxx"af::anyTrue<bool>($a);"
 any(a::AFAbstractArray, dim::Integer) = AFArray{Bool}(icxx"af::anyTrue($a, $(dim - 1));")
 
 #Alltrue
