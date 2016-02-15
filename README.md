@@ -63,5 +63,15 @@ svd_fact = svd(a)
 fast_fourier = fft(a)
 
 ```
+## Performance 
+ArrayFire was benchmarked on commonly used operations.
+
+![Performance Chart](https://cloud.githubusercontent.com/assets/9101377/13040156/8f33516c-d3ce-11e5-9873-766a2ab67781.png)
+
+CPU: Intel(R) Xeon(R) CPU E5-2670 0 @ 2.60GHz.
+
+GPU: GRID K520, 4096 MB, CUDA Compute 3.0.
+
+ArrayFire v3.3.0
 
 Please contribute to the development of this package by filing issues [here](https://github.com/JuliaComputing/ArrayFire.jl/issues). 
