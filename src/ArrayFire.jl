@@ -209,6 +209,9 @@ eye{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(icxx"af::identity($(dims_to_dim
 diag{T}(x::AFArray{T}, k = 0) = AFArray{T}(icxx"af::diag($(dims_to_dim4(dims)),$k);");
 
 #TODO : make `tile` compatible with `repeat` in base
+
+export tile
+
 tile{T}(a::AFAbstractArray{T}, inds::Integer...) = AFArray{T}(icxx"af::tile($a, $(dims_to_dim4(inds)));")
 
 import Base: getindex

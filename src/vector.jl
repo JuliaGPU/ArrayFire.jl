@@ -118,3 +118,10 @@ union{T}(a::AFAbstractArray{T}, b::AFAbstractArray{T}) = AFArray{T}(icxx"af::set
 
 #Unique
 unique{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::setUnique($a);")
+
+
+#Reordering functions
+
+import Base:flipdim
+
+flipdim{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(icxx"af::flip($a, $(dim-1));")
