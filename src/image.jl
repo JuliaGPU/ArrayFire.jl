@@ -94,3 +94,22 @@ dilate{T}(a::AFAbstractArray{T}, mask::AFAbstractArray{T}) = AFArray{T}(icxx"af:
 dilate3{T}(a::AFAbstractArray{T}, mask::AFAbstractArray{T}) = AFArray{T}(icxx"af::dilate3($a, $mask);")
 erode{T}(a::AFAbstractArray{T}, mask::AFAbstractArray{T}) = AFArray{T}(icxx"af::erode($a, $mask);")
 erode3{T}(a::AFAbstractArray{T}, mask::AFAbstractArray{T}) = AFArray{T}(icxx"af::erode3($a, $mask);")
+
+#Computer Vision
+
+#Constants
+const AF_SAD = icxx"AF_SAD;"
+const AF_ZSAD = icxx"AF_ZSAD;"
+const AF_LSAD = icxx"AF_LSAD;"
+const AF_SSD = icxx"AF_SSD;"
+const AF_ZSSD = icxx"AF_ZSSD;"
+const AF_LSSD = icxx"AF_LSSD;"
+const AF_NCC = icxx"AF_NCC;"
+const AF_ZNCC = icxx"AF_ZNCC;"
+const AF_SHD = icxx"AF_SHD;"
+
+export matchTemplate
+
+function matchTemplate{T}(searchImg::AFAbstractArray{T}, template::AFAbstractArray{T}, matchType = AF_SAD)
+    AFArray{T}(icxx"af::matchTemplate($searchImg, $template, $matchType);")
+end
