@@ -42,3 +42,8 @@ function ifft{T<:Complex}(a::AFAbstractArray{T})
     end
 end
 		
+#FIR Filter
+fir{T}(a::AFAbstractArray{T}, x::AFAbstractArray{T}) = AFArray{T}(icxx"af::fir($a, $x);")
+
+#IIR Filter
+iir{T}(ff::AFAbstractArray{T}, fb::AFAbstractArray{T}, a::AFAbstractArray{T}) = AFArray{T}(icxx"af::iir($b, $a, $x);")
