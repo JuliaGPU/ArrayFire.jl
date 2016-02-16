@@ -296,5 +296,6 @@ include("image.jl")
 include("stats.jl")
 include("vector.jl")
 include("linalg.jl")
+include("signal.jl")
 
 end # module
