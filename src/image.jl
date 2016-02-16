@@ -108,8 +108,10 @@ const AF_NCC = icxx"AF_NCC;"
 const AF_ZNCC = icxx"AF_ZNCC;"
 const AF_SHD = icxx"AF_SHD;"
 
-export matchTemplate
+export matchTemplate, dog
 
 function matchTemplate{T}(searchImg::AFAbstractArray{T}, template::AFAbstractArray{T}, matchType = AF_SAD)
     AFArray{T}(icxx"af::matchTemplate($searchImg, $template, $matchType);")
 end
+
+dog{T}(img::AFAbstractArray{T}, radius1::Integer, radius2::Integer) = AFArray{T}(icxx"dog($img, $radius1, $radius2);")
