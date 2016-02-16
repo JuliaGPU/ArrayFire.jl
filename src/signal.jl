@@ -1,5 +1,8 @@
 #Signal Processing Functions
 
+#Consts
+AF_CONV_EXPAND = icxx"AF_CONV_EXPAND;"
+
 # Fourier Transforms
 import Base: fft, ifft
 function fft{T}(a::AFAbstractArray{T})
@@ -47,3 +50,10 @@ fir{T}(a::AFAbstractArray{T}, x::AFAbstractArray{T}) = AFArray{T}(icxx"af::fir($
 
 #IIR Filter
 iir{T}(ff::AFAbstractArray{T}, fb::AFAbstractArray{T}, a::AFAbstractArray{T}) = AFArray{T}(icxx"af::iir($b, $a, $x);")
+
+#Convolutions
+
+import Base: conv, conv2
+
+conv{T}(a::AFAbstractArray{T}, b::AFAbstractArray{T}) = AFArray{T}(icxx"fftConvolve($a, $b, AF_CONV_EXPAND);")
+conv2{T}(a::AFAbstractArray{T}, b::AFAbstractArray{T}) = AFArray{T}(icxx"fftConvolve2($a, $b, AF_CONV_EXPAND);")
