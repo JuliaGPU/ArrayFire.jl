@@ -114,4 +114,4 @@ function matchTemplate{T}(searchImg::AFAbstractArray{T}, template::AFAbstractArr
     AFArray{T}(icxx"af::matchTemplate($searchImg, $template, $matchType);")
 end
 
-dog{T}(img::AFAbstractArray{T}, radius1::Integer, radius2::Integer) = AFArray{T}(icxx"dog($img, $radius1, $radius2);")
+DiffOfGaussians{T}(img::AFAbstractArray{T}, radius1::Integer, radius2::Integer) = AFArray{T}(icxx"dog($img, $radius1, $radius2);")
