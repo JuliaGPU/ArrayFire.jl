@@ -122,6 +122,7 @@ unique{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::setUnique($a);")
 
 #Reordering functions
 
-import Base:flipdim
+import Base:flipdim, vec
 
 flipdim{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(icxx"af::flip($a, $(dim-1));")
+vec{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::flat($a);")
