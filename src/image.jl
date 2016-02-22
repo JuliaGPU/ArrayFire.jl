@@ -108,7 +108,7 @@ const AF_NCC = icxx"AF_NCC;"
 const AF_ZNCC = icxx"AF_ZNCC;"
 const AF_SHD = icxx"AF_SHD;"
 
-export matchTemplate, dog
+export matchTemplate, DiffOfGaussians
 
 function matchTemplate{T}(searchImg::AFAbstractArray{T}, template::AFAbstractArray{T}, matchType = AF_SAD)
     AFArray{T}(icxx"af::matchTemplate($searchImg, $template, $matchType);")
