@@ -1,13 +1,12 @@
 # MATH OPERATIONS
 
-for op in (:sin, :cos, :tan, :asin, :acos, :log, :log1p, :log10, :sqrt, :transpose,
-    :exp, :expm1, :erf, :erfc, :cbrt, :lgamma, :transpose)
+for op in (:sin, :cos, :tan, :atan, :asin, :acos, :log, :log1p, :log10, :sqrt, :transpose,
+    :exp, :expm1, :erf, :erfc, :cbrt, :lgamma, :transpose, :acosh, :cosh, :asinh, :sinh, :atanh, :tanh, :factorial)
     @eval Base.($(quot(op))){T}(x::AFAbstractArray{T}) = AFArray{T}(@cxx af::($op)(x.array))
 end
 
 Base.gamma{T}(x::AFAbstractArray{T}) = AFArray{T}(@cxx af::tgamma(x))
 
-#
 import Base: +, -, abs
 
 # Resolve conflicts
@@ -40,56 +39,45 @@ end
 
 import Base: abs, min, max
 
-function abs(a::AFAbstractArray)
-    b = AFArray()
-    icxx"$b = af::abs($a);"
-    AFArray{backend_eltype(b)}(b)
-end
+#Abs
+abs{T}(a::AFAbstractArray{T}) = AFArray{T}(af_abs(a))
 
 #Max
 function max(a::AFAbstractArray, val::Real)
-    out = AFArray();
-    icxx"""
-        float val = $val;
-        $out = af::max($a, val);
-    """
+    out = af_max(a, val)
     AFArray{backend_eltype(out)}(out)
 end
 max(val::Real, a::AFAbstractArray) = max(a, val)
 
 #Min
 function min(a::AFAbstractArray, val::Real)
-    out = AFArray();
-    icxx"""
-        float val = $val;
-        $out = af::min($a, val);
-    """
+    out = af_min(a, val)
     AFArray{backend_eltype(out)}(out)
 end
 min(val::Real, a::AFAbstractArray) = min(a, val)
 
 #Negation
--{T}(a::AFArray{T}) = AFArray{T}(icxx"-$a;")
 -{T}(a::AFSubArray{T}) = AFArray{T}(icxx"0-$a;")
+-{T}(a::AFArray{T}) = AFArray{T}(af_neg(a))
 
 #Logical ops
 import Base: ==, .==, .>, .<, .>=, .<=
 
 #Equals
-==(a::AFAbstractArray, b::AFAbstractArray) = icxx"$a == $b;"
-.==(a::AFAbstractArray, val::Real) = AFArray{Bool}(icxx"$a == $val;")
+.==(a::AFAbstractArray, b::Union{AFAbstractArray, Real}) = af_equals(a,b)
+.==(a::Union{AFAbstractArray,Real}, b::AFAbstractArray) = af_equals(a,b)
 
 #Greater
-.>(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(icxx"$a > $b;")
-.>(a::AFAbstractArray, b::Real) = AFArray{Bool}(icxx"$a > $b;")
-.>=(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(icxx"$a >= $b;")
-.>=(a::AFAbstractArray, b::Real) = AFArray{Bool}(icxx"$a >= $b;")
+.>(a::AFAbstractArray, b::Union{AFAbstractArray,Real}) = af_gt(a,b)
+.>(a::Union{Real, AFAbstractArray}, b::AFAbstractArray) = af_gt(a,b)
+.>=(a::AFAbstractArray, b::Union{AFAbstractArray, Real}) = af_ge(a,b)
+.>=(a::Union{Real,AFAbstractArray}, b::AFAbstractArray) =  af_ge(a,b)
 
 #Lesser
-.<(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(icxx"$a < $b;")
-.<(a::AFAbstractArray, b::Real) = AFArray{Bool}(icxx"$a < $b;")
-.<=(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(icxx"$a <= $b;")
-.<=(a::AFAbstractArray, b::Real) = AFArray{Bool}(icxx"$a <= $b")
+.<(a::AFAbstractArray, b::Union{AFAbstractArray, Real}) = af_lt(a,b)
+.<(a::Union{AFAbstractArray,Real}, b::AFAbstractArray) = af_lt(a,b)
+.<=(a::AFAbstractArray, b::Union{AFAbstractArray, Real}) = af_le(a,b)
+.<=(a::Union{AFAbstractArray, Real}, b::AFAbstractArray) = af_le(a,b)
 
 #Or
-|(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(icxx"$a|$b;")
+|(a::AFAbstractArray, b::AFAbstractArray) = af_bitor(a,b)

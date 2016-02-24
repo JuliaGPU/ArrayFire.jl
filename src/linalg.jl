@@ -1,45 +1,38 @@
 
 # BLAS operations
-const AF_MAT_NONE = icxx"AF_MAT_NONE;"
-const AF_MAT_CTRANS = icxx"AF_MAT_CTRANS;"
-
 import Base: dot, A_mul_Bt, At_mul_B, At_mul_Bt, A_mul_Bc,
     Ac_mul_B, Ac_mul_Bc, transpose, ctranspose, transpose!, ctranspose!
 
 dot{T,S}(lhs::AFAbstractArray{T}, rhs::AFAbstractArray{S}) = 
-        AFArray{af_promote(T,S)}(icxx"dot($lhs, $rhs);")
+        AFArray{af_promote(T,S)}(af_dot(lhs, rhs))
 
 # Matmul
 *{T,S}(a::AFAbstractArray{T}, b::AFAbstractArray{S}) =
-    AFArray{af_promote(T,S)}(icxx"matmul($a, $b);")
+    AFArray{af_promote(T,S)}(af_matmul(a,b))
 *{T,S,V}(a::AFAbstractArray{T}, b::AFAbstractArray{S}, c::AFAbstractArray{V}) =
-    AFArray{af_promote(af_promote(T,S), V)}(icxx"matmul($a, $b, $c);")
+    AFArray{af_promote(af_promote(T,S), V)}(af_matmul3(a,b,c))
 *{T,S,V,W}(a::AFAbstractArray{T}, b::AFAbstractArray{S}, c::AFAbstractArray{V}, d::AFAbstractArray{W}) =
-    AFArray{af_promte(af_promote(af_promote(T,S), V), W)}(icxx"matmul($a, $b, $c, $d);")
+    AFArray{af_promte(af_promote(af_promote(T,S), V), W)}(af_matmul4(a,b,c,d))
 
 function _matmul(a::AFAbstractArray, b::AFAbstractArray;
     lhsProp = AF_MAT_NONE, rhsProp = AF_MAT_NONE)
-    out = AFArray()
-    icxx"$out = matmul($a,$b,$lhsProp,$rhsProp);"
+    out = af_matmul_flags(a, b, lhsProp, rhsProp)
     AFArray{backend_eltype(out)}(out)
 end
 
 # with transpose
 function A_mul_Bt(a::AFAbstractArray, b::AFAbstractArray)
-    out = AFArray()
-    icxx"$out = matmulNT($a,$b);"
+    out = af_matmulNT(a,b)
     AFArray{backend_eltype(out)}(out)
 end
 
 function At_mul_B(a::AFAbstractArray, b::AFAbstractArray)
-    out = AFArray()
-    icxx"$out = matmulTN($a,$b);"
+    out = af_matmulTN(a,b)
     AFArray{backend_eltype(out)}(out)
 end
 
 function At_mul_Bt(a::AFAbstractArray, b::AFAbstractArray)
-    out = AFArray()
-    icxx"$out = matmulTT($a,$b);"
+    out = af_matmulTT(a,b)
     AFArray{backend_eltype(out)}(out)
 end
 
@@ -52,19 +45,18 @@ Ac_mul_Bc(a::AFAbstractArray, b::AFAbstractArray) =
     _matmul(a,b,lhsProp=AF_MAT_CTRANS,rhsProp=AF_MAT_CTRANS)
 
 # transpose
+transpose{T}(x::AFAbstractArray{T}) = AFArray{T}(af_transpose(x))
+ctranspose{T}(x::AFAbstractArray{T}) = AFAbstractArray{T}(af_ctranspose(x))
 
-transpose(x::AFAbstractArray) = icxx"af::transpose($x);"
-ctranspose{T}(x::AFAbstractArray{T}) = AFAbstractArray{T}(icxx"af::transpose($x,true);")
-
-transpose!(x::AFAbstractArray) = icxx"af::transposeInPlace($x);"
-ctranspose!(x::AFAbstractArray) = icxx"af::transposeInPlace($x,true);"
+transpose!{T}(x::AFAbstractArray{T}) = af_transposeInPlace(x)
+ctranspose!{T}(x::AFAbstractArray{T}) = af_ctransposeInPlace(x)
 
 # solve
 
 # TODO : The documentation says only AF_MAT_LOWER/AF_MAT_UPPER are supported
 # once AF_MAT_(C)TRANS is supported this could be useful for A_rdiv, etc
 # TODO : Think about integrating solveLU in `\` so it becomes a poly algorithm like base. 
-\{S,T}(a::AFAbstractArray{S}, b::AFAbstractArray{T}) = AFArray{af_promote(T,S)}(icxx"af::solve($a,$b);")
+\{S,T}(a::AFAbstractArray{S}, b::AFAbstractArray{T}) = AFArray{af_promote(T,S)}(af_solve(a, b);)
 
 # Factorizations
 
@@ -73,13 +65,13 @@ import Base.LinAlg: chol, chol!, PosDefException
 #Cholesky
 function _chol{T}(a::AFAbstractArray{T}, is_upper::Bool)
     out = AFArray()
-    info = icxx"af::cholesky($out,$a,$is_upper);"
+    info = af_cholesky(out, a, is_upper)
     info > 0 && throw(PosDefException(info))
     out = is_upper ? (AFArray{T}(icxx"af::upper($out);")) : (AFArray{T}(icxx"af::lower($out);"))
 end
 
 function _chol!{T}(a::AFAbstractArray{T}, is_upper::Bool)
-    info = icxx"af::choleskyInPlace($a,$is_upper);"
+    info = af_choleskyInPlace(a, is_upper)
     info > 0 && throw(PosDefException(info))
     b = is_upper ? (AFArray{T}(icxx"af::upper($a);")) : (AFArray{T}(icxx"af::lower($a):"))
     return b 
@@ -98,7 +90,7 @@ function lu(a::AFAbstractArray)
     l = AFArray() 
     u = AFArray()
     p = AFArray()
-    icxx"af::lu($l, $u, $p, $a);"
+    af_lu(l, u, p, a)
     AFArray{backend_eltype(l)}(l), AFArray{backend_eltype(u)}(u), (AFArray{backend_eltype(p)}(p) + 1)
 end
 
@@ -107,7 +99,7 @@ function qr(a::AFAbstractArray)
     q = AFArray()
     r = AFArray()
     tau = AFArray()
-    icxx"af::qr($q, $r, $tau, $a);"
+    af_qr(q, r, tau, a)
     AFArray{backend_eltype(q)}(q), AFArray{backend_eltype(r)}(r), AFArray{backend_eltype(tau)}(tau)
 end
 
@@ -116,7 +108,7 @@ function svd(a::AFAbstractArray)
     u = AFArray()
     s = AFArray()
     vt = AFArray()
-    icxx"af::svd($u, $s, $vt, $a);"
+    af_svd(u, s, vt, a)
     AFArray{backend_eltype(u)}(u), AFArray{backend_eltype(s)}(s), AFArray{backend_eltype(vt)}(vt)
 end
 
@@ -128,7 +120,7 @@ function det{T}(a::AFAbstractArray{T})
     if ndims(a) != 2
         throw(DimensionMismatch("Input isn't a matrix"))
     else
-        return icxx"af::det<float>($a);"
+        return af_det(a)
     end
 end
 
@@ -136,9 +128,9 @@ function inv(a::AFAbstractArray)
     if ndims(a) != 2
         throw(DimensionMismatch("Input isn't a matrix"))
     else
-        return AFArray{Float32}(icxx"af::inverse($a);")
+        return AFArray{Float32}(af_inverse(a))
     end
 end
 
-norm(a::AFAbstractArray) = icxx"af::norm($a);"
-rank(a::AFAbstractArray) = icxx"af::rank($a);"
+norm(a::AFAbstractArray) = af_norm(a)
+rank(a::AFAbstractArray) = af_rank(a)

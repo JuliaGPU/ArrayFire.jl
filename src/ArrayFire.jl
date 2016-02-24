@@ -291,6 +291,7 @@ import Base: showerror
 end
 
 #import other files
+include("AFWrap.jl")
 include("math.jl")
 include("image.jl")
 include("stats.jl")

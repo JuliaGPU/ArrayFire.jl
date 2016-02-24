@@ -6,86 +6,89 @@ export loadImage, saveImage, rotate, scale, transform, skew, translate,
 #Image Utils
 "Load image as an AFArray"
 function loadImage(path::AbstractString; color = false)
-	return AFArray{Float32}(icxx"loadImage($path, $color);")
+	return AFArray{Float32}(af_loadImage(path, color))
 end
 
 "Save AFArray as image"
 function saveImage(path::AbstractString, a::AFAbstractArray)
-	icxx"saveImage($path, $a);"
+    af_saveImage(path, a)
 end
 
 #Image Transformation
 "Rotate image by theta radians"
 function rotate{T}(a::AFAbstractArray{T}, theta)
-	AFArray{T}(icxx"rotate($a, $theta);")
+	AFArray{T}(af_rotate(a,theta))
 end
 
 "Scale image in either dimension"
 function scale{T}(a::AFAbstractArray{T}, scale1::Real, scale2::Real)
-	AFArray{T}(icxx"scale($a, $scale1, $scale2);")
+	AFArray{T}(af_scale(a,scale1,scale2))
 end
 
 "Skew an image in either dimension by angles"
 function skew{T}(a::AFAbstractArray{T}, skew1::Real, skew2::Real)
-	AFArray{T}(icxx"skew($a, $skew1, $skew2);")
+	AFArray{T}(af_skew(a,b,c))
 end
 
 "Translate a given image in either dimension"
 function translate{T}(a::AFAbstractArray{T}, trans1::Real, trans2::Real)
-	AFArray{T}(icxx"translate($a, $trans1, $trans2);")
+	AFArray{T}(af_translate(a,trans1, trans2))
 end
 
 function transform{T}(a::AFAbstractArray{T}, b::AFAbstractArray)
-	AFArray{T}(icxx"transform($a, $b);")
+	AFArray{T}(af_transform(a,b))
 end
 
 #Image labelling
-regions{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::regions($a.as(b8));")
+regions{T}(a::AFAbstractArray{T}) = AFArray{T}(af_regions(a))
 
 #Colorspace conversions
-gray2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::gray2rgb($a);")
-hsv2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::hsv2rgb($a);")
-rgb2gray{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::rgb2gray($a);")
-rgb2hsv{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::rgb2hsv($a);")
-rgb2ycbcr{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::rgb2ycbcr($a);")
-ycbcr2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::ycbcr2rgb($a);")
+gray2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(af_gray2rgb(a))
+hsv2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(af_hsv2rgb(a))
+rgb2gray{T}(a::AFAbstractArray{T}) = AFArray{T}(af_rgb2gray(a))
+rgb2hsv{T}(a::AFAbstractArray{T}) = AFArray{T}(af_rgb2hsv(a))
+rgb2ycbcr{T}(a::AFAbstractArray{T}) = AFArray{T}(rgb2ycbcr(a))
+ycbcr2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(ycbcr2rgb(a))
+colorspace{T}(a::AFAbstractArray{T}, from, to) = af_colorspace(a, to, from)
 
 #Filters
 export SAT, bilateral, maxfilt, medfilt, minfilt, sobel, meanShift
 
 "Summed Area Tables"
-SAT{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::sat($a);")
+SAT{T}(a::AFAbstractArray{T}) = AFArray{T}(af_SAT(a))
 
 "Apply bilateral filter on image"
 function bilateral{T}(a::AFAbstractArray{T}, spatial_sigma::Real, chromatic_sigma::Real)
-    AFArray{T}(icxx"af::bilateral($a, $spatial_sigma, $chromatic_sigma)")
+    AFArray{T}(af_bilateral(a, spatial_sigma, chromatic_sigma))
 end
 
 "For every pixel, find max value from a window"
-maxfilt{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::maxfilt($a);")
+maxfilt{T}(a::AFAbstractArray{T}) = AFArray{T}(af_maxfilt(a))
 
 "For every pixel, find median value from a window"
-medfilt{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::medfilt($a);")
+medfilt{T}(a::AFAbstractArray{T}) = AFArray{T}(af_medfilt(a))
 
 "For every pixel, find minimum value from a window"
-minfilt{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::minfilt($a);")
+minfilt{T}(a::AFAbstractArray{T}) = AFArray{T}(af_minfilt(a))
 
 "Sobel operator on image"
-sobel{T}(a::AFAbstractArray{T}) = AFArray{T}(icxx"af::sobel($a);")
+sobel{T}(a::AFAbstractArray{T}) = AFArray{T}(af_sobel(a))
 
 "Meanshift filter"
 function meanShift{T}(a::AFAbstractArray{T}, spatial_sigma::Real, chromatic_sigma::Real, iter::Integer = 100)
-    AFArray{T}(icxx"af::meanShift($a, $spatial_sigma, $chromatic_sigma, $iter)")
+    AFArray{T}(af_meanShift(a, spatial_sigma, chromatic_sigma, iter))
 end
 
 #Histogram
 import Base: hist
 export histEqual
-hist{T}(a::AFAbstractArray{T}, nbins::Integer) = AFArray{T}(icxx"af::histogram($a, $nbins);")
-hist{T}(a::AFAbstractArray{T}, nbins::Integer, minval::Real, maxval::Real) = AFArray{T}(icxx"af::histogram($a, $nbins, $minval, $maxval);")
+hist{T}(a::AFAbstractArray{T}, nbins::Integer) = AFArray{T}(af_histogram(a, nbins))
+function hist{T}(a::AFAbstractArray{T}, nbins::Integer, minval::Real, maxval::Real)
+    AFArray{T}(af_histogram(a, nbins, minval, maxval))
+end
 
 "Histogram equalization of input image"
-histEqual{T}(a::AFAbstractArray{T}, hist::AFAbstractArray{T}) = AFArray{T}(icxx"af::histEqual($a, $hist)")
+histEqual{T}(a::AFAbstractArray{T}, hist::AFAbstractArray{T}) = AFArray{T}(af_histEqual(a, hist))
 
 #Morphological ops
 export dilate, dilate3, erode, erode3
@@ -111,7 +114,7 @@ const AF_SHD = icxx"AF_SHD;"
 export matchTemplate, DiffOfGaussians
 
 function matchTemplate{T}(searchImg::AFAbstractArray{T}, template::AFAbstractArray{T}, matchType = AF_SAD)
-    AFArray{T}(icxx"af::matchTemplate($searchImg, $template, $matchType);")
+    AFArray{T}(af_matchTemplate(searchImg, template, matchType))
 end
 
-DiffOfGaussians{T}(img::AFAbstractArray{T}, radius1::Integer, radius2::Integer) = AFArray{T}(icxx"dog($img, $radius1, $radius2);")
+DiffOfGaussians{T}(img::AFAbstractArray{T}, radius1::Integer, radius2::Integer) = AFArray{T}(dog(img, radius1, radius2))
