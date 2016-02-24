@@ -46,7 +46,7 @@ Ac_mul_Bc(a::AFAbstractArray, b::AFAbstractArray) =
 
 # transpose
 transpose{T}(x::AFAbstractArray{T}) = AFArray{T}(af_transpose(x))
-ctranspose{T}(x::AFAbstractArray{T}) = AFAbstractArray{T}(af_ctranspose(x))
+ctranspose{T}(x::AFAbstractArray{T}) = AFArray{T}(af_ctranspose(x))
 
 transpose!{T}(x::AFAbstractArray{T}) = af_transposeInPlace(x)
 ctranspose!{T}(x::AFAbstractArray{T}) = af_ctransposeInPlace(x)

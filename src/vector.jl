@@ -73,12 +73,12 @@ export sortIndex
 
 #Sort
 #NOTE: ArrayFire currently restricts dim to the value 0, which means you can sort only columns
-function sort{T}(A::AFArray{T}; rev = false)
+function sort{T}(A::AFAbstractArray{T}; rev = false)
     ndims(A) == 1 ||
         error("Must explicitly specify dimension when sorting mutlidimensional array")
     AFArray{T}(af_sort(A,0,!rev))
 end
-function sort{T}(A::AFArray{T}, dim; rev = false) 
+function sort{T}(A::AFAbstractArray{T}, dim; rev = false) 
     if dim > 1
         error("ArrayFire currently lets you sort only by columns")
     else

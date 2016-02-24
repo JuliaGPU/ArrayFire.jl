@@ -100,9 +100,9 @@ function af_promote{T,S}(::Type{T},::Type{S})
     end
 end
 
-abstract AFAbstractArray{T} <: AbstractArray{T,4}
+abstract AFAbstractArray{T,N} <: AbstractArray{T,4}
 
-immutable AFArray{T} <: AFAbstractArray{T}
+immutable AFArray{T,N} <: AFAbstractArray{T,N}
     array::vcpp"af::array"
     function AFArray(array::vcpp"af::array")
         ret = new(array)
@@ -112,7 +112,7 @@ immutable AFArray{T} <: AFAbstractArray{T}
         ret
     end
 end
-immutable AFSubArray{T} <: AFAbstractArray{T}
+immutable AFSubArray{T,N} <: AFAbstractArray{T,N}
     array::vcpp"af::array::array_proxy"
     function AFSubArray(array::vcpp"af::array::array_proxy")
         ret = new(array)
@@ -125,46 +125,50 @@ end
 
 AFArray() = icxx"af::array();"
 
-call{T}(::Type{AFAbstractArray{T}}, proxy::vcpp"af::array::array_proxy") =
-    AFSubArray{T}(proxy)
-call{T}(::Type{AFAbstractArray{T}}, arr::vcpp"af::array") =
-    AFArray{T}(arr)
+call{T,N}(::Type{AFAbstractArray{T,N}}, proxy::vcpp"af::array::array_proxy") =
+    AFSubArray{T,N}(proxy)
+call{T,N}(::Type{AFAbstractArray{T,N}}, arr::vcpp"af::array") =
+    AFArray{T,N}(arr)
+ndims(arr::vcpp"af::array") = icxx"$arr.numdims();"
+ndims(arr::vcpp"af::array::array_proxy") = icxx"$arr.numdims();"
+(::Type{AFArray{T}}){T}(arr::vcpp"af::array") = AFArray{T,Int(ndims(arr))}(arr)
+(::Type{AFSubArray{T}}){T}(arr::vcpp"af::array::array_proxy") = AFSubArray{T,Int(ndims(arr))}(arr)
 
 Cxx.cppconvert{T}(x::AFAbstractArray{T}) = x.array
 
-convert{T}(::Type{AFArray{T}}, arr::AFSubArray{T}) =
-    AFArray{T}(icxx"(af::array)$arr")
+convert{T,N}(::Type{AFArray{T,N}}, arr::AFSubArray{T,N}) =
+    AFArray{T,N}(icxx"(af::array)$arr")
 
 eltype{T}(x::AFAbstractArray{T}) = T
 backend_eltype(x) = jltype(icxx"$x.type();")
 sizeof{T}(a::AFAbstractArray{T}) = elsize(a) * length(a)
 
 # GPU to Host
-function convert{T}(::Type{Array{T}},x::AFAbstractArray{T})
+function convert{T,N}(::Type{Array{T,N}},x::AFAbstractArray{T,N})
     ret = Array(UInt8,sizeof(x))
     icxx"$x.host($(pointer(ret)));"
     ret = reinterpret(T, ret)
     ret = reshape(ret, size(x)...)
     ret
 end
-convert{T}(::Type{Array},x::AFAbstractArray{T}) = convert(Array{T},x)
+convert{T,N}(::Type{Array},x::AFAbstractArray{T,N}) = convert(Array{T,N},x)
 
 # Host to GPU
-function convert{T}(::Type{AFArray{T}}, x::Array{T})
-    AFArray{T}(icxx"return af::array{$(dims_to_dim4(size(x))),$(pointer(x)),afHost};")
+function convert{T,N}(::Type{AFArray{T,N}}, x::Array{T,N})
+    AFArray{T,N}(icxx"return af::array{$(dims_to_dim4(size(x))),$(pointer(x)),afHost};")
 end
-convert{T}(::Type{AFArray}, x::Array{T}) = convert(AFArray{T}, x)
+convert{T,N}(::Type{AFArray}, x::Array{T,N}) = convert(AFArray{T,N}, x)
 
 
 
 # Show this array, by getting a data pointer to it and using julia's printing
 # mechanism. ArrayFire copies internally anyway, so there is nothing to be gained
 # by using it's printing
-function showarray{T}(io::IO, X::AFAbstractArray{T};
+function showarray{T,N}(io::IO, X::AFAbstractArray{T,N};
                    header::Bool=true, kwargs...)
     header && print(io, summary(X))
     !isempty(X) && println(io,":")
-    showarray(io, convert(Array{T},X); header = false, kwargs...)
+    showarray(io, convert(Array{T,N},X); header = false, kwargs...)
 end
 
 af_print(X::AFAbstractArray) = icxx"""af::print("",$X);"""
