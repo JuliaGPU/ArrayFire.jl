@@ -226,6 +226,8 @@ af_dilate3(a,b) = icxx"af::dilate3($a,$b);"
 af_erode(a,b) = icxx"af::erode($a,$b);"
 af_erode3(a,b) = icxx"af::erode3($a,$b);"
 
+af_gaussiankernel(a,b) = icxx"af::gaussianKernel($a,$b);"
+
 #Computer Vision
 const AF_SAD = icxx"AF_SAD;"
 const AF_ZSAD = icxx"AF_ZSAD;"

@@ -42,6 +42,9 @@ end
 #Image labelling
 regions{T}(a::AFAbstractArray{T}) = AFArray{T}(af_regions(a))
 
+#Create Gaussian Kernel
+gaussiankernel(rows::Integer, cols::Integer) = AFArray{Float32}(af_gaussianKernel(rows,cols))
+
 #Colorspace conversions
 gray2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(af_gray2rgb(a))
 hsv2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(af_hsv2rgb(a))
