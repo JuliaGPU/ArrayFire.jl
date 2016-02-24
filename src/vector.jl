@@ -149,3 +149,6 @@ end
 #Some array helper functions
 conj{T}(a::AFAbstractArray{T}) = AFArray{T}(af_complex_conj(a))
 convert{T,V}(::Type{T}, a::AFAbstractArray{S}) = AFArray{T}(af_as(a, aftype(T)))
+isnan(a::AFAbstractArray{T}) = af_isNaN(a)
+iszero(a::AFAbstractArray{T}) = af_iszero(a)
+isinf(a::AFAbstractArray{T}) = af_isinf(a)
