@@ -36,7 +36,17 @@ af_randu(a,b) = icxx"af::randu($a,$b);"
 af_randn(a,b) = icxx"af::randn($a,$b);"
 af_identity(a,b) = icxx"af::identity($a,$b);"
 af_diag(a,b) = icxx"af::diag($a,$b);"
+
+#Function to modify or reorg arrays
 af_tile(a,b) = icxx"af::tile($a,$b);"
+af_join(a,b,c) = icxx"af::join($a,$b,$c);"
+af_join(a,b,c,d) = icxx"af::join($a,$b,$c,$d);"
+af_join(a,b,c,d,el) = icxx"af::join($a,$b,$c,$d,$el);"
+af_moddims(a,b) = icxx"af::moddims($a,$b);"
+af_reorder(a,b,c,d,el) = icxx"af::reorder($a,$b,$c,$d,$el);"
+af_replace(a,b,c) = icxx"af::replace($a,$b,$c);"
+af_select(a,b) = icxx"af::select($a,$b,$c);"
+af_shift(a,b,c,d,el) = icxx"af::shift($a,$b,$c,$d,$el);"
 
 #Numeric functions
 af_abs(a) = icxx"af::abs($a);"

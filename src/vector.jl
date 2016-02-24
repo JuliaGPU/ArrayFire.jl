@@ -124,3 +124,24 @@ import Base:flipdim, vec
 
 flipdim{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(af_flip(a,dim-1))
 vec{T}(a::AFAbstractArray{T}) = AFArray{T}(af_flat(a))
+function union{T}(dim::Integer, a::AFAbstractArray{T}, b::AFAbstractArray)
+    AFArray{T}(af_join(dim-1, a, b))
+end
+function union{T}(dim::Integer, a::AFAbstractArray{T}, b::AFAbstractArray{T}, c::AFAbstractArray{T})
+    AFArray{T}(af_join(dim-1, a, b, c))
+end
+function union{T}(dim::Integer, a::AFAbstractArray{T}, b::AFAbstractArray{T}, 
+                    c::AFAbstractArray{T}, d::AFAbstractArray{T})
+    AFArray{T}(af_join(dim-1, a, b, c, d))
+end
+moddims{T}(a::AFAbstractArray{T}, dims...) = AFArray{T}(af_moddims(a,dims_to_dim4(dims)))
+function reorder{T}(a::AFAbstractArray{T}, x::Integer, y::Integer = 2, z::Integer = 3, w::Integer = 4) 
+    AFArray{T}(af_reorder(a, x-1, y-1, z-1, w-1))
+end
+replace{T}(a::AFAbstractArray{T}, cond::AFAbstractArray{Bool}, b::AFAbstractArray{T}) = AFArray{T}(af_replace(a, cond, b))
+replace{T}(a::AFAbstractArray{T}, cond::AFAbstractArray{Bool}, b::Real) = AFArray{T}(af_replace(a, cond, b))
+select{T}(cond::AFAbstractArray{Bool}, a::AFAbstractArray{T}, b::AFAbstractArray{T}) = AFArray{T}(af_select(cond, a, b))
+select{T}(cond::AFAbstractArray{Bool}, a::AFAbstractArray{T}, b::Real) = AFArray{T}(af_select(cond, a, b))
+function shift{T}(a::AFAbstractArray{T}, x::Integer, y::Integer = 1, z::Integer = 1, w::Integer = 1) 
+    AFArray{T}(af_shift(a, x-1, y-1, z-1, w-1))
+end
