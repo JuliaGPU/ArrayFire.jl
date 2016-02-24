@@ -201,18 +201,19 @@ end
 
 size(x::AFAbstractArray) = dim4_to_dims(icxx"($x).dims();")
 
-#Functions to generate arrays
-constant(val::Real, dims::Integer...) = AFArray{typeof(val)}(icxx"af::constant($val, $(dims_to_dim4(dims)), $(aftype(typeof(val))));")
-rand{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(icxx"af::randu($(dims_to_dim4(dims)),$(aftype(T)));")
-randn{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(icxx"af::randn($(dims_to_dim4(dims)),$(aftype(T)));")
-eye{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(icxx"af::identity($(dims_to_dim4(dims)),$(aftype(T)));")
-diag{T}(x::AFArray{T}, k = 0) = AFArray{T}(icxx"af::diag($(dims_to_dim4(dims)),$k);");
+#Functions to generate array
+import Base:fill
+constant( val, dims::Integer...) = AFArray{typeof(val)}(af_constant(val, dims_to_dim4(dims), aftype(typeof(val))))
+rand{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(af_randu(dims_to_dim4(dims), aftype(T)))
+randn{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(af_randn(dims_to_dim4(dims), aftype(T)))
+eye{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(af_identity(dims_to_dim4(dims), aftype(T)))
+diag{T}(x::AFArray{T}, k = 0) = AFArray{T}(af_diag(x, k))
 
 #TODO : make `tile` compatible with `repeat` in base
 
 export tile
 
-tile{T}(a::AFAbstractArray{T}, inds::Integer...) = AFArray{T}(icxx"af::tile($a, $(dims_to_dim4(inds)));")
+tile{T}(a::AFAbstractArray{T}, inds::Integer...) = AFArray{T}(af_tile(a, dims_to_dim4(inds)))
 
 import Base: getindex
 

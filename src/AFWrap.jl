@@ -30,6 +30,14 @@ for (op,cppop) in ((:+,:+),(:(.+),:+),(:-,:-),(:(.-),:-),(:.*,:*),(:./,:/),(:.>>
     end
 end
 
+#Functions to generate arrays
+af_constant(a,b,c) = icxx"af::constant($a,$b,$c);"
+af_randu(a,b) = icxx"af::randu($a,$b);"
+af_randn(a,b) = icxx"af::randn($a,$b);"
+af_identity(a,b) = icxx"af::identity($a,$b);"
+af_diag(a,b) = icxx"af::diag($a,$b);"
+af_tile(a,b) = icxx"af::tile($a,$b);"
+
 #Numeric functions
 af_abs(a) = icxx"af::abs($a);"
 af_max(a, b) = icxx"af::max($a, $b);"
