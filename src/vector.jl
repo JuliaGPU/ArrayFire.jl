@@ -145,3 +145,7 @@ select{T}(cond::AFAbstractArray{Bool}, a::AFAbstractArray{T}, b::Real) = AFArray
 function shift{T}(a::AFAbstractArray{T}, x::Integer, y::Integer = 1, z::Integer = 1, w::Integer = 1) 
     AFArray{T}(af_shift(a, x-1, y-1, z-1, w-1))
 end
+
+#Some array helper functions
+conj{T}(a::AFAbstractArray{T}) = AFArray{T}(af_complex_conj(a))
+convert{T,V}(::Type{T}, a::AFAbstractArray{S}) = AFArray{T}(af_as(a, aftype(T)))
