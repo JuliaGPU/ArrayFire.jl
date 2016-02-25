@@ -287,5 +287,11 @@ const AF_NCC = icxx"AF_NCC;"
 const AF_ZNCC = icxx"AF_ZNCC;"
 const AF_SHD = icxx"AF_SHD;"
 
+af_getX(a) = icxx"$a.getX();"
+af_getY(a) = icxx"$a.getY();"
+af_getSize(a) = icxx"$a.getSize();"
+af_getScore(a) = icxx"$a.getScore();"
+af_getOrientation(a) = icxx"$a.getOrientation();"
+
 af_dog(a,b,c) = icxx"af::dog($a,$b,$c);"
 af_matchTemplate(a,b,c) = icxx"af::matchTemplate($a,$b,$c);"
