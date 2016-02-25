@@ -171,6 +171,8 @@ function showarray{T,N}(io::IO, X::AFAbstractArray{T,N};
     showarray(io, convert(Array{T,N},X); header = false, kwargs...)
 end
 
+Base.show(io::IO, arr::vcpp"af::array") = print(io, "ArrayFire Array")
+
 af_print(X::AFAbstractArray) = icxx"""af::print("",$X);"""
 
 # Translate dimensions. Note that we need to translate between 0 and 1 based
