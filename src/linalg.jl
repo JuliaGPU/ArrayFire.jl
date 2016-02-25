@@ -67,13 +67,13 @@ function _chol{T}(a::AFAbstractArray{T}, is_upper::Bool)
     out = AFArray()
     info = af_cholesky(out, a, is_upper)
     info > 0 && throw(PosDefException(info))
-    out = is_upper ? (AFArray{T}(icxx"af::upper($out);")) : (AFArray{T}(icxx"af::lower($out);"))
+    out = is_upper ? (AFArray{T}(af_upper(out))) : (AFArray{T}(af_lower(out)))
 end
 
 function _chol!{T}(a::AFAbstractArray{T}, is_upper::Bool)
     info = af_choleskyInPlace(a, is_upper)
     info > 0 && throw(PosDefException(info))
-    b = is_upper ? (AFArray{T}(icxx"af::upper($a);")) : (AFArray{T}(icxx"af::lower($a):"))
+    b = is_upper ? (AFArray{T}(af_upper(a))) : (AFArray{T}(af_lower(a)))
     return b 
 end
 
