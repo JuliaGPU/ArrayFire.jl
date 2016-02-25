@@ -104,16 +104,6 @@ erode3{T}(a::AFAbstractArray{T}, mask::AFAbstractArray{T}) = AFArray{T}(icxx"af:
 #Computer Vision
 
 #Constants
-const AF_SAD = icxx"AF_SAD;"
-const AF_ZSAD = icxx"AF_ZSAD;"
-const AF_LSAD = icxx"AF_LSAD;"
-const AF_SSD = icxx"AF_SSD;"
-const AF_ZSSD = icxx"AF_ZSSD;"
-const AF_LSSD = icxx"AF_LSSD;"
-const AF_NCC = icxx"AF_NCC;"
-const AF_ZNCC = icxx"AF_ZNCC;"
-const AF_SHD = icxx"AF_SHD;"
-
 export matchTemplate, DiffOfGaussians
 
 function matchTemplate{T}(searchImg::AFAbstractArray{T}, template::AFAbstractArray{T}, matchType = AF_SAD)
@@ -128,6 +118,7 @@ immutable AFFeatures
         new(f)
     end
 end
+AFFeatures() = icxx"af::features();"
 
 Cxx.cppconvert(f::AFFeatures) = f.feat
 
@@ -156,3 +147,45 @@ function getOrientation(f::AFFeatures)
     AFArray{backend_eltype(out)}(out)
 end
 
+function ORB(img::AFAbstractArray; fast_thr = 20.0, max_feat = 400, scl_fctr = 1.5, levels = 4, blur_img = false)
+    out_features = AFFeatures()
+    out_desc = AFArray()
+    af_orb(out_features, out_desc, img, fast_thr, max_feat, scl_fctr, levels, blur_img)
+    AFFeatures(out_features), AFArray{backend_eltype(out_desc)}(out_desc)
+end 
+
+function sift(img::AFAbstractArray; n_layers = 3, constant_thr = 0.04, 
+                edge_thr = 10.0, init_sigma = 1.6, double_input = true, 
+                intensity_scale = 0.00390625, feature_ratio = 0.05)
+    out_features = AFFeatures()
+    out_desc = AFArray()
+    af_sift(out_features, out_desc, img, n_layers, constant_thr, 
+            edge_thr, init_sigma, double_input, intensity_scale, feature_ratio)
+    AFFeatures(out_features), AFArray{backend_eltype(out_desc)}(out_desc)
+end
+
+function fast(img::AFAbstractArray; thr = 20.0, arc_length = 9, non_max = true, feature_ratio = 0.05, edge = 3)
+    AFFeatures(af_fast(img, thr, arc_length, non_max, feature_ratio, edge))
+end
+
+function harris(img::AFAbstractArray; max_corners = 500, min_response = 1e5, sigma = 1.0, block_size = 0, k_thr = 0.04)
+    AFFeatures(af_harris(img, max_corners, min_response, sigma, block_size, k_thr))
+end
+
+function susan(img::AFAbstractArray; radius = 3, diff_thr = 32.0, geom_thr = 10.0, feature_ratio = 0.05, edge = 3)
+    AFFeatures(af_susan(img, radius, diff_thr, geom_thr, feature_ratio, edge))
+end
+
+function hammingMatcher(query::AFAbstractArray, train::AFAbstractArray; dim = 1, n_dist = 1)
+    out_idx = AFArray()
+    out_dist = AFArray()
+    af_hammingMatcher(out_idx, out_dist, query, train, dim-1, dist)
+    AFArray{backend_eltype(out_idx)}(out_idx), AFArray{backend_eltype(out_dist)}(out_dist)
+end
+
+function nearnestNeighbour(query::AFAbstractArray, train::AFAbstractArray; dim = 1, n_dist = 1, dist_type = AF_SSD)
+    out_idx = AFArray()
+    out_dist = AFArray()
+    af_nearestNeighbour(out_idx, out_dist, query, train, dim, n_dist, dist_type)
+    AFArray{backend_eltype(out_idx)}(out_idx), AFArray{backend_eltype(out_dist)}(out_dist)
+end
