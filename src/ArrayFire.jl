@@ -212,6 +212,8 @@ rand{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(af_randu(dims_to_dim4(dims), a
 randn{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(af_randn(dims_to_dim4(dims), aftype(T)))
 eye{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(af_identity(dims_to_dim4(dims), aftype(T)))
 diag{T}(x::AFArray{T}, k = 0) = AFArray{T}(af_diag(x, k))
+getSeed() = af_getSeed()
+range{T}(::Type{T}, dims::Integer...) = AFArray{T}(af_range(dims_to_dim4(dims), length(dims)-1, aftype(T)))
 
 #TODO : make `tile` compatible with `repeat` in base
 
@@ -303,5 +305,9 @@ include("stats.jl")
 include("vector.jl")
 include("linalg.jl")
 include("signal.jl")
+
+#Info
+export af_info, af_isDoubleAvailable, af_sync, getDevice
+getDevice() = af_getDevice()
 
 end # module

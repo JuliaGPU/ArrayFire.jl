@@ -36,6 +36,8 @@ af_randu(a,b) = icxx"af::randu($a,$b);"
 af_randn(a,b) = icxx"af::randn($a,$b);"
 af_identity(a,b) = icxx"af::identity($a,$b);"
 af_diag(a,b) = icxx"af::diag($a,$b);"
+af_getSeed() = icxx"af::getSeed();"
+af_range(a,b,c) = icxx"af::range($a,$b,$c);"
 
 #Function to modify or reorg arrays
 af_tile(a,b) = icxx"af::tile($a,$b);"
@@ -69,8 +71,16 @@ af_isbool(a) = icxx"$a.isbool();"
 
 #Helper functions
 af_isNaN(a) = icxx"af::isNaN($a);"
-af_isinf(a) = icxx"af::isinf($a);"
+af_isinf(a) = icxx"af::isInf($a);"
 af_iszero(a) = icxx"af::iszero($a);"
+
+#ArrayFire info functions
+af_info() = icxx"af::info();"
+af_isDoubleAvailable() = icxx"af::isDoubleAvailable();"
+af_sync() = icxx"af::sync();"
+af_sync(a) = icxx"af::sync($a);"
+af_getDevice() = icxx"af::getDevice();"
+af_setDevice(a) = icxx"af::setDevice($a);"
 
 #Numeric functions
 af_abs(a) = icxx"af::abs($a);"
@@ -139,6 +149,8 @@ af_choleskyInPlace(a, flag) = icxx"af::choleskyInPlace($a,$flag);"
 af_lu(l,u,p,a) = icxx"af::lu($l,$u,$p,$a);"
 af_qr(q,r,tau,a) = icxx"af::qr($q,$r,$tau,$a);"
 af_svd(u,s,vt,a) = icxx"af::svd($u,$s, $vt,$a);"
+af_upper(a) = icxx"af::upper($a);"
+af_lower(a) = icxx"af::lower($a);"
 
 af_det(a) = icxx"af::det<float>($a);"
 af_inverse(a) = icxx"af::inverse($a);"
