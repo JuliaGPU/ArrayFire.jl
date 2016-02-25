@@ -310,6 +310,7 @@ include("stats.jl")
 include("vector.jl")
 include("linalg.jl")
 include("signal.jl")
+include("graphics.jl")
 
 #Info
 export af_info, af_isDoubleAvailable, af_sync, getDevice

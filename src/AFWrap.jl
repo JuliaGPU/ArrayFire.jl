@@ -54,7 +54,7 @@ af_shift(a,b,c,d,el) = icxx"af::shift($a,$b,$c,$d,$el);"
 
 #Some more array methods
 af_complex_conj(a) = icxx"$a.H();"
-af_as(a,to) = icxx"$a.($b);"
+af_as(a,to) = icxx"$a.as($to);"
 af_copy(a) = icxx"$a.copy();"
 af_bytes(a) = icxx"$a.bytes();"
 af_isempty(a) = icxx"$a.isempty();"
@@ -306,3 +306,13 @@ af_harris(a,b,c,d,el,f) = icxx"af::harris($a,$b,$c,$d,$el,$f);"
 af_susan(a,b,c,d,el,f) = icxx"af::susan($a,$b,$c,$d,$el,$f);"
 af_hammingMatcher(a,b,c,d,el,f) = icxx"af::hammingMatcher($a,$b,$c,$d,$el,$f);"
 af_nearestNeighbour(a,b,c,d,el,f,g) = icxx"af::nearestNeighbour($a,$b,$c,$d,$el,$f,$g);"
+
+#Graphics
+af_window() = icxx"af::Window();"
+af_window(a) = icxx"af::Window($a);"
+af_window(a,b,c) = icxx"af::Window($a,$b,$c);"
+af_setTitle(a,b) = icxx"$a.setTitle($b);"
+af_setImage(a,b,c) = icxx"$a.image($b,$c);"
+af_setPlot(a,b,c,d) = icxx"$a.plot($b,$c,$d);"
+af_show(a) = icxx"$a.show();"
+af_setSurface(a,b) = icxx"$a.surface($b);"
