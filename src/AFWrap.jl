@@ -84,6 +84,10 @@ af_sync(a) = icxx"af::sync($a);"
 af_getDevice() = icxx"af::getDevice();"
 af_setDevice(a) = icxx"af::setDevice($a);"
 
+#Loading and Saving Arrays
+af_saveArray(a,b,c) = icxx"af::saveArray($a,$b,$c);"
+af_readArray(a,b) = icxx"af::readArray($a,$b);"
+
 #Numeric functions
 af_abs(a) = icxx"af::abs($a);"
 af_max(a, b) = icxx"af::max($a, $b);"

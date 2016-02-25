@@ -315,4 +315,11 @@ include("signal.jl")
 export af_info, af_isDoubleAvailable, af_sync, getDevice
 getDevice() = af_getDevice()
 
+#Storing and Loading Arrays
+save(a::AFAbstractArray, path::AbstractString, key::AbstractString) = af_saveArray(key, a, path)
+function load(path::AbstractString, key::AbstractString) 
+    out = af_readArray(path, key)
+    AFArray{backend_eltype(out)}(out)
+end
+
 end # module
