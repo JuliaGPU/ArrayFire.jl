@@ -207,13 +207,16 @@ size(x::AFAbstractArray) = dim4_to_dims(icxx"($x).dims();")
 
 #Functions to generate array
 import Base:fill
+export iota
 constant( val, dims::Integer...) = AFArray{typeof(val)}(af_constant(val, dims_to_dim4(dims), aftype(typeof(val))))
 rand{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(af_randu(dims_to_dim4(dims), aftype(T)))
 randn{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(af_randn(dims_to_dim4(dims), aftype(T)))
 eye{T}(::Type{AFArray{T}}, dims...) = AFArray{T}(af_identity(dims_to_dim4(dims), aftype(T)))
 diag{T}(x::AFArray{T}, k = 0) = AFArray{T}(af_diag(x, k))
 getSeed() = af_getSeed()
+setSeed(a::Integer) = af_setSeed(a)
 range{T}(::Type{T}, dims::Integer...) = AFArray{T}(af_range(dims_to_dim4(dims), length(dims)-1, aftype(T)))
+iota{T}(::Type{T}, dims::Integer...) = AFArray{T}(af_iota(dims_to_dim4(dims), dims_to_dim4(1), aftype(T)))
 
 #TODO : make `tile` compatible with `repeat` in base
 

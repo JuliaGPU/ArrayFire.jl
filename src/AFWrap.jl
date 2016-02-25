@@ -38,6 +38,8 @@ af_identity(a,b) = icxx"af::identity($a,$b);"
 af_diag(a,b) = icxx"af::diag($a,$b);"
 af_getSeed() = icxx"af::getSeed();"
 af_range(a,b,c) = icxx"af::range($a,$b,$c);"
+af_setSeed(a) = icxx"af::setSeed($a);"
+af_iota(a,b,c) = icxx"af::iota($a,$b,$c);"
 
 #Function to modify or reorg arrays
 af_tile(a,b) = icxx"af::tile($a,$b);"
