@@ -5,45 +5,21 @@ AF_CONV_EXPAND = icxx"AF_CONV_EXPAND;"
 
 # Fourier Transforms
 import Base: fft, ifft
-function fft{T}(a::AFAbstractArray{T})
-	if ndims(a) == 1
-		AFArray{Complex{T}}(af_fft(a))
-	elseif ndims(a) == 2
-		AFArray{Complex{T}}(af_fft2(a))
-    elseif ndims(a) == 3
-        AFArray{Complex{T}}(af_fft3(a))
-    end
-end
+fft{T}(a::AFVector{T}) = AFArray{Complex{T}}(af_fft(a))
+fft{T}(a::AFMatrix{T}) = AFArray{Complex{T}}(af_fft2(a))
+fft{T}(a::AFAbstractArray{T,3}) = AFArray{Complex{T}}(af_fft3(a))
 
-function fft{T<:Complex}(a::AFAbstractArray{T})
-	if ndims(a) == 1
-		AFArray{T}(af_fft(a))
-	elseif ndims(a) == 2
-		AFArray{T}(af_fft2(a))
-	elseif ndims(a) == 3
-        AFArray{T}(af_fft3(a))
-    end
-end
+fft{T<:Complex}(a::AFVector{T}) = AFArray{T}(af_fft(a))
+fft{T<:Complex}(a::AFMatrix{T}) = AFArray{T}(af_fft2(a))
+fft{T<:Complex}(a::AFAbstractArray{T,3}) = AFArray{T}(af_fft3(a))
 
-function ifft{T}(a::AFAbstractArray{T})
-	if ndims(a) == 1
-		AFArray{Complex{T}}(af_ifft(a))
-	elseif ndims(a) == 2
-		AFArray{Complex{T}}(af_ifft2(a))
-    elseif ndims(a) == 3
-        AFArray{Complex{T}}(af_ifft3(a))
-    end
-end
+ifft{T}(a::AFVector{T}) = AFArray{Complex{T}}(af_ifft(a))
+ifft{T}(a::AFMatrix{T}) = AFArray{Complex{T}}(af_ifft2(a))
+ifft{T}(a::AFAbstractArray{T,3}) = AFArray{Complex{T}}(af_ifft3(a))
 
-function ifft{T<:Complex}(a::AFAbstractArray{T})
-	if ndims(a) == 1
-		AFArray{T}(af_ifft(a))
-	elseif ndims(a) == 2
-		AFArray{T}(af_ifft2(a))
-    elseif ndims(a) == 3
-        AFArray{T}(af_ifft3(a))
-    end
-end
+ifft{T<:Complex}(a::AFVector{T}) = AFArray{T}(af_ifft(a))
+ifft{T<:Complex}(a::AFMatrix{T}) = AFArray{T}(af_ifft2(a))
+ifft{T<:Complex}(a::AFAbstractArray{T,3}) = AFArray{T}(af_ifft3(a))
 		
 #FIR Filter
 fir{T}(a::AFAbstractArray{T}, x::AFAbstractArray{T}) = AFArray{T}(af_fir(a,x))
