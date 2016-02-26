@@ -2,7 +2,7 @@ import Base: mean, std, median, var, cov
 export corrcoef
     
 #Mean
-mean(a::AFAbstractArray) = af_average(a)
+mean(a::AFAbstractArray) = af_mean(a)
 mean{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(af_mean(a, dim-1))
 mean{T<:Real}(a::AFAbstractArray{T}, weights::AFAbstractArray{T}, dim::Integer) = AFArray{T}(af_mean(a,weights,dim-1))
 
