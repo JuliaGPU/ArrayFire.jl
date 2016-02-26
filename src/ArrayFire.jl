@@ -207,6 +207,10 @@ end
 
 size(x::AFAbstractArray) = dim4_to_dims(icxx"($x).dims();")
 
+#Specialize vectors and matrices
+typealias AFMatrix{T} AFArray{T,2}
+typealias AFVector{T} AFArray{T,1}
+
 #Functions to generate array
 import Base:fill, eye, diag
 export iota

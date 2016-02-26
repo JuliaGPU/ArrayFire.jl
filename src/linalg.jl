@@ -63,30 +63,30 @@ ctranspose!{T}(x::AFAbstractArray{T}) = af_ctransposeInPlace(x)
 import Base.LinAlg: chol, chol!, PosDefException
 
 #Cholesky
-function _chol{T}(a::AFAbstractArray{T}, is_upper::Bool)
+function _chol{T}(a::AFMatrix{T}, is_upper::Bool)
     out = AFArray()
     info = af_cholesky(out, a, is_upper)
     info > 0 && throw(PosDefException(info))
     out = is_upper ? (AFArray{T}(af_upper(out))) : (AFArray{T}(af_lower(out)))
 end
 
-function _chol!{T}(a::AFAbstractArray{T}, is_upper::Bool)
+function _chol!{T}(a::Matrix{T}, is_upper::Bool)
     info = af_choleskyInPlace(a, is_upper)
     info > 0 && throw(PosDefException(info))
     b = is_upper ? (AFArray{T}(af_upper(a))) : (AFArray{T}(af_lower(a)))
     return b 
 end
 
-chol(a::AFAbstractArray, ::Type{Val{:U}}) = _chol(a, true)
-chol(a::AFAbstractArray, ::Type{Val{:L}}) = _chol(a, false)
-chol(a::AFAbstractArray) = chol(a,Val{:U})
+chol(a::AFMatrix, ::Type{Val{:U}}) = _chol(a, true)
+chol(a::AFMatrix, ::Type{Val{:L}}) = _chol(a, false)
+chol(a::AFMatrix) = chol(a,Val{:U})
 
-chol!(a::AFAbstractArray, ::Type{Val{:U}}) = _chol!(a, true)
-chol!(a::AFAbstractArray, ::Type{Val{:L}}) = _chol!(a, false)
-chol!(a::AFAbstractArray) = chol!(a,Val{:U})
+chol!(a::AFMatrix, ::Type{Val{:U}}) = _chol!(a, true)
+chol!(a::AFMatrix, ::Type{Val{:L}}) = _chol!(a, false)
+chol!(a::AFMatrix) = chol!(a,Val{:U})
 
 #LU 
-function lu(a::AFAbstractArray)
+function lu(a::AFMatrix)
     l = AFArray() 
     u = AFArray()
     p = AFArray()
@@ -95,7 +95,7 @@ function lu(a::AFAbstractArray)
 end
 
 #QR
-function qr(a::AFAbstractArray)
+function qr(a::AFMatrix)
     q = AFArray()
     r = AFArray()
     tau = AFArray()
@@ -104,7 +104,7 @@ function qr(a::AFAbstractArray)
 end
 
 #SVD
-function svd(a::AFAbstractArray)
+function svd(a::AFMatrix)
     u = AFArray()
     s = AFArray()
     vt = AFArray()
@@ -116,7 +116,7 @@ end
 
 import Base: det, inv, norm
 
-function det{T}(a::AFAbstractArray{T}) 
+function det{T}(a::AFMatrix{T}) 
     if ndims(a) != 2
         throw(DimensionMismatch("Input isn't a matrix"))
     else
@@ -124,7 +124,7 @@ function det{T}(a::AFAbstractArray{T})
     end
 end
 
-function inv(a::AFAbstractArray)
+function inv(a::AFMatrix)
     if ndims(a) != 2
         throw(DimensionMismatch("Input isn't a matrix"))
     else
@@ -133,4 +133,4 @@ function inv(a::AFAbstractArray)
 end
 
 norm(a::AFAbstractArray) = af_norm(a)
-rank(a::AFAbstractArray) = af_rank(a)
+rank(a::AFMatrix) = af_rank(a)
