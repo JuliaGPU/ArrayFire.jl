@@ -137,7 +137,9 @@ ndims(arr::vcpp"af::array::array_proxy") = icxx"$arr.numdims();"
 Cxx.cppconvert{T}(x::AFAbstractArray{T}) = x.array
 
 convert{T,N}(::Type{AFArray{T,N}}, arr::AFSubArray{T,N}) =
-    AFArray{T,N}(icxx"(af::array)$arr")
+    AFArray{T,N}(icxx"(af::array)$arr;")
+(::Type{AFArray})(arr::AFSubArray) = AFArray{backend_eltype(arr), ndims(arr)}(arr)
+convert(::Type{AFArray}, arr::AFSubArray) = AFArray(arr)
 
 eltype{T}(x::AFAbstractArray{T}) = T
 backend_eltype(x) = jltype(icxx"$x.type();")
