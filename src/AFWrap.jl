@@ -31,15 +31,15 @@ for (op,cppop) in ((:+,:+),(:(.+),:+),(:-,:-),(:(.-),:-),(:.*,:*),(:./,:/),(:.>>
 end
 
 #Functions to generate arrays
-af_constant(a,b,c) = icxx"af::constant($a,$b,$c);"
-af_randu(a,b) = icxx"af::randu($a,$b);"
-af_randn(a,b) = icxx"af::randn($a,$b);"
-af_identity(a,b) = icxx"af::identity($a,$b);"
-af_diag(a,b) = icxx"af::diag($a,$b);"
+af_constant(a::Real,b::vcpp"af::dim4", c::Cxx.CppEnum{:af_dtype}) = icxx"af::constant($a,$b,$c);"
+af_randu(a::vcpp"af::dim4", b::Cxx.CppEnum{:af_dtype}) = icxx"af::randu($a,$b);"
+af_randn(a::vcpp"af::dim4", b::Cxx.CppEnum{:af_dtype}) = icxx"af::randn($a,$b);"
+af_identity(a::vcpp"af::dim4", b::Cxx.CppEnum{:af_dtype}) = icxx"af::identity($a,$b);"
+af_diag(a::AFAbstractArray, b::Integer) = icxx"af::diag($a,$b);"
 af_getSeed() = icxx"af::getSeed();"
-af_range(a,b,c) = icxx"af::range($a,$b,$c);"
-af_setSeed(a) = icxx"af::setSeed($a);"
-af_iota(a,b,c) = icxx"af::iota($a,$b,$c);"
+af_range(a::vcpp"af::dim4", b::Integer, c::Cxx.CppEnum{:af_dtype}) = icxx"af::range($a,$b,$c);"
+af_setSeed(a::Integer) = icxx"af::setSeed($a);"
+af_iota(a::vcpp"af::dim4", b::vcpp"af::dim4", c::Cxx.CppEnum{:af_dtype}) = icxx"af::iota($a,$b,$c);"
 
 #Function to modify or reorg arrays
 af_tile(a,b) = icxx"af::tile($a,$b);"
