@@ -52,7 +52,7 @@ rgb2gray{T}(a::AFAbstractArray{T}) = AFArray{T}(af_rgb2gray(a))
 rgb2hsv{T}(a::AFAbstractArray{T}) = AFArray{T}(af_rgb2hsv(a))
 rgb2ycbcr{T}(a::AFAbstractArray{T}) = AFArray{T}(rgb2ycbcr(a))
 ycbcr2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(ycbcr2rgb(a))
-colorspace{T}(a::AFAbstractArray{T}, from, to) = af_colorspace(a, to, from)
+colorspace{T}(a::AFAbstractArray{T}, from::Cxx.CppEnum{:af_cspace_t}, to::Cxx.CppEnum{:af_cspace_t}) = af_colorspace(a, to, from)
 
 #Filters
 export SAT, bilateral, maxfilt, medfilt, minfilt, sobel, meanShift
