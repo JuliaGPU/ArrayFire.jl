@@ -38,25 +38,15 @@ min(val::Real, a::AFAbstractArray) = min(a, val)
 import Base: ==, .==, .>, .<, .>=, .<=
 
 #Equals
-.==(a::AFAbstractArray, b::AFAbstractArray) = af_equals(a,b)
-.==(a::AFAbstractArray, b::Real) = af_equals(a,b)
-.==(a::Real, b::AFAbstractArray) = af_equals(a,b)
+.==(a::Union{Real,AFAbstractArray}, b::Union{Real,AFAbstractArray}) = AFArray{Bool}(af_equals(a,b))
 
 #Greater
-.>(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(af_gt(a,b))
-.>(a::Real, b::AFAbstractArray) = AFArray{Bool}(af_gt(a,b))
-.>(a::AFAbstractArray, b::Real) = AFArray{Bool}(af_gt(a,b))
-.>=(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(af_ge(a,b))
-.>=(a::Real, b::AFAbstractArray) =  AFArray{Bool}(af_ge(a,b))
-.>=(a::AFAbstractArray, b::Real) =  AFArray{Bool}(af_ge(a,b))
+.>(a::Union{Real,AFAbstractArray}, b::Union{Real,AFAbstractArray}) = AFArray{Bool}(af_gt(a,b))
+.>=(a::Union{Real,AFAbstractArray}, b::Union{Real,AFAbstractArray}) = AFArray{Bool}(af_ge(a,b))
 
 #Lesser
-.<(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(af_lt(a,b))
-.<(a::Real, b::AFAbstractArray) = AFArray{Bool}(af_lt(a,b))
-.<(a::AFAbstractArray, b::Real) = AFArray{Bool}(af_lt(a,b))
-.<=(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(af_le(a,b))
-.<=(a::Real, b::AFAbstractArray) = AFArray{Bool}(af_le(a,b))
-.<=(a::AFAbstractArray, b::Real) = AFArray{Bool}(af_le(a,b))
+.<(a::Union{Real,AFAbstractArray}, b::Union{Real,AFAbstractArray}) = AFArray{Bool}(af_lt(a,b))
+.<=(a::Union{Real,AFAbstractArray}, b::Union{Real,AFAbstractArray}) = AFArray{Bool}(af_le(a,b))
 
 #Or
-|(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(af_bitor(a,b))
+|(a::AFAbstractArray{Bool}, b::AFAbstractArray{Bool}) = AFArray{Bool}(af_bitor(a,b))
