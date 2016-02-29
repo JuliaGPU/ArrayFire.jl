@@ -85,8 +85,8 @@ af_getDevice() = icxx"af::getDevice();"
 af_setDevice(a) = icxx"af::setDevice($a);"
 
 #Loading and Saving Arrays
-af_saveArray(a,b,c) = icxx"af::saveArray($a,$b,$c);"
-af_readArray(a,b) = icxx"af::readArray($a,$b);"
+af_saveArray(a::AFAbstractArray, b::AbstractString, c::AbstractString) = icxx"af::saveArray($a,$b,$c);"
+af_readArray(a::AbstractString, b::AbstractString) = icxx"af::readArray($a,$b);"
 
 #Numeric functions
 af_abs(a) = icxx"af::abs($a);"
