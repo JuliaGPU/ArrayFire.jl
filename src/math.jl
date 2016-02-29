@@ -43,20 +43,20 @@ import Base: ==, .==, .>, .<, .>=, .<=
 .==(a::Real, b::AFAbstractArray) = af_equals(a,b)
 
 #Greater
-.>(a::AFAbstractArray, b::AFAbstractArray) = af_gt(a,b)
-.>(a::Real, b::AFAbstractArray) = af_gt(a,b)
-.>(a::AFAbstractArray, b::Real) = af_gt(a,b)
-.>=(a::AFAbstractArray, b::AFAbstractArray) = af_ge(a,b)
-.>=(a::Real, b::AFAbstractArray) =  af_ge(a,b)
-.>=(a::AFAbstractArray, b::Real) =  af_ge(a,b)
+.>(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(af_gt(a,b))
+.>(a::Real, b::AFAbstractArray) = AFArray{Bool}(af_gt(a,b))
+.>(a::AFAbstractArray, b::Real) = AFArray{Bool}(af_gt(a,b))
+.>=(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(af_ge(a,b))
+.>=(a::Real, b::AFAbstractArray) =  AFArray{Bool}(af_ge(a,b))
+.>=(a::AFAbstractArray, b::Real) =  AFArray{Bool}(af_ge(a,b))
 
 #Lesser
-.<(a::AFAbstractArray, b::AFAbstractArray) = af_lt(a,b)
-.<(a::Real, b::AFAbstractArray) = af_lt(a,b)
-.<(a::AFAbstractArray, b::Real) = af_lt(a,b)
-.<=(a::AFAbstractArray, b::AFAbstractArray) = af_le(a,b)
-.<=(a::Real, b::AFAbstractArray) = af_le(a,b)
-.<=(a::AFAbstractArray, b::Real) = af_le(a,b)
+.<(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(af_lt(a,b))
+.<(a::Real, b::AFAbstractArray) = AFArray{Bool}(af_lt(a,b))
+.<(a::AFAbstractArray, b::Real) = AFArray{Bool}(af_lt(a,b))
+.<=(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(af_le(a,b))
+.<=(a::Real, b::AFAbstractArray) = AFArray{Bool}(af_le(a,b))
+.<=(a::AFAbstractArray, b::Real) = AFArray{Bool}(af_le(a,b))
 
 #Or
-|(a::AFAbstractArray, b::AFAbstractArray) = af_bitor(a,b)
+|(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(af_bitor(a,b))

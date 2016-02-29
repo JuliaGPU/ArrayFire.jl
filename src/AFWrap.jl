@@ -103,19 +103,19 @@ af_sign(a) = icxx"af::sign($a);"
 af_trunc(a) = icxx"af_trunc($a);"
 
 #Logical ops
-af_equals(a, b) = AFArray{Bool}(icxx"$a == $b;")
-af_gt(a,b) = AFArray{Bool}(icxx"$a > $b;")
-af_ge(a,b) = AFArray{Bool}(icxx"$a >= $b;")
-af_bitand(a,b) = AFArray{Bool}(icxx"$a & $b;")
-af_and(a,b) = AFArray{Bool}(icxx"$a && $b;")
-af_bitor(a,b) = AFArray{Bool}(icxx"$a | $b;")
-af_bitxor(a,b) = AFArray{Bool}(icxx"$a ^ $b;")
-af_le(a,b) = AFArray{Bool}(icxx"$a <= $b;")
-af_lt(a,b) = AFArray{Bool}(icxx"$a < $b;")
+af_equals(a, b) = icxx"$a == $b;"
+af_gt(a,b) = icxx"$a > $b;"
+af_ge(a,b) = icxx"$a >= $b;"
+af_bitand(a,b) = icxx"$a & $b;"
+af_and(a,b) = icxx"$a && $b;"
+af_bitor(a,b) = icxx"$a | $b;"
+af_bitxor(a,b) = icxx"$a ^ $b;"
+af_le(a,b) = icxx"$a <= $b;"
+af_lt(a,b) = icxx"$a < $b;"
 af_neg(a) = icxx"-$a;"
-af_neq(a,b) = AFArray{Bool}(icxx"$a != $b;")
-af_not(a) = AFArray{Bool}(icxx"!$a;")
-af_or(a,b) = AFArray{Bool}(icxx"$a || $b;")
+af_neq(a,b) = icxx"$a != $b;"
+af_not(a) = icxx"!$a;"
+af_or(a,b) = icxx"$a || $b;"
 
 #Complex functions
 af_complex(a, b) = icxx"af::complex($a,$b);"
