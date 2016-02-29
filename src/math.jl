@@ -17,18 +17,16 @@ import Base: abs, min, max
 abs{T}(a::AFAbstractArray{T}) = AFArray{T}(af_abs(a))
 
 #Max
-function max(a::AFAbstractArray, val::Real)
-    out = af_max(a, val)
+function max(a::Union{Real,AFAbstractArray}, b::Union{Real,AFAbstractArray})
+    out = af_max(a,b)   
     AFArray{backend_eltype(out)}(out)
 end
-max(val::Real, a::AFAbstractArray) = max(a, val)
 
 #Min
-function min(a::AFAbstractArray, val::Real)
-    out = af_min(a, val)
+function min(a::Union{Real,AFAbstractArray}, b::Union{Real,AFAbstractArray})
+    out = af_min(a, b)
     AFArray{backend_eltype(out)}(out)
 end
-min(val::Real, a::AFAbstractArray) = min(a, val)
 
 #Negation
 -{T}(a::AFSubArray{T}) = AFArray{T}(icxx"0-$a;")
