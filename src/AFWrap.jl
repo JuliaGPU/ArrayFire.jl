@@ -290,22 +290,27 @@ const AF_NCC = icxx"AF_NCC;"
 const AF_ZNCC = icxx"AF_ZNCC;"
 const AF_SHD = icxx"AF_SHD;"
 
-af_getX(a) = icxx"$a.getX();"
-af_getY(a) = icxx"$a.getY();"
-af_getSize(a) = icxx"$a.getSize();"
-af_getScore(a) = icxx"$a.getScore();"
-af_getOrientation(a) = icxx"$a.getOrientation();"
+af_getX(a::AFFeatures) = icxx"$a.getX();"
+af_getY(a::AFFearures) = icxx"$a.getY();"
+af_getSize(a::AFFearures) = icxx"$a.getSize();"
+af_getScore(a::AFFearures) = icxx"$a.getScore();"
+af_getOrientation(a::AFFearures) = icxx"$a.getOrientation();"
 
-af_gaussiankernel(a,b) = icxx"af::gaussianKernel($a,$b);"
-af_dog(a,b,c) = icxx"af::dog($a,$b,$c);"
-af_matchTemplate(a,b,c) = icxx"af::matchTemplate($a,$b,$c);"
-af_orb(a,b,c,d,el,f) = icxx"af::orb($a,$b,$c,$d,$el,$f);"
-af_sift(a,b,c,d,el,f,g,h,i,j) = icxx"af::sift($a,$b,$c,$d,$el,$f,$g,$h,$i,$j);"
-af_fast(a,b,c,d,el,f) = icxx"af::fast($a,$b,$c,$d,$el,$f);"
-af_harris(a,b,c,d,el,f) = icxx"af::harris($a,$b,$c,$d,$el,$f);"
-af_susan(a,b,c,d,el,f) = icxx"af::susan($a,$b,$c,$d,$el,$f);"
-af_hammingMatcher(a,b,c,d,el,f) = icxx"af::hammingMatcher($a,$b,$c,$d,$el,$f);"
-af_nearestNeighbour(a,b,c,d,el,f,g) = icxx"af::nearestNeighbour($a,$b,$c,$d,$el,$f,$g);"
+af_gaussiankernel(a::Integer, b::Integer) = icxx"af::gaussianKernel($a,$b);"
+af_dog(a::AFAbstractArray, b::Integer, c::Integer) = icxx"af::dog($a,$b,$c);"
+af_matchTemplate(a::AFAbstractArray, b::AFAbstractArray, c::Cxx.CppEnum{:af_match_type}) = icxx"af::matchTemplate($a,$b,$c);"
+af_orb(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray, d::Real, 
+        el::Integer, f::Real, g::Integer, h::Bool) = icxx"af::orb($a,$b,$c,$d,$el,$f,$g,$h);"
+af_sift(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray, d::Integer, 
+        el::Real, f::Real, g::Real, h::Bool, i::Real,j::Real) = icxx"af::sift($a,$b,$c,$d,$el,$f,$g,$h,$i,$j);"
+af_fast(a::AFAbstractArray, b::Real, c::Integer, d::Bool, el::Real, f::Integer) = icxx"af::fast($a,$b,$c,$d,$el,$f);"
+af_harris(a::AFAbstractArray, b::Integer, c::Real, d::Real, el::Integer, f::Real) = icxx"af::harris($a,$b,$c,$d,$el,$f);"
+af_susan(a::AFAbstractArray, b::Integer, c::Real, d::Real, el::Real, f::Integer) = icxx"af::susan($a,$b,$c,$d,$el,$f);"
+af_hammingMatcher(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray, 
+                    d::AFAbstractArray, el::Integer, f::Integer) = icxx"af::hammingMatcher($a,$b,$c,$d,$el,$f);"
+af_nearestNeighbour(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray, 
+                        d::AFAbstractArray, el::Integer, f::Integer, 
+                        g::Cxx.CppEnum{:af_match_type}) = icxx"af::nearestNeighbour($a,$b,$c,$d,$el,$f,$g);"
 
 #Graphics
 af_window() = icxx"af::Window();"
