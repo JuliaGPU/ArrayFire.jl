@@ -295,13 +295,6 @@ function setindex!(x::AFAbstractArray, val, b::AFAbstractArray{Bool})
     end
 end
 
-#Helper functions
-import Base: isnan
-
-function isnan(a::AFAbstractArray)
-    AFArray{Bool}(icxx"af::isNaN($a);")
-end
-
 # Exception handling
 import Base: showerror
 @exception function showerror(io::IO, e::rcpp"af::exception")

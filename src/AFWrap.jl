@@ -72,9 +72,9 @@ af_isinteger(a) = icxx"$a.isinteger();"
 af_isbool(a) = icxx"$a.isbool();"
 
 #Helper functions
-af_isNaN(a) = icxx"af::isNaN($a);"
-af_isinf(a) = icxx"af::isInf($a);"
-af_iszero(a) = icxx"af::iszero($a);"
+af_isNaN(a::AFAbstractArray) = icxx"af::isNaN($a);"
+af_isinf(a::AFAbstractArray) = icxx"af::isInf($a);"
+af_iszero(a::AFAbstractArray) = icxx"af::iszero($a);"
 
 #ArrayFire info functions
 af_info() = icxx"af::info();"
