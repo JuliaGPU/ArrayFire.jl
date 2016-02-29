@@ -278,7 +278,6 @@ af_dilate3(a::AFAbstractArray,b::AFAbstractArray) = icxx"af::dilate3($a,$b);"
 af_erode(a::AFAbstractArray,b::AFAbstractArray) = icxx"af::erode($a,$b);"
 af_erode3(a::AFAbstractArray,b::AFAbstractArray) = icxx"af::erode3($a,$b);"
 
-af_gaussiankernel(a,b) = icxx"af::gaussianKernel($a,$b);"
 
 #Computer Vision
 const AF_SAD = icxx"AF_SAD;"
@@ -297,6 +296,7 @@ af_getSize(a) = icxx"$a.getSize();"
 af_getScore(a) = icxx"$a.getScore();"
 af_getOrientation(a) = icxx"$a.getOrientation();"
 
+af_gaussiankernel(a,b) = icxx"af::gaussianKernel($a,$b);"
 af_dog(a,b,c) = icxx"af::dog($a,$b,$c);"
 af_matchTemplate(a,b,c) = icxx"af::matchTemplate($a,$b,$c);"
 af_orb(a,b,c,d,el,f) = icxx"af::orb($a,$b,$c,$d,$el,$f);"
