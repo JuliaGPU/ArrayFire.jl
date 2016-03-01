@@ -301,6 +301,16 @@ import Base: showerror
     println(io, bytestring(icxx"$e.what();"))
 end
 
+immutable AFFeatures
+    feat::vcpp"af::features"
+    function AFFeatures(f::vcpp"af::features")
+        new(f)
+    end
+end
+AFFeatures() = icxx"af::features();"
+
+Cxx.cppconvert(f::AFFeatures) = f.feat
+
 #import other files
 include("AFWrap.jl")
 include("math.jl")

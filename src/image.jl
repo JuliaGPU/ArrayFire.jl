@@ -112,16 +112,6 @@ end
 
 DiffOfGaussians{T}(img::AFAbstractArray{T}, radius1::Integer, radius2::Integer) = AFArray{T}(dog(img, radius1, radius2))
 
-immutable AFFeatures
-    feat::vcpp"af::features"
-    function AFFeatures(f::vcpp"af::features")
-        new(f)
-    end
-end
-AFFeatures() = icxx"af::features();"
-
-Cxx.cppconvert(f::AFFeatures) = f.feat
-
 import Base:show 
 show(io::IO, f::AFFeatures) = show(io, f.feat)
 show(io::IO, f::vcpp"af::features") = print(io, "ArrayFire Feature")
