@@ -149,7 +149,7 @@ end
 #Some array helper functions
 import Base: isnan, isinf
 conj{T}(a::AFAbstractArray{T}) = AFArray{T}(af_complex_conj(a))
-#convert{T,V}(::Type{T}, a::AFAbstractArray{V}) = AFArray{T}(af_as(a, aftype(T)))
+convert{T,V}(::Type{T}, a::AFAbstractArray{V}) = AFArray{T}(af_as(a, aftype(T)))
 isnan(a::AFAbstractArray) = AFArray{Bool}(af_isNaN(a))
 iszero(a::AFAbstractArray) = AFArray{Bool}(af_iszero(a))
 isinf(a::AFAbstractArray) = AFArray{Bool}(af_isinf(a))

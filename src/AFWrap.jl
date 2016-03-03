@@ -54,7 +54,7 @@ af_shift(a,b,c,d,el) = icxx"af::shift($a,$b,$c,$d,$el);"
 
 #Some more array methods
 af_complex_conj(a) = icxx"$a.H();"
-af_as(a,to) = icxx"$a.as($to);"
+af_as(a,to) = icxx"(af::array)($a.as($to));"
 af_copy(a) = icxx"$a.copy();"
 af_bytes(a) = icxx"$a.bytes();"
 af_isempty(a) = icxx"$a.isempty();"
