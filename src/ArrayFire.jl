@@ -6,7 +6,7 @@ using Base.Meta
 import Base: rand, show, randn, ones, diag, eltype, size, elsize,
     sizeof, length, showarray, convert, ndims, lu, qr, svd
 import Cxx: CppEnum
-export AFArray, chol!, constant
+export AFArray, chol!, constant, aftype
 
 # If you have a crash, enable this
 const AF_DEBUG = true
@@ -242,7 +242,13 @@ const tis = to_af_idx
 
 IS = Union{Real,Range,Colon}
 
-_getindex{T}(x::AFAbstractArray{T},y::AFAbstractArray)   = icxx"$x($y-1);"
+#ArrayFire needs to index with Int32s or Float32s. Also, array_proxy wrap for indexing with arrays crashes currently.
+function _getindex(x::AFAbstractArray,y::AFAbstractArray)  
+    idx = y - 1
+    out = AFArray()
+    icxx"$out = $x($idx);"
+    AFArray{backend_eltype(out)}(out)
+end
 # Avoid an ambiguity
 _getindex{T}(x::AFAbstractArray{T},s0::Real)             = icxx"$x($(tis(s0)));"
 
@@ -262,6 +268,9 @@ _getindex{T}(x::AFAbstractArray{T},
 
 function getindex{T}(x::AFAbstractArray{T}, idxs...)
     proxy = _getindex(x,idxs...)
+    if isa(proxy, AFArray)
+        return proxy
+    end
     num_elems = icxx"$proxy.elements();"
     if num_elems == 1
         return Array(AFSubArray{T}(proxy))[1]
