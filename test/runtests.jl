@@ -42,3 +42,8 @@ l, u, p = lu(a)
 @test sumabs(Array(pd) - p) < 1e-5 
 @test sumabs2(Array(chol(ad*ad')) - chol(a*a')) < 1e-5
 @test sumabs2(Array(ctranspose(chol(ad*ad'))) - ctranspose(chol(a*a'))) < 1e-5
+ud, sd, vtd = svd(ad)
+u, s, v = svd(a)
+@test sumabs(Array(ud) - u) < 1e-4
+@test sumabs(Array(sd) - s) < 1e-4
+@test sumabs(Array(vtd') - v) < 1e-4
