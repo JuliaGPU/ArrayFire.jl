@@ -8,6 +8,7 @@ ad = AFArray(a)
 @test sumabs2(Array(ad - 2) - (a - 2)) < 1e-6
 @test sumabs2(Array(ad * 2) - (a * 2)) < 1e-6
 @test sumabs2(Array(ad / 2) - (a / 2)) < 1e-6
+@test sumabs2(Array(ad .^ 2) - (a .^ 2)) < 1e-6
 
 #Trig functions
 @test sumabs2(Array(sin(ad)) - sin(a)) < 1e-6

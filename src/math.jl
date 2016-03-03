@@ -11,6 +11,15 @@ import Base: +, -, abs
 
 # TODO: add! using +=, etc.
 
+.^{T,S}(a::AFAbstractArray{T}, b::AFAbstractArray{S}) = AFArray{af_promote(T,S)}(af_pow(a,b))
+.^{T}(a::Real, b::AFAbstractArray{T}) = AFArray{T}(af_pow(a,b))
+.^{T}(a::AFAbstractArray{T}, b::Real) = AFArray{T}(af_pow(a,b))
+
+export root
+root{T,S}(a::AFAbstractArray{T}, b::AFAbstractArray{S}) = AFArray{af_promote(T,S)}(af_root(a,b))
+root{T}(a::Real, b::AFAbstractArray{T}) = AFArray{T}(af_root(a,b))
+root{T}(a::AFAbstractArray{T}, b::Real) = AFArray{T}(af_root(a,b))
+
 import Base: abs, min, max
 
 #Abs

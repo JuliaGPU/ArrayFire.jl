@@ -126,8 +126,8 @@ af_imag(a::AFAbstractArray) = icxx"af::imag($a);"
 af_real(a::AFAbstractArray) = icxx"af::real($a);"
 
 #Expontential functions
-af_pow(a,b) = icxx"af::pow($a, $b);"
-af_root(a,b) = icxx"af::root($a, $b);"
+af_pow(a::Union{Real,AFAbstractArray}, b::Union{Real,AFAbstractArray}) = icxx"af::pow($a, $b);"
+af_root(a::Union{Real,AFAbstractArray}, b::Union{Real,AFAbstractArray}) = icxx"af::root($a, $b);"
 
 #Linear algebra
 const AF_MAT_NONE = icxx"AF_MAT_NONE;"
