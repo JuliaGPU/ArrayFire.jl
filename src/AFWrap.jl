@@ -119,11 +119,11 @@ af_not(a::AFAbstractArray) = icxx"!$a;"
 af_or(a::AFAbstractArray, b::AFAbstractArray) = icxx"$a || $b;"
 
 #Complex functions
-af_complex(a, b) = icxx"af::complex($a,$b);"
-af_complex(a) = icxx"af::complex($a);"
-af_conjg(a) = icxx"af::conjg($a);"
-af_imag(a) = icxx"af::imag($a);"
-af_real(a) = icxx"af::real($a);"
+af_complex(a::AFAbstractArray, b::AFAbstractArray) = icxx"af::complex($a,$b);"
+af_complex(a::AFAbstractArray) = icxx"af::complex($a);"
+af_conjg(a::AFAbstractArray) = icxx"af::conjg($a);"
+af_imag(a::AFAbstractArray) = icxx"af::imag($a);"
+af_real(a::AFAbstractArray) = icxx"af::real($a);"
 
 #Expontential functions
 af_pow(a,b) = icxx"af::pow($a, $b);"

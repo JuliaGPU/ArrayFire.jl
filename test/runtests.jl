@@ -47,3 +47,8 @@ u, s, v = svd(a)
 @test sumabs(Array(ud) - u) < 1e-4
 @test sumabs(Array(sd) - s) < 1e-4
 @test sumabs(Array(vtd') - v) < 1e-4
+
+#Complex numbers 
+@test Array(complex(ad,ad)) == complex(a,a)
+@test Array(real(complex(ad,ad))) == real(complex(a,a))
+@test Array(imag(complex(a,a))) == imag(complex(a,a))

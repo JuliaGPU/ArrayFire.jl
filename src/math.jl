@@ -58,3 +58,11 @@ import Base: ==, .==, .>, .<, .>=, .<=
 
 #Or
 |(a::AFAbstractArray{Bool}, b::AFAbstractArray{Bool}) = AFArray{Bool}(af_bitor(a,b))
+
+#Complex functions
+import Base:complex, real, imag
+
+complex{T}(a::AFAbstractArray{T}) = AFArray{Complex{T}}(af_complex(a))
+complex{T}(a::AFAbstractArray{T}, b::AFAbstractArray{T}) = AFArray{Complex{T}}(af_complex(a,b))
+real{T}(a::AFAbstractArray{Complex{T}}) = AFArray{T}(af_real(a))
+imag{T}(a::AFAbstractArray{Complex{T}}) = AFArray{T}(af_imag(a))
