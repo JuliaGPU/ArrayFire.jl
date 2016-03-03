@@ -42,15 +42,16 @@ af_setSeed(a::Integer) = icxx"af::setSeed($a);"
 af_iota(a::vcpp"af::dim4", b::vcpp"af::dim4", c::Cxx.CppEnum{:af_dtype}) = icxx"af::iota($a,$b,$c);"
 
 #Function to modify or reorg arrays
-af_tile(a,b) = icxx"af::tile($a,$b);"
-af_join(a,b,c) = icxx"af::join($a,$b,$c);"
-af_join(a,b,c,d) = icxx"af::join($a,$b,$c,$d);"
-af_join(a,b,c,d,el) = icxx"af::join($a,$b,$c,$d,$el);"
-af_moddims(a,b) = icxx"af::moddims($a,$b);"
-af_reorder(a,b,c,d,el) = icxx"af::reorder($a,$b,$c,$d,$el);"
-af_replace(a,b,c) = icxx"af::replace($a,$b,$c);"
-af_select(a,b) = icxx"af::select($a,$b,$c);"
-af_shift(a,b,c,d,el) = icxx"af::shift($a,$b,$c,$d,$el);"
+af_tile(a::AFAbstractArray, b::vcpp"af::dim4") = icxx"af::tile($a,$b);"
+af_join(a::Integer, b::AFAbstractArray, c::AFAbstractArray) = icxx"af::join($a,$b,$c);"
+af_join(a::Integer, b::AFAbstractArray, c::AFAbstractArray, d::AFAbstractArray) = icxx"af::join($a,$b,$c,$d);"
+af_join(a::Integer, b::AFAbstractArray, c::AFAbstractArray, d::AFAbstractArray, 
+            el::AFAbstractArray) = icxx"af::join($a,$b,$c,$d,$el);"
+af_moddims(a::AFAbstractArray, b::vcpp"af::dim4") = icxx"af::moddims($a,$b);"
+af_reorder(a::AFAbstractArray, b::Integer, c::Integer, d::Integer, el::Integer) = icxx"af::reorder($a,$b,$c,$d,$el);"
+af_replace(a::AFAbstractArray, b::AFAbstractArray{Bool}, c::Union{Real,AFAbstractArray}) = icxx"af::replace($a,$b,$c);"
+af_select(a,::AFAbstractArray{Bool}, b::AFAbstractArray, c::Union{Real,AFAbstractArray}) = icxx"af::select($a,$b,$c);"
+af_shift(a::AFAbstractArray, b::Integer, c::Integer, d::Integer, el::Integer) = icxx"af::shift($a,$b,$c,$d,$el);"
 
 #Some more array methods
 af_complex_conj(a::AFAbstractArray) = icxx"$a.H();"

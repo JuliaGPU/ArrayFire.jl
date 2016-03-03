@@ -225,6 +225,7 @@ getSeed() = af_getSeed()
 setSeed(a::Integer) = af_setSeed(a)
 range{T}(::Type{AFArray{T}}, dims::Integer...) = AFArray{T}(af_range(dims_to_dim4(dims), length(dims)-1, aftype(T)))
 iota{T}(::Type{AFArray{T}}, dims::Integer...) = AFArray{T}(af_iota(dims_to_dim4(dims), dims_to_dim4(1), aftype(T)))
+moddims{T}(a::AFAbstractArray{T}, dims::Integer...) = AFArray{T}(af_moddims(a, dims_to_dim4(dims)))
 
 #TODO : make `tile` compatible with `repeat` in base
 
