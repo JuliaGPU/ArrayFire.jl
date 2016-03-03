@@ -26,11 +26,19 @@ ad = AFArray(a)
 @test sumabs2(Array(minimum(ad,2)) - minimum(a,2)) < 1e-6
 @test sumabs2(Array(max(ad,0.5)) - max(a,0.5)) < 1e-6
 @test sumabs2(Array(min(ad,0.5)) - min(a,0.5)) < 1e-6
+@test mean(ad) == mean(a)
 @test sumabs2(Array(mean(ad,1)) - mean(a,1)) < 1e-6
 @test sumabs2(Array(mean(ad,2)) - mean(a,2)) < 1e-6
+@test median(ad) == median(a)
 @test sumabs2(Array(median(ad,1)) - median(a,1)) < 1e-6
-@test sumabs2(Array(median(ad,2)) - median(a,2)) < 1e-6
-@test sumabs2(Array(std(ad,1)) - std(a,1)) < 1e-6
-@test sumabs2(Array(std(ad,2)) - std(a,2)) < 1e-6
-@test sumabs2(Array(var(ad,1)) - var(a,1)) < 1e-6
-@test sumabs2(Array(var(ad,2)) - var(a,2)) < 1e-6
+@test var(ad) == var(a)
+
+#Linalg 
+@test sumabs2(Array(ad') - a') < 1e-6
+ld, ud, pd = lu(ad)
+l, u, p = lu(a)
+@test sumabs(Array(ld) - l) < 1e-5
+@test sumabs(Array(ud) - u) < 1e-5 
+@test sumabs(Array(pd) - p) < 1e-5 
+@test sumabs2(Array(chol(ad*ad')) - chol(a*a')) < 1e-5
+@test sumabs2(Array(ctranspose(chol(ad*ad'))) - ctranspose(chol(a*a'))) < 1e-5
