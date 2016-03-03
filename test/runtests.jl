@@ -1,5 +1,10 @@
 using ArrayFire
 using Base.Test
 
-# write your own tests here
-@test 1 == 1
+#Basic math
+a = rand(Float32, 10, 10)
+ad = AFArray(a)
+@test sumabs2(Array(ad + 2) - (a + 2)) < 1e-6
+@test sumabs2(Array(ad - 2) - (a - 2)) < 1e-6
+@test sumabs2(Array(ad * 2) - (a * 2)) < 1e-6
+@test sumabs2(Array(ad / 2) - (a / 2)) < 1e-6
