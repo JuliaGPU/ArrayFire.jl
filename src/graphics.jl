@@ -1,14 +1,6 @@
-immutable AFWindow
-    win::vcpp"af::Window"
-    function AFWindow(w::vcpp"af::Window")
-        new(w)
-    end
-end
-
+#Graphics functions
 show(io::IO, w::AFWindow) = print(io, "ArrayFire Window")
 show(io::IO, w::vcpp"af::Window") = print(io, "ArrayFire Window")
-
-Cxx.cppconvert(w::AFWindow) = w.win
 
 export AFWindow, window, setTitle, setPlot, setImage, setSurfacePlot
 

@@ -321,6 +321,15 @@ AFFeatures() = icxx"af::features();"
 
 Cxx.cppconvert(f::AFFeatures) = f.feat
 
+immutable AFWindow
+    win::vcpp"af::Window"
+    function AFWindow(w::vcpp"af::Window")
+        new(w)
+    end
+end
+
+Cxx.cppconvert(w::AFWindow) = w.win
+
 #import other files
 include("AFWrap.jl")
 include("math.jl")
