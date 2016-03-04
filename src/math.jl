@@ -1,13 +1,13 @@
 # MATH OPERATIONS
 
 for op in (:sin, :cos, :tan, :atan, :asin, :acos, :log, :log1p, :log10, :sqrt, 
-    :exp, :expm1, :erf, :erfc, :cbrt, :lgamma, :transpose, :acosh, :cosh, :asinh, :sinh, :atanh, :tanh, :factorial)
+    :exp, :expm1, :erf, :erfc, :cbrt, :lgamma, :acosh, :cosh, :asinh, :sinh, :atanh, :tanh, :factorial)
     @eval Base.($(quot(op))){T}(x::AFAbstractArray{T}) = AFArray{T}(@cxx af::($op)(x.array))
 end
 
 Base.gamma{T}(x::AFAbstractArray{T}) = AFArray{T}(@cxx af::tgamma(x))
 
-import Base: +, -, abs
+import Base: +, -, abs, .^ 
 
 # TODO: add! using +=, etc.
 
@@ -37,7 +37,7 @@ end
 max(a::Real, b::AFAbstractArray) = max(b, a)
 
 #Min
-function min(a::Union{Real,AFAbstractArray}, b::Union{Real,AFAbstractArray})
+function min(a::AFAbstractArray, b::AFAbstractArray)
     out = af_min(a, b)
     AFArray{backend_eltype(out)}(out)
 end
@@ -52,7 +52,7 @@ min(a::Real, b::AFAbstractArray) = max(b, a)
 -{T}(a::AFArray{T}) = AFArray{T}(af_neg(a))
 
 #Logical ops
-import Base: ==, .==, .>, .<, .>=, .<=
+import Base: ==, .==, .>, .<, .>=, .<=, |
 
 #Equals
 .==(a::Union{Real,AFAbstractArray}, b::Union{Real,AFAbstractArray}) = AFArray{Bool}(af_equals(a,b))

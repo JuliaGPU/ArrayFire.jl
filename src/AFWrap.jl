@@ -1,7 +1,7 @@
 #This wraps all the basic ArrayFire routines as is.
 
 #Math functions
-import Base: +, -
+import Base: +, -, *, /
 
 # Resolve conflicts
 +(x::AFAbstractArray{Bool},y::Bool) = AFArray{Bool}(@cxx +(x.array,y))

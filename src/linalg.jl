@@ -56,6 +56,9 @@ ctranspose!{T}(x::AFAbstractArray{T}) = af_ctransposeInPlace(x)
 # TODO : The documentation says only AF_MAT_LOWER/AF_MAT_UPPER are supported
 # once AF_MAT_(C)TRANS is supported this could be useful for A_rdiv, etc
 # TODO : Think about integrating solveLU in `\` so it becomes a poly algorithm like base. 
+
+import Base: \
+
 \{S,T}(a::AFAbstractArray{S}, b::AFAbstractArray{T}) = AFArray{af_promote(T,S)}(af_solve(a, b);)
 
 # Factorizations
