@@ -42,16 +42,16 @@ cxx"""
 
 setDevice(i) = icxx"af::setDevice($i);"
 
-const f32 = CppEnum{:af_dtype}(0) # 32-bit floating point values
-const c32 = CppEnum{:af_dtype}(1) # 32-bit complex floating point values
-const f64 = CppEnum{:af_dtype}(2) # 64-bit complex floating point values
-const c64 = CppEnum{:af_dtype}(3) # 64-bit complex floating point values
-const b8  = CppEnum{:af_dtype}(4) #  8-bit boolean values
-const s32 = CppEnum{:af_dtype}(5) # 32-bit signed integral values
-const u32 = CppEnum{:af_dtype}(6) # 32-bit unsigned integral values
-const u8  = CppEnum{:af_dtype}(7) #  8-bit unsigned integral values
-const s64 = CppEnum{:af_dtype}(8) # 64-bit signed integral values
-const u64 = CppEnum{:af_dtype}(9) # 64-bit unsigned integral values
+const f32 = CppEnum{:af_dtype,UInt32}(0) # 32-bit floating point values
+const c32 = CppEnum{:af_dtype,UInt32}(1) # 32-bit complex floating point values
+const f64 = CppEnum{:af_dtype,UInt32}(2) # 64-bit complex floating point values
+const c64 = CppEnum{:af_dtype,UInt32}(3) # 64-bit complex floating point values
+const b8  = CppEnum{:af_dtype,UInt32}(4) #  8-bit boolean values
+const s32 = CppEnum{:af_dtype,UInt32}(5) # 32-bit signed integral values
+const u32 = CppEnum{:af_dtype,UInt32}(6) # 32-bit unsigned integral values
+const u8  = CppEnum{:af_dtype,UInt32}(7) #  8-bit unsigned integral values
+const s64 = CppEnum{:af_dtype,UInt32}(8) # 64-bit signed integral values
+const u64 = CppEnum{:af_dtype,UInt32}(9) # 64-bit unsigned integral values
 
 aftype(::Type{Float32})          = f32
 aftype(::Type{Complex{Float32}}) = c32
