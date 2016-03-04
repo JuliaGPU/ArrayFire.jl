@@ -12,8 +12,25 @@ export AFArray, chol!, constant, aftype
 const AF_DEBUG = true
 
 function init_library()
-	Libdl.dlopen(Pkg.dir("ArrayFire","deps","build","arrayfire","src","backend","opencl","libafopencl"),Libdl.RTLD_GLOBAL)
-	addHeaderDir(Pkg.dir("ArrayFire","deps","src","arrayfire","include");kind = C_System)
+    if !haskey(ENV, "AFMODE")
+        Libdl.dlopen("libafcpu", Libdl.RTLD_GLOBAL)
+    else
+        if ENV["AFMODE"] == "CPU"
+            Libdl.dlopen("libafcpu", Libdl.RTLD_GLOBAL)
+        elseif ENV["AFMODE"] == "OPENCL"
+            Libdl.dlopen("libafopencl", Libdl.RTLD_GLOBAL)
+        elseif ENV["AFMODE"] == "CUDA"
+            Libdl.dlopen("libafcuda", Libdl.RTLD_GLOBAL)
+        else
+            info("Invalid value for environment variable AFMODE. Setting to default.")
+            Libdl.dlopen("libafcpu", Libdl.RTLD_GLOBAL)
+        end
+    end
+    if !haskey(ENV, "AFPATH")
+       addHeaderDir("/usr/local/include/"; kind = C_System)
+    else 
+        addHeaderDir(ENV["APATH"]; kind = C_System)
+    end
 end
 init_library()
 
