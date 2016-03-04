@@ -31,6 +31,9 @@ function max(a::AFAbstractArray, b::AFAbstractArray)
     AFArray{backend_eltype(out)}(out)
 end
 function max(a::AFAbstractArray, b::Real)
+    if typeof(b) <: Integer
+        b = Float32(b)
+    end
     out = af_max(a,b)
     AFArray{backend_eltype(out)}(out)
 end
@@ -42,10 +45,13 @@ function min(a::AFAbstractArray, b::AFAbstractArray)
     AFArray{backend_eltype(out)}(out)
 end
 function min(a::AFAbstractArray, b::Real)
+    if typeof(b) <: Integer
+        b = Float32(b)
+    end
     out = af_min(a,b)
     AFArray{backend_eltype(out)}(out)
 end
-min(a::Real, b::AFAbstractArray) = max(b, a)
+min(a::Real, b::AFAbstractArray) = min(b, a)
 
 #Negation
 -{T}(a::AFSubArray{T}) = AFArray{T}(icxx"0-$a;")
