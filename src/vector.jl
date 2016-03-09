@@ -5,7 +5,7 @@
 
 #Reduction operations
 
-import Base: sum, maximum, minimum, any, max, min
+import Base: sum, maximum, minimum, any, max, min, countnz
 
 #Sum 
 sum(a::AFAbstractArray) = af_sum(a)

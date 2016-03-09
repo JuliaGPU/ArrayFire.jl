@@ -58,7 +58,7 @@ min(a::Real, b::AFAbstractArray) = min(b, a)
 -{T}(a::AFArray{T}) = AFArray{T}(af_neg(a))
 
 #Logical ops
-import Base: ==, .==, .>, .<, .>=, .<=, |
+import Base: ==, .==, .>, .<, .>=, .<=, |, .!=
 
 #Equals
 .==(a::Union{Real,AFAbstractArray}, b::Union{Real,AFAbstractArray}) = AFArray{Bool}(af_equals(a,b))
@@ -73,6 +73,9 @@ import Base: ==, .==, .>, .<, .>=, .<=, |
 
 #Or
 |(a::AFAbstractArray{Bool}, b::AFAbstractArray{Bool}) = AFArray{Bool}(af_bitor(a,b))
+
+#not equals
+.!=(a::AFAbstractArray, b::AFAbstractArray) = AFArray{Bool}(af_neq(a,b))
 
 #Complex functions
 import Base:complex, real, imag

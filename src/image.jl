@@ -50,8 +50,8 @@ gray2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(af_gray2rgb(a))
 hsv2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(af_hsv2rgb(a))
 rgb2gray{T}(a::AFAbstractArray{T}) = AFArray{T}(af_rgb2gray(a))
 rgb2hsv{T}(a::AFAbstractArray{T}) = AFArray{T}(af_rgb2hsv(a))
-rgb2ycbcr{T}(a::AFAbstractArray{T}) = AFArray{T}(rgb2ycbcr(a))
-ycbcr2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(ycbcr2rgb(a))
+rgb2ycbcr{T}(a::AFAbstractArray{T}) = AFArray{T}(af_rgb2ycbcr(a))
+ycbcr2rgb{T}(a::AFAbstractArray{T}) = AFArray{T}(af_ycbcr2rgb(a))
 colorspace{T}(a::AFAbstractArray{T}, from::Cxx.CppEnum{:af_cspace_t}, to::Cxx.CppEnum{:af_cspace_t}) = af_colorspace(a, to, from)
 
 #Filters
