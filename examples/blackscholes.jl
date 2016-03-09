@@ -1,5 +1,7 @@
 #This example has been adopted from https://github.com/IntelLabs/ParallelAccelerator.jl/blob/master/examples/black-scholes/black-scholes.jl
 
+using ArrayFire
+
 function blackscholes_serial(sptprice::Array{Float64,1},
                            strike::Array{Float64,1},
                            rate::Array{Float64,1},
