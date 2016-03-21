@@ -45,7 +45,7 @@ af_iota(a::vcpp"af::dim4", b::vcpp"af::dim4", c::Cxx.CppEnum{:af_dtype}) = icxx"
 af_tile(a::AFAbstractArray, b::vcpp"af::dim4") = icxx"af::tile($a,$b);"
 af_join(a::Integer, b::AFAbstractArray, c::AFAbstractArray) = icxx"af::join($a,$b,$c);"
 af_join(a::Integer, b::AFAbstractArray, c::AFAbstractArray, d::AFAbstractArray) = icxx"af::join($a,$b,$c,$d);"
-af_join(a::Integer, b::AFAbstractArray, c::AFAbstractArray, d::AFAbstractArray, 
+af_join(a::Integer, b::AFAbstractArray, c::AFAbstractArray, d::AFAbstractArray,
             el::AFAbstractArray) = icxx"af::join($a,$b,$c,$d,$el);"
 af_moddims(a::AFAbstractArray, b::vcpp"af::dim4") = icxx"af::moddims($a,$b);"
 af_reorder(a::AFAbstractArray, b::Integer, c::Integer, d::Integer, el::Integer) = icxx"af::reorder($a,$b,$c,$d,$el);"
@@ -164,7 +164,7 @@ af_inverse(a::AFAbstractArray) = icxx"af::inverse($a);"
 af_norm(a::AFAbstractArray) = icxx"af::norm($a);"
 af_rank(a::AFAbstractArray) = icxx"af::rank($a);"
 
-#Signal 
+#Signal
 af_fft(a::AFVector) = icxx"af::fft($a);"
 af_fft2(a::AFMatrix) = icxx"af::fft2($a);"
 af_fft3(a::AFAbstractArray) = icxx"af::fft3($a);"
@@ -301,17 +301,17 @@ af_getOrientation(a::AFFeatures) = icxx"$a.getOrientation();"
 af_gaussianKernel(a::Integer, b::Integer) = icxx"af::gaussianKernel($a,$b);"
 af_dog(a::AFAbstractArray, b::Integer, c::Integer) = icxx"af::dog($a,$b,$c);"
 af_matchTemplate(a::AFAbstractArray, b::AFAbstractArray, c::Cxx.CppEnum{:af_match_type}) = icxx"af::matchTemplate($a,$b,$c);"
-af_orb(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray, d::Real, 
+af_orb(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray, d::Real,
         el::Integer, f::Real, g::Integer, h::Bool) = icxx"af::orb($a,$b,$c,$d,$el,$f,$g,$h);"
-af_sift(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray, d::Integer, 
+af_sift(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray, d::Integer,
         el::Real, f::Real, g::Real, h::Bool, i::Real,j::Real) = icxx"af::sift($a,$b,$c,$d,$el,$f,$g,$h,$i,$j);"
 af_fast(a::AFAbstractArray, b::Real, c::Integer, d::Bool, el::Real, f::Integer) = icxx"af::fast($a,$b,$c,$d,$el,$f);"
 af_harris(a::AFAbstractArray, b::Integer, c::Real, d::Real, el::Integer, f::Real) = icxx"af::harris($a,$b,$c,$d,$el,$f);"
 af_susan(a::AFAbstractArray, b::Integer, c::Real, d::Real, el::Real, f::Integer) = icxx"af::susan($a,$b,$c,$d,$el,$f);"
-af_hammingMatcher(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray, 
+af_hammingMatcher(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray,
                     d::AFAbstractArray, el::Integer, f::Integer) = icxx"af::hammingMatcher($a,$b,$c,$d,$el,$f);"
-af_nearestNeighbour(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray, 
-                        d::AFAbstractArray, el::Integer, f::Integer, 
+af_nearestNeighbour(a::AFAbstractArray, b::AFAbstractArray, c::AFAbstractArray,
+                        d::AFAbstractArray, el::Integer, f::Integer,
                         g::Cxx.CppEnum{:af_match_type}) = icxx"af::nearestNeighbour($a,$b,$c,$d,$el,$f,$g);"
 
 #Graphics
@@ -323,3 +323,26 @@ af_setImage(a::AFWindow, b::AFAbstractArray, c::AbstractString) = icxx"$a.image(
 af_setPlot(a::AFWindow, b::AFAbstractArray, c::AFAbstractArray, d::AbstractString) = icxx"$a.plot($b,$c,$d);"
 af_show(a::AFWindow) = icxx"$a.show();"
 af_setSurface(a::AFWindow, b::AFAbstractArray) = icxx"$a.surface($b);"
+
+#Unified Backend
+const AF_BACKEND_CPU = icxx"AF_BACKEND_CPU;"
+const AF_BACKEND_CUDA = icxx"AF_BACKEND_CUDA;"
+const AF_BACKEND_OPENCL = icxx"AF_BACKEND_OPENCL;"
+
+af_setBackend(backend::Cxx.CppEnum{:af_backend}) = icxx"af::setBackend($backend);"
+
+function af_getActiveBackend()
+    backend = icxx"af::getActiveBackend();"
+    if backend == AF_BACKEND_CPU
+        println("CPU Backend.")
+    elseif backend == AF_BACKEND_CUDA
+        println("CUDA Backend.")
+    elseif backend == AF_BACKEND_OPENCL
+        println("OPENCL Backend.")
+    end
+end
+
+af_getAvailableBackends() = icxx"af::getAvailableBackends();"
+af_getBackendCount() = icxx"af::getBackendCount();"
+af_getBackendId(a::AFAbstractArray) = icxx"af::getBackendId($a);"
+af_getDeviceId(a::AFAbstractArray)  = icxx"af::getDeviceId($a);"
