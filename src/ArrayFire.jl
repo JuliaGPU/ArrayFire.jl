@@ -13,17 +13,21 @@ const AF_DEBUG = true
 
 function init_library()
     if !haskey(ENV, "AFMODE")
-        Libdl.dlopen("libafcpu", Libdl.RTLD_GLOBAL)
+        info("Setting Unified Backend by default")
+        Libdl.dlopen("libaf", Libdl.RTLD_GLOBAL)
     else
         if ENV["AFMODE"] == "CPU"
+            info("Setting CPU Backend")
             Libdl.dlopen("libafcpu", Libdl.RTLD_GLOBAL)
         elseif ENV["AFMODE"] == "OPENCL"
+            info("Setting OPENCL Backend")
             Libdl.dlopen("libafopencl", Libdl.RTLD_GLOBAL)
         elseif ENV["AFMODE"] == "CUDA"
+            info("Setting GPU Backend")
             Libdl.dlopen("libafcuda", Libdl.RTLD_GLOBAL)
         else
             info("Invalid value for environment variable AFMODE. Setting to default.")
-            Libdl.dlopen("libafcpu", Libdl.RTLD_GLOBAL)
+            Libdl.dlopen("libaf", Libdl.RTLD_GLOBAL)
         end
     end
     if !haskey(ENV, "AFPATH")
@@ -33,8 +37,6 @@ function init_library()
     end
 end
 init_library()
-
-__init__() = init_library()
 
 cxx"""
 #include <arrayfire.h>
