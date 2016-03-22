@@ -358,6 +358,7 @@ include("vector.jl")
 include("linalg.jl")
 include("signal.jl")
 include("graphics.jl")
+include("unified.jl")
 
 #Info
 export af_info, af_isDoubleAvailable, af_sync, getDevice
