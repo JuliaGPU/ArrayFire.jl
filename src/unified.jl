@@ -1,6 +1,6 @@
 #Functions to deal with unified backend
 
-export getActiveBackend, setBackend, getAvailableBackends
+export getActiveBackend, setBackend, getAvailableBackends, getBackendCount, getBackend
 export AF_BACKEND_CPU, AF_BACKEND_CUDA, AF_BACKEND_OPENCL
 
 function getActiveBackend()
@@ -34,5 +34,17 @@ function getAvailableBackends()
         println("CUDA and OpenCL")
     elseif n == 7
         println("CPU, CUDA and OpenCL")
+    end
+end
+
+getBackendCount() = af_getBackendCount()
+function getBackend(a::AFAbstractArray) 
+    b = af_getBackendId(a)
+    if b == AF_BACKEND_CPU
+        println("CPU Backend")
+    elseif b == AF_BACKEND_OPENCL
+        println("OpenCL Backend")
+    elseif b == AF_BACKEND_CUDA
+        println("CUDA Backend")
     end
 end
