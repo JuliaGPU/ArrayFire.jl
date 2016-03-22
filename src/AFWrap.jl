@@ -330,18 +330,7 @@ const AF_BACKEND_CUDA = icxx"AF_BACKEND_CUDA;"
 const AF_BACKEND_OPENCL = icxx"AF_BACKEND_OPENCL;"
 
 af_setBackend(backend::Cxx.CppEnum{:af_backend}) = icxx"af::setBackend($backend);"
-
-function af_getActiveBackend()
-    backend = icxx"af::getActiveBackend();"
-    if backend == AF_BACKEND_CPU
-        println("CPU Backend.")
-    elseif backend == AF_BACKEND_CUDA
-        println("CUDA Backend.")
-    elseif backend == AF_BACKEND_OPENCL
-        println("OPENCL Backend.")
-    end
-end
-
+af_getActiveBackend() = icxx"af::getActiveBackend();"
 af_getAvailableBackends() = icxx"af::getAvailableBackends();"
 af_getBackendCount() = icxx"af::getBackendCount();"
 af_getBackendId(a::AFAbstractArray) = icxx"af::getBackendId($a);"
