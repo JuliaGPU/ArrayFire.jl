@@ -80,12 +80,22 @@ fast_fourier = fft(a)
 
 ```
 ## Switching Backends
-ArrayFire.jl supports three different backends: CPU, CUDA and OPENCL. By default, ArrayFire initializes with the CPU backend. To change backend, you must set an environment variable `AFMODE`:
+ArrayFire starts up with the unified backend which, while it isn't a "backend" technically, allows you change backends at runtime. ArrayFire actually supports three different backends: CPU, CUDA and OPENCL.  
+
+```julia
+using ArrayFire
+setBackend(AF_BACKEND_OPENCL) #Switch to OPENCL backend
+setBackend(AF_BACKEND_CUDA) #Switch to CUDA backend
+setBackend(AF_BACKEND_CPU) #Switch back to CPU backend
+```
+If you're sure of which backend you want and won't switch, you can set an environment variable `AFMODE` to start up ArrayFire with a specific backend
 ```bash
 export AFMODE=OPENCL #Switch to OPENCL backend
 export AFMODE=CUDA #Switch to CUDA backend
 export AFMODE=CPU #Switch back to CPU backend
 ```
+Note that you cannot change backends (it would throw an exception) when ArrayFire is started up using a specific backend. 
+
 ## Performance 
 ArrayFire was benchmarked on commonly used operations.
 
