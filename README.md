@@ -88,6 +88,8 @@ setBackend(AF_BACKEND_OPENCL) #Switch to OPENCL backend
 setBackend(AF_BACKEND_CUDA) #Switch to CUDA backend
 setBackend(AF_BACKEND_CPU) #Switch back to CPU backend
 ```
+NOTE: The function `getAvailableBackend()` works only on arrayfire v3.3.0 and above. 
+
 If you're sure of which backend you want and won't switch, you can set an environment variable `AFMODE` to start up ArrayFire with a specific backend
 ```bash
 export AFMODE=OPENCL #Switch to OPENCL backend
