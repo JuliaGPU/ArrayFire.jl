@@ -18,7 +18,7 @@ function benchmark()
     warmup()
     info("Warmup done!")
 
-    a = rand(1000, 1000) 
+    a = rand(2000, 2000) 
     ad = AFArray(a)
 
     #Matmul
@@ -46,8 +46,8 @@ function benchmark()
 
     #Rand
     info("Rand")
-    t1 = @elapsed rand(1000, 1000)
-    t2 = @elapsed rand(AFArray{Float64}, 1000, 1000)
+    t1 = @elapsed rand(5000, 5000)
+    t2 = @elapsed rand(AFArray{Float64}, 5000, 5000)
     println("Time (CPU): $t1") 
     println("Time (GPU): $t2") 
     
