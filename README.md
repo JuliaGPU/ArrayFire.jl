@@ -101,7 +101,7 @@ Note that you cannot change backends (it would throw an exception) when ArrayFir
 ## Performance 
 ArrayFire was benchmarked on commonly used operations.
 
-![Performance Chart](https://cloud.githubusercontent.com/assets/9101377/14274448/019f5e4e-fb2f-11e5-8b4b-6a81b1f31a9f.png)
+![Performance Chart](https://cloud.githubusercontent.com/assets/9101377/14518524/fd16799e-0235-11e6-94c3-549518d25db1.png)
 
 CPU: Intel(R) Xeon(R) CPU E5-2670 0 @ 2.60GHz.
 
