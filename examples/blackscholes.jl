@@ -2,11 +2,11 @@
 
 using ArrayFire
 
-function blackscholes_serial(sptprice::Array{Float64,1},
-                           strike::Array{Float64,1},
-                           rate::Array{Float64,1},
-                           volatility::Array{Float64,1},
-                           time::Array{Float64,1})
+function blackscholes_serial(sptprice::AbstractArray{Float64},
+                           strike::AbstractArray{Float64},
+                           rate::AbstractArray{Float64},
+                           volatility::AbstractArray{Float64},
+                           time::AbstractArray{Float64})
     logterm = log10(sptprice ./ strike)
     powterm = .5 .* volatility .* volatility
     den = volatility .* sqrt(time)
@@ -14,24 +14,6 @@ function blackscholes_serial(sptprice::Array{Float64,1},
     d2 = d1 .- den
     NofXd1 = cndf2(d1)
     NofXd2 = cndf2(d2)
-    futureValue = strike .* exp(- rate .* time)
-    c1 = futureValue .* NofXd2
-    call = sptprice .* NofXd1 .- c1
-    put  = call .- futureValue .+ sptprice
-end
-
-function blackscholes_gpu(sptprice::AFArray{Float64,1},
-                           strike::AFArray{Float64,1},
-                           rate::AFArray{Float64,1},
-                           volatility::AFArray{Float64,1},
-                           time::AFArray{Float64,1})
-    logterm = log10(sptprice ./ strike)
-    powterm = .5 .* volatility .* volatility
-    den = volatility .* sqrt(time)
-    d1 = (((rate .+ powterm) .* time) .+ logterm) ./ den
-    d2 = d1 .- den
-    NofXd1 = cndf2_gpu(d1)
-    NofXd2 = cndf2_gpu(d2)
     futureValue = strike .* exp(- rate .* time)
     c1 = futureValue .* NofXd2
     call = sptprice .* NofXd1 .- c1
@@ -57,12 +39,7 @@ function blackscholes_devec(sptprice::Vector{Float64}, strike::Vector{Float64}, 
     put
 end
 
-@inline function cndf2(in::Array{Float64,1})
-    out = 0.5 .+ 0.5 .* erf(0.707106781 .* in)
-    return out
-end
-
-@inline function cndf2_gpu(in::AFArray{Float64,1})
+@inline function cndf2(in::AbstractArray{Float64})
     out = 0.5 .+ 0.5 .* erf(0.707106781 .* in)
     return out
 end
@@ -85,7 +62,7 @@ function run(iterations)
     t1 = toq()
     println("Serial checksum: ", sum(put1))
     tic()
-    put2 = blackscholes_gpu(sptprice_gpu, initStrike_gpu, rate_gpu, volatility_gpu, time_gpu)
+    put2 = blackscholes_serial(sptprice_gpu, initStrike_gpu, rate_gpu, volatility_gpu, time_gpu)
     t2 = toq()
     println("Parallel checksum: ", sum(put2))
     tic()
@@ -101,7 +78,7 @@ function driver()
     iterations = 10^7
     blackscholes_serial(Float64[], Float64[], Float64[], Float64[], Float64[])
     blackscholes_devec(Float64[], Float64[], Float64[], Float64[], Float64[])
-    blackscholes_gpu(AFArray(Float64[1.]), AFArray(Float64[1.]), AFArray(Float64[1.]), AFArray(Float64[1.]), AFArray(Float64[1.]))
+    blackscholes_serial(AFArray(Float64[1.]), AFArray(Float64[1.]), AFArray(Float64[1.]), AFArray(Float64[1.]), AFArray(Float64[1.]))
     println("SELFPRIMED ", toq())
     tserial, tparallel, tdevec = run(iterations)
     println("Time taken for vectorized = $tserial")
