@@ -286,6 +286,8 @@ _getindex{T}(x::AFAbstractArray{T},
                                                                    $(tis(s2)),
                                                                    $(tis(s3)));"
 
+_getindex{T}(x::AFAbstractArray{T}, i) = icxx"$x($i)"
+
 function getindex{T}(x::AFAbstractArray{T}, idxs...)
     proxy = _getindex(x,idxs...)
     if isa(proxy, AFArray)
