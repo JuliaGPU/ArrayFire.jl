@@ -6,7 +6,7 @@ using Base.Meta
 import Base: rand, show, randn, ones, diag, eltype, size, elsize,
     sizeof, length, showarray, convert, ndims, lu, qr, svd, setindex!
 import Cxx: CppEnum
-export AFArray, chol!, constant, aftype
+export AFArray, chol!, constant, aftype, @gpu, @icxx_str, __current_compiler__
 
 # If you have a crash, enable this
 const AF_DEBUG = true
@@ -371,6 +371,23 @@ save(a::AFAbstractArray, path::AbstractString, key::AbstractString) = af_saveArr
 function load(path::AbstractString, key::AbstractString) 
     out = af_readArray(path, key)
     AFArray{backend_eltype(out)}(out)
+end
+
+macro gpu(ex...)
+    ex = ex[1]
+    top = ex.args[1]
+    bottom = ex.args[2]
+    iterator = top.args[1]       
+    stop = :($(top.args[2]).stop)
+    x = bottom.args[2]
+    body = Expr(:->,:i,Expr(:block, x, :nothing))
+    esc(Expr(:let, quote icxx"""
+                    gfor (af::seq i, $stop)
+                    {   
+                        $body(i);
+                    }
+                    """
+                    end , :(body = $body), :(stop = $stop)))
 end
 
 end # module
