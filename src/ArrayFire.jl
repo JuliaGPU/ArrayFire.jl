@@ -246,6 +246,8 @@ range{T}(::Type{AFArray{T}}, dims::Integer...) = AFArray{T}(af_range(dims_to_dim
 iota{T}(::Type{AFArray{T}}, dims::Integer...) = AFArray{T}(af_iota(dims_to_dim4(dims), dims_to_dim4(1), aftype(T)))
 moddims{T}(a::AFAbstractArray{T}, dims::Integer...) = AFArray{T}(af_moddims(a, dims_to_dim4(dims)))
 
+Base.rand{A<:AFArray}(::Type{A},sz::Tuple)=rand(A, sz...)
+
 #TODO : make `tile` compatible with `repeat` in base
 
 export tile
@@ -258,9 +260,10 @@ import Base: getindex
 to_af_idx(x::Real) = convert(Cint, x-1)
 to_af_idx(x::Range) = icxx"af::seq($(first(x))-1,$(last(x))-1,$(step(x)));"
 to_af_idx(x::Colon) = icxx"af::span;"
+to_af_idx(x::rcpp"af::seq") = x
 const tis = to_af_idx
 
-IS = Union{Real,Range,Colon}
+IS = Union{Real,Range,Colon,rcpp"af::seq"}
 
 #ArrayFire needs to index with Int32s or Float32s. Also, array_proxy wrap for indexing with arrays crashes currently.
 function _getindex(x::AFAbstractArray,y::AFAbstractArray)  
@@ -286,7 +289,7 @@ _getindex{T}(x::AFAbstractArray{T},
                                                                    $(tis(s2)),
                                                                    $(tis(s3)));"
 
-_getindex{T}(x::AFAbstractArray{T}, i) = icxx"$x($i)"
+#_getindex{T}(x::AFAbstractArray{T}, i) = icxx"$x($i)"
 
 function getindex{T}(x::AFAbstractArray{T}, idxs...)
     proxy = _getindex(x,idxs...)
