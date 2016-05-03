@@ -382,16 +382,17 @@ macro gpu(ex...)
     bottom = ex.args[2]
     iterator = top.args[1]       
     start = :($(top.args[2]).start)
+    step = :(step($(top.args[2])))
     stop = :($(top.args[2]).stop)
     x = bottom.args[2]
     body = Expr(:->,:i,Expr(:block, x, :nothing))
     esc(Expr(:let, quote icxx"""
-                    gfor (af::seq i, $start - 1, $stop - 1)
+                    gfor (af::seq i, $start - 1, $stop - 1, $step)
                     {   
                         $body(i);
                     }
                     """
-                    end , :(body = $body), :(stop = $stop), :(start = $start)))
+                    end , :(body = $body), :(stop = $stop), :(start = $start), :(step = $step)))
 end
 
 end # module
