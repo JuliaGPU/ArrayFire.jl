@@ -11,9 +11,9 @@ immutable AFArray{T,N} <: AFAbstractArray{T,N}
 end
 
 
+include("error.jl")
 include("defns.jl")
 include("utils.jl")
-include("error.jl")
 include("create.jl")
 
 end

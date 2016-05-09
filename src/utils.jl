@@ -13,9 +13,10 @@ sizeof{T}(a::AFArray{T}) = elsize(a) * length(a)
     
 function convert{T,N}(::Type{Array{T,N}}, x::AFAbstractArray{T,N})
     ret = Array(UInt8, sizeof(x))
-    ccall((:af_get_data_ptr, af_lib), 
-            Cint, (Ptr{T}, Ptr{Ptr{Void}}), 
-            pointer(ret), x.ptr)
+    err = ccall((:af_get_data_ptr, af_lib), 
+                Cint, (Ptr{T}, Ptr{Ptr{Void}}), 
+                pointer(ret), x.ptr)
+    err == 0 || throwAFerror(err)
     ret = reinterpret(T, ret)
     ret = reshape(ret, size(x)...)
     ret
@@ -35,7 +36,7 @@ end
 
 function dim4_to_dims(d::Dim4, n::Integer)
     if n == 1
-        return (d.dim1,)
+        return (Int(d.dim1),)
     elseif n == 2
         return (Int(d.dim1), Int(d.dim2))
     elseif n == 3
