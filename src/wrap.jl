@@ -2,7 +2,7 @@
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
 
-function af_sum(out,_in::af_array,dim::Cint)
+#=function af_sum(out,_in::af_array,dim::Cint)
     ccall((:af_sum,algorithm),af_err,(Ptr{af_array},af_array,Cint),out,_in,dim)
 end
 
@@ -653,11 +653,22 @@ end
 function af_iota(out,ndims::UInt32,dims,t_ndims::UInt32,tdims,_type::af_dtype)
     ccall((:af_iota,data),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},UInt32,Ptr{dim_t},af_dtype),out,ndims,dims,t_ndims,tdims,_type)
 end
-
-function af_randu(out::Ptr{Void}, ndims...,dims,_type::af_dtype)
-    ccall((:af_randu,af_lib), Cint,(Ptr{Ptr{Void}}, UInt32,Ptr{dim}, Cuint), ptr ,ndims,dims,_type)
+=#
+function af_randu!(ptr::Base.Ref, dims::Vector{Int}, T::DataType)
+    err = ccall((:af_randu,af_lib), 
+                Cint, (Ptr{Ptr{Void}}, Cint, Ptr{Int}, Cuint), 
+                ptr , length(dims), pointer(dims), aftype(T))
+    err == 0 || throwAFerror(err)
 end
 
+function af_randn!(ptr::Base.Ref, dims::Vector{Int}, T::DataType)
+    err = ccall((:af_randn,af_lib), 
+                Cint, (Ptr{Ptr{Void}}, Cint, Ptr{Int}, Cuint), 
+                ptr , length(dims), pointer(dims), aftype(T))
+    err == 0 || throwAFerror(err)
+end
+
+#=
 function af_randn(out,ndims::UInt32,dims,_type::af_dtype)
     ccall((:af_randn,data),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),out,ndims,dims,_type)
 end
@@ -1385,3 +1396,4 @@ end
 function af_homography(H,inliers,x_src::af_array,y_src::af_array,x_dst::af_array,y_dst::af_array,htype::af_homography_type,inlier_thr::Cfloat,iterations::UInt32,otype::af_dtype)
     ccall((:af_homography,vision),af_err,(Ptr{af_array},Ptr{Cint},af_array,af_array,af_array,af_array,af_homography_type,Cfloat,UInt32,af_dtype),H,inliers,x_src,y_src,x_dst,y_dst,htype,inlier_thr,iterations,otype)
 end
+=#

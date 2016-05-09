@@ -13,6 +13,7 @@ end
 
 include("error.jl")
 include("defns.jl")
+include("wrap.jl")
 include("utils.jl")
 include("create.jl")
 
