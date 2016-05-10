@@ -506,9 +506,14 @@ function af_write_array(arr::af_array,data,bytes::Cint,src::af_source)
     ccall((:af_write_array,array),af_err,(af_array,Ptr{Void},Cint,af_source),arr,data,bytes,src)
 end
 
-function af_get_data_ptr(data,arr::af_array)
-    ccall((:af_get_data_ptr,array),af_err,(Ptr{Void},af_array),data,arr)
+
+function af_get_data_ptr!(ret::Vector{UInt8}, x::AFArray, T::DataType)
+    err = ccall((:af_get_data_ptr, af_lib), 
+                Cint, (Ptr{T}, Ptr{Ptr{Void}}), 
+                pointer(ret), x.ptr)
+    err == 0 || throwAFerror(err)
 end
+
 
 function af_release_array(arr::af_array)
     ccall((:af_release_array,array),af_err,(af_array,),arr)
@@ -534,14 +539,24 @@ function af_get_type(_type,arr::af_array)
     ccall((:af_get_type,array),af_err,(Ptr{af_dtype},af_array),_type,arr)
 end
 
-function af_get_dims(d0,d1,d2,d3,arr::af_array)
-    ccall((:af_get_dims,array),af_err,(Ptr{dim_t},Ptr{dim_t},Ptr{dim_t},Ptr{dim_t},af_array),d0,d1,d2,d3,arr)
+=#
+function af_get_dims!(d1::Base.Ref, d2::Base.Ref, d3::Base.Ref, d4::Base.Ref, arr::AFArray)
+    err = ccall((:af_get_dims, af_lib), 
+                Cint, 
+                (Ptr{Cuint}, Ptr{Cuint}, Ptr{Cuint}, Ptr{Cuint}, Ptr{Void}),
+                d1, d2, d3, d4, arr.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_get_numdims(result,arr::af_array)
-    ccall((:af_get_numdims,array),af_err,(Ptr{UInt32},af_array),result,arr)
+
+function af_get_numdims!(n::Base.Ref, ptr::Ptr{Void})
+    err = ccall((:af_get_numdims, af_lib),
+            Cint, (Ptr{Cuint}, Ptr{Void}),
+            n, ptr)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_is_empty(result,arr::af_array)
     ccall((:af_is_empty,array),af_err,(Ptr{Bool},af_array),result,arr)
 end

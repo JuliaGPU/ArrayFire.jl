@@ -17,6 +17,7 @@ function convert{T,N}(::Type{Array{T,N}}, x::AFAbstractArray{T,N})
                 Cint, (Ptr{T}, Ptr{Ptr{Void}}), 
                 pointer(ret), x.ptr)
     err == 0 || throwAFerror(err)
+    #af_get_data_ptr!(ret, x, T)
     ret = reinterpret(T, ret)
     ret = reshape(ret, size(x)...)
     ret
@@ -26,10 +27,8 @@ function size(a::AFArray)
     dim1 = Base.RefValue{Cuint}(0)
     dim2 = Base.RefValue{Cuint}(0)
     dim3 = Base.RefValue{Cuint}(0)
-    dim4 = Base.RefValue{Cuint}(0)   
-    ccall((:af_get_dims, af_lib),
-            Cint, (Ptr{Cuint}, Ptr{Cuint}, Ptr{Cuint}, Ptr{Cuint}, Ptr{Void}),
-            dim1, dim2, dim3, dim4, a.ptr)
+    dim4 =Base.RefValue{Cuint}(0)   
+    af_get_dims!(dim1, dim2, dim3, dim4, a)
     n = ndims(a)
     dim4_to_dims(Dim4(dim1[], dim2[], dim3[], dim4[]), n)
 end
@@ -50,17 +49,13 @@ end
         
 function ndims(a::AFArray)
     n = Base.RefValue{Cuint}(0)
-    err = ccall((:af_get_numdims, af_lib),
-            Cint, (Ptr{Cuint}, Ptr{Void}),
-            n, a.ptr)
+    af_get_numdims!(n, a.ptr) 
     Int(n[])
 end
 
 function ndims(ptr::Ptr{Void})
     n = Base.RefValue{Cuint}(0)
-    err = ccall((:af_get_numdims, af_lib),
-            Cint, (Ptr{Cuint}, Ptr{Void}),
-            n, ptr)
+    af_get_numdims!(n, ptr)
     Int(n[])
 end 
 
