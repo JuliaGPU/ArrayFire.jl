@@ -23,6 +23,8 @@ function convert{T,N}(::Type{Array{T,N}}, x::AFAbstractArray{T,N})
     ret
 end
 
+call{T,N}(::Type{Array}, a::AFArray{T,N}) = convert(Array{T,N}, a)
+
 function size(a::AFArray)
     dim1 = Base.RefValue{Cuint}(0)
     dim2 = Base.RefValue{Cuint}(0)
