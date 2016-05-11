@@ -1,4 +1,5 @@
 import Base: rand, randn, convert
+export constant
 
 function rand{T}(::Type{AFArray{T}}, dims::Integer...)
     ptr = new_ptr()
@@ -27,3 +28,15 @@ end
             
 call{T,N}(::Type{AFArray}, a::Array{T,N}) = convert(AFArray{T,N}, a)
 convert{T,N}(::Type{AFArray}, a::Array{T,N}) = AFArray(a)
+
+function constant{T<:Real}(val::T, dims::Integer...)
+    n = length(dims)
+    dims = [dims...]
+    for i = n+1:4
+        push!(dims, 1)
+    end
+    ptr = new_ptr()
+    af_constant!(ptr, val, n, dims, T)
+    AFArray{T}(ptr[])
+end 
+

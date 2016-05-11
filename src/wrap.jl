@@ -129,23 +129,35 @@ end
 function af_set_intersect(out,first::af_array,second::af_array,is_unique::Bool)
     ccall((:af_set_intersect,algorithm),af_err,(Ptr{af_array},af_array,af_array,Bool),out,first,second,is_unique)
 end
-
-function af_add(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_add,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
+=#
+function af_add(out::Base.Ref, lhs::AFArray, rhs::AFArray,batch::Bool = true)
+    err = ccall((:af_add, af_lib), 
+                Cint, (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
 end
 
-function af_sub(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_sub,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
+function af_sub(out::Base.Ref, lhs::AFArray, rhs::AFArray,batch::Bool = true)
+    err = ccall((:af_sub, af_lib), 
+                Cint, (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
 end
 
-function af_mul(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_mul,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
+function af_mul(out::Base.Ref, lhs::AFArray, rhs::AFArray,batch::Bool = true)
+    err = ccall((:af_mul, af_lib), 
+                Cint, (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
 end
 
-function af_div(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_div,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
+function af_div(out::Base.Ref, lhs::AFArray, rhs::AFArray,batch::Bool = true)
+    err = ccall((:af_div, af_lib), 
+                Cint, (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
 end
-
+#=
 function af_lt(out,lhs::af_array,rhs::af_array,batch::Bool)
     ccall((:af_lt,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
 end
@@ -646,11 +658,16 @@ end
 function af_transpose_inplace(_in::af_array,conjugate::Bool)
     ccall((:af_transpose_inplace,blas),af_err,(af_array,Bool),_in,conjugate)
 end
+=#
 
-function af_constant(arr,val::Cdouble,ndims::UInt32,dims,_type::af_dtype)
-    ccall((:af_constant,data),af_err,(Ptr{af_array},Cdouble,UInt32,Ptr{dim_t},af_dtype),arr,val,ndims,dims,_type)
+function af_constant!(ptr::Base.Ref, val::Real, n::Int, dims::Vector{Int}, T::DataType)
+    err = ccall((:af_constant, af_lib), Cint, 
+                (Ptr{Void}, Cdouble, Cint, Ptr{Int}, Cuint),
+                ptr, val, n, pointer(dims), aftype(T))
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_constant_complex(arr,real::Cdouble,imag::Cdouble,ndims::UInt32,dims,_type::af_dtype)
     ccall((:af_constant_complex,data),af_err,(Ptr{af_array},Cdouble,Cdouble,UInt32,Ptr{dim_t},af_dtype),arr,real,imag,ndims,dims,_type)
 end

@@ -16,5 +16,6 @@ include("defns.jl")
 include("wrap.jl")
 include("utils.jl")
 include("create.jl")
+include("math.jl")
 
 end
