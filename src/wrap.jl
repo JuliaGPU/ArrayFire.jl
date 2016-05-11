@@ -490,9 +490,11 @@ function af_release_indexers(indexers)
     ccall((:af_release_indexers,index),af_err,(Ptr{af_index_t},),indexers)
 end
 
+
 function af_create_array(arr,data,ndims::UInt32,dims,_type::af_dtype)
     ccall((:af_create_array,array),af_err,(Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),arr,data,ndims,dims,_type)
 end
+
 
 function af_create_handle(arr,ndims::UInt32,dims,_type::af_dtype)
     ccall((:af_create_handle,array),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),arr,ndims,dims,_type)

@@ -48,6 +48,15 @@ function dim4_to_dims(d::Dim4, n::Integer)
         throw(ArgumentError("Too many dimensions for an ArrayFire Array"))
     end
 end
+
+function get_all_dims(a::Array)
+    n = ndims(a)
+    dims = [size(a)...]
+    for i = n+1:4
+        push!(dims, 1)
+    end
+    dims
+end
         
 function ndims(a::AFArray)
     n = Base.RefValue{Cuint}(0)
