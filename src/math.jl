@@ -36,3 +36,9 @@ function Base.erf(a::AFArray)
     af_erf(ptr, a)
     AFArray{backend_eltype(ptr[])}(ptr[]) 
 end
+
+function Base.log10(a::AFArray)
+    ptr = new_ptr()
+    af_log10(ptr, a)
+    AFArray{backend_eltype(ptr[])}(ptr[]) 
+end

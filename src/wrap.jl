@@ -404,11 +404,15 @@ end
 function af_log1p(out,_in::af_array)
     ccall((:af_log1p,arith),af_err,(Ptr{af_array},af_array),out,_in)
 end
+=#
 
-function af_log10(out,_in::af_array)
-    ccall((:af_log10,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_log10(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_log10,af_lib), Cint,
+            (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_log2(out,_in::af_array)
     ccall((:af_log2,arith),af_err,(Ptr{af_array},af_array),out,_in)
 end
