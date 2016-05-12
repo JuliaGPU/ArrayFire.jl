@@ -40,3 +40,20 @@ function constant{T<:Real}(val::T, dims::Integer...)
     AFArray{T}(ptr[])
 end 
 
+function constant{T}(val::Complex{T}, dims::Integer...)
+    n = length(dims)
+    dims = [dims...]
+    for i = n+1:4
+        push!(dims, 1)
+    end
+    ptr = new_ptr()
+    if T <: Integer
+        val = convert(Complex{Float32}, val)
+    end
+    af_constant_complex!(ptr, val, n, dims, Float32)
+    if T <: Integer
+        AFArray{Complex{Float32}}(ptr[])
+    else
+        AFArray{Complex{T}}(ptr[])
+    end
+end

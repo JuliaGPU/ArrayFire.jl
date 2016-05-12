@@ -667,11 +667,16 @@ function af_constant!(ptr::Base.Ref, val::Real, n::Int, dims::Vector{Int}, T::Da
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_constant_complex(arr,real::Cdouble,imag::Cdouble,ndims::UInt32,dims,_type::af_dtype)
-    ccall((:af_constant_complex,data),af_err,(Ptr{af_array},Cdouble,Cdouble,UInt32,Ptr{dim_t},af_dtype),arr,real,imag,ndims,dims,_type)
+function af_constant_complex!(ptr::Base.Ref, val::Complex, n::Int, dims::Vector{Int}, T::DataType)
+    r = real(val)
+    i = imag(val)
+    err = ccall((:af_constant_complex, af_lib), Cint, 
+                (Ptr{Void}, Cdouble, Cdouble, Cint, Ptr{Int}, Cuint),
+                ptr, r, i, n, pointer(dims), aftype(Complex{T}))
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_constant_long(arr,val::intl,ndims::UInt32,dims)
     ccall((:af_constant_long,data),af_err,(Ptr{af_array},intl,UInt32,Ptr{dim_t}),arr,val,ndims,dims)
 end
