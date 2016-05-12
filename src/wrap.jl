@@ -386,10 +386,13 @@ function af_expm1(out,_in::af_array)
     ccall((:af_expm1,arith),af_err,(Ptr{af_array},af_array),out,_in)
 end
 
-function af_erf(out,_in::af_array)
-    ccall((:af_erf,arith),af_err,(Ptr{af_array},af_array),out,_in)
+=#
+function af_erf(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_erf,af_lib), Cint,
+            (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
-
+#=
 function af_erfc(out,_in::af_array)
     ccall((:af_erfc,arith),af_err,(Ptr{af_array},af_array),out,_in)
 end

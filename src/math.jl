@@ -30,3 +30,9 @@ for (op,fn) in ((:sin, :af_sin), (:cos, :af_cos), (:tan, :af_tan), (:asin, :af_a
         AFArray{backend_eltype(out[])}(out[])
     end
 end
+
+function Base.erf(a::AFArray)
+    ptr = new_ptr()
+    af_erf(ptr, a)
+    AFArray{backend_eltype(ptr[])}(ptr[]) 
+end
