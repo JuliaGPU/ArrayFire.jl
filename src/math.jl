@@ -21,3 +21,12 @@ for op in (:+, :.+, :-, :.-, :*, :.*, :/, :./)
     @eval Base.($(quot(op))){S<:Number,T<:Number}(v::S, a::AFArray{T}) = Base.($(quot(op)))(a, v)
 end
 
+for (op,fn) in ((:sin, :af_sin), (:cos, :af_cos), (:tan, :af_tan), (:asin, :af_asin), 
+                (:acos, :af_acos), (:atan, :af_atan), (:sinh, :af_sinh), (:cosh, :af_cosh),
+                (:tanh, :af_tanh), (:asinh, :af_asinh), (:acosh, :af_acosh), (:atanh, :af_atanh))
+    @eval function Base.($(quot(op)))(a::AFArray) 
+        out = new_ptr()
+        eval($(quot(fn)))(out, a)
+        AFArray{backend_eltype(out[])}(out[])
+    end
+end

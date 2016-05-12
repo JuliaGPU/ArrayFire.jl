@@ -265,31 +265,43 @@ end
 function af_hypot(out,lhs::af_array,rhs::af_array,batch::Bool)
     ccall((:af_hypot,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
 end
-
-function af_sin(out,_in::af_array)
-    ccall((:af_sin,arith),af_err,(Ptr{af_array},af_array),out,_in)
+=#
+function af_sin(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_sin, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_cos(out,_in::af_array)
-    ccall((:af_cos,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_cos(out,_in::AFArray)
+    err = ccall((:af_cos, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_tan(out,_in::af_array)
-    ccall((:af_tan,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_tan(out,_in::AFArray)
+    err = ccall((:af_tan, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_asin(out,_in::af_array)
-    ccall((:af_asin,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_asin(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_asin, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_acos(out,_in::af_array)
-    ccall((:af_acos,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_acos(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_acos, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_atan(out,_in::af_array)
-    ccall((:af_atan,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_atan(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_atan, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
-
+#=
 function af_atan2(out,lhs::af_array,rhs::af_array,batch::Bool)
     ccall((:af_atan2,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
 end
@@ -313,31 +325,43 @@ end
 function af_conjg(out,_in::af_array)
     ccall((:af_conjg,arith),af_err,(Ptr{af_array},af_array),out,_in)
 end
-
-function af_sinh(out,_in::af_array)
-    ccall((:af_sinh,arith),af_err,(Ptr{af_array},af_array),out,_in)
+=#
+function af_sinh(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_sinh, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_cosh(out,_in::af_array)
-    ccall((:af_cosh,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_cosh(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_cosh, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_tanh(out,_in::af_array)
-    ccall((:af_tanh,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_tanh(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_tanh, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_asinh(out,_in::af_array)
-    ccall((:af_asinh,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_asinh(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_asinh, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_acosh(out,_in::af_array)
-    ccall((:af_acosh,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_acosh(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_acosh, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_atanh(out,_in::af_array)
-    ccall((:af_atanh,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_atanh(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_atanh, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
-
+#=
 function af_root(out,lhs::af_array,rhs::af_array,batch::Bool)
     ccall((:af_root,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
 end
@@ -548,12 +572,15 @@ end
 function af_get_elements(elems,arr::af_array)
     ccall((:af_get_elements,array),af_err,(Ptr{dim_t},af_array),elems,arr)
 end
+=#
 
-function af_get_type(_type,arr::af_array)
-    ccall((:af_get_type,array),af_err,(Ptr{af_dtype},af_array),_type,arr)
+function af_get_type(_type::Base.Ref, arr::Ptr{Void})
+    err = ccall((:af_get_type, af_lib), Cint, 
+                (Ptr{Cuint}, Ptr{Void}), _type, arr)
+    err == 0 || throwAFerror(err)
 end
 
-=#
+
 function af_get_dims!(d1::Base.Ref, d2::Base.Ref, d3::Base.Ref, d4::Base.Ref, arr::AFArray)
     err = ccall((:af_get_dims, af_lib), 
                 Cint, 

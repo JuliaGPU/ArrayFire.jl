@@ -78,3 +78,10 @@ function showarray{T,N}(io::IO, X::AFAbstractArray{T,N};
     !isempty(X) && println(io,":")
     showarray(io, convert(Array{T,N},X); header = false, kwargs...)
 end
+
+function backend_eltype(p::Ptr{Void})
+    t = Base.Ref{Cuint}(0)
+    af_get_type(t, p)
+    jltype(t[])
+end
+backend_eltype(a::AFArray) = backend_eltype(a.ptr)
