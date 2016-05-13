@@ -35,19 +35,24 @@ function af_max(out::Base.Ref, _in::AFArray, dim::Integer)
                 Cint ,(Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr , dim)
     err == 0 || throwAFerror(err)
 end
-#=
-function af_all_true(out,_in::af_array,dim::Cint)
-    ccall((:af_all_true,algorithm),af_err,(Ptr{af_array},af_array,Cint),out,_in,dim)
+
+function af_all_true(out::Base.Ref, _in::AFArray, dim::Integer)
+    err = ccall((:af_all_true,af_lib), 
+                Cint ,(Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr , dim)
+    err == 0 || throwAFerror(err)
 end
 
-function af_any_true(out,_in::af_array,dim::Cint)
-    ccall((:af_any_true,algorithm),af_err,(Ptr{af_array},af_array,Cint),out,_in,dim)
+function af_any_true(out::Base.Ref, _in::AFArray, dim::Integer)
+    err = ccall((:af_any_true,af_lib), 
+                Cint ,(Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr , dim)
+    err == 0 || throwAFerror(err)
 end
 
-function af_count(out,_in::af_array,dim::Cint)
-    ccall((:af_count,algorithm),af_err,(Ptr{af_array},af_array,Cint),out,_in,dim)
+function af_count(out::Base.Ref,_in::AFArray,dim::Integer)
+    err = ccall((:af_count,af_lib), 
+                Cint ,(Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr , dim)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_sum_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
     err= ccall((:af_sum_all, af_lib), 
@@ -85,19 +90,26 @@ function af_max_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
                 Cint, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
     err == 0 || throwAFerror(err)
 end
+
+function af_all_true_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
+    err = ccall((:af_all_true_all, af_lib), 
+                Cint, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
+function af_any_true_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
+    err = ccall((:af_any_true_all, af_lib), 
+                Cint, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
+function af_count_all(real::Base.Ref, imag::Base.Ref,_in::AFArray)
+    err = ccall((:af_count_all, af_lib), 
+                Cint, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
 #=
-function af_all_true_all(real,imag,_in::af_array)
-    ccall((:af_all_true_all,algorithm),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array),real,imag,_in)
-end
-
-function af_any_true_all(real,imag,_in::af_array)
-    ccall((:af_any_true_all,algorithm),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array),real,imag,_in)
-end
-
-function af_count_all(real,imag,_in::af_array)
-    ccall((:af_count_all,algorithm),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array),real,imag,_in)
-end
-
 function af_imin(out,idx,_in::af_array,dim::Cint)
     ccall((:af_imin,algorithm),af_err,(Ptr{af_array},Ptr{af_array},af_array,Cint),out,idx,_in,dim)
 end
