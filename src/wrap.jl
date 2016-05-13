@@ -2,30 +2,40 @@
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
 
-#=function af_sum(out,_in::af_array,dim::Cint)
-    ccall((:af_sum,algorithm),af_err,(Ptr{af_array},af_array,Cint),out,_in,dim)
+function af_sum(out::Base.Ref, _in::AFArray, dim::Integer)
+    err= ccall((:af_sum,af_lib), 
+                Cint ,(Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr , dim)
+    err == 0 || throwAFerror(err)
 end
-
+#=
 function af_sum_nan(out,_in::af_array,dim::Cint,nanval::Cdouble)
     ccall((:af_sum_nan,algorithm),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in,dim,nanval)
 end
+=#
 
-function af_product(out,_in::af_array,dim::Cint)
-    ccall((:af_product,algorithm),af_err,(Ptr{af_array},af_array,Cint),out,_in,dim)
+function af_product(out::Base.Ref, _in::AFArray, dim::Integer)
+    err= ccall((:af_product,af_lib), 
+                Cint ,(Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr , dim)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_product_nan(out,_in::af_array,dim::Cint,nanval::Cdouble)
     ccall((:af_product_nan,algorithm),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in,dim,nanval)
 end
-
-function af_min(out,_in::af_array,dim::Cint)
-    ccall((:af_min,algorithm),af_err,(Ptr{af_array},af_array,Cint),out,_in,dim)
+=#
+function af_min(out::Base.Ref, _in::AFArray, dim::Integer)
+    err = ccall((:af_min,af_lib), 
+                Cint ,(Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr , dim)
+    err == 0 || throwAFerror(err)
 end
 
-function af_max(out,_in::af_array,dim::Cint)
-    ccall((:af_max,algorithm),af_err,(Ptr{af_array},af_array,Cint),out,_in,dim)
+function af_max(out::Base.Ref, _in::AFArray, dim::Integer)
+    err = ccall((:af_max,af_lib), 
+                Cint ,(Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr , dim)
+    err == 0 || throwAFerror(err)
 end
-
+#=
 function af_all_true(out,_in::af_array,dim::Cint)
     ccall((:af_all_true,algorithm),af_err,(Ptr{af_array},af_array,Cint),out,_in,dim)
 end
@@ -37,31 +47,45 @@ end
 function af_count(out,_in::af_array,dim::Cint)
     ccall((:af_count,algorithm),af_err,(Ptr{af_array},af_array,Cint),out,_in,dim)
 end
+=#
 
-function af_sum_all(real,imag,_in::af_array)
-    ccall((:af_sum_all,algorithm),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array),real,imag,_in)
+function af_sum_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
+    err= ccall((:af_sum_all, af_lib), 
+                Cint, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_sum_nan_all(real,imag,_in::af_array,nanval::Cdouble)
     ccall((:af_sum_nan_all,algorithm),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array,Cdouble),real,imag,_in,nanval)
 end
 
-function af_product_all(real,imag,_in::af_array)
-    ccall((:af_product_all,algorithm),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array),real,imag,_in)
+=#
+
+function af_product_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
+    err= ccall((:af_product_all, af_lib), 
+                Cint, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_product_nan_all(real,imag,_in::af_array,nanval::Cdouble)
     ccall((:af_product_nan_all,algorithm),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array,Cdouble),real,imag,_in,nanval)
 end
 
-function af_min_all(real,imag,_in::af_array)
-    ccall((:af_min_all,algorithm),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array),real,imag,_in)
+=#
+function af_min_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
+    err = ccall((:af_min_all, af_lib), 
+                Cint, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_max_all(real,imag,_in::af_array)
-    ccall((:af_max_all,algorithm),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array),real,imag,_in)
+function af_max_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
+    err = ccall((:af_max_all, af_lib), 
+                Cint, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
-
+#=
 function af_all_true_all(real,imag,_in::af_array)
     ccall((:af_all_true_all,algorithm),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array),real,imag,_in)
 end
