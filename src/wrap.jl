@@ -369,42 +369,54 @@ end
 function af_pow(out,lhs::af_array,rhs::af_array,batch::Bool)
     ccall((:af_pow,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
 end
-
-function af_pow2(out,_in::af_array)
-    ccall((:af_pow2,arith),af_err,(Ptr{af_array},af_array),out,_in)
-end
-
-function af_exp(out,_in::af_array)
-    ccall((:af_exp,arith),af_err,(Ptr{af_array},af_array),out,_in)
-end
-
-function af_sigmoid(out,_in::af_array)
-    ccall((:af_sigmoid,arith),af_err,(Ptr{af_array},af_array),out,_in)
-end
-
-function af_expm1(out,_in::af_array)
-    ccall((:af_expm1,arith),af_err,(Ptr{af_array},af_array),out,_in)
-end
-
 =#
+function af_pow2(out,_in::AFArray)
+    err = ccall((:af_pow2,af_lib), Cint,
+            (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
+function af_exp(out,_in::AFArray)
+    err = ccall((:af_exp,af_lib), Cint,
+            (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
+function af_sigmoid(out,_in::AFArray)
+    err = ccall((:af_sigmoid,af_lib), Cint,
+            (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
+function af_expm1(out,_in::AFArray)
+    err = ccall((:af_expm1,af_lib), Cint,
+            (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
 function af_erf(out::Base.Ref,_in::AFArray)
     err = ccall((:af_erf,af_lib), Cint,
             (Ptr{Void},Ptr{Void}), out, _in.ptr)
     err == 0 || throwAFerror(err)
 end
-#=
-function af_erfc(out,_in::af_array)
-    ccall((:af_erfc,arith),af_err,(Ptr{af_array},af_array),out,_in)
+
+function af_erfc(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_erfc,af_lib), Cint,
+            (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_log(out,_in::af_array)
-    ccall((:af_log,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_log(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_log,af_lib), Cint,
+            (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_log1p(out,_in::af_array)
-    ccall((:af_log1p,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_log1p(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_log1p,af_lib), Cint,
+            (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_log10(out::Base.Ref,_in::AFArray)
     err = ccall((:af_log10,af_lib), Cint,
@@ -412,31 +424,42 @@ function af_log10(out::Base.Ref,_in::AFArray)
     err == 0 || throwAFerror(err)
 end
 
+function af_log2(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_log2,af_lib), Cint,
+            (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
+function af_sqrt(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_sqrt,af_lib), Cint,
+            (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
+function af_cbrt(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_cbrt,af_lib), Cint,
+            (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
+function af_factorial(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_factorial,af_lib), Cint,
+            (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
+function af_tgamma(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_tgamma,af_lib), Cint,
+            (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
+function af_lgamma(out::Base.Ref,_in::AFArray)
+    err = ccall((:af_lgamma,af_lib), Cint,
+            (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
 #=
-function af_log2(out,_in::af_array)
-    ccall((:af_log2,arith),af_err,(Ptr{af_array},af_array),out,_in)
-end
-
-function af_sqrt(out,_in::af_array)
-    ccall((:af_sqrt,arith),af_err,(Ptr{af_array},af_array),out,_in)
-end
-
-function af_cbrt(out,_in::af_array)
-    ccall((:af_cbrt,arith),af_err,(Ptr{af_array},af_array),out,_in)
-end
-
-function af_factorial(out,_in::af_array)
-    ccall((:af_factorial,arith),af_err,(Ptr{af_array},af_array),out,_in)
-end
-
-function af_tgamma(out,_in::af_array)
-    ccall((:af_tgamma,arith),af_err,(Ptr{af_array},af_array),out,_in)
-end
-
-function af_lgamma(out,_in::af_array)
-    ccall((:af_lgamma,arith),af_err,(Ptr{af_array},af_array),out,_in)
-end
-
 function af_iszero(out,_in::af_array)
     ccall((:af_iszero,arith),af_err,(Ptr{af_array},af_array),out,_in)
 end
