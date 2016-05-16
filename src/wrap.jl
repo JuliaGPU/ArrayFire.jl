@@ -746,27 +746,39 @@ end
 function af_is_bool(result,arr::af_array)
     ccall((:af_is_bool,array),af_err,(Ptr{Bool},af_array),result,arr)
 end
+=#
 
-function af_set_backend(bknd::af_backend)
-    ccall((:af_set_backend,backend),af_err,(af_backend,),bknd)
+function af_set_backend(bknd::Cuint)
+    err = ccall((:af_set_backend,af_lib), Cint,
+                (Cuint,),bknd)
+    err == 0 || throwAFerror(err)
 end
 
-function af_get_backend_count(num_backends)
-    ccall((:af_get_backend_count,backend),af_err,(Ptr{UInt32},),num_backends)
+function af_get_backend_count(num_backends::Base.Ref)
+    err = ccall((:af_get_backend_count, af_lib), Cint,
+                (Ptr{UInt32},), num_backends)
+    err == 0 || throwAFerror(err)
 end
 
-function af_get_available_backends(backends)
-    ccall((:af_get_available_backends,backend),af_err,(Ptr{Cint},),backends)
+function af_get_available_backends(backends::Base.Ref)
+    err = ccall((:af_get_available_backends, af_lib), Cint,
+                (Ptr{Cint}, ), backends)
+    err == 0 || throwAFerror(err)
 end
 
-function af_get_backend_id(backend,_in::af_array)
-    ccall((:af_get_backend_id,backend),af_err,(Ptr{af_backend},af_array),backend,_in)
+function af_get_backend_id(backend::Base.Ref,_in::AFArray)
+    err = ccall((:af_get_backend_id, af_lib), Cint,
+                (Ptr{Cuint}, Ptr{Void}), backend, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
 function af_get_active_backend(backend)
-    ccall((:af_get_active_backend,backend),af_err,(Ptr{af_backend},),backend)
+    err = ccall((:af_get_active_backend, af_lib), Cint, 
+                (Ptr{Cuint},) , backend)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_matmul(out,lhs::af_array,rhs::af_array,optLhs::af_mat_prop,optRhs::af_mat_prop)
     ccall((:af_matmul,blas),af_err,(Ptr{af_array},af_array,af_array,af_mat_prop,af_mat_prop),out,lhs,rhs,optLhs,optRhs)
 end
