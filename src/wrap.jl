@@ -141,19 +141,31 @@ end
 function af_diff2(out,_in::af_array,dim::Cint)
     ccall((:af_diff2,algorithm),af_err,(Ptr{af_array},af_array,Cint),out,_in,dim)
 end
+=#
 
-function af_sort(out,_in::af_array,dim::UInt32,isAscending::Bool)
-    ccall((:af_sort,algorithm),af_err,(Ptr{af_array},af_array,UInt32,Bool),out,_in,dim,isAscending)
+function af_sort(out::Base.Ref, _in::AFArray, dim::UInt32, isAscending::Bool)
+    err = ccall((:af_sort, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, UInt32, Bool), 
+                out, _in.ptr, dim, isAscending)
+    err == 0 || throwAFerror(err)
 end
 
-function af_sort_index(out,indices,_in::af_array,dim::UInt32,isAscending::Bool)
-    ccall((:af_sort_index,algorithm),af_err,(Ptr{af_array},Ptr{af_array},af_array,UInt32,Bool),out,indices,_in,dim,isAscending)
+function af_sort_index(out::Base.Ref, indices::Base.Ref, _in::AFArray, dim::UInt32, isAscending::Bool)
+    err = ccall((:af_sort_index, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, UInt32, Bool), 
+                out, indices, _in.ptr, dim, isAscending)
+    err == 0 || throwAFerror(err)
 end
 
-function af_sort_by_key(out_keys,out_values,keys::af_array,values::af_array,dim::UInt32,isAscending::Bool)
-    ccall((:af_sort_by_key,algorithm),af_err,(Ptr{af_array},Ptr{af_array},af_array,af_array,UInt32,Bool),out_keys,out_values,keys,values,dim,isAscending)
+function af_sort_by_key(out_keys::Base.Ref, out_values::Base.Ref, keys::AFArray, 
+                        values::AFArray, dim::UInt32, isAscending::Bool)
+    err = ccall((:af_sort_index, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}, UInt32, Bool), 
+                out_keys , out_values, keys.ptr, values.ptr, dim, isAscending)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_set_unique(out,_in::af_array,is_sorted::Bool)
     ccall((:af_set_unique,algorithm),af_err,(Ptr{af_array},af_array,Bool),out,_in,is_sorted)
 end
