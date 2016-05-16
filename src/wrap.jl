@@ -125,23 +125,34 @@ end
 function af_imax_all(real,imag,idx,_in::af_array)
     ccall((:af_imax_all,algorithm),af_err,(Ptr{Cdouble},Ptr{Cdouble},Ptr{UInt32},af_array),real,imag,idx,_in)
 end
-
-function af_accum(out,_in::af_array,dim::Cint)
-    ccall((:af_accum,algorithm),af_err,(Ptr{af_array},af_array,Cint),out,_in,dim)
-end
-
-function af_where(idx,_in::af_array)
-    ccall((:af_where,algorithm),af_err,(Ptr{af_array},af_array),idx,_in)
-end
-
-function af_diff1(out,_in::af_array,dim::Cint)
-    ccall((:af_diff1,algorithm),af_err,(Ptr{af_array},af_array,Cint),out,_in,dim)
-end
-
-function af_diff2(out,_in::af_array,dim::Cint)
-    ccall((:af_diff2,algorithm),af_err,(Ptr{af_array},af_array,Cint),out,_in,dim)
-end
 =#
+function af_accum(out::Base.Ref, _in::AFArray, dim::Cint)
+    err = ccall((:af_accum, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cint),
+                out, _in.ptr, dim)
+    err == 0 || throwAFerror(err)
+end
+
+function af_where(idx::Base.Ref, _in::AFArray)
+    err = ccall((:af_where, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}),
+                idx, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
+function af_diff1(out::Base.Ref,_in::AFArray, dim::Cint)
+    err = ccall((:af_diff1, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cint),
+                out, _in.ptr, dim)
+    err == 0 || throwAFerror(err)
+end
+
+function af_diff2(out::Base.Ref, _in::AFArray, dim::Cint)
+    err = ccall((:af_diff2, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cint),
+                out, _in.ptr, dim)
+    err == 0 || throwAFerror(err)
+end
 
 function af_sort(out::Base.Ref, _in::AFArray, dim::UInt32, isAscending::Bool)
     err = ccall((:af_sort, af_lib), Cint, 
@@ -159,25 +170,33 @@ end
 
 function af_sort_by_key(out_keys::Base.Ref, out_values::Base.Ref, keys::AFArray, 
                         values::AFArray, dim::UInt32, isAscending::Bool)
-    err = ccall((:af_sort_index, af_lib), Cint, 
+    err = ccall((:af_sort_by_key, af_lib), Cint, 
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}, UInt32, Bool), 
                 out_keys , out_values, keys.ptr, values.ptr, dim, isAscending)
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_set_unique(out,_in::af_array,is_sorted::Bool)
-    ccall((:af_set_unique,algorithm),af_err,(Ptr{af_array},af_array,Bool),out,_in,is_sorted)
+function af_set_unique(out::Base.Ref, _in::AFArray, is_sorted::Bool)
+    err = ccall((:af_set_unique, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Bool), 
+                out, _in.ptr, is_sorted)
+    err == 0 || throwAFerror(err)
 end
 
-function af_set_union(out,first::af_array,second::af_array,is_unique::Bool)
-    ccall((:af_set_union,algorithm),af_err,(Ptr{af_array},af_array,af_array,Bool),out,first,second,is_unique)
+function af_set_union(out::Base.Ref, first::AFArray, second::AFArray, is_unique::Bool)
+    err = ccall((:af_set_union, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool), 
+                out, first.ptr, second.ptr, is_unique)
+    err == 0 || throwAFerror(err)
 end
 
-function af_set_intersect(out,first::af_array,second::af_array,is_unique::Bool)
-    ccall((:af_set_intersect,algorithm),af_err,(Ptr{af_array},af_array,af_array,Bool),out,first,second,is_unique)
+function af_set_intersect(out::Base.Ref, first::AFArray, second::AFArray, is_unique::Bool)
+    err = ccall((:af_set_intersect, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool), 
+                out , first.ptr, second.ptr, is_unique)
+    err == 0 || throwAFerror(err)
 end
-=#
+
 function af_add(out::Base.Ref, lhs::AFArray, rhs::AFArray,batch::Bool = true)
     err = ccall((:af_add, af_lib), 
                 Cint, (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),

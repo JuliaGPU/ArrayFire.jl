@@ -1,8 +1,9 @@
 ### Vector Algorithms
 
-import Base: sum, min, max, minimum, maximum, countnz, any, all, sort
+import Base: sum, min, max, minimum, maximum, countnz, any, all, sort,
+                union, findnz, cumsum, diff
 
-export sortIndex
+export sortIndex, sortByKey, diff2
 
 # Reduction 
 
@@ -102,4 +103,52 @@ function sortByKey{S,T}(keys::AFArray{S}, values::AFArray{T}, dim::Integer = 1; 
     out_values = new_ptr()
     af_sort_by_key(out_keys, out_values, keys, values, Cuint(dim - 1), !rev)
     AFArray{S}(out_keys[]), AFArray{T}(out_values[])
+end
+
+# Set Operations
+
+function union{T,S}(a::AFArray{T}, b::AFArray{S}; is_unique = false)
+    out = new_ptr()
+    af_set_union(out, a, b, is_unique)
+    AFArray{af_promote(T,S)}(out[])
+end
+
+function unique{T}(a::AFArray{T}; is_sorted = false)
+    out = new_ptr()
+    af_set_unique(out, a, is_sorted)
+    AFArray{T}(out[])
+end
+
+function setdiff{T,S}(a::AFArray{T}, b::AFArray{S}; is_unique = false)
+    out = new_ptr()
+    af_set_intersect(out, a, b, is_unique)
+    AFArray{af_promote(T,S)}(out[])
+end
+
+# Inclusive Scan Operations
+
+function cumsum{T}(a::AFArray{T}, dim::Integer = 1)
+    out = new_ptr()
+    af_accum(out, a, Cint(dim-1))
+    AFArray{T}(out[])
+end
+
+function findnz(a::AFArray)
+    out = new_ptr()
+    af_where(out, a)
+    AFArray{backend_eltype(out[])}(out[]) + 1
+end
+
+# Numerical Differentiation
+
+function diff{T}(a::AFArray{T}, dim::Integer = 1)
+    out = new_ptr()
+    af_diff1(out, a, Cint(dim-1))
+    AFArray{T}(out[])
+end
+
+function diff2{T}(a::AFArray{T}, dim::Integer = 1)
+    out = new_ptr()
+    af_diff2(out, a, Cint(dim-1))
+    AFArray{T}(out[])
 end
