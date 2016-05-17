@@ -1471,63 +1471,95 @@ end
 function af_iir(y,b::af_array,a::af_array,x::af_array)
     ccall((:af_iir,signal),af_err,(Ptr{af_array},af_array,af_array,af_array),y,b,a,x)
 end
+=#
 
-function af_mean(out,_in::af_array,dim::dim_t)
-    ccall((:af_mean,statistics),af_err,(Ptr{af_array},af_array,dim_t),out,_in,dim)
+function af_mean(out::Base.Ref, _in::AFArray, dim::Cuint)
+    err = ccall((:af_mean, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cuint), out, _in.ptr ,dim)
+    err == 0 || throwAFerror(err)
 end
 
-function af_mean_weighted(out,_in::af_array,weights::af_array,dim::dim_t)
-    ccall((:af_mean_weighted,statistics),af_err,(Ptr{af_array},af_array,af_array,dim_t),out,_in,weights,dim)
+function af_mean_weighted(out::Base.Ref, _in::AFArray,weights::AFArray, dim::Cuint)
+    err = ccall((:af_mean_weighted, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cuint), out, _in.ptr, weights.ptr, dim)
+    err == 0 || throwAFerror(err)
 end
 
-function af_var(out,_in::af_array,isbiased::Bool,dim::dim_t)
-    ccall((:af_var,statistics),af_err,(Ptr{af_array},af_array,Bool,dim_t),out,_in,isbiased,dim)
+function af_var(out::Base.Ref, _in::AFArray, isbiased::Bool, dim::Cuint)
+    err = ccall((:af_var, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Bool, Cuint), out, _in.ptr , isbiased, dim)
+    err == 0 || throwAFerror(err)
 end
 
-function af_var_weighted(out,_in::af_array,weights::af_array,dim::dim_t)
-    ccall((:af_var_weighted,statistics),af_err,(Ptr{af_array},af_array,af_array,dim_t),out,_in,weights,dim)
+function af_var_weighted(out::Base.Ref, _in::AFArray, weights::AFArray, dim::Cuint)
+    err = ccall((:af_var_weighted, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cuint), out, _in.ptr, weights.ptr, dim)
+    err == 0 || throwAFerror(err)
 end
 
-function af_stdev(out,_in::af_array,dim::dim_t)
-    ccall((:af_stdev,statistics),af_err,(Ptr{af_array},af_array,dim_t),out,_in,dim)
+
+function af_stdev(out::Base.Ref, _in::AFArray, dim::Cuint)
+    err = ccall((:af_stdev, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cuint), out, _in.ptr ,dim)
+    err == 0 || throwAFerror(err)
 end
 
-function af_cov(out,X::af_array,Y::af_array,isbiased::Bool)
-    ccall((:af_cov,statistics),af_err,(Ptr{af_array},af_array,af_array,Bool),out,X,Y,isbiased)
+function af_cov(out::Base.Ref, X::AFArray, Y::AFArray, isbiased::Bool)
+    err = ccall((:af_cov, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool), 
+                out, X.ptr, Y.ptr, isbiased)
+    err == 0 || throwAFerror(err)
 end
 
-function af_median(out,_in::af_array,dim::dim_t)
-    ccall((:af_median,statistics),af_err,(Ptr{af_array},af_array,dim_t),out,_in,dim)
+function af_median(out::Base.Ref, _in::AFArray, dim::Cuint)
+    err = ccall((:af_median, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cuint), out, _in.ptr ,dim)
+    err == 0 || throwAFerror(err)
 end
 
-function af_mean_all(real,imag,_in::af_array)
-    ccall((:af_mean_all,statistics),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array),real,imag,_in)
+function af_mean_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
+    err = ccall((:af_mean_all, af_lib), Cint,
+                (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_mean_all_weighted(real,imag,_in::af_array,weights::af_array)
-    ccall((:af_mean_all_weighted,statistics),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array,af_array),real,imag,_in,weights)
+function af_mean_all_weighted(real::Base.Ref, imag::Base.Ref, _in::AFArray, weights::AFArray)
+    err = ccall((:af_mean_all_weighted, af_lib), Cint,
+                (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}, Ptr{Void}), real, imag, _in.ptr, weights)
+    err == 0 || throwAFerror(err)
 end
 
-function af_var_all(realVal,imagVal,_in::af_array,isbiased::Bool)
-    ccall((:af_var_all,statistics),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array,Bool),realVal,imagVal,_in,isbiased)
+function af_var_all(real::Base.Ref, imag::Base.Ref, _in::AFArray, isbiased::Bool)
+    err = ccall((:af_var_all, af_lib), Cint,
+                (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}, Bool), real, imag, _in.ptr, isbiased)
+    err == 0 || throwAFerror(err)
 end
 
-function af_var_all_weighted(realVal,imagVal,_in::af_array,weights::af_array)
-    ccall((:af_var_all_weighted,statistics),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array,af_array),realVal,imagVal,_in,weights)
+function af_var_all_weighted(real::Base.Ref,imag::Base.Ref,_in::AFArray,weights::AFArray)
+    err = ccall((:af_var_all_weighted, af_lib), Cint,
+                (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}, Ptr{Void}), real, imag, _in.ptr, weights)
+    err == 0 || throwAFerror(err)
 end
 
-function af_stdev_all(real,imag,_in::af_array)
-    ccall((:af_stdev_all,statistics),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array),real,imag,_in)
+function af_stdev_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
+    err = ccall((:af_stdev_all, af_lib), Cint,
+                (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_median_all(realVal,imagVal,_in::af_array)
-    ccall((:af_median_all,statistics),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array),realVal,imagVal,_in)
+function af_median_all(realVal::Base.Ref, imagVal::Base.Ref, _in::AFArray)
+    err = ccall((:af_median_all, af_lib), Cint,
+                (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_corrcoef(realVal,imagVal,X::af_array,Y::af_array)
-    ccall((:af_corrcoef,statistics),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array,af_array),realVal,imagVal,X,Y)
+function af_corrcoef(real::Base.Ref, imag::Base.Ref, X::AFArray, Y::AFArray)
+    err = ccall((:af_corrcoef,af_lib),Cint,
+                (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}, Ptr{Void}), real, imag, X.ptr, Y.ptr)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_fast(out,_in::af_array,thr::Cfloat,arc_length::UInt32,non_max::Bool,feature_ratio::Cfloat,edge::UInt32)
     ccall((:af_fast,vision),af_err,(Ptr{af_features},af_array,Cfloat,UInt32,Bool,Cfloat,UInt32),out,_in,thr,arc_length,non_max,feature_ratio,edge)
 end

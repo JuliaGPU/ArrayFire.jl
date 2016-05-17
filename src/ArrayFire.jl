@@ -19,5 +19,6 @@ include("create.jl")
 include("math.jl")
 include("vector.jl")
 include("backend.jl")
+include("stats.jl")
 
 end
