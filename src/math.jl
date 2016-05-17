@@ -1,5 +1,7 @@
 using Base.Meta
 
+import Base: complex, conj, real, imag
+
 export sigmoid
 
 for (op,fn) in ((:+,:af_add), (:.+,:af_add), (:-,:af_sub), (:.-,:af_sub), (:.*,:af_mul), (:./,:af_div))
@@ -44,3 +46,32 @@ function sigmoid(a::AFArray)
     AFArray{backend_eltype(out[])}(out[])
 end
 
+function complex{T<:Real}(a::AFArray{T})
+    out = new_ptr()
+    af_cplx(out, a)
+    AFArray{Complex{T}}(out[])
+end
+
+function complex{T<:Real}(a::AFArray{T}, b::AFArray{T})
+    out = new_ptr()
+    af_cplx2(out, a, b)
+    AFArray{Complex{T}}(out[])
+end
+
+function conj{T<:Complex}(a::AFArray{T})
+    out = new_ptr()
+    af_conjg(out, a)
+    AFArray{T}(out[])
+end
+
+function real{T}(a::AFArray{Complex{T}})
+    out = new_ptr()
+    af_real(out, a)
+    AFArray{T}(out[])
+end 
+
+function imag{T}(a::AFArray{Complex{T}})
+    out = new_ptr()
+    af_imag(out, a)
+    AFArray{T}(out[])
+end

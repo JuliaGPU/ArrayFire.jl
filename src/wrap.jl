@@ -372,27 +372,39 @@ end
 function af_atan2(out,lhs::af_array,rhs::af_array,batch::Bool)
     ccall((:af_atan2,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
 end
+=#
 
-function af_cplx2(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_cplx2,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
+function af_cplx2(out::Base.Ref ,lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_cplx2,af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool), out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
 end
 
-function af_cplx(out,_in::af_array)
-    ccall((:af_cplx,arith),af_err,(Ptr{af_array},af_array),out,_in)
+
+function af_cplx(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_cplx, af_lib), Cint, 
+                (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_real(out,_in::af_array)
-    ccall((:af_real,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_real(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_real, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
 function af_imag(out,_in::af_array)
-    ccall((:af_imag,arith),af_err,(Ptr{af_array},af_array),out,_in)
+    err = ccall((:af_imag, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
 function af_conjg(out,_in::af_array)
-    ccall((:af_conjg,arith),af_err,(Ptr{af_array},af_array),out,_in)
+    err = ccall((:af_conjg, af_lib), Cint, 
+                (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
-=#
+
 function af_sinh(out::Base.Ref,_in::AFArray)
     err = ccall((:af_sinh, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}), out, _in.ptr)
