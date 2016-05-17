@@ -284,55 +284,82 @@ end
 function af_cast(out,_in::af_array,_type::af_dtype)
     ccall((:af_cast,arith),af_err,(Ptr{af_array},af_array,af_dtype),out,_in,_type)
 end
+=#
 
-function af_minof(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_minof,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
+function af_minof(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_minof, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
 end
 
-function af_maxof(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_maxof,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
+function af_maxof(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_maxof, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
 end
 
 function af_rem(out,lhs::af_array,rhs::af_array,batch::Bool)
     ccall((:af_rem,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
 end
 
-function af_mod(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_mod,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
+function af_mod(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_mod, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
 end
 
-function af_abs(out,_in::af_array)
-    ccall((:af_abs,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_abs(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_abs, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_arg(out,_in::af_array)
-    ccall((:af_arg,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_arg(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_arg, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_sign(out,_in::af_array)
-    ccall((:af_sign,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_sign(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_sign, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_round(out,_in::af_array)
-    ccall((:af_round,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_round(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_round, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_trunc(out,_in::af_array)
-    ccall((:af_trunc,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_trunc(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_trunc, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_floor(out,_in::af_array)
-    ccall((:af_floor,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_floor(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_floor, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_ceil(out,_in::af_array)
-    ccall((:af_ceil,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_ceil(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_ceil, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_hypot(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_hypot,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
+function af_hypot(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_hypot, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
 end
-=#
+
 function af_sin(out::Base.Ref,_in::AFArray)
     err = ccall((:af_sin, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}), out, _in.ptr)
@@ -393,13 +420,13 @@ function af_real(out::Base.Ref, _in::AFArray)
     err == 0 || throwAFerror(err)
 end
 
-function af_imag(out,_in::af_array)
+function af_imag(out::Base.Ref, _in::AFArray)
     err = ccall((:af_imag, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}), out, _in.ptr)
     err == 0 || throwAFerror(err)
 end
 
-function af_conjg(out,_in::af_array)
+function af_conjg(out::Base.Ref, _in::AFArray)
     err = ccall((:af_conjg, af_lib), Cint, 
                 (Ptr{Void},Ptr{Void}), out, _in.ptr)
     err == 0 || throwAFerror(err)

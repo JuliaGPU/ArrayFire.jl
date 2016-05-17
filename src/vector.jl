@@ -63,7 +63,7 @@ for (op,fn) in ((:any, :af_any_true), (:all, :af_all_true))
 end
 
 for (op, fn) in ((:sum, :af_sum), (:product, :af_product), 
-                (:max, :af_max), (:min, :af_min))
+                (:maximum, :af_max), (:minimum, :af_min))
 
     @eval function ($op){T}(a::AFArray{T}, dim::Integer)
         dim = dim - 1

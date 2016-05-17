@@ -84,4 +84,7 @@ function backend_eltype(p::Ptr{Void})
     af_get_type(t, p)
     jltype(t[])
 end
+
 backend_eltype(a::AFArray) = backend_eltype(a.ptr)
+
+constant(val, t::Tuple) = constant(val, t...)
