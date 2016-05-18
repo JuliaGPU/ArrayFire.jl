@@ -1,6 +1,7 @@
 using Base.Meta
 
 import Base: complex, conj, real, imag, max, min, abs, round, sign, floor, hypot
+import Base: &, |, $, .>, .>=, .<, .<=, !, .==, .!=
 
 export sigmoid
 
@@ -123,4 +124,33 @@ function hypot{T}(a::AFArray{T}, b::AFArray{T}; batched = true)
     out = new_ptr()
     af_hypot(out, a, b, batched)
     AFArray{T}(out[])
+end
+
+# Logical Operations
+
+for (op,fn) in ((:&, :af_bitand),(:|, :af_bitor), (:$, :af_bitxor),
+                (:.==, :af_eq), (:.!=, :af_neq), (:.>, :af_gt), 
+                (:.>=, :af_ge), (:.<, :af_lt), (:.<=, :af_le),
+                (:.!=, :af_neq))
+
+    @eval function ($op)(a::AFArray, b::AFArray; batched = true)
+        out = new_ptr()
+        eval($fn)(out, a, b, batched)
+        AFArray{backend_eltype(out[])}(out[])
+    end
+    
+    @eval function ($op)(a::AFArray, b::Real; batched = true)
+        out = new_ptr()
+        tmp = constant(b, size(a))
+        eval($fn)(out, a, tmp, batched)
+        AFArray{backend_eltype(out[])}(out[])
+    end
+    @eval ($op)(b::Real, a::AFArray) = ($op)(a, b)
+
+end
+
+function !{T}(a::AFArray{T})
+    out = new_ptr()
+    af_not(out, a)
+    AFArray{T}(out[]) 
 end

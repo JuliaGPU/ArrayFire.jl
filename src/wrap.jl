@@ -224,31 +224,50 @@ function af_div(out::Base.Ref, lhs::AFArray, rhs::AFArray,batch::Bool = true)
                 out, lhs.ptr, rhs.ptr, batch)
     err == 0 || throwAFerror(err)
 end
+
+function af_lt(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_lt, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
+end
+
+function af_gt(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_gt, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
+end
+
+function af_le(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_le, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
+end
+
+function af_ge(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_ge, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
+end
+
+function af_eq(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_eq, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
+end
+
+function af_neq(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_neq, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
+end
+
 #=
-function af_lt(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_lt,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
-end
-
-function af_gt(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_gt,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
-end
-
-function af_le(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_le,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
-end
-
-function af_ge(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_ge,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
-end
-
-function af_eq(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_eq,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
-end
-
-function af_neq(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_neq,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
-end
-
 function af_and(out,lhs::af_array,rhs::af_array,batch::Bool)
     ccall((:af_and,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
 end
@@ -256,23 +275,36 @@ end
 function af_or(out,lhs::af_array,rhs::af_array,batch::Bool)
     ccall((:af_or,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
 end
+=#
 
-function af_not(out,_in::af_array)
-    ccall((:af_not,arith),af_err,(Ptr{af_array},af_array),out,_in)
+function af_not(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_not, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_bitand(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_bitand,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
+function af_bitand(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_bitand, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
 end
 
-function af_bitor(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_bitor,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
+function af_bitor(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_bitor, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
 end
 
-function af_bitxor(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_bitxor,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
+function af_bitxor(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_bitxor, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_bitshiftl(out,lhs::af_array,rhs::af_array,batch::Bool)
     ccall((:af_bitshiftl,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
 end
@@ -300,9 +332,11 @@ function af_maxof(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
     err == 0 || throwAFerror(err)
 end
 
+#=
 function af_rem(out,lhs::af_array,rhs::af_array,batch::Bool)
     ccall((:af_rem,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
 end
+=#
 
 function af_mod(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
     err = ccall((:af_mod, af_lib), Cint, 
