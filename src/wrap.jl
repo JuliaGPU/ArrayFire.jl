@@ -304,15 +304,21 @@ function af_bitxor(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
     err == 0 || throwAFerror(err)
 end
 
+function af_bitshiftl(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_bitshiftl, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
+end
+
+function af_bitshiftr(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_bitshiftr, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool), 
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
+end
+
 #=
-function af_bitshiftl(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_bitshiftl,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
-end
-
-function af_bitshiftr(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_bitshiftr,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
-end
-
 function af_cast(out,_in::af_array,_type::af_dtype)
     ccall((:af_cast,arith),af_err,(Ptr{af_array},af_array,af_dtype),out,_in,_type)
 end

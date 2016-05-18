@@ -5,7 +5,9 @@ import Base: &, |, $, .>, .>=, .<, .<=, !, .==, .!=
 
 export sigmoid
 
-for (op,fn) in ((:+,:af_add), (:.+,:af_add), (:-,:af_sub), (:.-,:af_sub), (:.*,:af_mul), (:./,:af_div), (:%, :af_mod), (:.%, :af_mod))
+for (op,fn) in ((:+,:af_add), (:.+,:af_add), (:-,:af_sub), (:.-,:af_sub), (:.*,:af_mul), 
+                (:./,:af_div), (:%, :af_mod), (:.%, :af_mod), (:<<, :af_bitshiftl),
+                (:.<<, :af_bitshiftl),(:>>, :af_bitshiftr), (:.>>, :af_bitshiftr))
     @eval function Base.($(quot(op))){T,S}(a::AFArray{T}, b::AFArray{S}; batched = true)
         ptr = new_ptr()
         eval($(quot(fn)))(ptr, a, b, batched)
