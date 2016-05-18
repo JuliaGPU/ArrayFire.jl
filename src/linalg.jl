@@ -1,7 +1,8 @@
 ### Linear Algebra
 
 import Base: dot, transpose, ctranspose, transpose!, ctranspose!, det, inv,
-                norm
+                norm, rank, *, A_mul_Bt, At_mul_B, At_mul_Bt, Ac_mul_B, 
+                A_mul_Bc, Ac_mul_Bc
 
 # Constants
 
@@ -87,3 +88,29 @@ function norm(a::AFArray; options = AF_NORM_EUCLID, p::Real = 1, q::Real = 1)
     af_norm(out, a, options, p, q)
     out[]
 end
+
+function rank(a::AFArray; tol::Cdouble = 1e-5)
+    out = Base.Ref{Cuint}(0)
+    af_rank(out, a, tol)
+    Int(out[])
+end
+
+# Matrix Multiply
+
+function *{T,S}(a::AFMatrix{T}, b::AFMatrix{S}; lhsprop = AF_MAT_NONE, rhsprop = AF_MAT_NONE)
+    out = new_ptr()
+    af_matmul(out, a, b, lhsprop, rhsprop)
+    AFMatrix{af_promote(T,S)}(out[])
+end
+
+A_mul_Bt{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, rhsprop = AF_MAT_TRANS)
+
+At_mul_B{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsprop = AF_MAT_TRANS)
+
+At_mul_Bt{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsprop = AF_MAT_TRANS, rhsprop = AF_MAT_TRANS)
+
+A_mul_Bc{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, rhsProp=AF_MAT_CTRANS)
+
+Ac_mul_B{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsProp=AF_MAT_CTRANS)
+
+Ac_mul_Bc{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsProp=AF_MAT_CTRANS, rhsProp=AF_MAT_CTRANS)

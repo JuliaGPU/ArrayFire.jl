@@ -857,11 +857,12 @@ function af_get_active_backend(backend)
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_matmul(out,lhs::af_array,rhs::af_array,optLhs::af_mat_prop,optRhs::af_mat_prop)
-    ccall((:af_matmul,blas),af_err,(Ptr{af_array},af_array,af_array,af_mat_prop,af_mat_prop),out,lhs,rhs,optLhs,optRhs)
+function af_matmul(out::Base.Ref, lhs::AFArray, rhs::AFArray, optLhs::Int ,optRhs::Int)
+    err = ccall((:af_matmul, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, Cint),
+                out, lhs.ptr, rhs.ptr, optLhs, optRhs)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_dot(out::Base.Ref, lhs::AFArray, rhs::AFArray, optLhs::Int, optRhs::Int)
     err = ccall((:af_dot, af_lib), Cint, (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, Cint),
@@ -1428,11 +1429,11 @@ function af_inverse(out::Base.Ref, _in::AFArray, options::Int)
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_rank(rank,_in::af_array,tol::Cdouble)
-    ccall((:af_rank,lapack),af_err,(Ptr{UInt32},af_array,Cdouble),rank,_in,tol)
+function af_rank(rank::Base.Ref, _in::AFArray, tol::Cdouble)
+    err = ccall((:af_rank, af_lib), Cint, 
+                (Ptr{UInt32}, Ptr{Void}, Cdouble), rank, _in.ptr, tol)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_det(real::Base.Ref, imag::Base.Ref, _in::AFArray)
     err = ccall((:af_det, af_lib), Cint, 
