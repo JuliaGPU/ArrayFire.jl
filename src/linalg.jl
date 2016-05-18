@@ -4,6 +4,8 @@ import Base: dot, transpose, ctranspose, transpose!, ctranspose!, det, inv,
                 norm, rank, *, A_mul_Bt, At_mul_B, At_mul_Bt, Ac_mul_B, 
                 A_mul_Bc, Ac_mul_Bc
 
+export isLAPACKAvailable
+
 # Constants
 
 AF_MAT_NONE       = 0
@@ -114,3 +116,11 @@ A_mul_Bc{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, rhsProp=AF_MAT_CTRANS)
 Ac_mul_B{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsProp=AF_MAT_CTRANS)
 
 Ac_mul_Bc{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsProp=AF_MAT_CTRANS, rhsProp=AF_MAT_CTRANS)
+
+# LAPACK
+
+function isLAPACKAvailable()
+    out = Base.Ref{Bool}(0)
+    af_is_lapack_available(out)
+    out[]
+end

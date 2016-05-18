@@ -1448,11 +1448,13 @@ function af_norm(out::Base.Ref, _in::AFArray, _type::Int, p::Real, q::Real)
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_is_lapack_available(out)
-    ccall((:af_is_lapack_available,lapack),af_err,(Ptr{Bool},),out)
+function af_is_lapack_available(out::Base.Ref)
+    err = ccall((:af_is_lapack_available, af_lib), Cint,
+                (Ptr{Bool},),out)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_approx1(out,_in::af_array,pos::af_array,method::af_interp_type,offGrid::Cfloat)
     ccall((:af_approx1,signal),af_err,(Ptr{af_array},af_array,af_array,af_interp_type,Cfloat),out,_in,pos,method,offGrid)
 end
