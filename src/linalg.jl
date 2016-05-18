@@ -2,9 +2,10 @@
 
 import Base: dot, transpose, ctranspose, transpose!, ctranspose!, det, inv,
                 norm, rank, *, A_mul_Bt, At_mul_B, At_mul_Bt, Ac_mul_B, 
-                A_mul_Bc, Ac_mul_Bc
+                A_mul_Bc, Ac_mul_Bc, chol, lu, lufact!, qr, qrfact!, svd,
+                svdfact!
 
-export isLAPACKAvailable
+export isLAPACKAvailable, chol!
 
 # Constants
 
@@ -111,11 +112,11 @@ At_mul_B{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsprop = AF_MAT_TRANS)
 
 At_mul_Bt{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsprop = AF_MAT_TRANS, rhsprop = AF_MAT_TRANS)
 
-A_mul_Bc{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, rhsProp=AF_MAT_CTRANS)
+A_mul_Bc{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, rhsprop=AF_MAT_CTRANS)
 
-Ac_mul_B{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsProp=AF_MAT_CTRANS)
+Ac_mul_B{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsprop=AF_MAT_CTRANS)
 
-Ac_mul_Bc{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsProp=AF_MAT_CTRANS, rhsProp=AF_MAT_CTRANS)
+Ac_mul_Bc{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsprop=AF_MAT_CTRANS, rhsprop=AF_MAT_CTRANS)
 
 # LAPACK
 
@@ -123,4 +124,79 @@ function isLAPACKAvailable()
     out = Base.Ref{Bool}(0)
     af_is_lapack_available(out)
     out[]
+end
+
+# Matrix Factorizations
+
+function _chol{T}(a::AFMatrix{T}, is_upper::Bool)
+    out = new_ptr()
+    info = Base.Ref{Cint}(0)
+    af_cholesky(out, info, a, is_upper)
+    info[] > 0 && throw(PosDefException(info))
+    AFArray{T}(out[])
+end
+
+function _chol!{T}(a::AFMatrix{T}, is_upper::Bool)
+    info = Base.Ref{Cint}(0)
+    af_cholesky_inplace(info, a, is_upper)
+    info[] > 0 && throw(PosDefException(info))
+    a
+end
+
+chol(a::AFMatrix, ::Type{Val{:U}}) = _chol(a, true)
+chol(a::AFMatrix, ::Type{Val{:L}}) = _chol(a, false)
+chol(a::AFMatrix) = chol(a,Val{:U})
+
+chol!(a::AFMatrix, ::Type{Val{:U}}) = _chol!(a, true)
+chol!(a::AFMatrix, ::Type{Val{:L}}) = _chol!(a, false)
+chol!(a::AFMatrix) = chol!(a,Val{:U})
+
+function lu(a::AFMatrix)
+    l = new_ptr()
+    u = new_ptr()
+    p = new_ptr()
+    af_lu(l, u, p, a)
+    AFArray{backend_eltype(l[])}(l[]), AFArray{backend_eltype(u[])}(u[]), 
+    (AFArray{backend_eltype(p[])}(p[]) + 1)
+end
+
+function lufact!(a::AFMatrix)
+    p = new_ptr()
+    af_lu_inplace(p, a, true)
+    a, AFArray{backend_eltype(p[])}(p[])
+end
+
+function qr(a::AFMatrix)
+    q = new_ptr()
+    r = new_ptr()
+    tau = new_ptr()
+    af_qr(q, r, tau, a)
+    AFArray{backend_eltype(q[])}(q[]), AFArray{backend_eltype(r[])}(r[]), 
+    AFArray{backend_eltype(tau[])}(tau[])
+end
+
+function qrfact!(a::AFMatrix)
+    tau = new_ptr()
+    af_qr_inplace(tau, a)
+    a, AFArray{backend_eltype(tau[])}(tau[])
+end
+
+function svd(a::AFArray)
+    u = new_ptr()
+    s = new_ptr()
+    vt = new_ptr()
+    af_svd(u, s, vt, a)
+    AFArray{backend_eltype(u[])}(u[]),
+    AFArray{backend_eltype(s[])}(s[]),
+    AFArray{backend_eltype(vt[])}(vt[])
+end
+
+function svdfact!(a::AFArray)
+    u = new_ptr()
+    s = new_ptr()
+    vt = new_ptr()
+    af_svd_inplace(u, s, vt, a)
+    AFArray{backend_eltype(u[])}(u[]),
+    AFArray{backend_eltype(s[])}(s[]),
+    AFArray{backend_eltype(vt[])}(vt[])
 end

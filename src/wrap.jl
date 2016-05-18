@@ -988,7 +988,7 @@ end
 
 function af_lower(out,_in::af_array,is_unit_diag::Bool)
     ccall((:af_lower,data),af_err,(Ptr{af_array},af_array,Bool),out,_in,is_unit_diag)
-end
+end 
 
 function af_upper(out,_in::af_array,is_unit_diag::Bool)
     ccall((:af_upper,data),af_err,(Ptr{af_array},af_array,Bool),out,_in,is_unit_diag)
@@ -1381,39 +1381,64 @@ end
 function af_rgb2ycbcr(out,_in::af_array,standard::af_ycc_std)
     ccall((:af_rgb2ycbcr,image),af_err,(Ptr{af_array},af_array,af_ycc_std),out,_in,standard)
 end
+=#
 
-function af_svd(u,s,vt,_in::af_array)
-    ccall((:af_svd,lapack),af_err,(Ptr{af_array},Ptr{af_array},Ptr{af_array},af_array),u,s,vt,_in)
+function af_svd(u::Base.Ref, s::Base.Ref, vt::Base.Ref, _in::AFArray)
+    err = ccall((:af_svd, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}), 
+                u, s, vt, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_svd_inplace(u,s,vt,_in::af_array)
-    ccall((:af_svd_inplace,lapack),af_err,(Ptr{af_array},Ptr{af_array},Ptr{af_array},af_array),u,s,vt,_in)
+function af_svd_inplace(u::Base.Ref, s::Base.Ref, vt::Base.Ref, _in::AFArray)
+    err = ccall((:af_svd_inplace, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}),
+                u, s, vt, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_lu(lower,upper,pivot,_in::af_array)
-    ccall((:af_lu,lapack),af_err,(Ptr{af_array},Ptr{af_array},Ptr{af_array},af_array),lower,upper,pivot,_in)
+function af_lu(lower::Base.Ref, upper::Base.Ref, pivot::Base.Ref, _in::AFArray)
+    err = ccall((:af_lu, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}),
+                lower, upper, pivot, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_lu_inplace(pivot,_in::af_array,is_lapack_piv::Bool)
-    ccall((:af_lu_inplace,lapack),af_err,(Ptr{af_array},af_array,Bool),pivot,_in,is_lapack_piv)
+function af_lu_inplace(pivot::Base.Ref, _in::AFArray, is_lapack_piv::Bool)
+    err = ccall((:af_lu_inplace, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Bool),
+                pivot, _in.ptr, is_lapack_piv)
+    err == 0 || throwAFerror(err)
 end
 
-function af_qr(q,r,tau,_in::af_array)
-    ccall((:af_qr,lapack),af_err,(Ptr{af_array},Ptr{af_array},Ptr{af_array},af_array),q,r,tau,_in)
+function af_qr(q::Base.Ref, r::Base.Ref, tau::Base.Ref, _in::AFArray)
+    err = ccall((:af_qr, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}),
+                q, r, tau, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_qr_inplace(tau,_in::af_array)
-    ccall((:af_qr_inplace,lapack),af_err,(Ptr{af_array},af_array),tau,_in)
+function af_qr_inplace(tau::Base.Ref, _in::AFArray)
+    err = ccall((:af_qr_inplace, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}), tau, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_cholesky(out,info,_in::af_array,is_upper::Bool)
-    ccall((:af_cholesky,lapack),af_err,(Ptr{af_array},Ptr{Cint},af_array,Bool),out,info,_in,is_upper)
+function af_cholesky(out::Base.Ref, info::Base.Ref, _in::AFArray, is_upper::Bool)
+    err = ccall((:af_cholesky, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Cint}, Ptr{Void}, Bool),    
+                out, info, _in.ptr, is_upper)
+    err == 0 || throwAFerror(err)
 end
 
-function af_cholesky_inplace(info,_in::af_array,is_upper::Bool)
-    ccall((:af_cholesky_inplace,lapack),af_err,(Ptr{Cint},af_array,Bool),info,_in,is_upper)
+function af_cholesky_inplace(info::Base.Ref, _in::AFArray, is_upper::Bool)
+    err = ccall((:af_cholesky_inplace, af_lib), Cint,
+                (Ptr{Cint}, Ptr{Void}, Bool),
+                info, _in.ptr, is_upper)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_solve(x,a::af_array,b::af_array,options::af_mat_prop)
     ccall((:af_solve,lapack),af_err,(Ptr{af_array},af_array,af_array,af_mat_prop),x,a,b,options)
 end
