@@ -3,9 +3,9 @@
 import Base: dot, transpose, ctranspose, transpose!, ctranspose!, det, inv,
                 norm, rank, *, A_mul_Bt, At_mul_B, At_mul_Bt, Ac_mul_B, 
                 A_mul_Bc, Ac_mul_Bc, chol, lu, lufact!, qr, qrfact!, svd,
-                svdfact!
+                svdfact!, \
 
-export isLAPACKAvailable, chol!
+export isLAPACKAvailable, chol!, solveLU
 
 # Constants
 
@@ -199,4 +199,16 @@ function svdfact!(a::AFArray)
     AFArray{backend_eltype(u[])}(u[]),
     AFArray{backend_eltype(s[])}(s[]),
     AFArray{backend_eltype(vt[])}(vt[])
+end
+
+function \(a::AFArray, b::AFArray; options = AF_MAT_NONE)
+    out = new_ptr()
+    af_solve(out, a, b, options)
+    AFArray{backend_eltype(out[])}(out[])
+end
+
+function solveLU(a::AFArray, p::AFArray, b::AFArray; options = AF_MAT_NONE)
+    out = new_ptr()
+    af_solve_lu(out, a, p, b, options)
+    AFArray{backend_eltype(out[])}(out[])
 end

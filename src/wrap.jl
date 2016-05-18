@@ -1438,15 +1438,19 @@ function af_cholesky_inplace(info::Base.Ref, _in::AFArray, is_upper::Bool)
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_solve(x,a::af_array,b::af_array,options::af_mat_prop)
-    ccall((:af_solve,lapack),af_err,(Ptr{af_array},af_array,af_array,af_mat_prop),x,a,b,options)
+function af_solve(x::Base.Ref, a::AFArray, b::AFArray, options::Int)
+    err = ccall((:af_solve, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint),
+                x, a.ptr, b.ptr, options)
+    err == 0 || throwAFerror(err)
 end
 
-function af_solve_lu(x,a::af_array,piv::af_array,b::af_array,options::af_mat_prop)
-    ccall((:af_solve_lu,lapack),af_err,(Ptr{af_array},af_array,af_array,af_array,af_mat_prop),x,a,piv,b,options)
+function af_solve_lu(x::Base.Ref, a::AFArray, piv::AFArray, b::AFArray, options::Int)
+    err = ccall((:af_solve_lu, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint),
+                x, a.ptr, piv.ptr, b.ptr, options)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_inverse(out::Base.Ref, _in::AFArray, options::Int)
     err = ccall((:af_inverse, af_lib), Cint,
