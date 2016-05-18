@@ -10,6 +10,8 @@ immutable AFArray{T,N} <: AFAbstractArray{T,N}
     ptr::Ptr{Void}
 end
 
+typealias AFVector{T} AFArray{T,1}
+typealias AFMatrix{T} AFArray{T,2}
 
 include("error.jl")
 include("defns.jl")
@@ -20,5 +22,6 @@ include("math.jl")
 include("vector.jl")
 include("backend.jl")
 include("stats.jl")
+include("linalg.jl")
 
 end

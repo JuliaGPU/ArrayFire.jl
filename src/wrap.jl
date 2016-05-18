@@ -861,19 +861,25 @@ end
 function af_matmul(out,lhs::af_array,rhs::af_array,optLhs::af_mat_prop,optRhs::af_mat_prop)
     ccall((:af_matmul,blas),af_err,(Ptr{af_array},af_array,af_array,af_mat_prop,af_mat_prop),out,lhs,rhs,optLhs,optRhs)
 end
-
-function af_dot(out,lhs::af_array,rhs::af_array,optLhs::af_mat_prop,optRhs::af_mat_prop)
-    ccall((:af_dot,blas),af_err,(Ptr{af_array},af_array,af_array,af_mat_prop,af_mat_prop),out,lhs,rhs,optLhs,optRhs)
-end
-
-function af_transpose(out,_in::af_array,conjugate::Bool)
-    ccall((:af_transpose,blas),af_err,(Ptr{af_array},af_array,Bool),out,_in,conjugate)
-end
-
-function af_transpose_inplace(_in::af_array,conjugate::Bool)
-    ccall((:af_transpose_inplace,blas),af_err,(af_array,Bool),_in,conjugate)
-end
 =#
+
+function af_dot(out::Base.Ref, lhs::AFArray, rhs::AFArray, optLhs::Int, optRhs::Int)
+    err = ccall((:af_dot, af_lib), Cint, (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, Cint),
+                out, lhs.ptr, rhs.ptr, optLhs, optRhs)
+    err == 0 || throwAFerror(err)
+end
+
+function af_transpose(out::Base.Ref, _in::AFArray, conjugate::Bool)
+    err = ccall((:af_transpose, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Bool), out, _in.ptr, conjugate)
+    err == 0 || throwAFerror(err)
+end
+
+function af_transpose_inplace(_in::AFArray, conjugate::Bool)
+    err = ccall((:af_transpose_inplace, af_lib), Cint,
+                (Ptr{Void}, Bool), _in.ptr, conjugate)
+    err == 0 || throwAFerror(err)
+end
 
 function af_constant!(ptr::Base.Ref, val::Real, n::Int, dims::Vector{Int}, T::DataType)
     err = ccall((:af_constant, af_lib), Cint, 
@@ -1414,23 +1420,34 @@ end
 function af_solve_lu(x,a::af_array,piv::af_array,b::af_array,options::af_mat_prop)
     ccall((:af_solve_lu,lapack),af_err,(Ptr{af_array},af_array,af_array,af_array,af_mat_prop),x,a,piv,b,options)
 end
+=#
 
-function af_inverse(out,_in::af_array,options::af_mat_prop)
-    ccall((:af_inverse,lapack),af_err,(Ptr{af_array},af_array,af_mat_prop),out,_in,options)
+function af_inverse(out::Base.Ref, _in::AFArray, options::Int)
+    err = ccall((:af_inverse, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr, options)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_rank(rank,_in::af_array,tol::Cdouble)
     ccall((:af_rank,lapack),af_err,(Ptr{UInt32},af_array,Cdouble),rank,_in,tol)
 end
+=#
 
-function af_det(det_real,det_imag,_in::af_array)
-    ccall((:af_det,lapack),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array),det_real,det_imag,_in)
+function af_det(real::Base.Ref, imag::Base.Ref, _in::AFArray)
+    err = ccall((:af_det, af_lib), Cint, 
+                (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_norm(out,_in::af_array,_type::af_norm_type,p::Cdouble,q::Cdouble)
-    ccall((:af_norm,lapack),af_err,(Ptr{Cdouble},af_array,af_norm_type,Cdouble,Cdouble),out,_in,_type,p,q)
+function af_norm(out::Base.Ref, _in::AFArray, _type::Int, p::Real, q::Real)
+    err = ccall((:af_norm, af_lib), Cint, 
+                (Ptr{Cdouble}, Ptr{Void}, Cint, Cdouble, Cdouble),
+                out, _in.ptr, _type, p, q)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_is_lapack_available(out)
     ccall((:af_is_lapack_available,lapack),af_err,(Ptr{Bool},),out)
 end
