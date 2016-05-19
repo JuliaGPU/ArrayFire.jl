@@ -1267,39 +1267,64 @@ function af_is_image_io_available(out::Base.Ref)
     err == 0 || throwAFerror(err)
 end
 
+function af_resize(out::Base.Ref, _in::AFArray, odim0::Int, odim1::Int, method::Int)
+    err = ccall((:af_resize, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cint, Cint, Cint),
+                out, _in.ptr, odim0, odim1, method)
+    err == 0 || throwAFerror(err)
+end
+
+function af_transform(out::Base.Ref, _in::AFArray, transform::AFArray, odim0::Int,
+                        odim1::Cint, method::Int, inverse::Bool)
+    err = ccall((:af_transform, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, Cint, Cint, Bool),
+                out, _in.ptr, transform, odim0,o dim1, method, inverse)
+    err == 0 || throwAFerror(err)
+end
+
 #=
- = 3function af_resize(out,_in::af_array,odim0::dim_t,odim1::dim_t,method::af_interp_type)
-    ccall((:af_resize,image),af_err,(Ptr{af_array},af_array,dim_t,dim_t,af_interp_type),out,_in,odim0,odim1,method)
-end
-
-function af_transform(out,_in::af_array,transform::af_array,odim0::dim_t,odim1::dim_t,method::af_interp_type,inverse::Bool)
-    ccall((:af_transform,image),af_err,(Ptr{af_array},af_array,af_array,dim_t,dim_t,af_interp_type,Bool),out,_in,transform,odim0,odim1,method,inverse)
-end
-
 function af_transform_coordinates(out,tf::af_array,d0::Cfloat,d1::Cfloat)
     ccall((:af_transform_coordinates,image),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat),out,tf,d0,d1)
 end
+=#
 
-function af_rotate(out,_in::af_array,theta::Cfloat,crop::Bool,method::af_interp_type)
-    ccall((:af_rotate,image),af_err,(Ptr{af_array},af_array,Cfloat,Bool,af_interp_type),out,_in,theta,crop,method)
+function af_rotate(out::Base.Ref, _in::AFArray, theta::Real, crop::Bool, method::Int)
+    err = ccall((:af_rotate, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cfloat, Bool, Cint),
+                out, _in.ptr, theta, crop, method)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_translate(out,_in::af_array,trans0::Cfloat,trans1::Cfloat,odim0::dim_t,odim1::dim_t,method::af_interp_type)
     ccall((:af_translate,image),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,dim_t,dim_t,af_interp_type),out,_in,trans0,trans1,odim0,odim1,method)
 end
+=#
 
-function af_scale(out,_in::af_array,scale0::Cfloat,scale1::Cfloat,odim0::dim_t,odim1::dim_t,method::af_interp_type)
-    ccall((:af_scale,image),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,dim_t,dim_t,af_interp_type),out,_in,scale0,scale1,odim0,odim1,method)
+function af_scale(out::Base.Ref, _in::AFArray, scale0::Real, scale1::Real, 
+                    odim0::Int, odim1::Int, method::Int)
+    err = ccall((:af_scale, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cfloat, Cfloat, Cint, Cint, Cint), 
+                out, _in.ptr, scale0, scale1, odim0, odim1, method)
+    err == 0 || throwAFerror(err)
 end
 
-function af_skew(out,_in::af_array,skew0::Cfloat,skew1::Cfloat,odim0::dim_t,odim1::dim_t,method::af_interp_type,inverse::Bool)
-    ccall((:af_skew,image),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,dim_t,dim_t,af_interp_type,Bool),out,_in,skew0,skew1,odim0,odim1,method,inverse)
+function af_skew(out::Base.Ref, _in::AFArray, skew0::Real, skew1::Real, 
+                    odim0::Int, odim1::Int, method::Int, inverse::Bool)
+    err = ccall((:af_skew, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cfloat, Cfloat, Cint, Cint, Cint, Bool),
+                out, _in.ptr, skew0, skew1, odim0, odim1, method, inverse)
+    err == 0 || throwAFerror(err)
 end
 
-function af_histogram(out,_in::af_array,nbins::UInt32,minval::Cdouble,maxval::Cdouble)
-    ccall((:af_histogram,image),af_err,(Ptr{af_array},af_array,UInt32,Cdouble,Cdouble),out,_in,nbins,minval,maxval)
+function af_histogram(out::Base.Ref, _in::AFArray, nbins::UInt32,minval::Cdouble,maxval::Cdouble)
+    err = ccall((:af_histogram, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, UInt32, Cdouble, Cdouble),
+                out, _in.ptr, nbins, minval, maxval)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_dilate(out,_in::af_array,mask::af_array)
     ccall((:af_dilate,image),af_err,(Ptr{af_array},af_array,af_array),out,_in,mask)
 end
@@ -1380,11 +1405,14 @@ function af_gray2rgb(out::Base.Ref, _in::AFArray, rFactor::Cdouble, gFactor::Cdo
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_hist_equal(out,_in::af_array,hist::af_array)
-    ccall((:af_hist_equal,image),af_err,(Ptr{af_array},af_array,af_array),out,_in,hist)
+function af_hist_equal(out::Base.Ref, _in::AFArray, hist::AFArray)
+    err = ccall((:af_hist_equal, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}),
+                out, _in.ptr, hist.ptr)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_gaussian_kernel(out,rows::Cint,cols::Cint,sigma_r::Cdouble,sigma_c::Cdouble)
     ccall((:af_gaussian_kernel,image),af_err,(Ptr{af_array},Cint,Cint,Cdouble,Cdouble),out,rows,cols,sigma_r,sigma_c)
 end

@@ -1,5 +1,7 @@
 ### Image Processing
 
+import Base: hist, scale
+
 # Export methods
 
 export  loadImage, 
@@ -19,9 +21,31 @@ export  loadImage,
         meanshift,
         medfilt,
         minfilt,
-        sobel
+        sobel,
+        histequal,
+        resize,
+        rotate,
+        skew,
+        transform
 
 # Export constants
+
+export  AF_GRAY,
+        AF_RGB,
+        AF_HSV,
+        AF_YCbCr,
+        AF_YCC_601,
+        AF_YCC_709,
+        AF_YCC_2020,
+        AF_CONNECTIVITY_4,
+        AF_CONNECTIVITY_8,
+        AF_PAD_ZERO,
+        AF_PAD_SYM,
+        AF_INTERP_NEAREST,
+        AF_INTERP_LINEAR,
+        AF_INTERP_BILINEAR,
+        AF_INTERP_CUBIC,
+        AF_INTERP_LOWER
 
 # Colorspaces and Constants
 
@@ -39,6 +63,12 @@ AF_CONNECTIVITY_8 = 8
 
 AF_PAD_ZERO = 0
 AF_PAD_SYM = 1
+
+AF_INTERP_NEAREST = 0 
+AF_INTERP_LINEAR = 1
+AF_INTERP_BILINEAR = 2
+AF_INTERP_CUBIC = 3
+AF_INTERP_LOWER = 4
 
 # Read and write images
 
@@ -153,3 +183,56 @@ function sobel(a::AFArray; ker_size = 3)
     af_sobel_operator(dx, dy, img, Cuint(ker_size))
     AFArray{backend_eltype(out[])}(out[])
 end
+
+# Histograms
+
+function histequal(a::AFArray, hist::AFArray)
+    out = new_ptr()
+    af_hist_equal(out, a, hist)
+    AFArray{backend_eltype(out[])}(out[])
+end
+
+function hist(a::AFArray, nbins::Int, minval::Cdouble, maxval::Cdouble)
+    out = new_ptr()
+    af_histogram(out, a, Cuint(nbins), minval, maxval)
+    AFArray{backend_eltype(out[])}(out[])
+end
+
+# Image Transformations
+
+function resize(a::AFArray, dim1::Int, dim2::Int; 
+                method = AF_INTERP_NEAREST)
+    out = new_ptr()
+    af_resize(out, a, dim0, dim1, method)
+    AFArray{backend_eltype(out[])}(out[])
+end
+
+function rotate(a::AFArray, theta::Real; crop::Bool = true, 
+                method = AF_INTERP_NEAREST)
+    out = new_ptr()
+    af_rotate(out, a, theta, crop, method)
+    AFArray{backend_eltype(out[])}(out[])
+end 
+
+function scale(a::AFArray, scale0::Real, scale1::Real; 
+                dim1 = 0, dim2 = 0, method = AF_INTERP_NEAREST)
+    out = new_ptr()
+    af_scale(out, a, scale0, scale1, dim1, dim2, method)
+    AFArray{backend_eltype(out[])}(out[])
+end 
+
+function skew(a::AFArray, skew1::Real, skew2::Real; 
+                dim1 = 0, dim2 = 0, method = AF_INTERP_NEAREST, 
+                inverse = true)
+    out = new_ptr()
+    af_skew(out, a, skew1, skew2, dim1, dim2, method, inverse)
+    AFArray{backend_eltype(out[])}(out[])
+end 
+
+function transform(a::AFArray, transform::AFArray; 
+                    dim1 = 0, dim2 = 0, method = AF_INTERP_NEAREST, 
+                    inverse = true) 
+    out = new_ptr()
+    af_transform(out, a, transform, dim1, dim2, method, inverse)
+    AFArray{backend_eltype(out[])}(out[])
+end 
