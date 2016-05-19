@@ -1225,15 +1225,21 @@ end
 function af_gradient(dx,dy,_in::af_array)
     ccall((:af_gradient,image),af_err,(Ptr{af_array},Ptr{af_array},af_array),dx,dy,_in)
 end
+=#
 
-function af_load_image(out,filename,isColor::Bool)
-    ccall((:af_load_image,image),af_err,(Ptr{af_array},Cstring,Bool),out,filename,isColor)
+function af_load_image(out::Base.Ref,filename::AbstractString, isColor::Bool)
+    err = ccall((:af_load_image, af_lib), Cint,
+                (Ptr{Void}, Cstring, Bool), out, filename, isColor)
+    err == 0 || throwAFerror(err)
 end
 
-function af_save_image(filename,_in::af_array)
-    ccall((:af_save_image,image),af_err,(Cstring,af_array),filename,_in)
+function af_save_image(filename::AbstractString, _in::AFArray)
+    err = ccall((:af_save_image, af_lib), Cint, 
+                (Cstring, Ptr{Void}), filename, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_load_image_memory(out,ptr)
     ccall((:af_load_image_memory,image),af_err,(Ptr{af_array},Ptr{Void}),out,ptr)
 end
@@ -1253,12 +1259,16 @@ end
 function af_save_image_native(filename,_in::af_array)
     ccall((:af_save_image_native,image),af_err,(Cstring,af_array),filename,_in)
 end
+=#
 
-function af_is_image_io_available(out)
-    ccall((:af_is_image_io_available,image),af_err,(Ptr{Bool},),out)
+function af_is_image_io_available(out::Base.Ref)
+    err = ccall((:af_is_image_io_available, af_lib), Cint,
+                (Ptr{Bool}, ), out)
+    err == 0 || throwAFerror(err)
 end
 
-function af_resize(out,_in::af_array,odim0::dim_t,odim1::dim_t,method::af_interp_type)
+#=
+ = 3function af_resize(out,_in::af_array,odim0::dim_t,odim1::dim_t,method::af_interp_type)
     ccall((:af_resize,image),af_err,(Ptr{af_array},af_array,dim_t,dim_t,af_interp_type),out,_in,odim0,odim1,method)
 end
 
@@ -1305,43 +1315,72 @@ end
 function af_erode3(out,_in::af_array,mask::af_array)
     ccall((:af_erode3,image),af_err,(Ptr{af_array},af_array,af_array),out,_in,mask)
 end
+=#
 
-function af_bilateral(out,_in::af_array,spatial_sigma::Cfloat,chromatic_sigma::Cfloat,isColor::Bool)
-    ccall((:af_bilateral,image),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,Bool),out,_in,spatial_sigma,chromatic_sigma,isColor)
+function af_bilateral(out::Base.Ref, _in::AFArray, spatial_sigma::Cdouble, chromatic_sigma::Cdouble, isColor::Bool)
+    err = ccall((:af_bilateral, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cfloat, Cfloat, Bool),
+                out, _in.ptr, spatial_sigma, chromatic_sigma, isColor)
+    err == 0 || throwAFerror(err)
 end
 
-function af_mean_shift(out,_in::af_array,spatial_sigma::Cfloat,chromatic_sigma::Cfloat,iter::UInt32,is_color::Bool)
-    ccall((:af_mean_shift,image),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,UInt32,Bool),out,_in,spatial_sigma,chromatic_sigma,iter,is_color)
+function af_mean_shift(out::Base.Ref, _in::AFArray, spatial_sigma::Cfloat, chromatic_sigma::Cfloat, iter::Cuint, is_color::Bool)
+    err = ccall((:af_mean_shift, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cfloat, Cfloat, UInt32, Bool),
+                out, _in.ptr, spatial_sigma, chromatic_sigma, iter, is_color)
+    err == 0 || throwAFerror(err)
 end
 
-function af_medfilt(out,_in::af_array,wind_length::dim_t,wind_width::dim_t,edge_pad::af_border_type)
-    ccall((:af_medfilt,image),af_err,(Ptr{af_array},af_array,dim_t,dim_t,af_border_type),out,_in,wind_length,wind_width,edge_pad)
+function af_medfilt(out::Base.Ref, _in::AFArray, wind_length::Int, wind_width::Int, edge_pad::Int)
+    err = ccall((:af_medfilt, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cint, Cint, Cint), 
+                out, _in.ptr, wind_length, wind_width, edge_pad)
+    err == 0 || throwAFerror(err)
 end
 
-function af_minfilt(out,_in::af_array,wind_length::dim_t,wind_width::dim_t,edge_pad::af_border_type)
-    ccall((:af_minfilt,image),af_err,(Ptr{af_array},af_array,dim_t,dim_t,af_border_type),out,_in,wind_length,wind_width,edge_pad)
+function af_minfilt(out::Base.Ref, _in::AFArray, wind_length::Int, wind_width::Int, edge_pad::Int)
+    err = ccall((:af_minfilt, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cint, Cint, Cint),
+                out, _in.ptr, wind_length, wind_width, edge_pad)
+    err == 0 || throwAFerror(err)
 end
 
-function af_maxfilt(out,_in::af_array,wind_length::dim_t,wind_width::dim_t,edge_pad::af_border_type)
-    ccall((:af_maxfilt,image),af_err,(Ptr{af_array},af_array,dim_t,dim_t,af_border_type),out,_in,wind_length,wind_width,edge_pad)
+function af_maxfilt(out::Base.Ref, _in::AFArray, wind_length::Int, wind_width::Int, edge_pad::Int)
+    err = ccall((:af_maxfilt, af_lib), Cint, 
+                (Ptr{af_array}, Ptr{Void}, Cint, Cint, Cint),
+                out, _in.ptr, wind_length, wind_width, edge_pad)
+    err == 0 || throwAFerror(err)
 end
 
-function af_regions(out,_in::af_array,connectivity::af_connectivity,ty::af_dtype)
-    ccall((:af_regions,image),af_err,(Ptr{af_array},af_array,af_connectivity,af_dtype),out,_in,connectivity,ty)
+function af_regions(out::Base.Ref, _in::AFArray, connectivity::Int, ty::DataType)
+    err = ccall((:af_regions, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cint, Cuint),
+                out, _in.ptr, Cint, aftype(ty))
+    err == 0 || throwAFerror(err)
 end
 
-function af_sobel_operator(dx,dy,img::af_array,ker_size::UInt32)
-    ccall((:af_sobel_operator,image),af_err,(Ptr{af_array},Ptr{af_array},af_array,UInt32),dx,dy,img,ker_size)
+function af_sobel_operator(dx::Base.Ref, dy::Base.Ref, img::AFArray, ker_size::UInt32)
+    err = ccall((:af_sobel_operator, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, UInt32),
+                dx, dy, img.ptr, ker_size)
+    err == 0 || throwAFerror(err)
 end
 
-function af_rgb2gray(out,_in::af_array,rPercent::Cfloat,gPercent::Cfloat,bPercent::Cfloat)
-    ccall((:af_rgb2gray,image),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,Cfloat),out,_in,rPercent,gPercent,bPercent)
+function af_rgb2gray(out::Base.Ref, _in::AFArray, rPercent::Cfloat, gPercent::Cfloat, bPercent::Cfloat)
+    err = ccall((:af_rgb2gray, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cfloat, Cfloat, Cfloat),
+                out, _in.ptr, rPercent, gPercent, bPercent)
+    err == 0 || throwAFerror(err)
 end
 
-function af_gray2rgb(out,_in::af_array,rFactor::Cfloat,gFactor::Cfloat,bFactor::Cfloat)
-    ccall((:af_gray2rgb,image),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,Cfloat),out,_in,rFactor,gFactor,bFactor)
+function af_gray2rgb(out::Base.Ref, _in::AFArray, rFactor::Cdouble, gFactor::Cdouble, bFactor::Cdouble)
+    err = ccall((:af_gray2rgb, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cfloat, Cfloat, Cfloat),
+                out, _in.ptr, rFactor, gFactor, bFactor)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_hist_equal(out,_in::af_array,hist::af_array)
     ccall((:af_hist_equal,image),af_err,(Ptr{af_array},af_array,af_array),out,_in,hist)
 end
@@ -1349,19 +1388,28 @@ end
 function af_gaussian_kernel(out,rows::Cint,cols::Cint,sigma_r::Cdouble,sigma_c::Cdouble)
     ccall((:af_gaussian_kernel,image),af_err,(Ptr{af_array},Cint,Cint,Cdouble,Cdouble),out,rows,cols,sigma_r,sigma_c)
 end
+=#
 
-function af_hsv2rgb(out,_in::af_array)
-    ccall((:af_hsv2rgb,image),af_err,(Ptr{af_array},af_array),out,_in)
+function af_hsv2rgb(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_hsv2rgb, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_rgb2hsv(out,_in::af_array)
-    ccall((:af_rgb2hsv,image),af_err,(Ptr{af_array},af_array),out,_in)
+function af_rgb2hsv(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_rgb2hsv, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_color_space(out,image::af_array,to::af_cspace_t,from::af_cspace_t)
-    ccall((:af_color_space,image),af_err,(Ptr{af_array},af_array,af_cspace_t,af_cspace_t),out,image,to,from)
+function af_color_space(out::Base.Ref, image::AFArray, to::Int, from::Int)
+    err = ccall((:af_color_space, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cint, Cint), 
+                out, image.ptr, to, from)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_unwrap(out,_in::af_array,wx::dim_t,wy::dim_t,sx::dim_t,sy::dim_t,px::dim_t,py::dim_t,is_column::Bool)
     ccall((:af_unwrap,image),af_err,(Ptr{af_array},af_array,dim_t,dim_t,dim_t,dim_t,dim_t,dim_t,Bool),out,_in,wx,wy,sx,sy,px,py,is_column)
 end
@@ -1373,15 +1421,19 @@ end
 function af_sat(out,_in::af_array)
     ccall((:af_sat,image),af_err,(Ptr{af_array},af_array),out,_in)
 end
-
-function af_ycbcr2rgb(out,_in::af_array,standard::af_ycc_std)
-    ccall((:af_ycbcr2rgb,image),af_err,(Ptr{af_array},af_array,af_ycc_std),out,_in,standard)
-end
-
-function af_rgb2ycbcr(out,_in::af_array,standard::af_ycc_std)
-    ccall((:af_rgb2ycbcr,image),af_err,(Ptr{af_array},af_array,af_ycc_std),out,_in,standard)
-end
 =#
+
+function af_ycbcr2rgb(out::Base.Ref, _in::AFArray, standard::Int)
+    err = ccall((:af_ycbcr2rgb, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr, standard)
+    err == 0 || throwAFerror(err)
+end
+
+function af_rgb2ycbcr(out::Base.Ref, _in::AFArray, standard::Int)
+    err = ccall((:af_rgb2ycbcr, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr, standard)
+    err == 0 || throwAFerror(err)
+end
 
 function af_svd(u::Base.Ref, s::Base.Ref, vt::Base.Ref, _in::AFArray)
     err = ccall((:af_svd, af_lib), Cint, 
