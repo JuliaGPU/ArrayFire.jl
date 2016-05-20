@@ -26,7 +26,9 @@ export  loadImage,
         resize,
         rotate,
         skew,
-        transform
+        transform, 
+        transformCoordinates,
+        translate
 
 # Export constants
 
@@ -234,5 +236,18 @@ function transform(a::AFArray, transform::AFArray;
                     inverse = true) 
     out = new_ptr()
     af_transform(out, a, transform, dim1, dim2, method, inverse)
+    AFArray{backend_eltype(out[])}(out[])
+end 
+
+function transformCoordinates(a::AFArray, d1::Real, d2::Real)
+    out = new_ptr()
+    af_transform_coordinates(out, a, d1, d2)
+    AFArray{backend_eltype(out[])}(out[])
+end 
+
+function translate(a::AFArray, trans1::Real, trans2::Real; 
+                    dim1 = 0, dim2 =0, method = AF_INTERP_NEAREST)
+    out = new_ptr()
+    af_translate(out, a, trans1, trans2, dim1, dim2, method)
     AFArray{backend_eltype(out[])}(out[])
 end 

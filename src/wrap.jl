@@ -1282,11 +1282,12 @@ function af_transform(out::Base.Ref, _in::AFArray, transform::AFArray, odim0::In
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_transform_coordinates(out,tf::af_array,d0::Cfloat,d1::Cfloat)
-    ccall((:af_transform_coordinates,image),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat),out,tf,d0,d1)
+function af_transform_coordinates(out::Base.Ref, tf::AFArray, d0::Real, d1::Real)
+    err = ccall((:af_transform_coordinates, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cfloat, Cfloat),
+                out, tf.ptr, d0, d1)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_rotate(out::Base.Ref, _in::AFArray, theta::Real, crop::Bool, method::Int)
     err = ccall((:af_rotate, af_lib), Cint, 
@@ -1295,11 +1296,13 @@ function af_rotate(out::Base.Ref, _in::AFArray, theta::Real, crop::Bool, method:
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_translate(out,_in::af_array,trans0::Cfloat,trans1::Cfloat,odim0::dim_t,odim1::dim_t,method::af_interp_type)
-    ccall((:af_translate,image),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,dim_t,dim_t,af_interp_type),out,_in,trans0,trans1,odim0,odim1,method)
+function af_translate(out::Base.Ref, _in::AFArray, trans0::Real, trans1::Real, 
+                        odim0::Int, odim1::Int, method::Int)
+    err = ccall((:af_translate, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cfloat, Cfloat, Cint, Cint, Cint),
+                out, _in.ptr, trans0, trans1, odim0, odim1, method)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_scale(out::Base.Ref, _in::AFArray, scale0::Real, scale1::Real, 
                     odim0::Int, odim1::Int, method::Int)
