@@ -1278,7 +1278,7 @@ function af_transform(out::Base.Ref, _in::AFArray, transform::AFArray, odim0::In
                         odim1::Cint, method::Int, inverse::Bool)
     err = ccall((:af_transform, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, Cint, Cint, Bool),
-                out, _in.ptr, transform, odim0,o dim1, method, inverse)
+                out, _in.ptr, transform, odim0, odim1, method, inverse)
     err == 0 || throwAFerror(err)
 end
 
@@ -1327,23 +1327,29 @@ function af_histogram(out::Base.Ref, _in::AFArray, nbins::UInt32,minval::Cdouble
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_dilate(out,_in::af_array,mask::af_array)
-    ccall((:af_dilate,image),af_err,(Ptr{af_array},af_array,af_array),out,_in,mask)
+function af_dilate(out::Base.Ref, _in::AFArray, mask::AFArray)
+    err = ccall((:af_dilate, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}), out, _in.ptr, mask)
+    err == 0 || throwAFerror(err)
 end
 
-function af_dilate3(out,_in::af_array,mask::af_array)
-    ccall((:af_dilate3,image),af_err,(Ptr{af_array},af_array,af_array),out,_in,mask)
+function af_dilate3(out::Base.Ref, _in::AFArray, mask::AFArray)
+    err = ccall((:af_dilate3, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}), out, _in.ptr, mask)
+    err == 0 || throwAFerror(err)
 end
 
-function af_erode(out,_in::af_array,mask::af_array)
-    ccall((:af_erode,image),af_err,(Ptr{af_array},af_array,af_array),out,_in,mask)
+function af_erode(out::Base.Ref, _in::AFArray, mask::AFArray)
+    err = ccall((:af_erode, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}), out, _in.ptr, mask)
+    err == 0 || throwAFerror(err)
 end
 
-function af_erode3(out,_in::af_array,mask::af_array)
-    ccall((:af_erode3,image),af_err,(Ptr{af_array},af_array,af_array),out,_in,mask)
+function af_erode3(out::Base.Ref, _in::AFArray, mask::AFArray)
+    err = ccall((:af_erode3, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}), out, _in.ptr, mask)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_bilateral(out::Base.Ref, _in::AFArray, spatial_sigma::Cdouble, chromatic_sigma::Cdouble, isColor::Bool)
     err = ccall((:af_bilateral, af_lib), Cint,

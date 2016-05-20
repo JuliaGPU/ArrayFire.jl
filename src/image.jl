@@ -28,7 +28,12 @@ export  loadImage,
         skew,
         transform, 
         transformCoordinates,
-        translate
+        translate,
+        dilate,
+        erode,
+        dilate3d,
+        erode3d,
+        gaussiankernel
 
 # Export constants
 
@@ -251,3 +256,24 @@ function translate(a::AFArray, trans1::Real, trans2::Real;
     af_translate(out, a, trans1, trans2, dim1, dim2, method)
     AFArray{backend_eltype(out[])}(out[])
 end 
+
+# Morphological Operations
+
+for (op, fn) in ((:dilate, :af_dilate), (:dilate3d, :af_dilate3d),
+                (:erode, :af_erode), (:erode3d, :af_erode3d))
+
+    @eval function ($op)(a::AFArray, mask::AFArray)
+        out = new_ptr()
+        eval($fn)(out, a, mask)
+        AFArray{backend_eltype(out[])}(out[])
+    end
+
+end
+
+# Gaussian Kernel
+
+function gaussiankernel(rows::Int, cols::Int; sigma_r = 0., sigma_c = 0.)
+    out = new_ptr()
+    af_gaussian_kernel(out, rows, cols, sigma_r, sigma_c)
+    AFArray{backend_eltype(out[])}(out[])
+end
