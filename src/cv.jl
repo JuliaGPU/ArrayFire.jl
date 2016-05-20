@@ -5,7 +5,11 @@
 export  AFFeatures,
         orb,
         sift,
-        gloh
+        gloh,
+        diffOfGaussians,
+        fast,
+        harris,
+        susan
 
 # Feature Type
 
@@ -37,3 +41,32 @@ for (op,fn) in ((:sift, :af_sift), (:gloh, :af_gloh))
     end
 
 end
+
+# Feature Detectors
+
+function diffOfGaussians(a::AFArray, radius1::Int, radius2::Int) 
+    out = new_ptr()
+    af_dog(out, a, radius1, radius)
+    AFArray{backend_eltype(out[])}(out[])
+end
+
+function fast(a::AFArray; thr = 20., arc_length = 9, non_max = true, 
+                feature_ratio = 0.05, edge = 3)
+    out = new_ptr()
+    af_fast(out, a, thr, Cuint(arc_length), non_max, feature_ratio, Cuint(edge))
+    AFFeatures(out[])
+end 
+
+function harris(a::AFArray; max_corners = 500, min_response = 1e-5, 
+                sigma = 1., block_size = 0, k_thr = 0.04)
+    out = new_ptr()
+    af_harris(out, a, Cuint(max_corners), min_response, sigma, Cuint(block_size), k_thr)
+    AFFeatures(out[])
+end 
+
+function susan(a::AFArray; radius = 3, diff_thr = 32.0, 
+                geom_thr = 10.0, feature_ratio = 0.05, edge = 3)
+    out = new_ptr()
+    af_susan(out, a, Cuint(radius), diff_thr, geom_thr, feature_ratio, Cuint(edge))
+    AFFeatures(out[])
+end 

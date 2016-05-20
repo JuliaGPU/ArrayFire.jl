@@ -1777,15 +1777,21 @@ function af_corrcoef(real::Base.Ref, imag::Base.Ref, X::AFArray, Y::AFArray)
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_fast(out,_in::af_array,thr::Cfloat,arc_length::UInt32,non_max::Bool,feature_ratio::Cfloat,edge::UInt32)
-    ccall((:af_fast,vision),af_err,(Ptr{af_features},af_array,Cfloat,UInt32,Bool,Cfloat,UInt32),out,_in,thr,arc_length,non_max,feature_ratio,edge)
+function af_fast(out::Base.Ref, _in::AFArray, thr::Real, arc_length::UInt32, 
+                    non_max::Bool, feature_ratio::Real, edge::UInt32)
+    err = ccall((:af_fast, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cfloat, UInt32, Bool, Cfloat, UInt32),
+                out, _in.ptr, thr, arc_length, non_max, feature_ratio, edge)
+    err == 0 || throwAFerror(err)
 end
 
-function af_harris(out,_in::af_array,max_corners::UInt32,min_response::Cfloat,sigma::Cfloat,block_size::UInt32,k_thr::Cfloat)
-    ccall((:af_harris,vision),af_err,(Ptr{af_features},af_array,UInt32,Cfloat,Cfloat,UInt32,Cfloat),out,_in,max_corners,min_response,sigma,block_size,k_thr)
+function af_harris(out::Base.Ref, _in::AFArray, max_corners::UInt32, 
+                    min_response::Real, sigma::Real, block_size::UInt32, k_thr::Real)
+    err = ccall((:af_harris, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, UInt32, Cfloat, Cfloat, UInt32, Cfloat),
+                out, _in.ptr, max_corners, min_response, sigma, block_size, k_thr)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_orb(feat::Base.Ref, desc::Base.Ref, _in::AFArray, 
                 fast_thr::Real, max_feat::UInt32, scl_fctr::Real, 
@@ -1830,15 +1836,24 @@ end
 function af_match_template(out,search_img::af_array,template_img::af_array,m_type::af_match_type)
     ccall((:af_match_template,vision),af_err,(Ptr{af_array},af_array,af_array,af_match_type),out,search_img,template_img,m_type)
 end
+=#
 
-function af_susan(out,_in::af_array,radius::UInt32,diff_thr::Cfloat,geom_thr::Cfloat,feature_ratio::Cfloat,edge::UInt32)
-    ccall((:af_susan,vision),af_err,(Ptr{af_features},af_array,UInt32,Cfloat,Cfloat,Cfloat,UInt32),out,_in,radius,diff_thr,geom_thr,feature_ratio,edge)
+function af_susan(out::Base.Ref, _in::AFArray, radius::UInt32, 
+                    diff_thr::Real, geom_thr::Real, feature_ratio::Real, edge::UInt32)
+    err = ccall((:af_susan,af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, UInt32, Cfloat, Cfloat, Cfloat, UInt32),
+                out, _in.ptr, radius, diff_thr, geom_thr, feature_ratio, edge)
+    err == 0 || throwAFerror(err)
 end
 
-function af_dog(out,_in::af_array,radius1::Cint,radius2::Cint)
-    ccall((:af_dog,vision),af_err,(Ptr{af_array},af_array,Cint,Cint),out,_in,radius1,radius2)
+function af_dog(out::Base.Ref, _in::AFArray, radius1::Int, radius2::Int)
+    err = ccall((:af_dog, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cint, Cint),
+                out, _in.ptr, radius1, radius2)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_homography(H,inliers,x_src::af_array,y_src::af_array,x_dst::af_array,y_dst::af_array,htype::af_homography_type,inlier_thr::Cfloat,iterations::UInt32,otype::af_dtype)
     ccall((:af_homography,vision),af_err,(Ptr{af_array},Ptr{Cint},af_array,af_array,af_array,af_array,af_homography_type,Cfloat,UInt32,af_dtype),H,inliers,x_src,y_src,x_dst,y_dst,htype,inlier_thr,iterations,otype)
 end
