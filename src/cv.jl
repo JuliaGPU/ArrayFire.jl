@@ -9,13 +9,38 @@ export  AFFeatures,
         diffOfGaussians,
         fast,
         harris,
-        susan
+        susan,
+        hammingMatcher,
+        nearestNeighbour,        
+        matchTemplate
+
+# Export constants
+
+export  AF_SAD,
+        AF_ZSAD,
+        AF_LSAD,
+        AF_ZSSD,   
+        AF_LSSD,   
+        AF_NCC,   
+        AF_ZNCC,    
+        AF_SHD
 
 # Feature Type
 
 immutable AFFeatures
     ptr::Ptr{Void}
 end
+
+# Constants
+
+AF_SAD = 0   
+AF_ZSAD = 1
+AF_LSAD = 2
+AF_ZSSD = 3   
+AF_LSSD = 4   
+AF_NCC = 5   
+AF_ZNCC = 6    
+AF_SHD = 7
 
 # Feature Descriptors
 
@@ -70,3 +95,28 @@ function susan(a::AFArray; radius = 3, diff_thr = 32.0,
     af_susan(out, a, Cuint(radius), diff_thr, geom_thr, feature_ratio, Cuint(edge))
     AFFeatures(out[])
 end 
+
+# Feature Matchers
+
+function hammingMatcher(a::AFArray, train::AFArray; dist_dim = 0, n_dist = 1)
+    idx = out_ptr()
+    dist = out_ptr()
+    af_hamming_matcher(idx, dist, a, train, dist_dim, Cuint(n_dist))
+    AFArray{backend_eltype(idx[])}(idx[]) + 1,
+    AFArray{backend_eltype(dist[])}(dist[])
+end
+
+function nearestNeighbour(a::AFArray, train::AFArray; dist_dim = 9, 
+                            n_dist = 1, dist_type = AF_SSD)
+    idx = new_ptr()
+    dist = new_ptr()
+    af_nearest_neighbour(idx, dist, query, train, dist_dim, n_dist, dist_type)
+    AFArray{backend_eltype(idx[])}(idx[]) + 1,
+    AFArray{backend_eltype(dist[])}(dist[])
+end
+
+function matchTemplate(search_img::AFArray, template_img::AFArray; m_typ = AF_SAD)
+    out = new_ptr()
+    af_match_template(out, search_img, template_img, m_type)
+    AFArray{backend_eltype(out[])}(out[])
+end

@@ -1824,15 +1824,23 @@ function af_gloh(feat::Base.Ref, desc::Base.Ref, _in::AFArray, n_layers::UInt32,
     err == 0 || throwAFerror(err)
 end
 
+function af_hamming_matcher(idx::Base.Ref, dist::Base.Ref, query::AFArray, 
+                            train::AFArray, dist_dim::Int, n_dist::UInt32)
+    err = ccall((:af_hamming_matcher,vision), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, UInt32),
+                idx, dist, query.ptr, train.ptr, dist_dim, n_dist)
+    err == 0 || throwAFerror(err)
+end
+
+function af_nearest_neighbour(idx::Base.Ref, dist::Base.Ref, query::AFArray, 
+                                train::AFArray, dist_dim::Int, n_dist::UInt32,dist_type::Int)
+    err = ccall((:af_nearest_neighbour,vision), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, UInt32, Cint),
+                idx, dist, query.ptr, train.ptr, dist_dim, n_dist, dist_type)
+    err == 0 || throwAFerror(err)
+end
+
 #=
-function af_hamming_matcher(idx,dist,query::af_array,train::af_array,dist_dim::dim_t,n_dist::UInt32)
-    ccall((:af_hamming_matcher,vision),af_err,(Ptr{af_array},Ptr{af_array},af_array,af_array,dim_t,UInt32),idx,dist,query,train,dist_dim,n_dist)
-end
-
-function af_nearest_neighbour(idx,dist,query::af_array,train::af_array,dist_dim::dim_t,n_dist::UInt32,dist_type::af_match_type)
-    ccall((:af_nearest_neighbour,vision),af_err,(Ptr{af_array},Ptr{af_array},af_array,af_array,dim_t,UInt32,af_match_type),idx,dist,query,train,dist_dim,n_dist,dist_type)
-end
-
 function af_match_template(out,search_img::af_array,template_img::af_array,m_type::af_match_type)
     ccall((:af_match_template,vision),af_err,(Ptr{af_array},af_array,af_array,af_match_type),out,search_img,template_img,m_type)
 end
