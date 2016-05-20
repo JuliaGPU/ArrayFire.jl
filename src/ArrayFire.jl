@@ -24,5 +24,6 @@ include("backend.jl")
 include("stats.jl")
 include("linalg.jl")
 include("image.jl")
+include("cv.jl")
 
 end

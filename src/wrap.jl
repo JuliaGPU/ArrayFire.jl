@@ -1421,11 +1421,12 @@ function af_hist_equal(out::Base.Ref, _in::AFArray, hist::AFArray)
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_gaussian_kernel(out,rows::Cint,cols::Cint,sigma_r::Cdouble,sigma_c::Cdouble)
-    ccall((:af_gaussian_kernel,image),af_err,(Ptr{af_array},Cint,Cint,Cdouble,Cdouble),out,rows,cols,sigma_r,sigma_c)
+function af_gaussian_kernel(out::Base.Ref, rows::Int, cols::Int, sigma_r::Real, sigma_c::Real)
+    err = ccall((:af_gaussian_kernel, af_lib), Cint,
+                (Ptr{Void}, Cint, Cint, Cdouble, Cdouble),
+                out, rows, cols, sigma_r, sigma_c)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_hsv2rgb(out::Base.Ref, _in::AFArray)
     err = ccall((:af_hsv2rgb, af_lib), Cint, 
@@ -1784,19 +1785,40 @@ end
 function af_harris(out,_in::af_array,max_corners::UInt32,min_response::Cfloat,sigma::Cfloat,block_size::UInt32,k_thr::Cfloat)
     ccall((:af_harris,vision),af_err,(Ptr{af_features},af_array,UInt32,Cfloat,Cfloat,UInt32,Cfloat),out,_in,max_corners,min_response,sigma,block_size,k_thr)
 end
+=#
 
-function af_orb(feat,desc,_in::af_array,fast_thr::Cfloat,max_feat::UInt32,scl_fctr::Cfloat,levels::UInt32,blur_img::Bool)
-    ccall((:af_orb,vision),af_err,(Ptr{af_features},Ptr{af_array},af_array,Cfloat,UInt32,Cfloat,UInt32,Bool),feat,desc,_in,fast_thr,max_feat,scl_fctr,levels,blur_img)
+function af_orb(feat::Base.Ref, desc::Base.Ref, _in::AFArray, 
+                fast_thr::Real, max_feat::UInt32, scl_fctr::Real, 
+                levels::UInt32, blur_img::Bool)
+    err = ccall((:af_orb, af_lib), Cint,
+            (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cfloat, UInt32, Cfloat, UInt32, Bool),
+            feat, desc, _in.ptr, fast_thr, max_feat, scl_fctr, levels, blur_img)
+    err == 0 || throwAFerror(err)
 end
 
-function af_sift(feat,desc,_in::af_array,n_layers::UInt32,contrast_thr::Cfloat,edge_thr::Cfloat,init_sigma::Cfloat,double_input::Bool,intensity_scale::Cfloat,feature_ratio::Cfloat)
-    ccall((:af_sift,vision),af_err,(Ptr{af_features},Ptr{af_array},af_array,UInt32,Cfloat,Cfloat,Cfloat,Bool,Cfloat,Cfloat),feat,desc,_in,n_layers,contrast_thr,edge_thr,init_sigma,double_input,intensity_scale,feature_ratio)
+function af_sift(feat::Base.Ref, desc::Base.Ref, _in::AFArray, n_layers::UInt32, 
+                contrast_thr::Real, edge_thr::Real, init_sigma::Real, double_input::Bool, 
+                intensity_scale::Real, feature_ratio::Real)
+    err = ccall((:af_sift, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, UInt32, Cfloat, 
+                Cfloat, Cfloat, Bool, Cfloat, Cfloat),
+                feat,desc, _in.ptr, n_layers, contrast_thr, edge_thr, 
+                init_sigma, double_input, intensity_scale, feature_ratio)
+    err == 0 || throwAFerror(err)
 end
 
-function af_gloh(feat,desc,_in::af_array,n_layers::UInt32,contrast_thr::Cfloat,edge_thr::Cfloat,init_sigma::Cfloat,double_input::Bool,intensity_scale::Cfloat,feature_ratio::Cfloat)
-    ccall((:af_gloh,vision),af_err,(Ptr{af_features},Ptr{af_array},af_array,UInt32,Cfloat,Cfloat,Cfloat,Bool,Cfloat,Cfloat),feat,desc,_in,n_layers,contrast_thr,edge_thr,init_sigma,double_input,intensity_scale,feature_ratio)
+function af_gloh(feat::Base.Ref, desc::Base.Ref, _in::AFArray, n_layers::UInt32, 
+                contrast_thr::Real, edge_thr::Real, init_sigma::Real, double_input::Bool, 
+                intensity_scale::Real, feature_ratio::Real)
+    err = ccall((:af_gloh, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, UInt32, Cfloat, 
+                Cfloat, Cfloat, Bool, Cfloat, Cfloat),
+                feat,desc, _in.ptr, n_layers, contrast_thr, edge_thr, 
+                init_sigma, double_input, intensity_scale, feature_ratio)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_hamming_matcher(idx,dist,query::af_array,train::af_array,dist_dim::dim_t,n_dist::UInt32)
     ccall((:af_hamming_matcher,vision),af_err,(Ptr{af_array},Ptr{af_array},af_array,af_array,dim_t,UInt32),idx,dist,query,train,dist_dim,n_dist)
 end
