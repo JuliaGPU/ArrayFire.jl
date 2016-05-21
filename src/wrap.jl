@@ -674,11 +674,16 @@ end
 function af_lookup(out,_in::af_array,indices::af_array,dim::UInt32)
     ccall((:af_lookup,index),af_err,(Ptr{af_array},af_array,af_array,UInt32),out,_in,indices,dim)
 end
+=#
 
-function af_assign_seq(out,lhs::af_array,ndims::UInt32,indices,rhs::af_array)
-    ccall((:af_assign_seq,index),af_err,(Ptr{af_array},af_array,UInt32,Ptr{af_seq},af_array),out,lhs,ndims,indices,rhs)
+function af_assign_seq(out::Base.Ref, lhs::AFArray, ndims::UInt32, indices::Union{seq, Vector{seq}}, rhs::AFArray)
+    err = ccall((:af_assign_seq, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, UInt32, Ptr{seq},Ptr{Void}),
+                out, lhs.ptr, ndims, pointer(indices), rhs.ptr)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_index_gen(out,_in::af_array,ndims::dim_t,indices)
     ccall((:af_index_gen,index),af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t}),out,_in,ndims,indices)
 end
