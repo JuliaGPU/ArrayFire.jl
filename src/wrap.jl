@@ -661,11 +661,16 @@ end
 function af_get_revision()
     ccall((:af_get_revision,util),Cstring,())
 end
+=#
 
-function af_index(out,_in::af_array,ndims::UInt32,index)
-    ccall((:af_index,index),af_err,(Ptr{af_array},af_array,UInt32,Ptr{af_seq}),out,_in,ndims,index)
+function af_index(out::Base.Ref, _in::AFArray, ndims::UInt32, index::Union{seq, Vector{seq}})
+    err = ccall((:af_index, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, UInt32, Ptr{seq}),
+                out, _in.ptr, ndims, pointer(index))
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_lookup(out,_in::af_array,indices::af_array,dim::UInt32)
     ccall((:af_lookup,index),af_err,(Ptr{af_array},af_array,af_array,UInt32),out,_in,indices,dim)
 end

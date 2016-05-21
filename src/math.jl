@@ -8,11 +8,13 @@ export sigmoid
 for (op,fn) in ((:+,:af_add), (:.+,:af_add), (:-,:af_sub), (:.-,:af_sub), (:.*,:af_mul), 
                 (:./,:af_div), (:%, :af_mod), (:.%, :af_mod), (:<<, :af_bitshiftl),
                 (:.<<, :af_bitshiftl),(:>>, :af_bitshiftr), (:.>>, :af_bitshiftr))
+
     @eval function Base.($(quot(op))){T,S}(a::AFArray{T}, b::AFArray{S}; batched = true)
         ptr = new_ptr()
         eval($(quot(fn)))(ptr, a, b, batched)
         AFArray{af_promote(T,S)}(ptr[]) 
     end
+
 end
 
 Base.(:+)(a::AFArray{Bool}, v::Bool) = +(a,Int(v))
@@ -20,10 +22,13 @@ Base.(:+)(v::Bool, a::AFArray{Bool}) = +(a,v)
 Base.(:-)(a::AFArray{Bool}, v::Bool) = -(a,Int(v))
 Base.(:-)(v::Bool, a::AFArray{Bool}) = -(a,v)
 
-for op in (:+, :.+, :-, :.-, :*, :.*, :/, :./, :%, :.%)
+for (op,fn) in ((:+, :af_add), (:.+, :af_add), (:-, :af_sub), (:.-, :af_sub), (:*, :af_mul), 
+                (:.*, :af_mul), (:/, :af_div), (:./, :af_div), (:%, :af_mod), (:.%, :af_mod))
     @eval function Base.($(quot(op))){T<:Number,S<:Number}(a::AFArray{T}, v::S)
-        b = constant(v, size(a)...)
-        eval($(quot(op)))(a, b)
+        b = constant((af_promote(T,S))(v), size(a)...)
+        ptr = new_ptr()
+        eval($(quot(fn)))(ptr, a, b)
+        AFArray{af_promote(T,S)}(ptr[]) 
     end
     @eval Base.($(quot(op))){S<:Number,T<:Number}(v::S, a::AFArray{T}) = Base.($(quot(op)))(a, v)
 end

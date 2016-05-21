@@ -15,6 +15,7 @@ typealias AFMatrix{T} AFArray{T,2}
 
 include("error.jl")
 include("defns.jl")
+include("indexing.jl")
 include("wrap.jl")
 include("utils.jl")
 include("create.jl")
