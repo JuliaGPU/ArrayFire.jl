@@ -64,9 +64,9 @@ function complex{T<:Real}(a::AFArray{T})
     AFArray{Complex{T}}(out[])
 end
 
-function complex{T<:Real}(a::AFArray{T}, b::AFArray{T})
+function complex{T<:Real}(a::AFArray{T}, b::AFArray{T}; batch = true)
     out = new_ptr()
-    af_cplx2(out, a, b)
+    af_cplx2(out, a, b, batch)
     AFArray{Complex{T}}(out[])
 end
 
@@ -76,7 +76,13 @@ function conj{T<:Complex}(a::AFArray{T})
     AFArray{T}(out[])
 end
 
-function real{T}(a::AFArray{T})
+function real{T<:Real}(a::AFArray{Complex{T}})
+    out = new_ptr()
+    af_real(out, a)
+    AFArray{T}(out[])
+end 
+
+function real{T<:Real}(a::AFArray{T})
     out = new_ptr()
     af_real(out, a)
     AFArray{T}(out[])

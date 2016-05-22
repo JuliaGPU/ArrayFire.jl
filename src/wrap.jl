@@ -1857,7 +1857,7 @@ function af_stdev_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
     err == 0 || throwAFerror(err)
 end
 
-function af_median_all(realVal::Base.Ref, imagVal::Base.Ref, _in::AFArray)
+function af_median_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
     err = ccall((:af_median_all, af_lib), Cint,
                 (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
     err == 0 || throwAFerror(err)
