@@ -1,8 +1,25 @@
 ### Signal Processing 
 
-import Base: fft, ifft, fft!, ifft!
+import Base: fft, ifft, fft!, ifft!, conv, conv2
 
-export fftC2R, fftR2C
+export  fftC2R, 
+        fftR2C, 
+        conv3, 
+        convolve,
+        AF_CONV_DEFAULT,
+        AF_CONV_EXPAND,
+        AF_CONV_AUTO,
+        AF_CONV_SPATIAL,
+        AF_CONV_FREQ
+
+# Constants
+
+const AF_CONV_DEFAULT = 0
+const AF_CONV_EXPAND = 1
+
+const AF_CONV_AUTO = 0
+const AF_CONV_SPATIAL = 1
+const AF_CONV_FREQ = 2
 
 # FFTs
 
@@ -147,4 +164,30 @@ function fftR2C{T}(a::AFArray{T,3}, pad1::Integer, pad2::Integer, pad3::Integer;
     out = new_ptr()
     af_fft3_r2c(out, a, norm_factor, pad1)
     AFArray{Complex{T}}(out[])
+end
+
+# Convolutions
+
+for (op, arr1, arr2, fn) in ((:conv, :(sig::AFVector{T}), :(fil::AFVector{S}), :af_fft_convolve),
+                        (:conv2, :(sig::AFMatrix{T}), :(fil::AFMatrix{S}), :af_fft_convolve2),
+                        (:conv3, :(sig::AFArray{T,3}), :(fil::AFArray{S,3}), :af_fft_convolve3))
+
+    @eval function ($op){T,S}($arr1, $arr2; mode = AF_CONV_EXPAND)
+        out = new_ptr()
+        eval($fn)(out, sig, fil, mode)
+        AFArray{af_promote(T,S)}(out[])
+    end
+
+end
+
+for (arr1, arr2, fn) in ((:(sig::AFVector{T}), :(fil::AFVector{S}), :af_convolve1),
+                            (:(sig::AFMatrix{T}), :(fil::AFMatrix{S}), :af_convolve2),
+                            (:(sig::AFArray{T,3}), :(fil::AFArray{S,3}), :af_convolve3))
+
+    @eval function convolve{T,S}($arr1, $arr2; mode = AF_CONV_EXPAND, domain = AF_CONV_AUTO)
+        out = new_ptr()
+        eval($fn)(out, sig, fil, mode, domain)
+        AFArray{af_promote(T,S)}(out[])
+    end
+
 end

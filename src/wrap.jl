@@ -1713,35 +1713,55 @@ function af_fft3_c2r(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, is_odd::
     err == 0 || throwAFerror(err)
 end
 
+function af_convolve1(out::Base.Ref, signal::AFArray, filter::AFArray, mode::Int, domain::Int)
+    err = ccall((:af_convolve1, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, Cint),
+                out, signal.ptr, filter.ptr, mode, domain)
+    err == 0 || throwAFerror(err)
+end
+
+function af_convolve2(out::Base.Ref, signal::AFArray, filter::AFArray, mode::Int, domain::Int)
+    err = ccall((:af_convolve2, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, Cint),
+                out, signal.ptr, filter.ptr, mode, domain)
+    err == 0 || throwAFerror(err)
+end
+
+function af_convolve3(out::Base.Ref, signal::AFArray, filter::AFArray, mode::Int, domain::Int)
+    err = ccall((:af_convolve3, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, Cint),
+                out, signal.ptr, filter.ptr, mode, domain)
+    err == 0 || throwAFerror(err)
+end
+
 #=
-function af_convolve1(out,signal::af_array,filter::af_array,mode::af_conv_mode,domain::af_conv_domain)
-    ccall((:af_convolve1,signal),af_err,(Ptr{af_array},af_array,af_array,af_conv_mode,af_conv_domain),out,signal,filter,mode,domain)
-end
-
-function af_convolve2(out,signal::af_array,filter::af_array,mode::af_conv_mode,domain::af_conv_domain)
-    ccall((:af_convolve2,signal),af_err,(Ptr{af_array},af_array,af_array,af_conv_mode,af_conv_domain),out,signal,filter,mode,domain)
-end
-
-function af_convolve3(out,signal::af_array,filter::af_array,mode::af_conv_mode,domain::af_conv_domain)
-    ccall((:af_convolve3,signal),af_err,(Ptr{af_array},af_array,af_array,af_conv_mode,af_conv_domain),out,signal,filter,mode,domain)
-end
-
 function af_convolve2_sep(out,col_filter::af_array,row_filter::af_array,signal::af_array,mode::af_conv_mode)
     ccall((:af_convolve2_sep,signal),af_err,(Ptr{af_array},af_array,af_array,af_array,af_conv_mode),out,col_filter,row_filter,signal,mode)
 end
+=#
 
-function af_fft_convolve1(out,signal::af_array,filter::af_array,mode::af_conv_mode)
-    ccall((:af_fft_convolve1,signal),af_err,(Ptr{af_array},af_array,af_array,af_conv_mode),out,signal,filter,mode)
+function af_fft_convolve1(out::Base.Ref, signal::AFArray, filter::AFArray, mode::Int)
+    err = ccall((:af_fft_convolve1, af_lib), Cint,
+                (Ptr{Void},Ptr{Void},Ptr{Void}, Cint),
+                out, signal.ptr, filter.ptr, mode)
+    err == 0 || throwAFerror(err)
 end
 
-function af_fft_convolve2(out,signal::af_array,filter::af_array,mode::af_conv_mode)
-    ccall((:af_fft_convolve2,signal),af_err,(Ptr{af_array},af_array,af_array,af_conv_mode),out,signal,filter,mode)
+function af_fft_convolve2(out::Base.Ref, signal::AFArray, filter::AFArray, mode::Int)
+    err = ccall((:af_fft_convolve2, af_lib), Cint,
+                (Ptr{Void},Ptr{Void},Ptr{Void}, Cint),
+                out, signal.ptr, filter.ptr, mode)
+    err == 0 || throwAFerror(err)
 end
 
-function af_fft_convolve3(out,signal::af_array,filter::af_array,mode::af_conv_mode)
-    ccall((:af_fft_convolve3,signal),af_err,(Ptr{af_array},af_array,af_array,af_conv_mode),out,signal,filter,mode)
+function af_fft_convolve3(out::Base.Ref, signal::AFArray, filter::AFArray, mode::Int)
+    err = ccall((:af_fft_convolve3, af_lib), Cint,
+                (Ptr{Void},Ptr{Void},Ptr{Void}, Cint),
+                out, signal.ptr, filter.ptr, mode)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_fir(y,b::af_array,x::af_array)
     ccall((:af_fir,signal),af_err,(Ptr{af_array},af_array,af_array),y,b,x)
 end
