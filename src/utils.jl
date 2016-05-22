@@ -1,5 +1,7 @@
 import Base: elsize, size, ndims, convert, showarray
 
+export AFInfo
+
 immutable Dim4
     dim1::Integer
     dim2::Integer
@@ -88,3 +90,8 @@ end
 backend_eltype(a::AFArray) = backend_eltype(a.ptr)
 
 constant(val, t::Tuple) = constant(val, t...)
+
+function AFInfo() 
+    af_info()
+    nothing
+end

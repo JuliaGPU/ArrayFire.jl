@@ -1027,11 +1027,14 @@ end
 function af_replace_scalar(a::af_array,cond::af_array,b::Cdouble)
     ccall((:af_replace_scalar,data),af_err,(af_array,af_array,Cdouble),a,cond,b)
 end
+=#
 
 function af_info()
-    ccall((:af_info,device),af_err,())
+    err = ccall((:af_info, af_lib), Cint, () ) 
+    err == 0 || throwAFerror()
 end
 
+#=
 function af_init()
     ccall((:af_init,device),af_err,())
 end
