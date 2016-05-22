@@ -1583,15 +1583,19 @@ function af_is_lapack_available(out::Base.Ref)
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_approx1(out,_in::af_array,pos::af_array,method::af_interp_type,offGrid::Cfloat)
-    ccall((:af_approx1,signal),af_err,(Ptr{af_array},af_array,af_array,af_interp_type,Cfloat),out,_in,pos,method,offGrid)
+function af_approx1(out::Base.Ref, _in::AFArray, pos::AFArray, method::Int, offGrid::Real)
+    err = ccall((:af_approx1, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, Cfloat),
+                out, _in.ptr, pos.ptr, method, offGrid)
+    err == 0 || throwAFerror(err)
 end
 
 function af_approx2(out,_in::af_array,pos0::af_array,pos1::af_array,method::af_interp_type,offGrid::Cfloat)
-    ccall((:af_approx2,signal),af_err,(Ptr{af_array},af_array,af_array,af_array,af_interp_type,Cfloat),out,_in,pos0,pos1,method,offGrid)
+    err = ccall((:af_approx2, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, Cfloat),
+                out, _in.ptr, pos0.ptr, pos1.ptr, method, offGrid)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_fft(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, odim0::Int)
     err = ccall((:af_fft, af_lib), Cint,
@@ -1761,15 +1765,19 @@ function af_fft_convolve3(out::Base.Ref, signal::AFArray, filter::AFArray, mode:
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_fir(y,b::af_array,x::af_array)
-    ccall((:af_fir,signal),af_err,(Ptr{af_array},af_array,af_array),y,b,x)
+function af_fir(y::Base.Ref, b::AFArray, x::AFArray)
+    err = ccall((:af_fir, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}),
+                y, b.ptr, x.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_iir(y,b::af_array,a::af_array,x::af_array)
-    ccall((:af_iir,signal),af_err,(Ptr{af_array},af_array,af_array,af_array),y,b,a,x)
+function af_iir(y::Base.Ref, b::AFArray, a::AFArray, x::AFArray)
+    err = ccall((:af_iir,af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}),
+                y, b.ptr, a.ptr, x.ptr)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_mean(out::Base.Ref, _in::AFArray, dim::Cuint)
     err = ccall((:af_mean, af_lib), Cint, 

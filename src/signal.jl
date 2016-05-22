@@ -2,11 +2,20 @@
 
 import Base: fft, ifft, fft!, ifft!, conv, conv2
 
+# Export Methods
+
 export  fftC2R, 
         fftR2C, 
         conv3, 
         convolve,
-        AF_CONV_DEFAULT,
+        fir,
+        iir, 
+        approx1,
+        approx2
+
+# Export Constants
+
+export  AF_CONV_DEFAULT,
         AF_CONV_EXPAND,
         AF_CONV_AUTO,
         AF_CONV_SPATIAL,
@@ -190,4 +199,32 @@ for (arr1, arr2, fn) in ((:(sig::AFVector{T}), :(fil::AFVector{S}), :af_convolve
         AFArray{af_promote(T,S)}(out[])
     end
 
+end
+
+# Filters
+
+function fir(b::AFArray, x::AFArray)
+    out = new_ptr()
+    af_fir(out, b, x)
+    AFArray{backend_eltype(out[])}(out[])
+end
+
+function iir(b::AFArray, a::AFArray, x::AFArray)
+    out = new_ptr()
+    af_iir(out, b, a, x)
+    AFArray{backend_eltype(out[])}(out[])
+end
+
+# Approx
+
+function approx1(a::AFArray, pos::AFArray; method = AF_INTERP_LINEAR, offGrid = 0.0)
+    out = new_ptr()
+    af_approx1(out, a, pos, method, offGrid)
+    AFArray{backend_eltype{out[]}}(out[])
+end
+
+function approx2(a::AFArray, pos1::AFArray, pos2::AFArray; method = AF_INTERP_LINEAR, offGrid = 0.0)
+    out = new_ptr()
+    af_approx2(out, a, pos1, pos1, method, offGrid)
+    AFArray{backend_eltype{out[]}}(out[])
 end
