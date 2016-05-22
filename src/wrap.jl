@@ -511,11 +511,15 @@ end
 function af_root(out,lhs::af_array,rhs::af_array,batch::Bool)
     ccall((:af_root,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
 end
-
-function af_pow(out,lhs::af_array,rhs::af_array,batch::Bool)
-    ccall((:af_pow,arith),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs,rhs,batch)
-end
 =#
+
+function af_pow(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
+    err = ccall((:af_pow, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
+                out, lhs.ptr, rhs.ptr, batch)
+    err == 0 || throwAFerror(err)
+end
+
 function af_pow2(out,_in::AFArray)
     err = ccall((:af_pow2,af_lib), Cint,
             (Ptr{Void},Ptr{Void}), out, _in.ptr)
@@ -1590,7 +1594,7 @@ function af_approx1(out::Base.Ref, _in::AFArray, pos::AFArray, method::Int, offG
     err == 0 || throwAFerror(err)
 end
 
-function af_approx2(out,_in::af_array,pos0::af_array,pos1::af_array,method::af_interp_type,offGrid::Cfloat)
+function af_approx2(out::Base.Ref, _in::AFArray, pos0::AFArray, pos1::AFArray, method::Int, offGrid::Real)
     err = ccall((:af_approx2, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, Cfloat),
                 out, _in.ptr, pos0.ptr, pos1.ptr, method, offGrid)
