@@ -3,9 +3,9 @@
 import Base: dot, transpose, ctranspose, transpose!, ctranspose!, det, inv,
                 norm, rank, *, A_mul_Bt, At_mul_B, At_mul_Bt, Ac_mul_B, 
                 A_mul_Bc, Ac_mul_Bc, chol, lu, lufact!, qr, qrfact!, svd,
-                svdfact!, \
+                svdfact!, \, diag
 
-export isLAPACKAvailable, chol!, solveLU
+export isLAPACKAvailable, chol!, solveLU, upper, lower
 
 # Constants
 
@@ -211,4 +211,22 @@ function solveLU(a::AFArray, p::AFArray, b::AFArray; options = AF_MAT_NONE)
     out = new_ptr()
     af_solve_lu(out, a, p, b, options)
     AFArray{backend_eltype(out[])}(out[])
+end
+
+function diag{T}(a::AFMatrix{T}, k::Integer = 1)
+    out = new_ptr()
+    af_diag_extract(out, a, k - 1)
+    AFVector{T}(out[])
+end
+
+function upper{T}(a::AFMatrix{T}; is_unit_diag = false)
+    out = new_ptr()
+    af_upper(out, a, is_unit_diag)
+    AFMatrix{T}(out[])
+end
+
+function lower{T}(a::AFMatrix{T}; is_unit_diag = false)
+    out = new_ptr()
+    af_lower(out, a, is_unit_diag)
+    AFMatrix{T}(out[])
 end

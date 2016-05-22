@@ -920,54 +920,68 @@ end
 function af_constant_ulong(arr,val::uintl,ndims::UInt32,dims)
     ccall((:af_constant_ulong,data),af_err,(Ptr{af_array},uintl,UInt32,Ptr{dim_t}),arr,val,ndims,dims)
 end
-
-function af_range(out,ndims::UInt32,dims,seq_dim::Cint,_type::af_dtype)
-    ccall((:af_range,data),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},Cint,af_dtype),out,ndims,dims,seq_dim,_type)
-end
-
-function af_iota(out,ndims::UInt32,dims,t_ndims::UInt32,tdims,_type::af_dtype)
-    ccall((:af_iota,data),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},UInt32,Ptr{dim_t},af_dtype),out,ndims,dims,t_ndims,tdims,_type)
-end
 =#
-function af_randu!(ptr::Base.Ref, dims::Vector{Int}, T::DataType)
+
+function af_range(out::Base.Ref, ndims::UInt32, dims::Vector{Int}, seq_dim::Int, _type::DataType)
+    err = ccall((:af_range, af_lib), Cint,
+                (Ptr{Void}, UInt32, Ptr{Int}, Cint, Cuint), 
+                out, ndims, pointer(dims), seq_dim, aftype(_type))
+    err == 0 || throwAFerror(err)
+end
+
+function af_iota(out::Base.Ref, ndims::UInt32, dims::Vector{Int}, t_ndims::UInt32, tdims::Vector{Int}, _type::DataType)
+    err = ccall((:af_iota, af_lib), Cint, 
+                (Ptr{Void}, UInt32, Ptr{Int}, UInt32, Ptr{Int}, Cuint), 
+                out, ndims, pointer(dims), t_ndims, pointer(tdims),aftype(_type))
+    err == 0 || throwAFerror(err)
+end
+
+function af_randu(ptr::Base.Ref, dims::Vector{Int}, T::DataType)
     err = ccall((:af_randu,af_lib), 
                 Cint, (Ptr{Ptr{Void}}, Cint, Ptr{Int}, Cuint), 
                 ptr , length(dims), pointer(dims), aftype(T))
     err == 0 || throwAFerror(err)
 end
 
-function af_randn!(ptr::Base.Ref, dims::Vector{Int}, T::DataType)
+function af_randn(ptr::Base.Ref, dims::Vector{Int}, T::DataType)
     err = ccall((:af_randn,af_lib), 
                 Cint, (Ptr{Ptr{Void}}, Cint, Ptr{Int}, Cuint), 
                 ptr , length(dims), pointer(dims), aftype(T))
     err == 0 || throwAFerror(err)
 end
 
+function af_set_seed(seed::Cuint)
+    err = ccall((:af_set_seed, af_lib), Cint, 
+                (Cuint,), seed)
+    err == 0 || throwAFerror(err)
+end
+
+function af_get_seed(seed::Base.Ref)
+    err = ccall((:af_get_seed, af_lib), Cint,
+                (Ptr{Cuint},), seed)
+    err == 0 || throwAFerror(err)
+end
+
+function af_identity(out::Base.Ref, ndims::UInt32, dims, _type::DataType)
+    err = ccall((:af_identity, af_lib), Cint,
+                (Ptr{Void}, UInt32, Ptr{Int}, Cuint),
+                out, ndims, pointer(dims), aftype(_type))
+    err == 0 || throwAFerror(err)
+end
+
+function af_diag_create(out::Base.Ref, _in::AFArray, num::Int)
+    err = ccall((:af_diag_create, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr, num)
+    err == 0 || throwAFerror(err)
+end
+
+function af_diag_extract(out::Base.Ref, _in::AFArray, num::Int)
+    err = ccall((:af_diag_extract, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr, num)
+    err == 0 || throwAFerror(err)
+end
+
 #=
-function af_randn(out,ndims::UInt32,dims,_type::af_dtype)
-    ccall((:af_randn,data),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),out,ndims,dims,_type)
-end
-
-function af_set_seed(seed::uintl)
-    ccall((:af_set_seed,data),af_err,(uintl,),seed)
-end
-
-function af_get_seed(seed)
-    ccall((:af_get_seed,data),af_err,(Ptr{uintl},),seed)
-end
-
-function af_identity(out,ndims::UInt32,dims,_type::af_dtype)
-    ccall((:af_identity,data),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),out,ndims,dims,_type)
-end
-
-function af_diag_create(out,_in::af_array,num::Cint)
-    ccall((:af_diag_create,data),af_err,(Ptr{af_array},af_array,Cint),out,_in,num)
-end
-
-function af_diag_extract(out,_in::af_array,num::Cint)
-    ccall((:af_diag_extract,data),af_err,(Ptr{af_array},af_array,Cint),out,_in,num)
-end
-
 function af_join(out,dim::Cint,first::af_array,second::af_array)
     ccall((:af_join,data),af_err,(Ptr{af_array},Cint,af_array,af_array),out,dim,first,second)
 end
@@ -999,15 +1013,23 @@ end
 function af_flip(out,_in::af_array,dim::UInt32)
     ccall((:af_flip,data),af_err,(Ptr{af_array},af_array,UInt32),out,_in,dim)
 end
+=#
 
-function af_lower(out,_in::af_array,is_unit_diag::Bool)
-    ccall((:af_lower,data),af_err,(Ptr{af_array},af_array,Bool),out,_in,is_unit_diag)
+function af_lower(out::Base.Ref, _in::AFArray, is_unit_diag::Bool)
+    err = ccall((:af_lower, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Bool),
+                out, _in.ptr, is_unit_diag)
+    err == 0 || throwAFerror(err)
 end 
 
 function af_upper(out,_in::af_array,is_unit_diag::Bool)
-    ccall((:af_upper,data),af_err,(Ptr{af_array},af_array,Bool),out,_in,is_unit_diag)
+    err = ccall((:af_upper, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Bool),
+                out, _in.ptr, is_unit_diag)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_select(out,cond::af_array,a::af_array,b::af_array)
     ccall((:af_select,data),af_err,(Ptr{af_array},af_array,af_array,af_array),out,cond,a,b)
 end
