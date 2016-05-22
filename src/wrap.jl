@@ -1600,11 +1600,11 @@ function af_fft(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, odim0::Int)
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_fft_inplace(_in::af_array,norm_factor::Cdouble)
-    ccall((:af_fft_inplace,signal),af_err,(af_array,Cdouble),_in,norm_factor)
+function af_fft_inplace(_in::AFArray, norm_factor::Cdouble)
+    err = ccall((:af_fft_inplace, af_lib), Cint,
+                (Ptr{Void}, Cdouble), _in.ptr, norm_factor)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_fft2(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, odim0::Int, odim1::Int)
     err = ccall((:af_fft2, af_lib), Cint, 
@@ -1613,11 +1613,11 @@ function af_fft2(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, odim0::Int, 
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_fft2_inplace(_in::af_array,norm_factor::Cdouble)
-    ccall((:af_fft2_inplace,signal),af_err,(af_array,Cdouble),_in,norm_factor)
+function af_fft2_inplace(_in::AFArray, norm_factor::Cdouble)
+    err = ccall((:af_fft2_inplace, af_lib), Cint, 
+            (AFArray, Cdouble), _in.ptr, norm_factor)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_fft3(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, odim0::Int, odim1::Int, odim2::Int)
     err = ccall((:af_fft3, af_lib), Cint, 
@@ -1671,31 +1671,49 @@ function af_ifft3_inplace(_in::AFArray, norm_factor::Cdouble)
     err == 0 || throwAFerror(err)
 end
 
+function af_fft_r2c(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, pad0::Int)
+    err = ccall((:af_fft_r2c, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cdouble, dim_t),
+                out, _in.ptr, norm_factor, pad0)
+    err == 0 || throwAFerror(err)
+end
+
+function af_fft2_r2c(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, pad0::Int, pad1::Int)
+    err = ccall((:af_fft2_r2c, af_lib), Cint, 
+            (Ptr{Void}, Ptr{Void}, Cdouble, Cint, Cint),
+            out, _in.ptr, norm_factor, pad0, pad1)
+    err == 0 || throwAFerror(err)
+end
+
+function af_fft3_r2c(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, pad0::Int, pad1::Int, pad2::Int)
+    errr = ccall((:af_fft3_r2c, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cdouble, Cint, Cint, Cint),
+                out, _in.ptr, norm_factor, pad0, pad1, pad2)
+    err == 0 || throwAFerror(err)
+end
+
+function af_fft_c2r(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, is_odd::Bool)
+    err = ccall((:af_fft_c2r, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cdouble, Bool),
+                out, _in.ptr, norm_factor, is_odd)
+    err == 0 || throwAFerror(err)
+end
+
+function af_fft2_c2r(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, is_odd::Bool)
+    err = ccall((:af_fft2_c2r, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cdouble, Bool),
+                out, _in.ptr, norm_factor, is_odd)
+    err == 0 || throwAFerror(err)
+end
+
+function af_fft3_c2r(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, is_odd::Bool)
+    err = ccall((:af_fft3_c2r, af_lib), Cint, 
+                (Ptr{Void}, Ptr{Void}, Cdouble, Bool),
+                out, _in.ptr, norm_factor, is_odd)
+    err == 0 || throwAFerror(err)
+end
+
 #=
-function af_fft_r2c(out,_in::af_array,norm_factor::Cdouble,pad0::dim_t)
-    ccall((:af_fft_r2c,signal),af_err,(Ptr{af_array},af_array,Cdouble,dim_t),out,_in,norm_factor,pad0)
-end
-
-function af_fft2_r2c(out,_in::af_array,norm_factor::Cdouble,pad0::dim_t,pad1::dim_t)
-    ccall((:af_fft2_r2c,signal),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t),out,_in,norm_factor,pad0,pad1)
-end
-
-function af_fft3_r2c(out,_in::af_array,norm_factor::Cdouble,pad0::dim_t,pad1::dim_t,pad2::dim_t)
-    ccall((:af_fft3_r2c,signal),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t,dim_t),out,_in,norm_factor,pad0,pad1,pad2)
-end
-
-function af_fft_c2r(out,_in::af_array,norm_factor::Cdouble,is_odd::Bool)
-    ccall((:af_fft_c2r,signal),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in,norm_factor,is_odd)
-end
-
-function af_fft2_c2r(out,_in::af_array,norm_factor::Cdouble,is_odd::Bool)
-    ccall((:af_fft2_c2r,signal),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in,norm_factor,is_odd)
-end
-
-function af_fft3_c2r(out,_in::af_array,norm_factor::Cdouble,is_odd::Bool)
-    ccall((:af_fft3_c2r,signal),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in,norm_factor,is_odd)
-end
-
 function af_convolve1(out,signal::af_array,filter::af_array,mode::af_conv_mode,domain::af_conv_domain)
     ccall((:af_convolve1,signal),af_err,(Ptr{af_array},af_array,af_array,af_conv_mode,af_conv_domain),out,signal,filter,mode,domain)
 end
