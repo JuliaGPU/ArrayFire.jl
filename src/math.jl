@@ -18,6 +18,7 @@ for (op,fn) in ((:+,:af_add), (:.+,:af_add), (:-,:af_sub), (:.-,:af_sub), (:.*,:
 
 end
 
+Base.(:-)(a::AFArray) = 0 - a
 Base.(:+)(a::AFArray{Bool}, v::Bool) = +(a,Int(v))
 Base.(:+)(v::Bool, a::AFArray{Bool}) = +(a,v)
 Base.(:-)(a::AFArray{Bool}, v::Bool) = -(a,Int(v))

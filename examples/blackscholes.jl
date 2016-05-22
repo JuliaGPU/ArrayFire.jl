@@ -1,16 +1,14 @@
 #This example has been adopted from https://github.com/IntelLabs/ParallelAccelerator.jl/blob/master/examples/black-scholes/black-scholes.jl
 
 using ArrayFire
-using Debug
 
-@debug function blackscholes_serial(sptprice::AbstractArray{Float32},
+function blackscholes_serial(sptprice::AbstractArray{Float32},
                            strike::AbstractArray{Float32},
                            rate::AbstractArray{Float32},
                            volatility::AbstractArray{Float32},
                            time::AbstractArray{Float32})
-    @bp
-    logterm = log10(sptprice ./ strike)
-    powterm = .5 .* volatility .* volatility
+    logterm = log10( sptprice ./ strike)
+    powterm = .5f0 .* volatility .* volatility
     den = volatility .* sqrt(time)
     d1 = (((rate .+ powterm) .* time) .+ logterm) ./ den
     d2 = d1 .- den
@@ -23,7 +21,7 @@ using Debug
 end
 
 @inline function cndf2(in::AbstractArray{Float32})
-    out = 0.5 .+ 0.5 .* erf(0.707106781 .* in)
+    out = 0.5f0 .+ 0.5f0 .* erf(0.707106781f0 .* in)
     return out
 end
 
@@ -56,7 +54,8 @@ function driver()
     tic()
     iterations = 10^7
     blackscholes_serial(Float32[], Float32[], Float32[], Float32[], Float32[])
-    blackscholes_serial(AFArray(Float32[1.]), AFArray(Float32[1.]), AFArray(Float32[1.]), AFArray(Float32[1.]), AFArray(Float32[1.]))
+    blackscholes_serial(AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]), 
+                        AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]))
     println("SELFPRIMED ", toq())
     tserial, tparallel = run(iterations)
     println("Time taken for CPU = $tserial")
