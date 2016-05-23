@@ -1,6 +1,27 @@
 using ArrayFire
 using Base.Test
 
+setBackend(AF_BACKEND_CPU)
+
+# AFArray creation
+function test_constructor(f, dims, typ=AFArray{Float32})
+    afa = f(typ, dims)
+    @test size(afa) == dims
+    afa = f(typ, dims...)
+    @test size(afa) == dims
+    afa
+end
+
+arr = test_constructor(rand, (10, 10))
+@test eltype(arr) == Float32
+arr = test_constructor(ones, (10, 10))
+@test eltype(arr) == Float32
+@test Array(arr) == ones(Float32, 10, 10)
+arr = test_constructor(zeros, (10, 10))
+@test eltype(arr) == Float32
+@test Array(arr) == zeros(Float32, 10, 10)
+
+
 #Basic math
 a = rand(Float32, 10, 10)
 ad = AFArray(a)

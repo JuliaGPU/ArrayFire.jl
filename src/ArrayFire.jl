@@ -3,7 +3,7 @@ module ArrayFire
 using Cxx
 using Base.Meta
 
-import Base: rand, show, randn, ones, diag, eltype, size, elsize,
+import Base: rand, show, randn, zeros, ones, diag, eltype, size, elsize,
     sizeof, length, showarray, convert, ndims, lu, qr, svd, setindex!
 import Cxx: CppEnum
 export AFArray, chol!, constant, aftype, @gpu, @icxx_str, __current_compiler__
@@ -235,9 +235,14 @@ typealias AFVector{T} AFAbstractArray{T,1}
 #Functions to generate array
 import Base:fill, eye, diag
 export iota
-constant{T<:Real}(val::T, dims::Integer...) = AFArray{T}(af_constant(val, dims_to_dim4(dims), aftype(typeof(val))))
-rand{T}(::Type{AFArray{T}}, dims::Integer...) = AFArray{T}(af_randu(dims_to_dim4(dims), aftype(T)))
-randn{T}(::Type{AFArray{T}}, dims::Integer...) = AFArray{T}(af_randn(dims_to_dim4(dims), aftype(T)))
+constant{T<:Real}(val::T, dims::Tuple) = AFArray{T}(af_constant(val, dims_to_dim4(dims), aftype(typeof(val))))
+constant(val::Real, dims::Integer...) = constant(val, dims)
+zeros{T}(::Type{AFArray{T}}, dims...) = constant(zero(T), dims...)
+ones{T}(::Type{AFArray{T}}, dims...) = constant(one(T), dims...)
+rand{T}(::Type{AFArray{T}}, dims::Tuple) = AFArray{T}(af_randu(dims_to_dim4(dims), aftype(T)))
+rand{T<:AFArray}(::Type{T}, dims::Integer...) = rand(T, dims)
+randn{T}(::Type{AFArray{T}}, dims::Tuple) = AFArray{T}(af_randn(dims_to_dim4(dims), aftype(T)))
+randn{T<:AFArray}(::Type{T}, dims::Integer...) = randn(T, dims)
 eye{T}(::Type{AFArray{T}}, dims::Integer...) = AFArray{T}(af_identity(dims_to_dim4(dims), aftype(T)))
 diag{T}(x::AFArray{T}, k = 0) = AFArray{T}(af_diag(x, k))
 getSeed() = af_getSeed()
