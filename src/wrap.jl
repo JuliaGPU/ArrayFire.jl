@@ -1058,39 +1058,59 @@ function af_diag_extract(out::Base.Ref, _in::AFArray, num::Int)
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_join(out,dim::Cint,first::af_array,second::af_array)
-    ccall((:af_join,data),af_err,(Ptr{af_array},Cint,af_array,af_array),out,dim,first,second)
+function af_join(out::Base.Ref, dim::Int, first::AFArray, second::AFArray)
+    err = ccall((:af_join, af_lib), Cint,
+                (Ptr{Void}, Cint, Ptr{Void}, Ptr{Void}),
+                out, dim, first.ptr, second.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_join_many(out,dim::Cint,n_arrays::UInt32,inputs)
-    ccall((:af_join_many,data),af_err,(Ptr{af_array},Cint,UInt32,Ptr{af_array}),out,dim,n_arrays,inputs)
+function af_join_many(out::Base.Ref, dim::Int, n_arrays::Cuint, inputs::Vector{Ptr{Void}})
+    err = ccall((:af_join_many, af_lib), Cint,
+                (Ptr{Void}, Cint, UInt32, Ptr{Ptr{Void}}),
+                out, dim, n_arrays, pointer(inputs))
+    err == 0 || throwAFerror(err)
 end
 
-function af_tile(out,_in::af_array,x::UInt32,y::UInt32,z::UInt32,w::UInt32)
-    ccall((:af_tile,data),af_err,(Ptr{af_array},af_array,UInt32,UInt32,UInt32,UInt32),out,_in,x,y,z,w)
+function af_tile(out::Base.Ref, _in::AFArray, x::UInt32, y::UInt32, z::UInt32, w::UInt32)
+    err = ccall((:af_tile, af_lib), Cint,
+                (Ptr{Void},Ptr{Void},UInt32,UInt32,UInt32,UInt32),
+                out, _in.ptr, x, y, z, w)
+    err == 0 || throwAFerror(err)
 end
 
-function af_reorder(out,_in::af_array,x::UInt32,y::UInt32,z::UInt32,w::UInt32)
-    ccall((:af_reorder,data),af_err,(Ptr{af_array},af_array,UInt32,UInt32,UInt32,UInt32),out,_in,x,y,z,w)
+function af_reorder(out::Base.Ref, _in::AFArray, x::UInt32, y::UInt32, z::UInt32, w::UInt32)
+    err =  ccall((:af_reorder, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, UInt32, UInt32, UInt32, UInt32),
+                out, _in.ptr, x, y, z, w)
+    err == 0 || throwAFerror(err)
 end
 
-function af_shift(out,_in::af_array,x::Cint,y::Cint,z::Cint,w::Cint)
-    ccall((:af_shift,data),af_err,(Ptr{af_array},af_array,Cint,Cint,Cint,Cint),out,_in,x,y,z,w)
+function af_shift(out::Base.Ref, _in::AFArray, x::Int, y::Int, z::Int, w::Int)
+    err = ccall((:af_shift, af_lib), Cint,
+                (Ptr{Void},Ptr{Void},Cint,Cint,Cint,Cint),
+                out, _in.ptr, x, y, z, w)
+    err == 0 || throwAFerror(err)
 end
 
-function af_moddims(out,_in::af_array,ndims::UInt32,dims)
-    ccall((:af_moddims,data),af_err,(Ptr{af_array},af_array,UInt32,Ptr{dim_t}),out,_in,ndims,dims)
+function af_moddims(out::Base.Ref, _in::AFArray, ndims::UInt32, dims::Vector{Int})
+    err = ccall((:af_moddims, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, UInt32, Ptr{Int}),
+                out, _in.ptr, ndims, pointer(dims))
+    err == 0 || throwAFerror(err)
 end
 
-function af_flat(out,_in::af_array)
-    ccall((:af_flat,data),af_err,(Ptr{af_array},af_array),out,_in)
+function af_flat(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_flat, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_flip(out,_in::af_array,dim::UInt32)
-    ccall((:af_flip,data),af_err,(Ptr{af_array},af_array,UInt32),out,_in,dim)
+function af_flip(out::Base.Ref, _in::AFArray, dim::UInt32)
+    err = ccall((:af_flip, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, UInt32), out, _in.ptr, dim)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_lower(out::Base.Ref, _in::AFArray, is_unit_diag::Bool)
     err = ccall((:af_lower, af_lib), Cint,
@@ -1106,27 +1126,40 @@ function af_upper(out::Base.Ref, _in::AFArray, is_unit_diag::Bool)
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_select(out,cond::af_array,a::af_array,b::af_array)
-    ccall((:af_select,data),af_err,(Ptr{af_array},af_array,af_array,af_array),out,cond,a,b)
+function af_select(out::Base.Ref, cond::AFArray, a::AFArray, b::AFArray)
+    err = ccall((:af_select, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}),
+                out, cond.ptr, a.ptr, b.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_select_scalar_r(out,cond::af_array,a::af_array,b::Cdouble)
-    ccall((:af_select_scalar_r,data),af_err,(Ptr{af_array},af_array,af_array,Cdouble),out,cond,a,b)
+function af_select_scalar_r(out::Base.Ref, cond::AFArray, a::AFArray, b::Real)
+    err = ccall((:af_select_scalar_r, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cdouble),
+                out, cond.ptr, a.ptr, b)
+    err == 0 || throwAFerror(err)
 end
 
-function af_select_scalar_l(out,cond::af_array,a::Cdouble,b::af_array)
-    ccall((:af_select_scalar_l,data),af_err,(Ptr{af_array},af_array,Cdouble,af_array),out,cond,a,b)
+function af_select_scalar_l(out::Base.Ref, cond::AFArray, a::Real, b::AFArray)
+    err = ccall((:af_select_scalar_l, af_lib), Cint,
+                (Ptr{Void},Ptr{Void},Cdouble,Ptr{Void}),
+                out, cond.ptr, a, b.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_replace(a::af_array,cond::af_array,b::af_array)
-    ccall((:af_replace,data),af_err,(af_array,af_array,af_array),a,cond,b)
+function af_replace(a::AFArray, cond::AFArray, b::AFArray)
+    err = ccall((:af_replace, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}),
+                a.ptr, cond.ptr, b.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_replace_scalar(a::af_array,cond::af_array,b::Cdouble)
-    ccall((:af_replace_scalar,data),af_err,(af_array,af_array,Cdouble),a,cond,b)
+function af_replace_scalar(a::AFArray, cond::AFArray, b::Real)
+    err = ccall((:af_replace_scalar, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cdouble),
+                a.ptr, cond.ptr, b.ptr)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_info()
     err = ccall((:af_info, af_lib), Cint, () ) 

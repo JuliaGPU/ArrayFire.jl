@@ -1,6 +1,6 @@
-import Base: elsize, size, ndims, convert, showarray
+import Base: elsize, size, ndims, convert, showarray, vec, flipdim, vcat, hcat, cat, reshape, permutedims, circshift, repeat
 
-export AFInfo
+export AFInfo, replace!, mergeArrays
 
 immutable Dim4
     dim1::Integer
@@ -94,4 +94,118 @@ constant(val, t::Tuple) = constant(val, t...)
 function AFInfo() 
     af_info()
     nothing
+end
+
+# Array Utils
+
+function vec{T}(a::AFArray{T})
+    out = new_ptr()
+    af_vec(out, a)
+    AFArray{T}(out[])
+end
+
+function flipdim{T}(a::AFArray{T}, dim::Int)
+    out = new_ptr()
+    af_flip(out, a, Cuint(dim-1))
+    AFArray{T}(out[])
+end
+
+function vcat{T,S}(a::AFArray{T}, b::AFArray{S})
+    out = new_ptr()
+    af_join(out, 0, a, b)
+    AFArray{af_promote(T,S)}(out[])
+end
+
+function hcat{T,S}(a::AFArray{T}, b::AFArray{S})
+    out = new_ptr()
+    af_join(out, 1, a, b)
+    AFArray{af_promote(T,S)}(out[])
+end
+
+function cat(dim::Int, a::AFArray...)
+    out = new_ptr()
+    n = length(a)
+    b = [a[i].ptr for i = 1:n]
+    af_join_many(out, dim - 1, Cuint(n), b)
+    AFArray{backend_eltype(out[])}(out[])
+end
+
+function reshape{T}(a::AFArray{T}, dims::Int...)
+    out = new_ptr()
+    l = length(dims)
+    dims = [dims...]
+    af_moddims(out, a, Cuint(l), dims)
+    AFArray{T}(out[])
+end
+
+function permutedims{T}(a::AFArray{T}, perm::Vector{Int})
+    make4Dperm!(perm)
+    out = new_ptr()
+    perm = perm - 1
+    af_reorder(out, a, Cuint(perm[1]), Cuint(perm[2]), Cuint(perm[3]), Cuint(perm[4]))
+    AFArray{T}(out[])
+end
+
+function make4Dperm!(perm::Vector{Int})
+    l = length(perm)
+    for i = l+1:4
+        push!(perm, i)
+    end
+end
+
+function replace!(a::AFArray, b::AFArray, cond::AFArray{Bool})
+    af_replace(a, cond, b)
+    nothing
+end
+
+function replace!(a::AFArray, b::Real, cond::AFArray{Bool})
+    af_replace_scalar(a, cond, b)
+    nothing
+end
+
+function mergeArrays{T,S}(a::AFArray{T}, b::AFArray{S}, cond::AFArray{Bool})
+    out = new_ptr()
+    af_select(out, cond, a, b)
+    AFArray{af_promote(T,S)}(out[])
+end
+
+function mergeArrays{T<:Number,S}(a::T, b::AFArray{S}, cond::AFArray{Bool})
+    out = new_ptr()
+    af_select_scalar_l(out, cond, a, b)
+    AFArray{af_promote(T,S)}(out[])
+end
+
+function mergeArrays{T,S<:Number}(a::AFArray{T}, b::S, cond::AFArray{Bool})
+    out = new_ptr()
+    af_select_scalar_r(out, cond, a, b)
+    AFArray{af_promote(T,S)}(out[])
+end
+
+function circshift{T}(a::AFArray{T}, shifts::Vector{Int})
+    make4Dshift!(shifts)
+    out = new_ptr()
+    af_shift(out, a, shifts...)
+    AFArray{T}(out[])
+end 
+
+function make4Dshift!(s::Vector{Int})
+    l = length(s)
+    for i = l+1:4
+        push!(s, 0)
+    end
+end
+
+function repeat{T}(a::AFArray{T}; outer::Vector{Int} = [1,1,1,1])
+    make4Dtile!(outer)
+    out = new_ptr()
+    outer = map(Cuint, outer)
+    af_tile(out, a, outer...)
+    AFArray{T}(out[])
+end
+
+function make4Dtile!(d::Vector{Int})
+    l = length(d)
+    for i = l+1:4
+        push!(d, 1)
+    end
 end
