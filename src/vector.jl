@@ -1,9 +1,9 @@
 ### Vector Algorithms
 
 import Base: sum, min, max, minimum, maximum, countnz, any, all, sort,
-                union, findnz, cumsum, diff
+                union, findnz, cumsum, diff, findmax, findmin
 
-export sortIndex, sortByKey, diff2
+export sortIndex, sortByKey, diff2, minidx, maxidx
 
 # Reduction 
 
@@ -151,4 +151,38 @@ function diff2{T}(a::AFArray{T}, dim::Integer = 1)
     out = new_ptr()
     af_diff2(out, a, Cint(dim-1))
     AFArray{T}(out[])
+end
+
+# Max, Min with Indices
+
+for (op, fn) in ((:findmax, :af_imax_all), (:findmin, :af_imin_all))
+
+    @eval function ($op){T<:Real}(a::AFArray{T})
+        real = Base.Ref{Cdouble}(0)
+        imag = Base.Ref{Cdouble}(0)
+        idx = Base.Ref{Cuint}(0)
+        eval($fn)(real, imag, idx, a)
+        real[], Int(idx[]) + 1
+    end
+
+    @eval function ($op){T<:Real}(a::AFArray{Complex{T}})
+        real = Base.Ref{Cdouble}(0)
+        imag = Base.Ref{Cdouble}(0)
+        idx = Base.Ref{Cuint}(0)
+        eval($fn)(real, imag, idx, a)
+        complex(real[], imag[]), Int(idx[]) + 1
+    end
+
+end
+
+for (op, fn) in ((:minidx, :af_imin), (:maxidx, :af_imax))
+    
+    @eval function ($op){T}(a::AFArray{T}, dim::Int)
+        out = new_ptr()
+        idx = new_ptr()
+        eval($fn)(out, idx, a, dim)
+        AFArray{T}(out[]), 
+        AFArray{backend_eltype(idx[])}(idx[]) + 1
+    end
+
 end

@@ -121,16 +121,16 @@ function af_imin(out::Base.Ref, idx::Base.Ref, _in::AFArray, dim::Int)
     err == 0 || throwAFerror(err)
 end
 
-function af_imax(out::Base.Ref, idx::Base.Ref, _in::AFArray,dim::Cint)
+function af_imax(out::Base.Ref, idx::Base.Ref, _in::AFArray, dim::Int)
     err = ccall((:af_imax, af_lib), Cint, 
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint),
-                out, idx.ptr, _in.ptr, dim)
+                out, idx, _in.ptr, dim)
     err == 0 || throwAFerror(err)
 end
 
 function af_imin_all(real::Base.Ref, imag::Base.Ref, idx::Base.Ref,  _in::AFArray)
     err = ccall((:af_imin_all, af_lib), Cint,
-                (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{UInt32}, AFArray),
+                (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{UInt32}, Ptr{Void}),
                 real, imag, idx, _in.ptr)
     err == 0 || throwAFerror(err)
 end
