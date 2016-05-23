@@ -791,34 +791,42 @@ function af_get_data_ptr!(ret::Vector{UInt8}, x::AFArray, T::DataType)
                 pointer(ret), x.ptr)
     err == 0 || throwAFerror(err)
 end
-
-function af_release_array(arr::af_array)
-    ccall((:af_release_array,array),af_err,(af_array,),arr)
-end
-
-function af_retain_array(out,_in::af_array)
-    ccall((:af_retain_array,array),af_err,(Ptr{af_array},af_array),out,_in)
-end
-
-function af_get_data_ref_count(use_count,_in::af_array)
-    ccall((:af_get_data_ref_count,array),af_err,(Ptr{Cint},af_array),use_count,_in)
-end
-
-function af_eval(_in::af_array)
-    ccall((:af_eval,array),af_err,(af_array,),_in)
-end
-
-function af_get_elements(elems,arr::af_array)
-    ccall((:af_get_elements,array),af_err,(Ptr{dim_t},af_array),elems,arr)
-end
 =#
+
+function af_release_array(arr::AFArray)
+    err = ccall((:af_release_array, af_lib), Cint,
+                (Ptr{Void}, ), arr.ptr)
+    err == 0 || throwAFerror(err)
+end
+
+function af_retain_array(out::Base.Ref, _in::AFArray)
+    err = ccall((:af_retain_array, af_lib), Cint,
+                (Ptr{Void},Ptr{Void}), out, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
+function af_get_data_ref_count(use_count::Base.Ref, _in::AFArray)
+    err = ccall((:af_get_data_ref_count, af_lib), Cint,
+                (Ptr{Cint}, Ptr{Void}), use_count, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
+function af_eval(_in::AFArray)
+    err = ccall((:af_eval, af_lib), Cint, (Ptr{Void}, ), _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
+function af_get_elements(elems::Vector{Int}, arr::AFArray)
+    err = ccall((:af_get_elements, af_lib), Cint,
+                (Ptr{Int}, Ptr{Void}), elems, arr.ptr)
+    err == 0 || throwAFerror(err)
+end
 
 function af_get_type(_type::Base.Ref, arr::Ptr{Void})
     err = ccall((:af_get_type, af_lib), Cint, 
                 (Ptr{Cuint}, Ptr{Void}), _type, arr)
     err == 0 || throwAFerror(err)
 end
-
 
 function af_get_dims!(d1::Base.Ref, d2::Base.Ref, d3::Base.Ref, d4::Base.Ref, arr::AFArray)
     err = ccall((:af_get_dims, af_lib), 
@@ -1234,11 +1242,14 @@ end
 function af_print_mem_info(msg,device_id::Cint)
     ccall((:af_print_mem_info,device),af_err,(Cstring,Cint),msg,device_id)
 end
+=#
 
 function af_device_gc()
-    ccall((:af_device_gc,device),af_err,())
+    err = ccall((:af_device_gc, af_lib), Cint, ())
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_set_mem_step_size(step_bytes::Cint)
     ccall((:af_set_mem_step_size,device),af_err,(Cint,),step_bytes)
 end
