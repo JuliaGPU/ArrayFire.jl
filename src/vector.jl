@@ -180,7 +180,7 @@ for (op, fn) in ((:minidx, :af_imin), (:maxidx, :af_imax))
     @eval function ($op){T}(a::AFArray{T}, dim::Int)
         out = new_ptr()
         idx = new_ptr()
-        eval($fn)(out, idx, a, dim)
+        eval($fn)(out, idx, a, dim-1)
         AFArray{T}(out[]), 
         AFArray{backend_eltype(idx[])}(idx[]) + 1
     end
