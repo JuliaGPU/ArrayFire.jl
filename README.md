@@ -18,7 +18,7 @@ This would download and install `arrayfire` and link the libraries `libafcpu.so`
 
 Then clone the ArrayFire package by doing:
 ```julia
-Pkg.clone(https://github.com/JuliaComputing/ArrayFire.jl.git)
+Pkg.clone("https://github.com/JuliaComputing/ArrayFire.jl.git")
 ```
 If all goes correctly, `using ArrayFire` should work without errors.
 
