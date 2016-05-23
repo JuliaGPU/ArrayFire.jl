@@ -842,57 +842,77 @@ function af_is_empty(result::Base.Ref, arr::AFArray)
     err == 0 || throwAFerror(err)
 end
 
-function af_is_scalar(result,arr::af_array)
+function af_is_scalar(result::Base.Ref, arr::AFArray)
     err = ccall((:af_is_scalar, af_lib), Cint,
                 (Ptr{Bool}, Ptr{Void}), result, arr.ptr)
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_is_row(result,arr::af_array)
-    ccall((:af_is_row,array),af_err,(Ptr{Bool},af_array),result,arr)
+function af_is_row(result::Base.Ref,arr::AFArray)
+    err = ccall((:af_is_row, af_lib), Cint,
+                (Ptr{Bool}, Ptr{Void}), result, arr.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_is_column(result,arr::af_array)
-    ccall((:af_is_column,array),af_err,(Ptr{Bool},af_array),result,arr)
+function af_is_column(result::Base.Ref,arr::AFArray)
+    err = ccall((:af_is_column, af_lib), Cint,
+                (Ptr{Bool}, Ptr{Void}), result, arr.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_is_vector(result,arr::af_array)
-    ccall((:af_is_vector,array),af_err,(Ptr{Bool},af_array),result,arr)
+function af_is_vector(result::Base.Ref,arr::AFArray)
+    err = ccall((:af_is_vector, af_lib), Cint,
+                (Ptr{Bool}, Ptr{Void}), result, arr.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_is_complex(result,arr::af_array)
-    ccall((:af_is_complex,array),af_err,(Ptr{Bool},af_array),result,arr)
+function af_is_complex(result::Base.Ref,arr::AFArray)
+    err = ccall((:af_is_complex, af_lib), Cint,
+                (Ptr{Bool}, Ptr{Void}), result, arr.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_is_real(result,arr::af_array)
-    ccall((:af_is_real,array),af_err,(Ptr{Bool},af_array),result,arr)
+function af_is_real(result::Base.Ref,arr::AFArray)
+    err = ccall((:af_is_real, af_lib), Cint,
+                (Ptr{Bool}, Ptr{Void}), result, arr.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_is_double(result,arr::af_array)
-    ccall((:af_is_double,array),af_err,(Ptr{Bool},af_array),result,arr)
+function af_is_double(result::Base.Ref,arr::AFArray)
+    err = ccall((:af_is_double, af_lib), Cint,
+                (Ptr{Bool}, Ptr{Void}), result, arr.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_is_single(result,arr::af_array)
-    ccall((:af_is_single,array),af_err,(Ptr{Bool},af_array),result,arr)
+function af_is_single(result::Base.Ref,arr::AFArray)
+    err = ccall((:af_is_single, af_lib), Cint,
+                (Ptr{Bool}, Ptr{Void}), result, arr.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_is_realfloating(result,arr::af_array)
-    ccall((:af_is_realfloating,array),af_err,(Ptr{Bool},af_array),result,arr)
+function af_is_realfloating(result::Base.Ref,arr::AFArray)
+    err = ccall((:af_is_realfloating, af_lib), Cint,
+                (Ptr{Bool}, Ptr{Void}), result, arr.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_is_floating(result,arr::af_array)
-    ccall((:af_is_floating,array),af_err,(Ptr{Bool},af_array),result,arr)
+function af_is_floating(result::Base.Ref,arr::AFArray)
+    err = ccall((:af_is_floating, af_lib), Cint,
+                (Ptr{Bool}, Ptr{Void}), result, arr.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_is_integer(result,arr::af_array)
-    ccall((:af_is_integer,array),af_err,(Ptr{Bool},af_array),result,arr)
+function af_is_integer(result::Base.Ref,arr::AFArray)
+    err = ccall((:af_is_integer, af_lib), Cint,
+                (Ptr{Bool}, Ptr{Void}), result, arr.ptr)
+    err == 0 || throwAFerror(err)
 end
 
-function af_is_bool(result,arr::af_array)
-    ccall((:af_is_bool,array),af_err,(Ptr{Bool},af_array),result,arr)
+function af_is_bool(result::Base.Ref,arr::AFArray)
+    err = ccall((:af_is_bool, af_lib), Cint,
+                (Ptr{Bool}, Ptr{Void}), result, arr.ptr)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_set_backend(bknd::Cuint)
     err = ccall((:af_set_backend,af_lib), Cint,
@@ -965,15 +985,19 @@ function af_constant_complex!(ptr::Base.Ref, val::Complex, n::Int, dims::Vector{
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_constant_long(arr,val::intl,ndims::UInt32,dims)
-    ccall((:af_constant_long,data),af_err,(Ptr{af_array},intl,UInt32,Ptr{dim_t}),arr,val,ndims,dims)
+function af_constant_long(arr::Base.Ref, val::Int32, ndims::UInt32, dims::Vector{Int})
+    err = ccall((:af_constant_long, af_lib), Cint,
+                (Ptr{Void}, Int32, UInt32, Ptr{Int}),
+                arr, val, ndims, pointer(dims))
+    err == 0 || throwAFerror(err)
 end
 
-function af_constant_ulong(arr,val::uintl,ndims::UInt32,dims)
-    ccall((:af_constant_ulong,data),af_err,(Ptr{af_array},uintl,UInt32,Ptr{dim_t}),arr,val,ndims,dims)
+function af_constant_ulong(arr::Base.Ref, val::UInt32, ndims::UInt32, dims::Vector{Int})
+    err = ccall((:af_constant_ulong, af_lib), Cint,
+                (Ptr{Void}, UInt32, UInt32, Ptr{Int}),
+                arr, val, ndims, pointer(dims))
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_range(out::Base.Ref, ndims::UInt32, dims::Vector{Int}, seq_dim::Int, _type::DataType)
     err = ccall((:af_range, af_lib), Cint,
