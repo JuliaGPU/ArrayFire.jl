@@ -659,11 +659,12 @@ function af_make_seq(_begin::Real, _end::Real, step::Real)
                 (Cdouble,Cdouble,Cdouble), _begin, _end, step)
 end
 
-#=
-function af_print_array(arr::af_array)
-    ccall((:af_print_array,util),af_err,(af_array,),arr)
+function af_print_array(arr::AFArray)
+    err = ccall((:af_print_array, af_lib), Cint,(Ptr{Void},),arr.ptr)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_print_array_gen(exp,arr::af_array,precision::Cint)
     ccall((:af_print_array_gen,util),af_err,(Cstring,af_array,Cint),exp,arr,precision)
 end
@@ -729,9 +730,9 @@ function af_index_gen(out::Base.Ref, _in::AFArray, ndims::Int, indices::index)
     err == 0 || throwAFerror(err)
 end
 
-function af_assign_gen(out::Base.Ref, lhs::AFArray, ndims::Cint, indices, rhs::AFArray)
+function af_assign_gen(out, lhs::AFArray, ndims::Int, indices::index, rhs::AFArray)
     err = ccall((:af_assign_gen, af_lib), Cint,
-                (Ptr{Void}, Ptr{Void}, Cint, Ptr{Void}, AFArray),
+                (Ptr{Void}, Ptr{Void}, Cint, Ptr{Void}, Ptr{Void}),
                 out, lhs.ptr, ndims, indices.ptr, rhs.ptr)
     err == 0 || throwAFerror(err)
 end
@@ -776,11 +777,15 @@ end
 function af_create_handle(arr,ndims::UInt32,dims,_type::af_dtype)
     ccall((:af_create_handle,array),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),arr,ndims,dims,_type)
 end
+=#
 
-function af_copy_array(arr,_in::af_array)
-    ccall((:af_copy_array,array),af_err,(Ptr{af_array},af_array),arr,_in)
+function af_copy_array(arr::AFArray, _in::Ptr{Void})
+    err = ccall((:af_copy_array, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), arr.ptr, _in)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_write_array(arr::af_array,data,bytes::Cint,src::af_source)
     ccall((:af_write_array,array),af_err,(af_array,Ptr{Void},Cint,af_source),arr,data,bytes,src)
 end

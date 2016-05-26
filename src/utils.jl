@@ -209,3 +209,9 @@ function make4Dtile!(d::Vector{Int})
         push!(d, 1)
     end
 end
+
+function convert{T}(::Type{AFArray{T}}, a::AFArray)
+    out =  new_ptr()
+    af_cast(out, a, T)
+    AFArray{T}(out[])
+end
