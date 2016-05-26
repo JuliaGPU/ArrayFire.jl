@@ -2,11 +2,9 @@
 
 [![Build Status](https://travis-ci.org/Keno/ArrayFire.jl.svg?branch=master)](https://travis-ci.org/Keno/ArrayFire.jl)
 
-ArrayFire is a library for GPU and accelerated computing in Julia. It is a wrapper around [arrayfire](https://github.com/arrayfire/arrayfire), a C++ library, using [Cxx.jl](https://github.com/Keno/Cxx.jl).
+ArrayFire is a library for GPU and accelerated computing in Julia. It is a wrapper around [arrayfire](https://github.com/arrayfire/arrayfire).
 
 ##Installation 
-
-First make sure you build Julia with special flags in accordance with Cxx.jl. The instructions for doing that are [here](https://github.com/Keno/Cxx.jl.git). Then build Cxx by doing `Pkg.build("Cxx"`).
 
 ###OSX
 
@@ -22,7 +20,7 @@ Pkg.clone("https://github.com/JuliaComputing/ArrayFire.jl.git")
 ```
 If all goes correctly, `using ArrayFire` should work without errors.
 
-You could also build `arrayfire` from source, like a normal Linux install.
+You could also build `arrayfire` from source, like a normal Linux install, and add `libaf` to your `LD_LIBRARY_PATH`
 
 ###Linux
 
@@ -89,14 +87,6 @@ setBackend(AF_BACKEND_CUDA) #Switch to CUDA backend
 setBackend(AF_BACKEND_CPU) #Switch back to CPU backend
 ```
 NOTE: The function `getAvailableBackend()` works only on arrayfire v3.3.0 and above. 
-
-If you're sure of which backend you want and won't switch, you can set an environment variable `AFMODE` to start up ArrayFire with a specific backend
-```bash
-export AFMODE=OPENCL #Switch to OPENCL backend
-export AFMODE=CUDA #Switch to CUDA backend
-export AFMODE=CPU #Switch back to CPU backend
-```
-Note that you cannot change backends (it would throw an exception) when ArrayFire is started up using a specific backend. 
 
 ## Performance 
 ArrayFire was benchmarked on commonly used operations.
