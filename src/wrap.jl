@@ -722,7 +722,7 @@ function af_assign_seq(out::Base.Ref, lhs::AFArray, ndims::UInt32, indices::Unio
     err == 0 || throwAFerror(err)
 end
 
-function af_index_gen(out::Base.Ref, _in::AFArray, ndims::Cint, indices::AFArray)
+function af_index_gen(out::Base.Ref, _in::AFArray, ndims::Int, indices::index)
     err = ccall((:af_index_gen, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cint, Ptr{Void}),
                 out, _in.ptr, ndims, indices.ptr)
@@ -736,22 +736,22 @@ function af_assign_gen(out::Base.Ref, lhs::AFArray, ndims::Cint, indices, rhs::A
     err == 0 || throwAFerror(err)
 end
 
-function af_create_indexers(indexers::Vector{Union{AFArray,seq}})
+function af_create_indexers(indexers::Base.Ref)
     err = ccall((:af_create_indexers, af_lib), Cint,
-                (Ptr{Union{AFArray,seq}}, ), pointer(indexers))
+                (Ptr{Void}, ), indexers)
     err == 0 || throwAFerror(err)
 end
 
-function af_set_array_indexer(indexer::Base.Ref, idx::AFArray, dim::Int)
+function af_set_array_indexer(indexer::index, idx::AFArray, dim::Int)
     err = ccall((:af_set_array_indexer, af_lib), Cint,
-                (Ptr{Void}, Ptr{Void}, Cint), indexer, idx.ptr, dim)
+                (Ptr{Void}, Ptr{Void}, Cint), indexer.ptr, idx.ptr, dim)
     err == 0 || throwAFerror(err)
 end
 
-function af_set_seq_indexer(indexer::Base.Ref, idx::AFArray, dim::Int, is_batch::Bool)
+function af_set_seq_indexer(indexer::index, idx::seq, dim::Int, is_batch::Bool)
     err = ccall((:af_set_seq_indexer, af_lib), Cint, 
                 (Ptr{Void}, Ptr{seq}, Cint, Bool),
-                indexer, idx.ptr, dim, is_batch)
+                indexer.ptr, pointer_from_objref(idx), dim, is_batch)
     err == 0 || throwAFerror(err)
 end
 
@@ -762,9 +762,9 @@ function af_set_seq_param_indexer(indexer::Base.Ref, _begin::Real, _end::Real, s
     err == 0 || throwAFerror(err)
 end
 
-function af_release_indexers(indexers)
+function af_release_indexers(indexers::index)
     err = ccall((:af_release_indexers, af_lib), Cint,
-                (Ptr{Void}, ), indexers)
+                (Ptr{Void}, ), indexers.ptr)
     err == 0 || throwAFerror(err)
 end
 

@@ -6,7 +6,7 @@ immutable seq
     step::Cdouble
 end
 
-function create_seq_object(r::Range, ind::Int)
+function create_seq_object(r::Range)
     start = r.start - 1
     stop = r.stop - 1
     if :step in fieldnames(r)
@@ -17,55 +17,47 @@ function create_seq_object(r::Range, ind::Int)
     s = seq(start, stop, step)
 end
 
-function create_seq_object(i::Int, ind::Int)
+function create_seq_object(i::Int)
     start = i - 1
     stop = i - 1
     step = 1
     s = seq(start, stop, step)
 end
 
-function create_seq_object(::Colon, i::Int)
-    start = 0
-    stop = i - 1
-    step = 1
+function create_seq_object(::Colon)
+    start = 1
+    stop = 1
+    step = 0
     s = seq(start, stop, step)
 end
 
-function getindex{T}(a::AFArray{T}, idx::Union{Range,Int,Colon}...)
+immutable index
+    ptr::Ptr{Void}
+end
+
+function getindex{T}(a::AFArray{T}, idx::Union{Range,Int,Colon,AFArray}...)
+    indexers = new_ptr()
+    af_create_indexers(indexers)
+    indexers = index(indexers[])
+    set_up_index!(idx, indexers)
     out = new_ptr()
-    l = length(idx)
     n = ndims(a)
-    l <= n || throw(DimensionMismatch("Number of dimensions is lesser than number of indices"))
-    s = [create_seq_object(idx[i], size(a,i)) for i = 1:l]
-    af_index(out, a, Cuint(l), s)
-    AFArray{T}(out[])
-end
-
-function setindex!(lhs::AFArray, rhs::AFArray, idx::Union{Range,Int,Colon}...)
-    out = new_ptr()
     l = length(idx)
-    n = ndims(rhs)
-    s = [create_seq_object(idx[i], size(lhs,i)) for i = 1:l]
-    af_assign_seq(out, lhs, Cuint(n), s, rhs)
-    AFArray{backend_eltype(out[])}(out[])
-end
+    l <= n || throw(DimensionMismatch("Number of dimensions is lesser than number of indices"))
+    af_index_gen(out, a, l, indexers)
+    af_release_indexers(indexers)
+    AFArray{T}(out[])
+end 
 
-function setindex!(lhs::AFArray, val::Real, idx::Union{Range,Int,Colon}...)
-    sz = get_sizes(idx, lhs)
-    rhs = constant(val, sz...)
-    setindex!(lhs, rhs, idx...)
-end
-
-function get_sizes(idx::Tuple, lhs::AFArray)
-    s = Array(Int, length(idx))
-    for i = 1:length(idx)
-        if typeof(idx[i]) <: Range
-            s[i] = length(idx[i])
-        elseif idx[i] == Colon
-            s[i] = size(a,i)
-        elseif typeof(idx[i]) <: Integer
-            s[i] = 1
+function set_up_index!(idx::Tuple, indexers::index)
+    for (i,thing) in enumerate(idx)
+        t = typeof(thing)
+        if t <: Range || t <: Int || t <: Colon
+            s = create_seq_object(thing)
+            af_set_seq_indexer(indexers, s, i-1, true)
+        elseif t <: AFArray
+            _shift = thing - 1
+            af_set_array_indexer(indexers, _shift, i-1)
         end
     end
-    tuple(s...)
 end
