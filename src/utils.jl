@@ -89,8 +89,6 @@ end
 
 backend_eltype(a::AFArray) = backend_eltype(a.ptr)
 
-constant(val, t::Tuple) = constant(val, t...)
-
 function AFInfo() 
     af_info()
     nothing
