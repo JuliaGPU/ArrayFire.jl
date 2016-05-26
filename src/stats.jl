@@ -1,26 +1,95 @@
-import Base: mean, std, median, var, cov
-export corrcoef
+# Statistics functions
+
+import Base: mean, median, std, var, cov
+
+export meanWeighted, varWeighted, corrcoef
+
+for (op, fn) in ((:mean, :af_mean_all), (:median, :af_median_all),
+                    (:std, :af_stdev_all))
+
+    @eval function ($op){T<:Real}(a::AFArray{T})
+        real = Base.Ref{Cdouble}(0)
+        imag = Base.Ref{Cdouble}(0)
+        eval($fn)(real, imag, a)
+        T(real[])
+    end 
+
+    @eval function ($op){T<:Complex}(a::AFArray{T})
+        real = Base.Ref{Cdouble}(0)
+        imag = Base.Ref{Cdouble}(0)
+        eval($fn)(real, imag, a)
+        complex(real[], imag[])
+    end
+
+end
+
+for (op, fn) in ((:meanWeighted, :af_mean_all_weighted), 
+                    (:varWeighted, :af_var_all_weighted))
+
+    @eval function ($op){T<:Real,S}(a::AFArray{T}, w::AFArray{S})
+        real = Base.Ref{Cdouble}(0)
+        imag = Base.Ref{Cdouble}(0)
+        eval($fn)(real, imag, a, w)
+        T(real[])
+    end 
+
+    @eval function ($op){T<:Complex,S}(a::AFArray{T}, w::AFArray{S})
+        real = Base.Ref{Cdouble}(0)
+        imag = Base.Ref{Cdouble}(0)
+        eval($fn)(real, imag, a, w)
+        complex(real[], imag[])
+    end
+
+end
+
+for (op, fn) in ((:mean, :af_mean), (:median, :af_median), 
+                    (:std, :af_stdev))
+
+    @eval function ($op){T}(a::AFArray{T}, dim::Integer)
+        out = new_ptr()
+        eval($fn)(out, a, Cuint(dim-1))
+        AFArray{T}(out[])
+    end
+
+end
+
+for (op, fn) in ((:meanWeighted, :af_mean_weighted), (:varWeighted, :af_var_weighted))
+
+    @eval function ($op){T}(a::AFArray{T}, w::AFArray{T}, dim::Integer)
+        out = new_ptr()
+        eval($fn)(out, a, w, Cuint(dim-1))
+        AFArray{T}(out[])
+    end
+
+end
+
+function var{T}(a::AFArray{T}; is_biased = false)
+    real = Base.Ref{Cdouble}(0)
+    imag = Base.Ref{Cdouble}(0)
+    af_var_all(real, imag, a, is_biased)
+    Float64(real[])
+end
+
+function var{T}(a::AFArray{T}, dim::Integer; is_biased = false)
+    out = new_ptr()
+    af_var(out, a, is_biased, Cuint(dim-1))
+    AFArray{backend_eltype(out[])}(out[])
+end
+
+function cov(a::AFArray, b::AFArray; is_biased = false)
+    out = new_ptr()
+    af_cov(out, a, b, is_biased)
+    AFArray{backend_eltype(out[])}(out[])
+end
+
+function corrcoef(a::AFArray, b::AFArray)
+    real = Base.Ref{Cdouble}(0)
+    imag = Base.Ref{Cdouble}(0)
+    af_corrcoef(real, imag, a, b)
+    if imag[] == 0
+        real[]
+    else
+        complex(real[], imag[])
+    end
+end
     
-#Mean
-mean(a::AFAbstractArray) = af_mean(a)
-mean{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(af_mean(a, dim-1))
-mean{T<:Real}(a::AFAbstractArray{T}, weights::AFAbstractArray{T}, dim::Integer) = AFArray{T}(af_mean(a,weights,dim-1))
-
-#Median
-median(a::AFAbstractArray) = af_median(a)
-median{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(af_median(a, dim-1))
-
-#Standard Deviation
-std(a::AFAbstractArray) = af_stdev(a)
-std{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(af_stdev(a,dim-1))
-
-#Variance
-var(a::AFAbstractArray) = af_var(a)
-var{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(af_var(a,dim-1))
-var{T<:Real}(a::AFAbstractArray{T}, weights::AFAbstractArray{T}, dim::Integer) = AFArray{T}(af_var(a,weights,dim-1))
-
-#Covariance
-cov{T}(a::AFAbstractArray{T}, b::AFAbstractArray{T}) = AFArray{T}(af_cov(a,b))
-
-#Correlation coefficient
-corrcoef{T}(a::AFAbstractArray{T}, b::AFAbstractArray{T}) = af_corrcoef(a,b)

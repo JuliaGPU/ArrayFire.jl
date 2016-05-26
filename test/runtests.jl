@@ -25,8 +25,8 @@ ad = AFArray(a)
 @test sumabs2(Array(maximum(ad,2)) - maximum(a,2)) < 1e-6
 @test sumabs2(Array(minimum(ad,1)) - minimum(a,1)) < 1e-6
 @test sumabs2(Array(minimum(ad,2)) - minimum(a,2)) < 1e-6
-@test sumabs2(Array(max(ad,0.5)) - max(a,0.5)) < 1e-6
-@test sumabs2(Array(min(ad,0.5)) - min(a,0.5)) < 1e-6
+@test sumabs2(Array(max(ad,0.5f0)) - max(a,0.5f0)) < 1e-6
+@test sumabs2(Array(min(ad,0.5f0)) - min(a,0.5f0)) < 1e-6
 @test mean(ad) == mean(a)
 @test sumabs2(Array(mean(ad,1)) - mean(a,1)) < 1e-6
 @test sumabs2(Array(mean(ad,2)) - mean(a,2)) < 1e-6

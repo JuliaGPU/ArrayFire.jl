@@ -1,155 +1,188 @@
-#####################
-# Vector operations #
-#####################
+### Vector Algorithms
 
+import Base: sum, min, max, minimum, maximum, countnz, any, all, sort,
+                union, findnz, cumsum, diff, findmax, findmin
 
-#Reduction operations
+export sortIndex, sortByKey, diff2, minidx, maxidx
 
-import Base: sum, maximum, minimum, any, max, min, countnz
+# Reduction 
 
-#Sum 
-sum(a::AFAbstractArray) = af_sum(a)
-sum{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(af_sum(a,dim-1))
+for (op,fn) in ((:sum, :af_sum_all), (:product, :af_product_all),
+                (:maximum, :af_max_all), (:minimum, af_min_all))
 
-#Product
-product(a::AFAbstractArray) = af_product(a)
-product{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(af_product(a,dim-1))
-
-#Maximum
-maximum(a::AFAbstractArray) = af_max(a)
-maximum{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(af_max_dim(a,dim-1))
-
-#Minimum
-minimum(a::AFAbstractArray) = af_min(a)
-minimum{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(af_min_dim(a,dim-1))
-
-#Any
-any(a::AFAbstractArray) = af_anyTrue(a)
-any(a::AFAbstractArray, dim::Integer) = AFArray{Bool}(af_anyTrue(a, dim-1))
-
-#Alltrue
-alltrue(a::AFAbstractArray) = af_allTrue(a)
-alltrue(a::AFAbstractArray, dim::Integer) = AFArray{Bool}(icxx"af::allTrue($a, $(dim - 1));")
-
-#Count 
-countnz(a::AFAbstractArray) = af_count(a)
-countnz(a::AFAbstractArray, dim::Integer) = AFArray{UInt32}(af_count(a, dim-1))
-
-
-#Inclusive Scan Operations
-
-import Base: cumsum, find
-
-#Cumsum
-cumsum{T}(a::AFAbstractArray{T}, dim::Integer = 1) = AFArray{T}(af_accum(a,dim-1))
-
-#Find
-find(a::AFAbstractArray) = AFArray{UInt32}(af_where(a))
-
-
-#Numerical differentiation
-
-import Base: diff, gradient
-
-#1D Diff
-diff{T}(a::AFAbstractArray{T}, dim::Integer = 1) = AFArray{T}(af_diff(a,dim-1))
-
-#2D Siff
-diff2{T}(a::AFAbstractArray{T}, dim::Integer = 1) = AFArray{T}(af_diff2(a,dim-1))
-
-#Gradient
-function gradient{T}(a::AFAbstractArray{T})
-    dx = AFArray()
-    dy = AFArray()
-    af_grad(dx, dy, a)
-    AFArray{T}(dx), AFArray{T}(dy)
-end
-
-
-#Sorting
-
-import Base: sort
-export sortIndex
-
-#Sort
-#NOTE: ArrayFire currently restricts dim to the value 0, which means you can sort only columns
-function sort{T}(A::AFAbstractArray{T}; rev = false)
-    ndims(A) == 1 ||
-        error("Must explicitly specify dimension when sorting mutlidimensional array")
-    AFArray{T}(af_sort(A,0,!rev))
-end
-function sort{T}(A::AFAbstractArray{T}, dim; rev = false) 
-    if dim > 1
-        error("ArrayFire currently lets you sort only by columns")
-    else
-        AFArray{T}(af_sort(A,dim-1,!rev))
+    @eval function ($op){T<:Real}(a::AFArray{T})
+        real = Base.Ref{Cdouble}(0)
+        imag = Base.Ref{Cdouble}(0)
+        eval($(quot(fn)))(real, imag, a)
+        real[]
     end
+
+    @eval function ($op){T<:Complex}(a::AFArray{T})
+        real = Base.Ref{Cdouble}(0)
+        imag = Base.Ref{Cdouble}(0)
+        eval($(quot(fn)))(real, imag, a)
+        complex(real[], imag[])
+    end
+
 end
 
-#sortIndex
-function sortIndex(a::AFArray, dim = 1; rev = false)
-    (ndims(a) == 2 && dim == 2) && error("ArrayFire currently supports sorting along columns")
-    out  = AFArray()
-    ind = AFArray()
-    af_sort(out, ind, a, dim-1, !rev)
-    AFArray{backend_eltype(out)}(out), AFArray{backend_eltype(ind)}(ind)
+function countnz{T}(a::AFArray{T})
+    real = Base.Ref{Cdouble}(0)
+    imag = Base.Ref{Cdouble}(0)
+    af_count_all(real, imag, a)
+    Int(real[])
 end
 
-#sortByKey
-function sortByKey(keys::AFArray, vals::AFArray, dim = 1; rev = false)
-    (ndims(a) == 2 && dim == 2) && error("ArrayFire currently supports sorting along columns")
-    out_keys = AFArray()
-    out_vals = AFArray()
-    af_sort(out_keys, out_vals, keys, vals, dim-1, !rev)
-    AFArray{backend_eltype(out_keys)}(out_keys), AFArray{backend_eltype(out_vals)}(out_vals)
+function countnz{T}(a::AFArray{T}, dim::Integer)
+    dim = dim - 1
+    out = new_ptr()
+    af_count(out, a, dim)
+    AFArray{Cuint}(out[])
 end
 
-#Set Operations
+for (op,fn) in ((:any, :af_any_true_all),(:all, :af_all_true_all))
 
-import Base: setdiff, union, unique
+    @eval function ($op){T}(a::AFArray{T})
+        real = Base.Ref{Cdouble}(0)
+        imag = Base.Ref{Cdouble}(0)
+        eval($fn)(real, imag, a)
+        Bool(real[])
+    end
 
-#Setdiff
-setdiff{T}(a::AFAbstractArray{T} , b::AFAbstractArray{T}) = AFArray{T}(af_setIntersect(a,b))
-
-#Union
-union{T}(a::AFAbstractArray{T}, b::AFAbstractArray{T}) = AFArray{T}(af_setUnion(a,b))
-
-#Unique
-unique{T}(a::AFAbstractArray{T}) = AFArray{T}(af_setUnique(a))
-
-
-#Reordering functions
-
-import Base:flipdim, vec
-
-flipdim{T}(a::AFAbstractArray{T}, dim::Integer) = AFArray{T}(af_flip(a,dim-1))
-vec{T}(a::AFAbstractArray{T}) = AFArray{T}(af_flat(a))
-function union{T}(dim::Integer, a::AFAbstractArray{T}, b::AFAbstractArray)
-    AFArray{T}(af_join(dim-1, a, b))
-end
-function union{T}(dim::Integer, a::AFAbstractArray{T}, b::AFAbstractArray{T}, c::AFAbstractArray{T})
-    AFArray{T}(af_join(dim-1, a, b, c))
-end
-function union{T}(dim::Integer, a::AFAbstractArray{T}, b::AFAbstractArray{T}, 
-                    c::AFAbstractArray{T}, d::AFAbstractArray{T})
-    AFArray{T}(af_join(dim-1, a, b, c, d))
-end
-moddims{T}(a::AFAbstractArray{T}, dims...) = AFArray{T}(af_moddims(a,dims_to_dim4(dims)))
-function reorder{T}(a::AFAbstractArray{T}, x::Integer, y::Integer = 2, z::Integer = 3, w::Integer = 4) 
-    AFArray{T}(af_reorder(a, x-1, y-1, z-1, w-1))
-end
-replace{T}(a::AFAbstractArray{T}, cond::AFAbstractArray{Bool}, b::AFAbstractArray{T}) = AFArray{T}(af_replace(a, cond, b))
-replace{T}(a::AFAbstractArray{T}, cond::AFAbstractArray{Bool}, b::Real) = AFArray{T}(af_replace(a, cond, b))
-select{T}(cond::AFAbstractArray{Bool}, a::AFAbstractArray{T}, b::AFAbstractArray{T}) = AFArray{T}(af_select(cond, a, b))
-select{T}(cond::AFAbstractArray{Bool}, a::AFAbstractArray{T}, b::Real) = AFArray{T}(af_select(cond, a, b))
-function shift{T}(a::AFAbstractArray{T}, x::Integer, y::Integer = 1, z::Integer = 1, w::Integer = 1) 
-    AFArray{T}(af_shift(a, x-1, y-1, z-1, w-1))
 end
 
-#Some array helper functions
-import Base: isnan, isinf
-conj{T}(a::AFAbstractArray{T}) = AFArray{T}(af_complex_conj(a))
-convert{T,V}(::Type{AFArray{T}}, a::AFAbstractArray{V}) = AFArray{T}(af_as(a, aftype(T)))
-isnan(a::AFAbstractArray) = AFArray{Bool}(af_isNaN(a))
-iszero(a::AFAbstractArray) = AFArray{Bool}(af_iszero(a))
-isinf(a::AFAbstractArray) = AFArray{Bool}(af_isinf(a))
+for (op,fn) in ((:any, :af_any_true), (:all, :af_all_true))
+ 
+    @eval function ($op){T}(a::AFArray{T}, dim::Integer)
+        dim = dim - 1
+        out = new_ptr()
+        eval($fn)(out, a, dim)
+        AFArray{Bool}(out[])
+    end
+
+end
+
+for (op, fn) in ((:sum, :af_sum), (:product, :af_product), 
+                (:maximum, :af_max), (:minimum, :af_min))
+
+    @eval function ($op){T}(a::AFArray{T}, dim::Integer)
+        dim = dim - 1
+        out = new_ptr()
+        eval($(quot(fn)))(out, a, dim)
+        AFArray{T}(out[])
+    end
+
+end
+
+# Sorting 
+
+function sort{T}(a::AFArray{T}, dim::Integer = 1; rev = false)
+    if dim == 2
+        error("ArrayFire doesn't support sorting along this dimension")
+    end
+    out = new_ptr()
+    af_sort(out, a, Cuint(dim-1), !rev)
+    AFArray{T}(out[])
+end
+
+function sortIndex{T}(a::AFArray{T}, dim::Integer = 1; rev = false)
+    if dim == 2
+        error("ArrayFire doesn't support sorting along this dimension")
+    end
+    out = new_ptr()
+    indices = new_ptr()
+    af_sort_index(out, indices, a, Cuint(dim-1), !rev)
+    AFArray{T}(out[]), AFArray{Int32}(indices[]) + 1
+end
+
+function sortByKey{S,T}(keys::AFArray{S}, values::AFArray{T}, dim::Integer = 1; rev = false)
+    if dim == 2
+        error("ArrayFire doesn't support sorting along this dimension")
+    end
+    out_keys = new_ptr()
+    out_values = new_ptr()
+    af_sort_by_key(out_keys, out_values, keys, values, Cuint(dim - 1), !rev)
+    AFArray{S}(out_keys[]), AFArray{T}(out_values[])
+end
+
+# Set Operations
+
+function union{T,S}(a::AFArray{T}, b::AFArray{S}; is_unique = false)
+    out = new_ptr()
+    af_set_union(out, a, b, is_unique)
+    AFArray{af_promote(T,S)}(out[])
+end
+
+function unique{T}(a::AFArray{T}; is_sorted = false)
+    out = new_ptr()
+    af_set_unique(out, a, is_sorted)
+    AFArray{T}(out[])
+end
+
+function setdiff{T,S}(a::AFArray{T}, b::AFArray{S}; is_unique = false)
+    out = new_ptr()
+    af_set_intersect(out, a, b, is_unique)
+    AFArray{af_promote(T,S)}(out[])
+end
+
+# Inclusive Scan Operations
+
+function cumsum{T}(a::AFArray{T}, dim::Integer = 1)
+    out = new_ptr()
+    af_accum(out, a, Cint(dim-1))
+    AFArray{T}(out[])
+end
+
+function findnz(a::AFArray)
+    out = new_ptr()
+    af_where(out, a)
+    AFArray{backend_eltype(out[])}(out[]) + 1
+end
+
+# Numerical Differentiation
+
+function diff{T}(a::AFArray{T}, dim::Integer = 1)
+    out = new_ptr()
+    af_diff1(out, a, Cint(dim-1))
+    AFArray{T}(out[])
+end
+
+function diff2{T}(a::AFArray{T}, dim::Integer = 1)
+    out = new_ptr()
+    af_diff2(out, a, Cint(dim-1))
+    AFArray{T}(out[])
+end
+
+# Max, Min with Indices
+
+for (op, fn) in ((:findmax, :af_imax_all), (:findmin, :af_imin_all))
+
+    @eval function ($op){T<:Real}(a::AFArray{T})
+        real = Base.Ref{Cdouble}(0)
+        imag = Base.Ref{Cdouble}(0)
+        idx = Base.Ref{Cuint}(0)
+        eval($fn)(real, imag, idx, a)
+        real[], Int(idx[]) + 1
+    end
+
+    @eval function ($op){T<:Real}(a::AFArray{Complex{T}})
+        real = Base.Ref{Cdouble}(0)
+        imag = Base.Ref{Cdouble}(0)
+        idx = Base.Ref{Cuint}(0)
+        eval($fn)(real, imag, idx, a)
+        complex(real[], imag[]), Int(idx[]) + 1
+    end
+
+end
+
+for (op, fn) in ((:minidx, :af_imin), (:maxidx, :af_imax))
+    
+    @eval function ($op){T}(a::AFArray{T}, dim::Int)
+        out = new_ptr()
+        idx = new_ptr()
+        eval($fn)(out, idx, a, dim-1)
+        AFArray{T}(out[]), 
+        AFArray{backend_eltype(idx[])}(idx[]) + 1
+    end
+
+end
