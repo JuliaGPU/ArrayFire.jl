@@ -100,7 +100,7 @@ end
 
 # Matrix Multiply
 
-function *{T,S}(a::AFMatrix{T}, b::AFMatrix{S}; lhsprop = AF_MAT_NONE, rhsprop = AF_MAT_NONE)
+function *{T,S}(a::AFArray{T}, b::AFArray{S}; lhsprop = AF_MAT_NONE, rhsprop = AF_MAT_NONE)
     out = new_ptr()
     af_matmul(out, a, b, lhsprop, rhsprop)
     AFMatrix{af_promote(T,S)}(out[])
