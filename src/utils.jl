@@ -98,7 +98,7 @@ end
 
 function vec{T}(a::AFArray{T})
     out = new_ptr()
-    af_vec(out, a)
+    af_flat(out, a)
     AFArray{T}(out[])
 end
 

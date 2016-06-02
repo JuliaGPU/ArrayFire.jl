@@ -66,7 +66,7 @@ end
 
 function sigmoid(a::AFArray)
     out = new_ptr()
-    af_sigmoid(out, a.ptr)
+    af_sigmoid(out, a)
     AFArray{backend_eltype(out[])}(out[])
 end
 
