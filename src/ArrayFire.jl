@@ -6,9 +6,10 @@ include("config.jl")
 
 abstract AFAbstractArray{T,N} <: AbstractArray{T,4}
 
-immutable AFArray{T,N} <: AFAbstractArray{T,N}
+type AFArray{T,N} <: AFAbstractArray{T,N}
     ptr::Ptr{Void}
 end
+
 
 typealias AFVector{T} AFArray{T,1}
 typealias AFMatrix{T} AFArray{T,2}

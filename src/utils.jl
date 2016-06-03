@@ -213,3 +213,13 @@ function convert{T}(::Type{AFArray{T}}, a::AFArray)
     af_cast(out, a, T)
     AFArray{T}(out[])
 end
+
+function AFArray(ptr::Ptr{Void})
+    _AFArray(ptr)
+end
+
+function _AFArray(ptr::Ptr{Void})
+    a = AFArray(ptr)
+    finalizer(a, x -> af_release_array(x))
+    a
+end

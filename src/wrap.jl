@@ -1215,11 +1215,14 @@ end
 function af_alloc_device(ptr,bytes::dim_t)
     ccall((:af_alloc_device,device),af_err,(Ptr{Ptr{Void}},dim_t),ptr,bytes)
 end
+=#
 
-function af_free_device(ptr)
-    ccall((:af_free_device,device),af_err,(Ptr{Void},),ptr)
+function af_free_device(ptr::Ptr{Void})
+    err = ccall((:af_free_device, af_lib), Cint, (Ptr{Void},), ptr)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_alloc_pinned(ptr,bytes::dim_t)
     ccall((:af_alloc_pinned,device),af_err,(Ptr{Ptr{Void}},dim_t),ptr,bytes)
 end
