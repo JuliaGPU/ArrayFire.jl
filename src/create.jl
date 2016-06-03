@@ -113,7 +113,7 @@ end
 zeros{T}(::Type{AFArray{T}}, t::Tuple) = zeros(AFArray{T}, t...)
 
 function ones{T}(::Type{AFArray{T}}, dims::Integer...)
-    constant(T(0), dims)
+    constant(T(1), dims)
 end
 ones{T}(::Type{AFArray{T}}, t::Tuple) = ones(AFArray{T}, t...)
 
