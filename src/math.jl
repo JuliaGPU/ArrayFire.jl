@@ -1,7 +1,7 @@
 using Base.Meta
 
 import Base: complex, conj, real, imag, max, min, abs, round, sign, floor, hypot
-import Base: &, |, $, .>, .>=, .<, .<=, !, .==, .!=, ^, .^
+import Base: &, |, $, .>, .>=, .<, .<=, !, .==, .!=, ^, .^, /, ./
 
 export sigmoid
 
@@ -30,7 +30,7 @@ Base.(:-)(v::Bool, a::AFArray{Bool}) = -(a,v)
 .^{T<:Real}(v::Irrational{:e}, a::AFArray{Complex{T}}) = ^(Real(e), a) 
 
 for (op,fn) in ((:+, :af_add), (:.+, :af_add), (:-, :af_sub), (:.-, :af_sub), (:*, :af_mul), 
-                (:.*, :af_mul), (:/, :af_div), (:./, :af_div), (:%, :af_mod), (:.%, :af_mod),
+                (:.*, :af_mul), (:./, :af_div), (:%, :af_mod), (:.%, :af_mod),
                 (:^, :af_pow), (:.^, :af_pow))
 
     @eval function Base.($(quot(op))){T<:Real,S<:Real}(a::AFArray{T}, v::S)
@@ -89,6 +89,8 @@ for (op,fn) in ((:+, :af_add), (:.+, :af_add), (:-, :af_sub), (:.-, :af_sub), (:
         AFArray{Complex{af_promote(T,S)}}(ptr[]) 
     end
 end
+/{T,S<:Real}(a::AFArray{T}, v::S) = ./(a, v)
+/{T,S<:Real}(a::AFArray{T}, v::Complex{S}) = ./(a, v)
 
 for (op,fn) in ((:sin, :af_sin), (:cos, :af_cos), (:tan, :af_tan), (:asin, :af_asin), 
                 (:acos, :af_acos), (:atan, :af_atan), (:sinh, :af_sinh), (:cosh, :af_cosh),
