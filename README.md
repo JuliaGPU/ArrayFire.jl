@@ -2,17 +2,17 @@
 
 [![Build Status](https://travis-ci.org/Keno/ArrayFire.jl.svg?branch=master)](https://travis-ci.org/Keno/ArrayFire.jl)
 
-ArrayFire is a library for GPU and accelerated computing in Julia. It is a wrapper around [arrayfire](https://github.com/arrayfire/arrayfire).
+[ArrayFire](http://arrayfire.com) is a library for GPU and accelerated computing. ArrayFire.jl wraps the ArrayFire library for Julia, and provides a Julian interface.
 
-##Installation 
+##Installation
 
 ###OSX
 
-If you're on OSX, the easiest way to install arrayfire is by doing
+If you are on OSX, the easiest way to install arrayfire is by doing
 ```
 brew install arrayfire
 ```
-This would download and install `arrayfire` and link the libraries `libafcpu.so`, `libafcuda.so` and `libafopencl.so` to your `usr/local/lib/` and link `arrayfire.h` to `/usr/local/include`.  
+This would download and install `arrayfire` and link the libraries `libafcpu.so`, `libafcuda.so` and `libafopencl.so` to your `usr/local/lib/` and link `arrayfire.h` to `/usr/local/include`.
 
 Then clone the ArrayFire package by doing:
 ```julia
@@ -24,13 +24,13 @@ You could also build `arrayfire` from source, like a normal Linux install, and a
 
 ###Linux
 
-On Linux, you must build arrayfire for your system. Follow the instructions to build the arrayfire library [here](https://github.com/arrayfire/arrayfire/wiki). Make sure you've installed all the dependencies. 
+On Linux, you must build arrayfire for your system. Follow the instructions to build the arrayfire library [here](https://github.com/arrayfire/arrayfire/wiki). Make sure you've installed all the dependencies.
 
-Now, once the build is done, `make install` should link the backend libraries to `/usr/local/lib` and `arrayfire.h` to `/usr/local/include/`. 
+Now, once the build is done, `make install` should link the backend libraries to `/usr/local/lib` and `arrayfire.h` to `/usr/local/include/`.
 
 If all goes correctly, `using ArrayFire` should work without errors.
 
-If Julia isn't able to find the libraries, adding the shared libraries to the `LD_LIBRARY_PATH` should fix it. 
+If Julia isn't able to find the libraries, adding the shared libraries to the `LD_LIBRARY_PATH` should fix it.
 
 ## Usage
 ArrayFire creates pointers to GPU memory using the `AFArray` type. Operations on `AFArray` types return `AFArray` types, thereby keeping data on the GPU.
@@ -78,7 +78,7 @@ fast_fourier = fft(a)
 
 ```
 ## Switching Backends
-ArrayFire starts up with the unified backend which, while it isn't a "backend" technically, allows you change backends at runtime. ArrayFire actually supports three different backends: CPU, CUDA and OPENCL.  
+ArrayFire starts up with the unified backend which, while it isn't a "backend" technically, allows you change backends at runtime. ArrayFire actually supports three different backends: CPU, CUDA and OPENCL.
 
 ```julia
 using ArrayFire
@@ -86,9 +86,9 @@ setBackend(AF_BACKEND_OPENCL) #Switch to OPENCL backend
 setBackend(AF_BACKEND_CUDA) #Switch to CUDA backend
 setBackend(AF_BACKEND_CPU) #Switch back to CPU backend
 ```
-NOTE: The function `getAvailableBackend()` works only on arrayfire v3.3.0 and above. 
+NOTE: The function `getAvailableBackend()` works only on arrayfire v3.3.0 and above.
 
-## Performance 
+## Performance
 ArrayFire was benchmarked on commonly used operations.
 
 ![Performance Chart](https://cloud.githubusercontent.com/assets/9101377/14518524/fd16799e-0235-11e6-94c3-549518d25db1.png)
@@ -99,4 +99,4 @@ GPU: GRID K520, 4096 MB, CUDA Compute 3.0.
 
 ArrayFire v3.3.0
 
-Please contribute to the development of this package by filing issues [here](https://github.com/JuliaComputing/ArrayFire.jl/issues). 
+Please contribute to the development of this package by filing issues [here](https://github.com/JuliaComputing/ArrayFire.jl/issues).
