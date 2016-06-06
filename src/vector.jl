@@ -1,7 +1,7 @@
 ### Vector Algorithms
 
 import Base: sum, min, max, minimum, maximum, countnz, any, all, sort,
-                union, findnz, cumsum, diff, findmax, findmin
+                union, find, cumsum, diff, findmax, findmin
 
 export sortIndex, sortByKey, diff2, minidx, maxidx
 
@@ -133,7 +133,7 @@ function cumsum{T}(a::AFArray{T}, dim::Integer = 1)
     AFArray{T}(out[])
 end
 
-function findnz(a::AFArray)
+function find(a::AFArray)
     out = new_ptr()
     af_where(out, a)
     AFArray{backend_eltype(out[])}(out[]) + 1
