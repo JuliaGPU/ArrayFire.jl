@@ -1207,11 +1207,14 @@ end
 function af_get_device(device)
     ccall((:af_get_device,device),af_err,(Ptr{Cint},),device)
 end
+=#
 
-function af_sync(device::Cint)
-    ccall((:af_sync,device),af_err,(Cint,),device)
+function af_sync(device::Int)
+    err = ccall((:af_sync, af_lib), Cint, (Cint,), device)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_alloc_device(ptr,bytes::dim_t)
     ccall((:af_alloc_device,device),af_err,(Ptr{Ptr{Void}},dim_t),ptr,bytes)
 end

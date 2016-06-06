@@ -2,7 +2,8 @@
 
 export getActiveBackend, getBackendCount, AF_BACKEND_DEFAULT,
         AF_BACKEND_CPU, AF_BACKEND_CUDA, AF_BACKEND_OPENCL, 
-        getAvailableBackends, setBackend, getBackendId
+        getAvailableBackends, setBackend, getBackendId, sync,
+        getActiveBackendId
 
 AF_BACKEND_DEFAULT = UInt32(0)
 AF_BACKEND_CPU = UInt32(1)
@@ -10,9 +11,7 @@ AF_BACKEND_CUDA = UInt32(2)
 AF_BACKEND_OPENCL = UInt32(4)
 
 function getActiveBackend()
-    backend = Base.Ref{Cuint}(0)
-    af_get_active_backend(backend)
-    backend = backend[]
+    backend = getActiveBackendId()
     if backend == 0
         println("Default Backend")
     elseif backend == 1
@@ -23,6 +22,12 @@ function getActiveBackend()
         println("OpenCL Backend")
     end
 end 
+
+function getActiveBackendId()
+    backend = Base.Ref{Cuint}(0)
+    af_get_active_backend(backend)
+    backend = Int(backend[])
+end
 
 function getAvailableBackends()
     backends = Base.Ref{Cint}(0)
@@ -71,6 +76,15 @@ function getBackendId(a::AFArray)
         println("OpenCL Backend")
     end
     backend
+end
+
+function sync()
+    b = getActiveBackendId()
+    af_sync(b)
+end
+
+function sync(b::Int)
+    af_sync(b)
 end
 
 # There isn't a af_get_device in the .so
