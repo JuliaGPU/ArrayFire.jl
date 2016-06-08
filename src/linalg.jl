@@ -1,11 +1,63 @@
 ### Linear Algebra
 
-import Base: dot, transpose, ctranspose, transpose!, ctranspose!, det, inv,
-                norm, rank, *, A_mul_Bt, At_mul_B, At_mul_Bt, Ac_mul_B, 
-                A_mul_Bc, Ac_mul_Bc, chol, lu, lufact!, qr, qrfact!, svd,
-                svdfact!, \, diag
+# Import functions from Base
 
-export isLAPACKAvailable, chol!, solveLU, upper, lower
+import Base:dot, 
+            transpose, 
+            ctranspose, 
+            transpose!, 
+            ctranspose!,
+            det, 
+            inv,
+            norm, 
+            rank, 
+            *, 
+            A_mul_Bt, 
+            At_mul_B, 
+            At_mul_Bt, 
+            Ac_mul_B, 
+            A_mul_Bc, 
+            Ac_mul_Bc, 
+            chol, lu, 
+            lufact!, 
+            qr, 
+            qrfact!, 
+            svd,
+            svdfact!, 
+            \, 
+            diag
+
+# Export Functions
+
+export  isLAPACKAvailable, 
+        chol!, 
+        solveLU, 
+        upper, 
+        lower
+
+# Export constants
+
+export  AF_MAT_NONE,
+        AF_MAT_TRANS,
+        AF_MAT_CTRANS,
+        AF_MAT_CONJ ,
+        AF_MAT_UPPER,
+        AF_MAT_LOWER,
+        AF_MAT_DIAG_UNIT,
+        AF_MAT_SYM,
+        AF_MAT_POSDEF,
+        AF_MAT_ORTHOG,
+        AF_MAT_TRI_DIAG,
+        AF_MAT_BLOCK_DIAG,
+        AF_NORM_VECTOR_1,
+        AF_NORM_VECTOR_INF,
+        AF_NORM_VECTOR_2,
+        AF_NORM_VECTOR_P,
+        AF_NORM_MATRIX_1,
+        AF_NORM_MATRIX_INF,
+        AF_NORM_MATRIX_2,
+        AF_NORM_MATRIX_L_PQ,
+        AF_NORM_EUCLID 
 
 # Constants
 
