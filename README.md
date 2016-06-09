@@ -129,6 +129,8 @@ a - Array(b) # Works!
 AFArray(a) - b # This works too!
 ```
 
+**A note on correctness**: Sometimes, `ArrayFire.jl` and Base Julia might return marginally different values from their computation. This is because Julia and `ArrayFire.jl` sometimes use different lower level libraries for BLAS, FFT, etc. For example, Julia uses OpenBLAS for BLAS operations, but `ArrayFire.jl` would use clBLAS for the OpenCL backend and CuBLAS for the CUDA backend, and these libraries might not always the exact same values as OpenBLAS after a certain decimal point. In light of this, users are encouraged to keep testing their codes for correctness.
+
 ## Backends
 There are three backends in `ArrayFire.jl`: 
 * CUDA Backend
