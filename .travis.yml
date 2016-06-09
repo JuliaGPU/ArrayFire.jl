@@ -1,16 +1,17 @@
 language: julia
 os:
   - linux
-  - osx
 julia:
   - release
-  - nightly
 notifications:
   email: false
 # uncomment the following lines to override the default test script
 #script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  install:
   - wget http://ci.arrayfire.org/userContent/Linux/ArrayFire-no-gl-v3.3.2_Linux_x86_64.sh
   - ./ArrayFire-no-gl-v3.3.2_Linux_x86_64.sh
+  before_script:
   - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/$USER/ArrayFire-no-gl-v3.3.2_Linux_x86_64/
-  - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.build("ArrayFire"); Pkg.test("ArrayFire")'
+  script:
+  - julia --check-bounds=yes -e 'Pkg.add("ArrayFire"); Pkg.test("ArrayFire")'
