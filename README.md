@@ -117,6 +117,18 @@ The library also performs some kernel fusions on elementary arithmetic operation
 
 Also, note that this doesn't affect how the user writes code. Users can simply write normal Julia code using `ArrayFire.jl` and this asynchronous behaviour is abstracted out. Whenever the data is needed back onto the CPU, an implicit barrier ensures that the computatation is complete, and the values are transferred back. 
 
+**A note on operations between CPU and device arrays**:  Consider the following code. It will return an error: 
+```julia
+a = rand(Float32, 10, 10)
+b = AFArray(a)
+a - b # Throws Error
+```
+This is because the two arrays reside in different regions of memory (host and device), and for any coherent operation to be performed, one array would have to be transferred to other region in memory. `ArrayFire.jl` does _not_ do this automatically for performance considerations. Therefore, to make this work, you would have to manually transfer one of the arrays to the other memory. The following operations would work:
+```julia
+a - Array(b) # Works!
+AFArray(a) - b # This works too!
+```
+
 ## Backends
 There are three backends in `ArrayFire.jl`: 
 * CUDA Backend
