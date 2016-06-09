@@ -7,9 +7,11 @@ notifications:
   email: false
 install:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - sudo apt-get install libfreeimage-dev libatlas3gf-base libfftw3-dev libglew-dev libglewmx-dev libglfw3-dev cmake
+  - sudo apt-get install ocl-icd-libopencl1
   - wget http://ci.arrayfire.org/userContent/Linux/ArrayFire-no-gl-v3.3.2_Linux_x86_64.sh
-  - sudo ./ArrayFire-no-gl-v3.3.2_Linux_x86_64.sh
+  - sudo ./arrayfire_*_Linux_x86_64.sh --exclude-subdir --prefix=/usr/local
 before_script:
-  - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/$USER/ArrayFire-no-gl-v3.3.2_Linux_x86_64/
+  - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
 script:
   - julia --check-bounds=yes -e 'Pkg.add("ArrayFire"); Pkg.test("ArrayFire")'
