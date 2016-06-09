@@ -188,7 +188,8 @@ getActiveBackend()
 ## Performance
 ArrayFire was benchmarked on commonly used operations.
 
-![General Benchmarks](https://cloud.githubusercontent.com/assets/9101377/15921168/36b4f1fc-2e3d-11e6-871a-c8989c5bd279.png)
+<img width="537" alt="general" src="https://cloud.githubusercontent.com/assets/9101377/15921168/36b4f1fc-2e3d-11e6-871a-c8989c5bd279.png">
+
 
 Another interesting benchmark is [**Non-negative Matrix Factorization**](https://www.wikiwand.com/en/Non-negative_matrix_factorization): 
 
