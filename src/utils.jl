@@ -12,11 +12,11 @@ end
 new_ptr() = Base.RefValue{Ptr{Void}}(C_NULL)
 
 sizeof{T}(a::AFArray{T}) = elsize(a) * length(a)
-    
+
 function convert{T,N}(::Type{Array{T,N}}, x::AFAbstractArray{T,N})
     ret = Array(UInt8, sizeof(x))
-    err = ccall((:af_get_data_ptr, af_lib), 
-                Cint, (Ptr{T}, Ptr{Ptr{Void}}), 
+    err = ccall((:af_get_data_ptr, af_lib),
+                Cint, (Ptr{T}, Ptr{Ptr{Void}}),
                 pointer(ret), x.ptr)
     err == 0 || throwAFerror(err)
     #af_get_data_ptr!(ret, x, T)
@@ -31,7 +31,7 @@ function size(a::AFArray)
     dim1 = Base.RefValue{Cuint}(0)
     dim2 = Base.RefValue{Cuint}(0)
     dim3 = Base.RefValue{Cuint}(0)
-    dim4 =Base.RefValue{Cuint}(0)   
+    dim4 =Base.RefValue{Cuint}(0)
     af_get_dims!(dim1, dim2, dim3, dim4, a)
     n = ndims(a)
     dim4_to_dims(Dim4(dim1[], dim2[], dim3[], dim4[]), n)
@@ -59,10 +59,10 @@ function get_all_dims(a::Array)
     end
     dims
 end
-        
+
 function ndims(a::AFArray)
     n = Base.RefValue{Cuint}(0)
-    af_get_numdims!(n, a.ptr) 
+    af_get_numdims!(n, a.ptr)
     Int(n[])
 end
 
@@ -70,7 +70,7 @@ function ndims(ptr::Ptr{Void})
     n = Base.RefValue{Cuint}(0)
     af_get_numdims!(n, ptr)
     Int(n[])
-end 
+end
 
 call{T}(::Type{AFArray{T}}, ptr::Ptr{Void}) = AFArray{T, ndims(ptr)}(ptr)
 
@@ -89,7 +89,7 @@ end
 
 backend_eltype(a::AFArray) = backend_eltype(a.ptr)
 
-function AFInfo() 
+function AFInfo()
     af_info()
     nothing
 end
@@ -184,7 +184,7 @@ function circshift{T}(a::AFArray{T}, shifts::Vector{Int})
     out = new_ptr()
     af_shift(out, a, shifts...)
     AFArray{T}(out[])
-end 
+end
 
 function make4Dshift!(s::Vector{Int})
     l = length(s)

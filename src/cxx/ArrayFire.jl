@@ -32,7 +32,7 @@ function init_library()
     end
     if !haskey(ENV, "AFPATH")
        addHeaderDir("/usr/local/include/"; kind = C_System)
-    else 
+    else
         addHeaderDir(ENV["APATH"]; kind = C_System)
     end
 end
@@ -119,7 +119,7 @@ function af_promote{T,S}(::Type{T},::Type{S})
     end
 end
 
-abstract AFAbstractArray{T,N} <: AbstractArray{T,4}
+abstract AFAbstractArray{T,N} <: AbstractArray{T,N}
 
 immutable AFArray{T,N} <: AFAbstractArray{T,N}
     array::vcpp"af::array"
@@ -266,7 +266,7 @@ const tis = to_af_idx
 IS = Union{Real,Range,Colon,rcpp"af::seq"}
 
 #ArrayFire needs to index with Int32s or Float32s. Also, array_proxy wrap for indexing with arrays crashes currently.
-function _getindex(x::AFAbstractArray,y::AFAbstractArray)  
+function _getindex(x::AFAbstractArray,y::AFAbstractArray)
     idx = y - 1
     out = AFArray()
     icxx"$out = $x($idx);"
@@ -320,9 +320,9 @@ function setindex!{T}(x::AFAbstractArray{T}, val, idxs...)
     icxx"$proxy = $val;"
 end
 
-# Avoid crash when referencing with boolean arrays with all falses 
+# Avoid crash when referencing with boolean arrays with all falses
 function setindex!(x::AFAbstractArray, val, b::AFAbstractArray{Bool})
-    if any(b) 
+    if any(b)
         icxx"$x($b) = $val;"
     else
         return val
@@ -371,7 +371,7 @@ getDevice() = af_getDevice()
 
 #Storing and Loading Arrays
 save(a::AFAbstractArray, path::AbstractString, key::AbstractString) = af_saveArray(key, a, path)
-function load(path::AbstractString, key::AbstractString) 
+function load(path::AbstractString, key::AbstractString)
     out = af_readArray(path, key)
     AFArray{backend_eltype(out)}(out)
 end
@@ -380,7 +380,7 @@ macro gpu(ex...)
     ex = ex[1]
     top = ex.args[1]
     bottom = ex.args[2]
-    iterator = top.args[1]       
+    iterator = top.args[1]
     start = :($(top.args[2]).start)
     step = :(step($(top.args[2])))
     stop = :($(top.args[2]).stop)
@@ -388,7 +388,7 @@ macro gpu(ex...)
     body = Expr(:->,:i,Expr(:block, x, :nothing))
     esc(Expr(:let, quote icxx"""
                     gfor (af::seq i, $start - 1, $stop - 1, $step)
-                    {   
+                    {
                         $body(i);
                     }
                     """
