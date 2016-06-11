@@ -16,8 +16,8 @@ function blackscholes_serial(sptprice::AbstractArray{Float32},
     NofXd2 = cndf2(d2)
     futureValue = strike .* exp(- rate .* time)
     c1 = futureValue .* NofXd2
-    call = sptprice .* NofXd1 .- c1
-    put  = call .- futureValue .+ sptprice
+    call_ = sptprice .* NofXd1 .- c1
+    put  = call_ .- futureValue .+ sptprice
 end
 
 @inline function cndf2(in::AbstractArray{Float32})
