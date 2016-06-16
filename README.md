@@ -39,6 +39,15 @@ Pkg.test("ArrayFire")
 ```
 If you have any issues getting `ArrayFire.jl` to work, please check the Troubleshooting section below. If it still doesn't work, please file an issue. 
 
+#Windows
+Just download the [installer](http://arrayfire.com/download/) (you need to create an account).
+Follow the installation steps and make sure that you include the library directory into the PATH variable as advised by the installer.
+Now try:
+```julia
+Pkg.add("ArrayFire")
+Pkg.test("ArrayFire")
+```
+
 ## Simple Usage
 Congratulations, you've now installed `ArrayFire.jl`! Now what can you do?
 
