@@ -29,6 +29,9 @@ ad = AFArray(a)
 @test sumabs2(Array(sinh(ad)) - sinh(a)) < 1e-6
 @test sumabs2(Array(cosh(ad)) - cosh(a)) < 1e-6
 @test sumabs2(Array(tanh(ad)) - tanh(a)) < 1e-6
+@test sumabs2(Array(atan2(ad, ad)) - atan2(a, a)) < 1e-6
+@test sumabs2(Array(atan2(ad, 2)) - atan2(a, 2)) < 1e-6
+@test sumabs2(Array(atan2(2, ad)) - atan2(2, a)) < 1e-6
 
 #Measures
 @test minimum(a) == minimum(ad)

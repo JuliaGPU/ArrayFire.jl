@@ -107,6 +107,28 @@ for (op,fn) in ((:sin, :af_sin), (:cos, :af_cos), (:tan, :af_tan), (:asin, :af_a
 
 end
 
+for (op,fn) in ((:atan2, :af_atan2),)
+    @eval function Base.($(quot(op))){T,S}(a::AFArray{T}, b::AFArray{S}; batched = true)
+        ptr = new_ptr()
+        eval($(quot(fn)))(ptr, a, b, batched)
+        AFArray{af_promote(T,S)}(ptr[])
+    end
+
+    @eval function Base.($(quot(op))){T<:Real,S<:Real}(a::AFArray{T}, v::S)
+        b = constant((af_promote(T,S))(v), size(a)...)
+        ptr = new_ptr()
+        eval($(quot(fn)))(ptr, a, b, true)
+        AFArray{af_promote(T,S)}(ptr[])
+    end
+
+    @eval function Base.($(quot(op))){T<:Real,S<:Real}(v::S, a::AFArray{T})
+        b = constant((af_promote(T,S))(v), size(a)...)
+        ptr = new_ptr()
+        eval($(quot(fn)))(ptr, b, a, true)
+        AFArray{af_promote(T,S)}(ptr[])
+    end
+end
+
 function sigmoid(a::AFArray)
     out = new_ptr()
     af_sigmoid(out, a)
