@@ -4,7 +4,7 @@ export AFArray
 
 include("config.jl")
 
-abstract AFAbstractArray{T,N} <: AbstractArray{T,4}
+abstract AFAbstractArray{T,N} <: AbstractArray{T,N}
 
 type AFArray{T,N} <: AFAbstractArray{T,N}
     ptr::Ptr{Void}
