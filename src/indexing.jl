@@ -46,7 +46,12 @@ function getindex{T}(a::AFArray{T}, idx::Union{Range,Int,Colon,AFArray}...)
     l <= n || throw(DimensionMismatch("Number of dimensions is lesser than number of indices"))
     af_index_gen(out, a, l, indexers)
     af_release_indexers(indexers)
-    AFArray{T}(out[])
+    outarr = AFArray{T}(out[])
+    if length(outarr) == 1
+        return Array(outarr)[1]
+    else
+        return outarr
+    end
 end 
 
 function set_up_index!(idx::Tuple, indexers::index)
