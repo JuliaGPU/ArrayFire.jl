@@ -89,7 +89,7 @@ AF_NORM_EUCLID = AF_NORM_VECTOR_2
 function dot{T,S}(a::AFVector{T}, b::AFVector{S}, lhsprop = AF_MAT_NONE, rhsprop = AF_MAT_NONE)
     out = new_ptr()
     af_dot(out, a, b, lhsprop, rhsprop)
-    AFVector{af_promote(T,S)}(out[])
+    Array(AFVector{af_promote(T,S)}(out[]))[1]
 end
     
 # Transpose

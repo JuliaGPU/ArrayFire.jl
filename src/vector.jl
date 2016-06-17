@@ -1,7 +1,7 @@
 ### Vector Algorithms
 
 import Base: sum, min, max, minimum, maximum, countnz, any, all, sort,
-                union, find, cumsum, diff, findmax, findmin
+                union, find, cumsum, diff, findmax, findmin, sortperm
 
 export sortIndex, sortByKey, diff2, minidx, maxidx
 
@@ -85,14 +85,14 @@ function sort{T}(a::AFArray{T}, dim::Integer = 1; rev = false)
     AFArray{T}(out[])
 end
 
-function sortIndex{T}(a::AFArray{T}, dim::Integer = 1; rev = false)
+function sortperm{T}(a::AFArray{T}, dim::Integer = 1; rev = false)
     if dim == 2
         error("ArrayFire doesn't support sorting along this dimension")
     end
     out = new_ptr()
     indices = new_ptr()
     af_sort_index(out, indices, a, Cuint(dim-1), !rev)
-    AFArray{T}(out[]), AFArray{Int32}(indices[]) + 1
+    AFArray{Int32}(indices[]) + 1
 end
 
 function sortByKey{S,T}(keys::AFArray{S}, values::AFArray{T}, dim::Integer = 1; rev = false)

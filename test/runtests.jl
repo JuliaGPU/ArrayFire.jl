@@ -39,12 +39,12 @@ ad = AFArray(a)
 @test sumabs2(Array(minimum(ad,2)) - minimum(a,2)) < 1e-6
 @test sumabs2(Array(max(ad,0.5f0)) - max(a,0.5f0)) < 1e-6
 @test sumabs2(Array(min(ad,0.5f0)) - min(a,0.5f0)) < 1e-6
-@test mean(ad) == mean(a)
+@test_approx_eq  mean(ad) mean(a)
 @test sumabs2(Array(mean(ad,1)) - mean(a,1)) < 1e-6
 @test sumabs2(Array(mean(ad,2)) - mean(a,2)) < 1e-6
 @test median(ad) == median(a)
 @test sumabs2(Array(median(ad,1)) - median(a,1)) < 1e-6
-@test var(ad) == var(a)
+@test_approx_eq var(ad) var(a)
 
 #Linalg 
 @test sumabs2(Array(ad') - a') < 1e-6
