@@ -48,6 +48,7 @@ Pkg.add("ArrayFire")
 Pkg.test("ArrayFire")
 ```
 
+Arrayfire requires vcomp120.dll. If you do not have Visual Studio installed, install the [Visual C++ redistributable](https://www.microsoft.com/en-us/download/details.aspx?id=40784).
 ## Simple Usage
 Congratulations, you've now installed `ArrayFire.jl`! Now what can you do?
 
