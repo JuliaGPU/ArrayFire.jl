@@ -210,7 +210,7 @@ end
 function resize(a::AFArray, dim1::Int, dim2::Int; 
                 method = AF_INTERP_NEAREST)
     out = new_ptr()
-    af_resize(out, a, dim0, dim1, method)
+    af_resize(out, a, dim1, dim2, method)
     AFArray{backend_eltype(out[])}(out[])
 end
 
