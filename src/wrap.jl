@@ -1295,11 +1295,15 @@ end
 function af_unlock_array(arr::af_array)
     ccall((:af_unlock_array,device),af_err,(af_array,),arr)
 end
+=#
 
-function af_get_device_ptr(ptr,arr::af_array)
-    ccall((:af_get_device_ptr,device),af_err,(Ptr{Ptr{Void}},af_array),ptr,arr)
+function af_get_device_ptr(ptr::Base.Ref, arr::AFArray)
+    err = ccall((:af_get_device_ptr, af_lib),
+                    Cint, (Ptr{Void}, Ptr{Void}), ptr, arr.ptr)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_get_last_error(msg,len)
     ccall((:af_get_last_error,exception),Void,(Ptr{Cstring},Ptr{dim_t}),msg,len)
 end

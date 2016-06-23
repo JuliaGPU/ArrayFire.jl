@@ -1,6 +1,6 @@
 import Base: elsize, size, ndims, convert, showarray, vec, flipdim, vcat, hcat, cat, reshape, permutedims, circshift, repeat
 
-export AFInfo, replace!, mergeArrays
+export AFInfo, replace!, mergeArrays, getDevicePointer
 
 immutable Dim4
     dim1::Integer
@@ -222,4 +222,10 @@ function _AFArray(ptr::Ptr{Void})
     a = AFArray(ptr)
     finalizer(a, x -> af_release_array(x))
     a
+end
+
+function getDevicePointer(a::AFArray)
+    out = new_ptr()
+    af_get_device_ptr(out, a)
+    out[]
 end
