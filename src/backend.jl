@@ -3,7 +3,7 @@
 export getActiveBackend, getBackendCount, AF_BACKEND_DEFAULT,
         AF_BACKEND_CPU, AF_BACKEND_CUDA, AF_BACKEND_OPENCL, 
         getAvailableBackends, setBackend, getBackendId, sync,
-        getActiveBackendId, getDeviceId
+        getActiveBackendId, getDeviceId, getVersionNumber
 
 AF_BACKEND_DEFAULT = UInt32(0)
 AF_BACKEND_CPU = UInt32(1)
@@ -90,7 +90,20 @@ end
 # There is a af_get_device_id only in ArrayFire  > v3.3.x, possibly only in v3.4.0 onwards
 
 function getDeviceId(a::AFArray)
+    maj, min, pat = getVersionNumber()
+    if maj < 3 || (maj == 3 && min < 4)
+        throw("ArrayFire Version is v$maj.$min.$pat, which does not support this function. Install the latest version of ArrayFire.")
+    end
     device = Base.Ref{Cint}(0)
     af_get_device_id(device, a)
     Int(device[])
 end
+
+function getVersionNumber()
+    maj = Base.Ref{Cint}(0)
+    min = Base.Ref{Cint}(0)
+    pat = Base.Ref{Cint}(0)
+    af_get_version(maj, min, pat)
+    maj[], min[], pat[]
+end
+

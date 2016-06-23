@@ -692,11 +692,16 @@ end
 function af_example_function(out,_in::af_array,param::af_someenum_t)
     ccall((:af_example_function,util),af_err,(Ptr{af_array},af_array,af_someenum_t),out,_in,param)
 end
+=#
 
-function af_get_version(major,minor,patch)
-    ccall((:af_get_version,util),af_err,(Ptr{Cint},Ptr{Cint},Ptr{Cint}),major,minor,patch)
+function af_get_version(major::Base.Ref, minor::Base.Ref, patch::Base.Ref)
+    err = ccall((:af_get_version, af_lib), Cint,
+                    (Ptr{Cint}, Ptr{Cint}, Ptr{Cint}),
+                    major, minor, patch)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_get_revision()
     ccall((:af_get_revision,util),Cstring,())
 end
