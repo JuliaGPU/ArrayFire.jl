@@ -951,6 +951,12 @@ function af_get_backend_id(backend::Base.Ref,_in::AFArray)
     err == 0 || throwAFerror(err)
 end
 
+function af_get_device_id(device::Base.Ref,_in::AFArray)
+    err = ccall((:af_get_device_id, af_lib), Cint,
+                (Ptr{Cint}, Ptr{Void}), device, _in.ptr)
+    err == 0 || throwAFerror(err)
+end
+
 function af_get_active_backend(backend)
     err = ccall((:af_get_active_backend, af_lib), Cint, 
                 (Ptr{Cuint},) , backend)

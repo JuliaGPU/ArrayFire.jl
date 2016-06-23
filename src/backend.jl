@@ -3,7 +3,7 @@
 export getActiveBackend, getBackendCount, AF_BACKEND_DEFAULT,
         AF_BACKEND_CPU, AF_BACKEND_CUDA, AF_BACKEND_OPENCL, 
         getAvailableBackends, setBackend, getBackendId, sync,
-        getActiveBackendId
+        getActiveBackendId, getDeviceId
 
 AF_BACKEND_DEFAULT = UInt32(0)
 AF_BACKEND_CPU = UInt32(1)
@@ -87,10 +87,10 @@ function sync(b::Int)
     af_sync(b)
 end
 
-# There isn't a af_get_device in the .so
+# There is a af_get_device_id only in ArrayFire  > v3.3.x, possibly only in v3.4.0 onwards
 
-#function getDeviceId(a::AFArray)
-#    device = Base.Ref{Cint}(0)
-#    af_get_device_id(device, a)
-#    Int(device[])
-#end
+function getDeviceId(a::AFArray)
+    device = Base.Ref{Cint}(0)
+    af_get_device_id(device, a)
+    Int(device[])
+end
