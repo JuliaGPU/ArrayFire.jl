@@ -8,8 +8,12 @@ abstract AFAbstractArray{T,N} <: AbstractArray{T,4}
 
 type AFArray{T,N} <: AFAbstractArray{T,N}
     ptr::Ptr{Void}
+    function AFArray(ptr::Ptr{Void})
+        a = new(ptr)
+        finalizer(a, x -> af_release_array(x))
+        a
+    end
 end
-
 
 typealias AFVector{T} AFArray{T,1}
 typealias AFMatrix{T} AFArray{T,2}

@@ -214,16 +214,6 @@ function convert{T}(::Type{AFArray{T}}, a::AFArray)
     AFArray{T}(out[])
 end
 
-function AFArray(ptr::Ptr{Void})
-    _AFArray(ptr)
-end
-
-function _AFArray(ptr::Ptr{Void})
-    a = AFArray(ptr)
-    finalizer(a, x -> af_release_array(x))
-    a
-end
-
 function getDevicePointer(a::AFArray)
     out = new_ptr()
     af_get_device_ptr(out, a)
