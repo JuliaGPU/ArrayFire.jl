@@ -774,11 +774,14 @@ function af_release_indexers(indexers::index)
     err == 0 || throwAFerror(err)
 end
 
-#=
-function af_create_array(arr,data,ndims::UInt32,dims,_type::af_dtype)
-    ccall((:af_create_array,array),af_err,(Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),arr,data,ndims,dims,_type)
+function af_create_array(arr::Base.Ref, data::Ptr{Void}, ndims::UInt32, dims::Vector{Int}, T::DataType)
+    err = ccall((:af_create_array, af_lib), Cint,
+                    (Ptr{Void}, Ptr{Void}, UInt32, Ptr{Int}, Cuint),
+                    arr, data, ndims, dims, aftype(T))
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_create_handle(arr,ndims::UInt32,dims,_type::af_dtype)
     ccall((:af_create_handle,array),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),arr,ndims,dims,_type)
 end
@@ -1256,11 +1259,16 @@ end
 function af_device_array(arr,data,ndims::UInt32,dims,_type::af_dtype)
     ccall((:af_device_array,device),af_err,(Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),arr,data,ndims,dims,_type)
 end
+=#
 
-function af_device_mem_info(alloc_bytes,alloc_buffers,lock_bytes,lock_buffers)
-    ccall((:af_device_mem_info,device),af_err,(Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Cint}),alloc_bytes,alloc_buffers,lock_bytes,lock_buffers)
+function af_device_mem_info(alloc_bytes::Base.Ref, alloc_buffers::Base.Ref, lock_bytes::Base.Ref, lock_buffers::Base.Ref)
+    err = ccall((:af_device_mem_info, af_lib), Cint,
+                (Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Cint}),
+                alloc_bytes, alloc_buffers, lock_bytes, lock_buffers)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_print_mem_info(msg,device_id::Cint)
     ccall((:af_print_mem_info,device),af_err,(Cstring,Cint),msg,device_id)
 end

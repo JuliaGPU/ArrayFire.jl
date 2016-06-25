@@ -1,6 +1,6 @@
 import Base: elsize, size, ndims, convert, showarray, vec, flipdim, vcat, hcat, cat, reshape, permutedims, circshift, repeat
 
-export AFInfo, replace!, mergeArrays, getDevicePointer
+export AFInfo, replace!, mergeArrays, getDevicePointer, getDataRefCount, deviceMemInfo
 
 immutable Dim4
     dim1::Integer
@@ -228,4 +228,19 @@ function getDevicePointer(a::AFArray)
     out = new_ptr()
     af_get_device_ptr(out, a)
     out[]
+end
+
+function getDataRefCount(a::AFArray)
+    out = Base.Ref{Cint}(0)
+    af_get_data_ref_count(out, a)
+    out[]
+end
+
+function deviceMemInfo()
+    alloc_bytes = Base.Ref{Cint}(0)
+    alloc_buffers = Base.Ref{Cint}(0)
+    lock_bytes = Base.Ref{Cint}(0)
+    lock_buffers = Base.Ref{Cint}(0)
+    af_device_mem_info(alloc_bytes, alloc_buffers, lock_bytes, lock_buffers)
+    Int(alloc_bytes[]), Int(alloc_buffers[]), Int(lock_bytes[]), Int(lock_buffers[])
 end
