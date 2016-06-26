@@ -227,10 +227,10 @@ function getDataRefCount(a::AFArray)
 end
 
 function deviceMemInfo()
-    alloc_bytes = Base.Ref{Cint}(0)
-    alloc_buffers = Base.Ref{Cint}(0)
-    lock_bytes = Base.Ref{Cint}(0)
-    lock_buffers = Base.Ref{Cint}(0)
+    alloc_bytes = Base.Ref{Csize_t}(0)
+    alloc_buffers = Base.Ref{Csize_t}(0)
+    lock_bytes = Base.Ref{Csize_t}(0)
+    lock_buffers = Base.Ref{Csize_t}(0)
     af_device_mem_info(alloc_bytes, alloc_buffers, lock_bytes, lock_buffers)
     Int(alloc_bytes[]), Int(alloc_buffers[]), Int(lock_bytes[]), Int(lock_buffers[])
 end

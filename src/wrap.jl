@@ -1263,7 +1263,7 @@ end
 
 function af_device_mem_info(alloc_bytes::Base.Ref, alloc_buffers::Base.Ref, lock_bytes::Base.Ref, lock_buffers::Base.Ref)
     err = ccall((:af_device_mem_info, af_lib), Cint,
-                (Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Cint}),
+                (Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t}),
                 alloc_bytes, alloc_buffers, lock_bytes, lock_buffers)
     err == 0 || throwAFerror(err)
 end
