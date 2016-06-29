@@ -44,6 +44,7 @@ function run(iterations)
     println("Serial checksum: ", sum(put1))
     tic()
     put2 = blackscholes_serial(sptprice_gpu, initStrike_gpu, rate_gpu, volatility_gpu, time_gpu)
+    put2host = Array(put2)
     t2 = toq()
     println("Parallel checksum: ", sum(put2))
     return t1, t2
