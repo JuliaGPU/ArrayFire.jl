@@ -10,6 +10,7 @@ AF_BACKEND_CPU = UInt32(1)
 AF_BACKEND_CUDA = UInt32(2)
 AF_BACKEND_OPENCL = UInt32(4)
 
+# Available only v3.3.0 onwards
 function getActiveBackend()
     backend = getActiveBackendId()
     if backend == 0
@@ -23,7 +24,13 @@ function getActiveBackend()
     end
 end 
 
+# Available only v3.3.0 onwards
 function getActiveBackendId()
+    maj, min, pat = getVersionNumber()
+    if maj <= 3 && min < 3
+        throw("This function is supported only on arrayfire v3.3.0 and onward, 
+                current version is v$(maj).$(min).$(pat). Please install a newer 
+                version of arrayfire.")
     backend = Base.Ref{Cuint}(0)
     af_get_active_backend(backend)
     backend = Int(backend[])
