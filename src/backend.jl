@@ -27,10 +27,8 @@ end
 # Available only v3.3.0 onwards
 function getActiveBackendId()
     maj, min, pat = getVersionNumber()
-    if maj <= 3 && min < 3
-        throw("This function is supported only on arrayfire v3.3.0 and onward, 
-                current version is v$(maj).$(min).$(pat). Please install a newer 
-                version of arrayfire.")
+    if maj < 3 || (maj == 3 && min < 3)
+        throw(ErrorException("This function is supported only on arrayfire v3.3.0 and onward, current version is v$(maj).$(min).$(pat). Please install a newer version of arrayfire."))
     end
     backend = Base.Ref{Cuint}(0)
     af_get_active_backend(backend)

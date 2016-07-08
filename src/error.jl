@@ -47,5 +47,5 @@ export  AF_SUCCESS,
 function throwAFerror(err::Integer)
     str = ccall((:af_err_to_string, af_lib), 
                 Cstring, (Cint, ), err)
-    throw("ArrayFire Error ($err) : $(bytestring(str))")
+    throw(ErrorException("ArrayFire Error ($err) : $(bytestring(str))"))
 end
