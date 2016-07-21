@@ -2,6 +2,9 @@
 
 [![Build Status](https://travis-ci.org/JuliaComputing/ArrayFire.jl.svg?branch=master)](https://travis-ci.org/JuliaComputing/ArrayFire.jl)
 
+[![Julia 0.4 Status](http://pkg.julialang.org/badges/ArrayFire_0.4.svg)](http://pkg.julialang.org/?pkg=ArrayFire&ver=0.4)
+[![Julia 0.5 Status](http://pkg.julialang.org/badges/ArrayFire_0.5.svg)](http://pkg.julialang.org/?pkg=ArrayFire&ver=0.5)
+
 [ArrayFire](http://arrayfire.com) is a library for GPU and accelerated computing. ArrayFire.jl wraps the ArrayFire library for Julia, and provides a Julian interface.
 
 ## Installation
