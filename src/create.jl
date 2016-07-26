@@ -28,7 +28,7 @@ function convert{T,N}(::Type{AFArray{T,N}}, a::Array{T,N})
     AFArray{T,N}(ptr[])
 end
             
-call{T,N}(::Type{AFArray}, a::Array{T,N}) = convert(AFArray{T,N}, a)
+@compat (::Type{AFArray}){T,N}(a::Array{T,N}) = convert(AFArray{T,N}, a)
 convert{T,N}(::Type{AFArray}, a::Array{T,N}) = AFArray(a)
 
 function constant{T<:Real}(val::T, dims::Integer...)
