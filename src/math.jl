@@ -2,6 +2,10 @@ using Base.Meta
 
 import Base: complex, conj, real, imag, max, min, abs, round, sign, floor, hypot
 import Base: &, |, $, .>, .>=, .<, .<=, !, .==, .!=, ^, .^, /, ./
+import Base: +, .+, -, .-, *, .*, /, ./, %, .%, <<, .<<, >>, .>>, ^, .^
+import Base: sin, cos, tan, sinh, cosh, tanh, asin, acos, atan, cbrt, erf, erfc, 
+             exp, expm1, factorial, lgamma, log, log10, log1p, sqrt, gamma, log2,
+             atan2 
 
 export sigmoid
 
@@ -10,7 +14,7 @@ for (op,fn) in ((:+,:af_add), (:.+,:af_add), (:-,:af_sub), (:.-,:af_sub), (:.*,:
                 (:.<<, :af_bitshiftl),(:>>, :af_bitshiftr), (:.>>, :af_bitshiftr),
                 (:^, :af_pow), (:.^, :af_pow ))
 
-    @eval function Base.($(quot(op))){T,S}(a::AFArray{T}, b::AFArray{S}; batched = true)
+    @compat @eval function $op{T,S}(a::AFArray{T}, b::AFArray{S}; batched = true)
         ptr = new_ptr()
         eval($(quot(fn)))(ptr, a, b, batched)
         AFArray{af_promote(T,S)}(ptr[])
@@ -18,71 +22,71 @@ for (op,fn) in ((:+,:af_add), (:.+,:af_add), (:-,:af_sub), (:.-,:af_sub), (:.*,:
 
 end
 
-Base.(:-)(a::AFArray) = 0 - a
-Base.(:+)(a::AFArray{Bool}, v::Bool) = +(a,Int(v))
-Base.(:+)(v::Bool, a::AFArray{Bool}) = +(a,v)
-Base.(:-)(a::AFArray{Bool}, v::Bool) = -(a,Int(v))
-Base.(:-)(v::Bool, a::AFArray{Bool}) = -(a,v)
+@compat Base.:-(a::AFArray) = 0 - a
+@compat Base.:+(a::AFArray{Bool}, v::Bool) = +(a,Int(v))
+@compat Base.:+(v::Bool, a::AFArray{Bool}) = +(a,v)
+@compat Base.:-(a::AFArray{Bool}, v::Bool) = -(a,Int(v))
+@compat Base.:-(v::Bool, a::AFArray{Bool}) = -(a,v)
 
-^{T<:Real}(a::AFArray{T}, v::Integer) = ^(a, Real(v))
-^{T<:Real}(a::AFArray{Complex{T}}, v::Integer) = ^(a, Real(v))
-.^{T<:Real}(v::Irrational{:e}, a::AFArray{T}) = ^(Real(e), a)
-.^{T<:Real}(v::Irrational{:e}, a::AFArray{Complex{T}}) = ^(Real(e), a)
+@compat ^{T<:Real}(a::AFArray{T}, v::Integer) = ^(a, Real(v))
+@compat ^{T<:Real}(a::AFArray{Complex{T}}, v::Integer) = ^(a, Real(v))
+@compat .^{T<:Real}(v::Irrational{:e}, a::AFArray{T}) = ^(Real(e), a)
+@compat .^{T<:Real}(v::Irrational{:e}, a::AFArray{Complex{T}}) = ^(Real(e), a)
 
 for (op,fn) in ((:+, :af_add), (:.+, :af_add), (:-, :af_sub), (:.-, :af_sub), (:*, :af_mul),
                 (:.*, :af_mul), (:./, :af_div), (:%, :af_mod), (:.%, :af_mod),
                 (:^, :af_pow), (:.^, :af_pow))
 
-    @eval function Base.($(quot(op))){T<:Real,S<:Real}(a::AFArray{T}, v::S)
+    @compat @eval function $op{T<:Real,S<:Real}(a::AFArray{T}, v::S)
         b = constant((af_promote(T,S))(v), size(a)...)
         ptr = new_ptr()
         eval($(quot(fn)))(ptr, a, b, true)
         AFArray{af_promote(T,S)}(ptr[])
     end
 
-    @eval function Base.($(quot(op))){T<:Real,S<:Real}(a::AFArray{T}, v::Complex{S})
+    @compat @eval function $op{T<:Real,S<:Real}(a::AFArray{T}, v::Complex{S})
         b = constant(Complex{af_promote(T,S)}(v), size(a)...)
         ptr = new_ptr()
         eval($(quot(fn)))(ptr, a, b, true)
         AFArray{Complex{af_promote(T,S)}}(ptr[])
     end
 
-    @eval function Base.($(quot(op))){T<:Real,S<:Real}(v::S, a::AFArray{T})
+    @compat @eval function $op{T<:Real,S<:Real}(v::S, a::AFArray{T})
         b = constant((af_promote(T,S))(v), size(a)...)
         ptr = new_ptr()
         eval($(quot(fn)))(ptr, b, a, true)
         AFArray{af_promote(T,S)}(ptr[])
     end
 
-    @eval function Base.($(quot(op))){T<:Real,S<:Real}(v::Complex{S}, a::AFArray{T})
+    @compat @eval function $op{T<:Real,S<:Real}(v::Complex{S}, a::AFArray{T})
         b = constant(Complex{af_promote(T,S)}(v), size(a)...)
         ptr = new_ptr()
         eval($(quot(fn)))(ptr, b, a, true)
         AFArray{Complex{af_promote(T,S)}}(ptr[])
     end
 
-    @eval function Base.($(quot(op))){T<:Real,S<:Real}(a::AFArray{Complex{T}}, v::S)
+    @compat @eval function $op{T<:Real,S<:Real}(a::AFArray{Complex{T}}, v::S)
         b = constant((af_promote(T,S))(v), size(a)...)
         ptr = new_ptr()
         eval($(quot(fn)))(ptr, a, b, true)
         AFArray{Complex{af_promote(T,S)}}(ptr[])
     end
 
-    @eval function Base.($(quot(op))){T<:Real,S<:Real}(a::AFArray{Complex{T}}, v::Complex{S})
+    @compat @eval function $op{T<:Real,S<:Real}(a::AFArray{Complex{T}}, v::Complex{S})
         b = constant(Complex{af_promote(T,S)}(v), size(a)...)
         ptr = new_ptr()
         eval($(quot(fn)))(ptr, a, b, true)
         AFArray{Complex{af_promote(T,S)}}(ptr[])
     end
 
-    @eval function Base.($(quot(op))){T<:Real,S<:Real}(v::S, a::AFArray{Complex{T}})
+    @compat @eval function $op{T<:Real,S<:Real}(v::S, a::AFArray{Complex{T}})
         b = constant((af_promote(T,S))(v), size(a)...)
         ptr = new_ptr()
         eval($(quot(fn)))(ptr, b, a, true)
         AFArray{Complex{af_promote(T,S)}}(ptr[])
     end
 
-    @eval function Base.($(quot(op))){T<:Real,S<:Real}(v::Complex{S}, a::AFArray{Complex{T}})
+    @compat @eval function $op{T<:Real,S<:Real}(v::Complex{S}, a::AFArray{Complex{T}})
         b = constant(Complex{af_promote(T,S)}(v), size(a)...)
         ptr = new_ptr()
         eval($(quot(fn)))(ptr, b, a, true)
@@ -99,7 +103,7 @@ for (op,fn) in ((:sin, :af_sin), (:cos, :af_cos), (:tan, :af_tan), (:asin, :af_a
                 (:expm1, :af_expm1), (:factorial, :af_factorial), (:lgamma, :af_lgamma),
                 (:log, :af_log), (:log10, :af_log10), (:log1p, :af_log1p), (:sqrt, :af_sqrt),
                 (:gamma, :af_tgamma), (:log2, :af_log2))
-    @eval function Base.($(quot(op)))(a::AFArray)
+    @compat @eval function $op(a::AFArray)
         out = new_ptr()
         eval($(quot(fn)))(out, a)
         AFArray{backend_eltype(out[])}(out[])
@@ -108,20 +112,20 @@ for (op,fn) in ((:sin, :af_sin), (:cos, :af_cos), (:tan, :af_tan), (:asin, :af_a
 end
 
 for (op,fn) in ((:atan2, :af_atan2),)
-    @eval function Base.($(quot(op))){T,S}(a::AFArray{T}, b::AFArray{S}; batched = true)
+    @eval @compat function $op{T,S}(a::AFArray{T}, b::AFArray{S}; batched = true)
         ptr = new_ptr()
         eval($(quot(fn)))(ptr, a, b, batched)
         AFArray{af_promote(T,S)}(ptr[])
     end
 
-    @eval function Base.($(quot(op))){T<:Real,S<:Real}(a::AFArray{T}, v::S)
+    @eval @compat function $op{T<:Real,S<:Real}(a::AFArray{T}, v::S)
         b = constant((af_promote(T,S))(v), size(a)...)
         ptr = new_ptr()
         eval($(quot(fn)))(ptr, a, b, true)
         AFArray{af_promote(T,S)}(ptr[])
     end
 
-    @eval function Base.($(quot(op))){T<:Real,S<:Real}(v::S, a::AFArray{T})
+    @eval @compat function $op{T<:Real,S<:Real}(v::S, a::AFArray{T})
         b = constant((af_promote(T,S))(v), size(a)...)
         ptr = new_ptr()
         eval($(quot(fn)))(ptr, b, a, true)
@@ -230,8 +234,7 @@ end
 
 for (op,fn) in ((:&, :af_bitand),(:|, :af_bitor), (:$, :af_bitxor),
                 (:.==, :af_eq), (:.!=, :af_neq), (:.>, :af_gt),
-                (:.>=, :af_ge), (:.<, :af_lt), (:.<=, :af_le),
-                (:.!=, :af_neq))
+                (:.>=, :af_ge), (:.<, :af_lt), (:.<=, :af_le))
 
     @eval function ($op)(a::AFArray, b::AFArray; batched = true)
         out = new_ptr()

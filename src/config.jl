@@ -2,7 +2,7 @@ let
     global af_lib
     succeeded = false
     if !isdefined(:af_lib)
-        lib = @unix ? begin "libaf" end : @windows ? "af" : ""
+        lib = is_unix()  ? begin "libaf" end : is_windows() ? "af" : ""
         Libdl.dlopen(lib)
         succeeded = true
         succeeded || error("ArrayFire library not found")

@@ -1,5 +1,7 @@
 module ArrayFire
 
+using Compat
+
 export AFArray
 
 include("config.jl")
