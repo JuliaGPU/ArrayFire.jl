@@ -250,3 +250,7 @@ If you want to use the CUDA backend, check if you have installed CUDA for your p
 > `ArrayFire.jl` doesn't work with Atom. 
 
 Create a file in your home directory called `.juliarc.jl` and write `ENV["LD_LIBRARY_PATH"] = "/usr/local/lib/"` (or the path to `libaf`) in it. Atom should now be able to load it. 
+
+> `ERROR: ArrayFire Error (401) : Double precision not supported for this device`
+
+This error message pops up on devices that do not support double precision: a good example would be the Iris Pro on Macbooks. If you get this message, you should work with single precision. For example, if you're generating random numbers directly on the device, the correct usage in this scenario would be `rand(AFArray{Float32}, 10)` instead of `rand(AFArray{Float64}, 10)`.
