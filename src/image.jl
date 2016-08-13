@@ -186,9 +186,9 @@ function minfilt(a::AFArray; wind_length = 3, wind_width = 3, edge_pad = AF_PAD_
 end
 
 function sobel(a::AFArray; ker_size = 3)
-    out = new_ptr()
-    af_sobel_operator(dx, dy, img, Cuint(ker_size))
-    AFArray{backend_eltype(out[])}(out[])
+    dx, dy = new_ptr(), new_ptr()
+    af_sobel_operator(dx, dy, a, Cuint(ker_size))
+    AFArray{backend_eltype(dx[])}(dx[]), AFArray{backend_eltype(dy[])}(dy[])
 end
 
 # Histograms
