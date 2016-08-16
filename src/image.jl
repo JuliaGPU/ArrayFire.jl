@@ -4,15 +4,15 @@ import Base: hist, scale
 
 # Export methods
 
-export  loadImage, 
-        saveImage, 
-        isImageIOAvailable, 
-        colorspace, 
-        gray2rgb, 
-        rgb2gray, 
-        rgb2hsv, 
-        rgb2ycbcr, 
-        ycbcr2rgb, 
+export  loadImage,
+        saveImage,
+        isImageIOAvailable,
+        colorspace,
+        gray2rgb,
+        rgb2gray,
+        rgb2hsv,
+        rgb2ycbcr,
+        ycbcr2rgb,
         hsv2rgb,
         regions,
         SAT,
@@ -26,7 +26,7 @@ export  loadImage,
         resize,
         rotate,
         skew,
-        transform, 
+        transform,
         transformCoordinates,
         translate,
         dilate,
@@ -56,14 +56,14 @@ export  AF_GRAY,
 
 # Colorspaces and Constants
 
-AF_GRAY = 0 
-AF_RGB = 1  
-AF_HSV = 2      
-AF_YCbCr = 3     
+AF_GRAY = 0
+AF_RGB = 1
+AF_HSV = 2
+AF_YCbCr = 3
 
-AF_YCC_601 = 601  
-AF_YCC_709 = 709  
-AF_YCC_2020 = 2020  
+AF_YCC_601 = 601
+AF_YCC_709 = 709
+AF_YCC_2020 = 2020
 
 AF_CONNECTIVITY_4 = 4
 AF_CONNECTIVITY_8 = 8
@@ -71,7 +71,7 @@ AF_CONNECTIVITY_8 = 8
 AF_PAD_ZERO = 0
 AF_PAD_SYM = 1
 
-AF_INTERP_NEAREST = 0 
+AF_INTERP_NEAREST = 0
 AF_INTERP_LINEAR = 1
 AF_INTERP_BILINEAR = 2
 AF_INTERP_CUBIC = 3
@@ -87,7 +87,7 @@ end
 
 function saveImage(path::AbstractString, a::AFArray)
     af_save_image(path, a)
-end    
+end
 
 function isImageIOAvailable()
     out = Base.Ref{Bool}(0)
@@ -107,7 +107,7 @@ function gray2rgb(img::AFArray; rFactor::Cdouble = 1., gFactor::Cdouble = 1., bF
     out = new_ptr()
     af_gray2rgb(out, img, rFactor, gFactor, bFactor)
     AFArray{backend_eltype(out[])}(out[])
-end 
+end
 
 function hsv2rgb(img::AFArray)
     out = new_ptr()
@@ -145,7 +145,7 @@ function regions(a::AFArray; conn = AF_CONNECTIVITY_4, typ = Float32)
     out = new_ptr()
     af_regions(out, a, conn, typ)
     AFArray{typ}(out[])
-end 
+end
 
 # Filters
 
@@ -186,9 +186,9 @@ function minfilt(a::AFArray; wind_length = 3, wind_width = 3, edge_pad = AF_PAD_
 end
 
 function sobel(a::AFArray; ker_size = 3)
-    out = new_ptr()
-    af_sobel_operator(dx, dy, img, Cuint(ker_size))
-    AFArray{backend_eltype(out[])}(out[])
+    dx, dy = new_ptr(), new_ptr()
+    af_sobel_operator(dx, dy, a, Cuint(ker_size))
+    AFArray{backend_eltype(dx[])}(dx[]), AFArray{backend_eltype(dy[])}(dy[])
 end
 
 # Histograms
@@ -207,55 +207,55 @@ end
 
 # Image Transformations
 
-function resize(a::AFArray, dim1::Int, dim2::Int; 
+function resize(a::AFArray, dim1::Int, dim2::Int;
                 method = AF_INTERP_NEAREST)
     out = new_ptr()
     af_resize(out, a, dim1, dim2, method)
     AFArray{backend_eltype(out[])}(out[])
 end
 
-function rotate(a::AFArray, theta::Real; crop::Bool = true, 
+function rotate(a::AFArray, theta::Real; crop::Bool = true,
                 method = AF_INTERP_NEAREST)
     out = new_ptr()
     af_rotate(out, a, theta, crop, method)
     AFArray{backend_eltype(out[])}(out[])
-end 
+end
 
-function scale(a::AFArray, scale0::Real, scale1::Real; 
+function scale(a::AFArray, scale0::Real, scale1::Real;
                 dim1 = 0, dim2 = 0, method = AF_INTERP_NEAREST)
     out = new_ptr()
     af_scale(out, a, scale0, scale1, dim1, dim2, method)
     AFArray{backend_eltype(out[])}(out[])
-end 
+end
 
-function skew(a::AFArray, skew1::Real, skew2::Real; 
-                dim1 = 0, dim2 = 0, method = AF_INTERP_NEAREST, 
+function skew(a::AFArray, skew1::Real, skew2::Real;
+                dim1 = 0, dim2 = 0, method = AF_INTERP_NEAREST,
                 inverse = true)
     out = new_ptr()
     af_skew(out, a, skew1, skew2, dim1, dim2, method, inverse)
     AFArray{backend_eltype(out[])}(out[])
-end 
+end
 
-function transform(a::AFArray, transform::AFArray; 
-                    dim1 = 0, dim2 = 0, method = AF_INTERP_NEAREST, 
-                    inverse = true) 
+function transform(a::AFArray, transform::AFArray;
+                    dim1 = 0, dim2 = 0, method = AF_INTERP_NEAREST,
+                    inverse = true)
     out = new_ptr()
     af_transform(out, a, transform, dim1, dim2, method, inverse)
     AFArray{backend_eltype(out[])}(out[])
-end 
+end
 
 function transformCoordinates(a::AFArray, d1::Real, d2::Real)
     out = new_ptr()
     af_transform_coordinates(out, a, d1, d2)
     AFArray{backend_eltype(out[])}(out[])
-end 
+end
 
-function translate(a::AFArray, trans1::Real, trans2::Real; 
+function translate(a::AFArray, trans1::Real, trans2::Real;
                     dim1 = 0, dim2 =0, method = AF_INTERP_NEAREST)
     out = new_ptr()
     af_translate(out, a, trans1, trans2, dim1, dim2, method)
     AFArray{backend_eltype(out[])}(out[])
-end 
+end
 
 # Morphological Operations
 
