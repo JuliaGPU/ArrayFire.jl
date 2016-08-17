@@ -103,3 +103,5 @@ function get_sizes(idx::Tuple, lhs::AFArray)
     end
     tuple(s...)
 end
+
+Base.LinearIndexing(::Type{AFArray}) = Base.LinearSlow()
