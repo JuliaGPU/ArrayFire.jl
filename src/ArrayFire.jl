@@ -6,9 +6,8 @@ export AFArray
 
 include("config.jl")
 
-abstract AFAbstractArray{T,N} <: AbstractArray{T,4}
 
-type AFArray{T,N} <: AFAbstractArray{T,N}
+type AFArray{T,N} <: AbstractArray{T,N}
     ptr::Ptr{Void}
     function AFArray(ptr::Ptr{Void})
         a = new(ptr)

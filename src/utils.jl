@@ -13,7 +13,7 @@ new_ptr() = Base.RefValue{Ptr{Void}}(C_NULL)
 
 sizeof{T}(a::AFArray{T}) = elsize(a) * length(a)
     
-function convert{T,N}(::Type{Array{T,N}}, x::AFAbstractArray{T,N})
+function convert{T,N}(::Type{Array{T,N}}, x::AFArray{T,N})
     ret = Array(UInt8, sizeof(x))
     err = ccall((:af_get_data_ptr, af_lib), 
                 Cint, (Ptr{T}, Ptr{Ptr{Void}}), 
@@ -74,12 +74,22 @@ end
 
 @compat (::Type{AFArray{T}}){T}(ptr::Ptr{Void}) = AFArray{T, ndims(ptr)}(ptr)
 
-function showarray{T,N}(io::IO, X::AFAbstractArray{T,N};
+@compat function Base.show(io::IO, m::MIME"text/plain", a::AFArray) 
+    print(io, summary(a))
+    !isempty(a) && println(io,":")
+    if VERSION > v"0.5.0-dev+4993"
+        Base.showarray(io::IO, Array(a), false; header = false)
+    else
+        Base.showarray(io::IO, Array(a); header=false)
+    end
+end
+
+#=function showarray{T}(io::IO, X::AFAbstractArray{T};
                    header::Bool=true, kwargs...)
     header && print(io, summary(X))
     !isempty(X) && println(io,":")
-    showarray(io, convert(Array{T,N},X); header = false, kwargs...)
-end
+    showarray(io, convert(Array{T},X); header = false, kwargs...)
+end=#
 
 function backend_eltype(p::Ptr{Void})
     t = Base.Ref{Cuint}(0)
