@@ -33,5 +33,6 @@ include("linalg.jl")
 include("image.jl")
 include("cv.jl")
 include("signal.jl")
+include("device.jl")
 
 end

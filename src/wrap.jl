@@ -1190,7 +1190,7 @@ end
 
 function af_info()
     err = ccall((:af_info, af_lib), Cint, () ) 
-    err == 0 || throwAFerror()
+    err == 0 || throwAFerror(err)
 end
 
 #=
@@ -1205,23 +1205,28 @@ end
 function af_device_info(d_name,d_platform,d_toolkit,d_compute)
     ccall((:af_device_info,device),af_err,(Cstring,Cstring,Cstring,Cstring),d_name,d_platform,d_toolkit,d_compute)
 end
+=#
 
-function af_get_device_count(num_of_devices)
-    ccall((:af_get_device_count,device),af_err,(Ptr{Cint},),num_of_devices)
+function af_get_device_count(num_of_devices::Base.Ref)
+    err = ccall((:af_get_device_count, af_lib), Cint, (Ptr{Cint},),num_of_devices)
+    err == 0 || throwAFerror(err)
 end
 
+#=
 function af_get_dbl_support(available,device::Cint)
     ccall((:af_get_dbl_support,device),af_err,(Ptr{Bool},Cint),available,device)
 end
+=#
 
 function af_set_device(device::Cint)
-    ccall((:af_set_device,device),af_err,(Cint,),device)
+    err = ccall((:af_set_device, af_lib), Cint, (Cint,), device)
+    err == 0 || throwAFerror(err)
 end
 
-function af_get_device(device)
-    ccall((:af_get_device,device),af_err,(Ptr{Cint},),device)
+function af_get_device(device::Base.Ref)
+    err = ccall((:af_get_device, af_lib), Cint, (Ptr{Cint},), device)
+    err == 0 || throwAFerror(err)
 end
-=#
 
 function af_sync(device::Int)
     err = ccall((:af_sync, af_lib), Cint, (Cint,), device)
