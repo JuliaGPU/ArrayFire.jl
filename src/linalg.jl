@@ -138,10 +138,14 @@ function inv(a::AFArray, options::Int = AF_MAT_NONE)
     AFArray{backend_eltype(out[])}(out[])
 end
 
-function norm(a::AFArray; options = AF_NORM_EUCLID, p::Real = 1, q::Real = 1)
+function norm{T}(a::AFArray{T}; options = AF_NORM_EUCLID, p::Real = 1, q::Real = 1)
     out = Base.Ref{Cdouble}(0)
     af_norm(out, a, options, p, q)
-    out[]
+    if T == Float32
+        T(out[])
+    else
+        out[]
+    end
 end
 
 function rank(a::AFArray; tol::Cdouble = 1e-5)
