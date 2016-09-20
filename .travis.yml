@@ -10,10 +10,10 @@ install:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - sudo apt-get update
   - sudo apt-get install libfreeimage-dev libatlas3gf-base libfftw3-dev cmake
-  - wget http://ci.arrayfire.org/userContent/Linux/ArrayFire-no-gl-v3.3.2_Linux_x86_64.sh
+  - wget http://ci.arrayfire.org/userContent/Linux/ArrayFire-no-gl-v3.4.0_Linux_x86_64.sh
   - ls -l
-  - sudo chmod +x ArrayFire-no-gl-v3.3.2_Linux_x86_64.sh
-  - sudo ./ArrayFire-no-gl-v3.3.2_Linux_x86_64.sh --exclude-subdir --prefix=/usr/local
+  - sudo chmod +x ArrayFire-no-gl-v3.4.0_Linux_x86_64.sh
+  - sudo ./ArrayFire-no-gl-v3.4.0_Linux_x86_64.sh --exclude-subdir --prefix=/usr/local
 before_script:
   - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
 
