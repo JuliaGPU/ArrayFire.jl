@@ -199,6 +199,9 @@ getActiveBackend()
 ### Backend Functions
 * `getActiveBackend, getBackendCount, getAvailableBackends, setBackend, getBackendId, sync, getActiveBackendId`
 
+### Device Functions
+* `getDevice`, `setDevice`, `getNumDevices`
+
 ### Image Processing 
 * `scale, hist`
 * `loadImage, saveImage`
