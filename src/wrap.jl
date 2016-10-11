@@ -1839,7 +1839,7 @@ function af_ifft_inplace(_in::AFArray, norm_factor::Cdouble)
 end
 
 function af_ifft2(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, odim0::Int, odim1::Int)
-    err = ccall((:af_ifft2,signal), Cint,
+    err = ccall((:af_ifft2, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cdouble, Cint, Cint), 
                 out, _in.ptr, norm_factor, odim0, odim1)
     err == 0 || throwAFerror(err)
