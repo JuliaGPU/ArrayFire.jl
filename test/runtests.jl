@@ -68,3 +68,7 @@ u, s, v = svd(a)
 @test Array(complex(ad,ad)) == complex(a,a)
 @test Array(real(complex(ad,ad))) == real(complex(a,a))
 @test Array(imag(complex(a,a))) == imag(complex(a,a))
+
+# FFT - Issue #81
+@test sumabs2(fft(a) - Array(fft(ad))) < 1e-6
+@test sumabs2(ifft(a) - Array(ifft(ad, norm_factor = 0.01))) < 1e-6 # Note the scaling factor. Not sure why. 
