@@ -225,6 +225,6 @@ end
 
 function approx2(a::AFArray, pos1::AFArray, pos2::AFArray; method = AF_INTERP_LINEAR, offGrid = 0.0)
     out = new_ptr()
-    af_approx2(out, a, pos1, pos1, method, offGrid)
-    AFArray{backend_eltype{out[]}}(out[])
+    af_approx2(out, a, pos1, pos2, method, offGrid)
+    AFArray{backend_eltype(out[])}(out[])
 end

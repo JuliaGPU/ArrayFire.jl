@@ -1781,7 +1781,7 @@ end
 
 function af_approx2(out::Base.Ref, _in::AFArray, pos0::AFArray, pos1::AFArray, method::Int, offGrid::Real)
     err = ccall((:af_approx2, af_lib), Cint,
-                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, Cfloat),
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, Cfloat),
                 out, _in.ptr, pos0.ptr, pos1.ptr, method, offGrid)
     err == 0 || throwAFerror(err)
 end
