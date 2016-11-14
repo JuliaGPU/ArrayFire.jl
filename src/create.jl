@@ -92,7 +92,7 @@ function iota{T}(::Type{AFArray{T}}, dims::Integer...; tile_dims = [1])
     t_ndims = length(tile_dims)
     dims = [dims...]
     ndims = length(dims)
-    af_iota(out, Cuint(ndims), dims, Cuint(t_ndims), tdims, T)
+    af_iota(out, Cuint(ndims), dims, Cuint(t_ndims), tile_dims, T)
     AFArray{T}(out[])
 end
 iota{T}(::Type{AFArray{T}}, t::Tuple) = iota(AFArray{T}, t...)
