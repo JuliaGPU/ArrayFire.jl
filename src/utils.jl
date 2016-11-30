@@ -10,6 +10,7 @@ immutable Dim4
 end
 
 new_ptr() = Base.RefValue{Ptr{Void}}(C_NULL)
+Base.@pure compute_N(N1,N2) = max(N1,N2)
 
 sizeof{T}(a::AFArray{T}) = elsize(a) * length(a)
     

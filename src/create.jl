@@ -33,7 +33,7 @@ convert{T,N}(::Type{AFArray}, a::Array{T,N}) = AFArray(a)
 
 function constant{T<:Real}(val::T, dims::Integer...)
     n = length(dims)
-    dims = [dims...]
+    dims = Int[dims...]
     for i = n+1:4
         push!(dims, 1)
     end
