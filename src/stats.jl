@@ -10,44 +10,44 @@ for (op, fn) in ((:mean, :af_mean_all), (:median, :af_median_all),
     @eval function ($op){T<:Real}(a::AFArray{T})
         real = Base.Ref{Cdouble}(0)
         imag = Base.Ref{Cdouble}(0)
-        eval($fn)(real, imag, a)
+        $(fn)(real, imag, a)
         T(real[])
-    end 
+    end
 
     @eval function ($op){T<:Complex}(a::AFArray{T})
         real = Base.Ref{Cdouble}(0)
         imag = Base.Ref{Cdouble}(0)
-        eval($fn)(real, imag, a)
+        $(fn)(real, imag, a)
         complex(real[], imag[])
     end
 
 end
 
-for (op, fn) in ((:meanWeighted, :af_mean_all_weighted), 
+for (op, fn) in ((:meanWeighted, :af_mean_all_weighted),
                     (:varWeighted, :af_var_all_weighted))
 
     @eval function ($op){T<:Real,S}(a::AFArray{T}, w::AFArray{S})
         real = Base.Ref{Cdouble}(0)
         imag = Base.Ref{Cdouble}(0)
-        eval($fn)(real, imag, a, w)
+        $(fn)(real, imag, a, w)
         T(real[])
-    end 
+    end
 
     @eval function ($op){T<:Complex,S}(a::AFArray{T}, w::AFArray{S})
         real = Base.Ref{Cdouble}(0)
         imag = Base.Ref{Cdouble}(0)
-        eval($fn)(real, imag, a, w)
+        $(fn)(real, imag, a, w)
         complex(real[], imag[])
     end
 
 end
 
-for (op, fn) in ((:mean, :af_mean), (:median, :af_median), 
+for (op, fn) in ((:mean, :af_mean), (:median, :af_median),
                     (:std, :af_stdev))
 
     @eval function ($op){T}(a::AFArray{T}, dim::Integer)
         out = new_ptr()
-        eval($fn)(out, a, Cuint(dim-1))
+        $(fn)(out, a, Cuint(dim-1))
         AFArray{T}(out[])
     end
 
@@ -57,7 +57,7 @@ for (op, fn) in ((:meanWeighted, :af_mean_weighted), (:varWeighted, :af_var_weig
 
     @eval function ($op){T}(a::AFArray{T}, w::AFArray{T}, dim::Integer)
         out = new_ptr()
-        eval($fn)(out, a, w, Cuint(dim-1))
+        $(fn)(out, a, w, Cuint(dim-1))
         AFArray{T}(out[])
     end
 
@@ -92,4 +92,3 @@ function corrcoef(a::AFArray, b::AFArray)
         complex(real[], imag[])
     end
 end
-    

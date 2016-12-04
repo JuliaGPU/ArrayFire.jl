@@ -264,7 +264,7 @@ for (op, fn) in ((:dilate, :af_dilate), (:dilate3d, :af_dilate3d),
 
     @eval function ($op)(a::AFArray, mask::AFArray)
         out = new_ptr()
-        eval($fn)(out, a, mask)
+        $(fn)(out, a, mask)
         AFArray{backend_eltype(out[])}(out[])
     end
 
