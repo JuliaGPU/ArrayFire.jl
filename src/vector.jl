@@ -13,14 +13,14 @@ for (op,fn) in ((:sum, :af_sum_all), (:product, :af_product_all),
     @eval function ($op){T<:Real}(a::AFArray{T})
         real = Base.Ref{Cdouble}(0)
         imag = Base.Ref{Cdouble}(0)
-        eval($(quot(fn)))(real, imag, a)
+        $(fn)(real, imag, a)
         real[]
     end
 
     @eval function ($op){T<:Complex}(a::AFArray{T})
         real = Base.Ref{Cdouble}(0)
         imag = Base.Ref{Cdouble}(0)
-        eval($(quot(fn)))(real, imag, a)
+        $(fn)(real, imag, a)
         complex(real[], imag[])
     end
 
@@ -45,7 +45,7 @@ for (op,fn) in ((:any, :af_any_true_all),(:all, :af_all_true_all))
     @eval function ($op){T}(a::AFArray{T})
         real = Base.Ref{Cdouble}(0)
         imag = Base.Ref{Cdouble}(0)
-        eval($fn)(real, imag, a)
+        $(fn)(real, imag, a)
         Bool(real[])
     end
 
@@ -56,7 +56,7 @@ for (op,fn) in ((:any, :af_any_true), (:all, :af_all_true))
     @eval function ($op){T}(a::AFArray{T}, dim::Integer)
         dim = dim - 1
         out = new_ptr()
-        eval($fn)(out, a, dim)
+        $(fn)(out, a, dim)
         AFArray{Bool}(out[])
     end
 
@@ -68,7 +68,7 @@ for (op, fn) in ((:sum, :af_sum), (:product, :af_product),
     @eval function ($op){T}(a::AFArray{T}, dim::Integer)
         dim = dim - 1
         out = new_ptr()
-        eval($(quot(fn)))(out, a, dim)
+        $(fn)(out, a, dim)
         AFArray{T}(out[])
     end
 
@@ -161,7 +161,7 @@ for (op, fn) in ((:findmax, :af_imax_all), (:findmin, :af_imin_all))
         real = Base.Ref{Cdouble}(0)
         imag = Base.Ref{Cdouble}(0)
         idx = Base.Ref{Cuint}(0)
-        eval($fn)(real, imag, idx, a)
+        $(fn)(real, imag, idx, a)
         real[], Int(idx[]) + 1
     end
 
@@ -169,7 +169,7 @@ for (op, fn) in ((:findmax, :af_imax_all), (:findmin, :af_imin_all))
         real = Base.Ref{Cdouble}(0)
         imag = Base.Ref{Cdouble}(0)
         idx = Base.Ref{Cuint}(0)
-        eval($fn)(real, imag, idx, a)
+        $(fn)(real, imag, idx, a)
         complex(real[], imag[]), Int(idx[]) + 1
     end
 
@@ -180,7 +180,7 @@ for (op, fn) in ((:minidx, :af_imin), (:maxidx, :af_imax))
     @eval function ($op){T}(a::AFArray{T}, dim::Int)
         out = new_ptr()
         idx = new_ptr()
-        eval($fn)(out, idx, a, dim-1)
+        $(fn)(out, idx, a, dim-1)
         AFArray{T}(out[]), 
         AFArray{backend_eltype(idx[])}(idx[]) + 1
     end
