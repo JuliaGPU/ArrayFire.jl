@@ -28,6 +28,24 @@ end
 
 @compat (::Type{Array}){T,N}(a::AFArray{T,N}) = convert(Array{T,N}, a)
 
+function size(a::AFVector)
+    dim1 = Base.RefValue{Cuint}(0)
+    dim2 = Base.RefValue{Cuint}(0)
+    dim3 = Base.RefValue{Cuint}(0)
+    dim4 =Base.RefValue{Cuint}(0)
+    af_get_dims!(dim1, dim2, dim3, dim4, a)
+    (Int(dim1[]), )
+end
+
+function size(a::AFMatrix)
+    dim1 = Base.RefValue{Cuint}(0)
+    dim2 = Base.RefValue{Cuint}(0)
+    dim3 = Base.RefValue{Cuint}(0)
+    dim4 =Base.RefValue{Cuint}(0)
+    af_get_dims!(dim1, dim2, dim3, dim4, a)
+    (Int(dim1[]), Int(dim2[]))
+end
+
 function size(a::AFArray)
     dim1 = Base.RefValue{Cuint}(0)
     dim2 = Base.RefValue{Cuint}(0)
