@@ -5,7 +5,7 @@ import Base: sum, min, max, minimum, maximum, countnz, any, all, sort,
 
 export sortIndex, sortByKey, diff2, minidx, maxidx
 
-# Reduction 
+# Reduction
 
 for (op,fn) in ((:sum, :af_sum_all), (:product, :af_product_all),
                 (:maximum, :af_max_all), (:minimum, af_min_all))
@@ -52,7 +52,7 @@ for (op,fn) in ((:any, :af_any_true_all),(:all, :af_all_true_all))
 end
 
 for (op,fn) in ((:any, :af_any_true), (:all, :af_all_true))
- 
+
     @eval function ($op){T}(a::AFArray{T}, dim::Integer)
         dim = dim - 1
         out = new_ptr()
@@ -62,7 +62,7 @@ for (op,fn) in ((:any, :af_any_true), (:all, :af_all_true))
 
 end
 
-for (op, fn) in ((:sum, :af_sum), (:product, :af_product), 
+for (op, fn) in ((:sum, :af_sum), (:product, :af_product),
                 (:maximum, :af_max), (:minimum, :af_min))
 
     @eval function ($op){T}(a::AFArray{T}, dim::Integer)
@@ -74,35 +74,35 @@ for (op, fn) in ((:sum, :af_sum), (:product, :af_product),
 
 end
 
-# Sorting 
+# Sorting
 
-function sort{T}(a::AFArray{T}, dim::Integer = 1; rev = false)
+function sort{T,N}(a::AFArray{T,N}, dim::Integer = 1; rev = false)
     if dim == 2
         error("ArrayFire doesn't support sorting along this dimension")
     end
     out = new_ptr()
     af_sort(out, a, Cuint(dim-1), !rev)
-    AFArray{T}(out[])
+    AFArray{T,N}(out[])
 end
 
-function sortperm{T}(a::AFArray{T}, dim::Integer = 1; rev = false)
+function sortperm{T,N}(a::AFArray{T,N}, dim::Integer = 1; rev = false)
     if dim == 2
         error("ArrayFire doesn't support sorting along this dimension")
     end
     out = new_ptr()
     indices = new_ptr()
     af_sort_index(out, indices, a, Cuint(dim-1), !rev)
-    AFArray{Int32}(indices[]) + 1
+    AFArray{Int32,N}(indices[]) + 1
 end
 
-function sortByKey{S,T}(keys::AFArray{S}, values::AFArray{T}, dim::Integer = 1; rev = false)
+function sortByKey{S,T,N}(keys::AFArray{S,N}, values::AFArray{T,N}, dim::Integer = 1; rev = false)
     if dim == 2
         error("ArrayFire doesn't support sorting along this dimension")
     end
     out_keys = new_ptr()
     out_values = new_ptr()
     af_sort_by_key(out_keys, out_values, keys, values, Cuint(dim - 1), !rev)
-    AFArray{S}(out_keys[]), AFArray{T}(out_values[])
+    AFArray{S,N}(out_keys[]), AFArray{T,N}(out_values[])
 end
 
 # Set Operations
@@ -176,12 +176,12 @@ for (op, fn) in ((:findmax, :af_imax_all), (:findmin, :af_imin_all))
 end
 
 for (op, fn) in ((:minidx, :af_imin), (:maxidx, :af_imax))
-    
+
     @eval function ($op){T}(a::AFArray{T}, dim::Int)
         out = new_ptr()
         idx = new_ptr()
         $(fn)(out, idx, a, dim-1)
-        AFArray{T}(out[]), 
+        AFArray{T}(out[]),
         AFArray{backend_eltype(idx[])}(idx[]) + 1
     end
 
