@@ -12,7 +12,7 @@ dot{T,S}(lhs::AFAbstractArray{T}, rhs::AFAbstractArray{S}) =
 *{T,S,V}(a::AFAbstractArray{T}, b::AFAbstractArray{S}, c::AFAbstractArray{V}) =
     AFArray{af_promote(af_promote(T,S), V)}(af_matmul3(a,b,c))
 *{T,S,V,W}(a::AFAbstractArray{T}, b::AFAbstractArray{S}, c::AFAbstractArray{V}, d::AFAbstractArray{W}) =
-    AFArray{af_promte(af_promote(af_promote(T,S), V), W)}(af_matmul4(a,b,c,d))
+    AFArray{af_promote(af_promote(af_promote(T,S), V), W)}(af_matmul4(a,b,c,d))
 
 function _matmul(a::AFAbstractArray, b::AFAbstractArray;
     lhsProp = AF_MAT_NONE, rhsProp = AF_MAT_NONE)
