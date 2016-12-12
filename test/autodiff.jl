@@ -18,15 +18,6 @@ end
 
 typealias AFVector AFArray{Float64,1}
 typealias AFMatrix AFArray{Float64,2}
-safediv{T<:AbstractFloat}(x::T, y)::T = y == 0 ? 0::T : x / y
-safediv(x::AbstractArray, y) = safediv.(x, y)
-safediv(x::AFArray, y) = x ./ y
-δdot_power(x::AbstractArray, y::AbstractFloat) = (t = x.^y; (t, z->(safediv(z.*y.*t, x), sum(z.*t.*log.(x)))))
-δdot_power(x::AbstractMatrix, y::AbstractVector) = (t = x.^y; (t, z->(safediv(z.*y.*t, x), vec(sum(z.*t.*log(x), 2)))))
-δdot_power(x::AbstractVector, y::AbstractMatrix) = (t = x.^y; (t, z->(vec(sum(safediv(z.*y.*t, x), 2)), z.*t.*log(x))))
-δdot_power_const2(x, y) = (t = x.^y; (t, z-> y == 2 ? z.*2x : safediv(z.*y.*t, x)))
-δdot_power{T}(x::T, y::T) = (t = x.^y; (t, z->(safediv(z.*y.*t, x), z.*t.*log.(x))))
-δsum(x::AbstractArray) = (t = size(x); (sum(x), z->fill(z, t)))
 δsum(x::AFArray) = (t = size(x); (sum(x), z->constant(z, t)))
 
 rnd(len) = rand(AFVector, len)
