@@ -1,5 +1,6 @@
 using ArrayFire
 using Base.Test
+Pkg.checkout("AutoDiffSource")
 using AutoDiffSource
 
 #Basic math
