@@ -45,53 +45,53 @@ for (op,fn) in ((:+, :af_add), (:.+, :af_add), (:-, :af_sub), (:.-, :af_sub), (:
     end
 
     @compat @eval function $op{T<:Real,S<:Real, N}(a::AFArray{T,N}, v::Complex{S})
-        b = constant(Complex{af_promote(T,S)}(v), size(a)...)
+        b = constant(Complex{af_promote(T,S)}(v), 1)
         ptr = new_ptr()
         $(fn)(ptr, a, b, true)
-        AFArray{Complex{af_promote(T,S)}}(ptr[])
+        AFArray{Complex{af_promote(T,S)},N}(ptr[])
     end
 
     @compat @eval function $op{T<:Real,S<:Real, N}(v::S, a::AFArray{T,N})
-        b = constant((af_promote(T,S))(v), size(a)...)
+        b = constant((af_promote(T,S))(v), 1)
         ptr = new_ptr()
         $(fn)(ptr, b, a, true)
-        AFArray{af_promote(T,S)}(ptr[])
+        AFArray{af_promote(T,S),N}(ptr[])
     end
 
     @compat @eval function $op{T<:Real,S<:Real, N}(v::Complex{S}, a::AFArray{T,N})
-        b = constant(Complex{af_promote(T,S)}(v), size(a)...)
+        b = constant(Complex{af_promote(T,S)}(v), 1)
         ptr = new_ptr()
         $(fn)(ptr, b, a, true)
-        AFArray{Complex{af_promote(T,S)}}(ptr[])
+        AFArray{Complex{af_promote(T,S)},N}(ptr[])
     end
 
     @compat @eval function $op{T<:Real,S<:Real, N}(a::AFArray{Complex{T}, N}, v::S)
-        b = constant((af_promote(T,S))(v), size(a)...)
+        b = constant((af_promote(T,S))(v), 1)
         ptr = new_ptr()
         $(fn)(ptr, a, b, true)
-        AFArray{Complex{af_promote(T,S)}}(ptr[])
+        AFArray{Complex{af_promote(T,S)},N}(ptr[])
     end
 
     @compat @eval function $op{T<:Real,S<:Real,N}(a::AFArray{Complex{T},N}, v::Complex{S})
-        b = constant(Complex{af_promote(T,S)}(v), size(a)...)
+        b = constant(Complex{af_promote(T,S)}(v), 1)
         ptr = new_ptr()
         $(fn)(ptr, a, b, true)
-        AFArray{Complex{af_promote(T,S)}}(ptr[])
+        AFArray{Complex{af_promote(T,S)},N}(ptr[])
     end
 
     @compat @eval function $op{T<:Real,S<:Real,N}(v::S, a::AFArray{Complex{T},N})
-        b = constant((af_promote(T,S))(v), size(a)...)
+        b = constant((af_promote(T,S))(v), 1)
         ptr = new_ptr()
         $(fn)(ptr, b, a, true)
-        AFArray{Complex{af_promote(T,S)}}(ptr[])
+        AFArray{Complex{af_promote(T,S)},N}(ptr[])
 
     end
 
     @compat @eval function $op{T<:Real,S<:Real,N}(v::Complex{S}, a::AFArray{Complex{T},N})
-        b = constant(Complex{af_promote(T,S)}(v), size(a)...)
+        b = constant(Complex{af_promote(T,S)}(v), 1)
         ptr = new_ptr()
         $(fn)(ptr, b, a, true)
-        AFArray{Complex{af_promote(T,S)}}(ptr[])
+        AFArray{Complex{af_promote(T,S)},N}(ptr[])
     end
 end
 /{T,S<:Real}(a::AFArray{T}, v::S) = ./(a, v)
