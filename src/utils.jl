@@ -2,6 +2,10 @@ import Base: elsize, size, ndims, convert, showarray, vec, flipdim, vcat, hcat, 
 # Base.@pure was introduced in 0.5.0-dev+698
 if VERSION >= v"0.5.0"
     import Base.@pure
+else
+    macro pure(ex)
+        ex
+    end
 end
 
 export AFInfo, replace!, mergeArrays, getDevicePointer, getDataRefCount, deviceMemInfo
