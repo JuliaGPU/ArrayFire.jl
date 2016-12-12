@@ -75,3 +75,8 @@ u, s, v = svd(a)
 
 # Inference
 @test_throws MethodError ad | ad
+
+ac = deepcopy(ad)
+@test sumabs(ac - ad) == 0
+ac[1] = 0
+@test ac[1] != ad[1]
