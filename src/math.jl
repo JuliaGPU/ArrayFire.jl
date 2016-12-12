@@ -17,7 +17,7 @@ for (op,fn) in ((:+,:af_add), (:.+,:af_add), (:-,:af_sub), (:.-,:af_sub), (:.*,:
     @compat @eval function $op{T,S, N1, N2}(a::AFArray{T,N1}, b::AFArray{S,N2}; batched = true)
         ptr = new_ptr()
         $(fn)(ptr, a, b, batched)
-        AFArray{af_promote(T,S)}(ptr[])
+        AFArray{af_promote(T,S),compute_N(N1,N2)}(ptr[])
     end
 
 end
