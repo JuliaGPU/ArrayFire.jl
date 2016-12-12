@@ -1,21 +1,21 @@
 import Base: rand, randn, convert, diagm, eye, range, zeros, ones, trues, falses, deepcopy_internal
 export constant, getSeed, setSeed, iota
 
-function rand{T}(::Type{AFArray{T}}, dims::Integer...)
+function rand{T,N}(::Type{AFArray{T,N}}, dims::Integer...)
     ptr = new_ptr()
     dimensions = [dims...]
     af_randu(ptr, dimensions, T)
-    AFArray{T}(ptr[])
+    AFArray{T,N}(ptr[])
 end
-rand{T}(::Type{AFArray{T}}, t::Tuple) = rand(AFArray{T}, t...)
+rand{T,N}(::Type{AFArray{T,N}}, t::Tuple{Vararg{Int64,N}}) = rand(AFArray{T,N}, t...)
 
-function randn{T}(::Type{AFArray{T}}, dims::Integer...)
+function randn{T,N}(::Type{AFArray{T,N}}, dims::Integer...)
     ptr = new_ptr()
     dimensions = [dims...]
     af_randn(ptr, dimensions, T)
-    AFArray{T}(ptr[])
+    AFArray{T,N}(ptr[])
 end
-randn{T}(::Type{AFArray{T}}, t::Tuple) = randn(AFArray{T}, t...)
+randn{T,N}(::Type{AFArray{T,N}}, t::Tuple{Vararg{Int64,N}}) = randn(AFArray{T,N}, t...)
 
 function convert{T,N}(::Type{AFArray{T,N}}, a::Array{T,N})
     n = ndims(a)

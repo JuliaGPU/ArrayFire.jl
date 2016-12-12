@@ -29,6 +29,8 @@ safediv(x::AFArray, y) = x ./ y
 δsum(x::AbstractArray) = (t = size(x); (sum(x), z->fill(z, t)))
 δsum(x::AFArray) = (t = size(x); (sum(x), z->AFArray(fill(z, t))))
 
+rnd(len) = rand(AFVector, len)
+rnd(len1, len2) = rand(AFMatrix, (len1, len2))
 
-@test checkdiff_inferred(sum, δsum, AFVector(rand(3)))
-@test checkdiff_inferred(sum, δsum, AFMatrix(rand(3, 2)))
+@test checkdiff_inferred(sum, δsum, rnd(3))
+@test checkdiff_inferred(sum, δsum, rnd(3, 2))
