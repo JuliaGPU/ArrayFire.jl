@@ -123,6 +123,6 @@ end
 trues(::Type{AFArray{Bool}}, t::Tuple) = trues(AFArray{T}, t...)
 
 function falses(::Type{AFArray{Bool}}, dims::Integer...)
-    constant(true, dims)
+    constant(false, dims)
 end
 falses(::Type{AFArray{Bool}}, t::Tuple) = falses(AFArray{T}, t...)
