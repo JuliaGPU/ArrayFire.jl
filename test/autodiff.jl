@@ -22,6 +22,8 @@ typealias AFMatrix AFArray{Float64,2}
 
 rnd(len) = rand(AFVector, len)
 rnd(len1, len2) = rand(AFMatrix, (len1, len2))
+rndn(len) = randn(AFVector, len)
+rndn(len1, len2) = randn(AFMatrix, (len1, len2))
 
-@test checkdiff_inferred(sum, δsum, rnd(3))
-@test checkdiff_inferred(sum, δsum, rnd(3, 2))
+@test checkdiff_inferred(sum, δsum, rndn(3)+rnd(3))
+@test checkdiff_inferred(sum, δsum, rnd(3, 2) + rndn(3, 2))
