@@ -19,7 +19,6 @@ end
 
 new_ptr() = Base.RefValue{Ptr{Void}}(C_NULL)
 @pure compute_N(N1,N2) = max(N1,N2)
-@pure reduce_N(N) = N - 1
 
 sizeof{T}(a::AFArray{T}) = elsize(a) * length(a)
 
@@ -36,6 +35,24 @@ function convert{T,N}(::Type{Array{T,N}}, x::AFArray{T,N})
 end
 
 @compat (::Type{Array}){T,N}(a::AFArray{T,N}) = convert(Array{T,N}, a)
+
+function size(a::AFVector)
+    dim1 = Base.RefValue{Cuint}(0)
+    dim2 = Base.RefValue{Cuint}(0)
+    dim3 = Base.RefValue{Cuint}(0)
+    dim4 = Base.RefValue{Cuint}(0)
+    af_get_dims!(dim1, dim2, dim3, dim4, a)
+    (Int(dim1[]), )
+end
+
+function size(a::AFMatrix)
+    dim1 = Base.RefValue{Cuint}(0)
+    dim2 = Base.RefValue{Cuint}(0)
+    dim3 = Base.RefValue{Cuint}(0)
+    dim4 = Base.RefValue{Cuint}(0)
+    af_get_dims!(dim1, dim2, dim3, dim4, a)
+    (Int(dim1[]), Int(dim2[]))
+end
 
 function size(a::AFArray)
     dim1 = Base.RefValue{Cuint}(0)
