@@ -20,6 +20,7 @@ typealias AFVector AFArray{Float64,1}
 typealias AFMatrix AFArray{Float64,2}
 δsum(x::AFArray) = (t = size(x); (sum(x), z->constant(z, t)))
 
+rnd() = rand(AFVector, 1)
 rnd(len) = rand(AFVector, len)
 rnd(len1, len2) = rand(AFMatrix, (len1, len2))
 rndn(len) = randn(AFVector, len)
@@ -27,3 +28,15 @@ rndn(len1, len2) = randn(AFMatrix, (len1, len2))
 
 @test checkdiff_inferred(sum, δsum, rndn(3)+rnd(3))
 @test checkdiff_inferred(sum, δsum, rnd(3, 2) + rndn(3, 2))
+
+# (scalar, scalar), (scalar, const), (const, scalar), (const, const)
+for o in [:+, :-, :*]
+    t = gensym(o)
+    δt = Symbol("δ$t")
+    @eval @δ $t(x) = sum($o(x, 2.))
+    @test @eval checkdiff_inferred($t, $δt, rnd())
+    t = gensym(o)
+    δt = Symbol("δ$t")
+    @eval @δ $t(x) = sum($o(2., x))
+    @test @eval checkdiff_inferred($t, $δt, rnd())
+end
