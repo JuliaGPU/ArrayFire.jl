@@ -60,6 +60,9 @@ function set_up_index!(idx::Tuple, indexers::index)
         if t <: Range || t <: Int || t <: Colon
             s = create_seq_object(thing)
             af_set_seq_indexer(indexers, s, i-1, true)
+        elseif t <: AFArray{Bool}
+            _shift = thing 
+            af_set_array_indexer(indexers, _shift, i-1)
         elseif t <: AFArray
             _shift = thing - 1
             af_set_array_indexer(indexers, _shift, i-1)
