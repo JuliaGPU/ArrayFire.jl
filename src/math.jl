@@ -104,33 +104,33 @@ for (op,fn) in ((:sin, :af_sin), (:cos, :af_cos), (:tan, :af_tan), (:asin, :af_a
                 (:expm1, :af_expm1), (:factorial, :af_factorial), (:lgamma, :af_lgamma),
                 (:log, :af_log), (:log10, :af_log10), (:log1p, :af_log1p), (:sqrt, :af_sqrt),
                 (:gamma, :af_tgamma), (:log2, :af_log2))
-    @compat @eval function $op(a::AFArray)
+    @compat @eval function $op{T,N}(a::AFArray{T,N})
         out = new_ptr()
         $(fn)(out, a)
-        AFArray{backend_eltype(out[])}(out[])
+        AFArray{T,N}(out[])
     end
 
 end
 
 for (op,fn) in ((:atan2, :af_atan2),)
-    @eval @compat function $op{T,S}(a::AFArray{T}, b::AFArray{S}; batched = true)
+    @eval @compat function $op{T,S,N1,N2}(a::AFArray{T,N1}, b::AFArray{S,N2}; batched = true)
         ptr = new_ptr()
         $(fn)(ptr, a, b, batched)
-        AFArray{af_promote(T,S)}(ptr[])
+        AFArray{af_promote(T,S),compute_N(N1,N2)}(ptr[])
     end
 
-    @eval @compat function $op{T<:Real,S<:Real}(a::AFArray{T}, v::S)
-        b = constant((af_promote(T,S))(v), size(a)...)
+    @eval @compat function $op{T<:Real,S<:Real,N}(a::AFArray{T,N}, v::S)
+        b = constant((af_promote(T,S))(v), 1)
         ptr = new_ptr()
         $(fn)(ptr, a, b, true)
-        AFArray{af_promote(T,S)}(ptr[])
+        AFArray{af_promote(T,S),N}(ptr[])
     end
 
-    @eval @compat function $op{T<:Real,S<:Real}(v::S, a::AFArray{T})
-        b = constant((af_promote(T,S))(v), size(a)...)
+    @eval @compat function $op{T<:Real,S<:Real,N}(v::S, a::AFArray{T,N})
+        b = constant((af_promote(T,S))(v), 1)
         ptr = new_ptr()
         $(fn)(ptr, b, a, true)
-        AFArray{af_promote(T,S)}(ptr[])
+        AFArray{af_promote(T,S),N}(ptr[])
     end
 end
 
