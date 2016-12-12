@@ -45,10 +45,10 @@ end
 for (op, fn) in ((:mean, :af_mean), (:median, :af_median),
                     (:std, :af_stdev))
 
-    @eval function ($op){T}(a::AFArray{T}, dim::Integer)
+    @eval function ($op){T,N}(a::AFArray{T,N}, dim::Integer)
         out = new_ptr()
         $(fn)(out, a, Cuint(dim-1))
-        AFArray{T}(out[])
+        AFArray{T,N}(out[])
     end
 
 end

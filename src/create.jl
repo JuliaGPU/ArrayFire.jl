@@ -1,4 +1,4 @@
-import Base: rand, randn, convert, diagm, eye, range, zeros, ones, trues, falses
+import Base: rand, randn, convert, diagm, eye, range, zeros, ones, trues, falses, deepcopy_internal
 export constant, getSeed, setSeed, iota
 
 function rand{T}(::Type{AFArray{T}}, dims::Integer...)
@@ -17,30 +17,30 @@ function randn{T}(::Type{AFArray{T}}, dims::Integer...)
 end
 randn{T}(::Type{AFArray{T}}, t::Tuple) = randn(AFArray{T}, t...)
 
-function convert{T,N}(::Type{AFArray{T,N}}, a::Array{T,N}) 
+function convert{T,N}(::Type{AFArray{T,N}}, a::Array{T,N})
     n = ndims(a)
-    d = get_all_dims(a) 
+    d = get_all_dims(a)
     ptr = new_ptr()
-    err = ccall((:af_create_array, af_lib), 
+    err = ccall((:af_create_array, af_lib),
                 Cint, (Ptr{Void}, Ptr{T}, Cuint, Ptr{Cuint}, Cint),
                 ptr, pointer(a), n, pointer(d), aftype(T))
     err == 0 || throwAFerror(err)
     AFArray{T,N}(ptr[])
 end
-            
+
 @compat (::Type{AFArray}){T,N}(a::Array{T,N}) = convert(AFArray{T,N}, a)
 convert{T,N}(::Type{AFArray}, a::Array{T,N}) = AFArray(a)
 
 function constant{T<:Real}(val::T, dims::Integer...)
     n = length(dims)
-    dims = [dims...]
+    dims = Int[dims...]
     for i = n+1:4
         push!(dims, 1)
     end
     ptr = new_ptr()
     af_constant!(ptr, val, n, dims, T)
     AFArray{T}(ptr[])
-end 
+end
 
 function constant{T}(val::Complex{T}, dims::Integer...)
     n = length(dims)
@@ -126,3 +126,12 @@ function falses(::Type{AFArray{Bool}}, dims::Integer...)
     constant(false, dims)
 end
 falses(::Type{AFArray{Bool}}, t::Tuple) = falses(AFArray{T}, t...)
+
+function deepcopy_internal{T,N}(a::AFArray{T,N}, stackdict::ObjectIdDict)
+    haskey(stackdict, a) && return stackdict[a]
+    out = new_ptr()
+    af_copy_array(out, a.ptr)
+    c = AFArray{T,N}(out[])
+    stackdict[a] = c
+    return c
+end
