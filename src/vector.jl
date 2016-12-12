@@ -69,7 +69,7 @@ for (op, fn) in ((:sum, :af_sum), (:product, :af_product),
         dim = dim - 1
         out = new_ptr()
         $(fn)(out, a, dim)
-        AFArray{T,reduce_N(N)}(out[])
+        AFArray{T,N}(out[])
     end
 
 end
