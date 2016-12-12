@@ -25,15 +25,15 @@ ad = AFArray(a)
 @test sumabs2(Array(@inferred 2 .^ ad) - (2 .^ a)) < 1e-6
 
 #Trig functions
-@test sumabs2(Array(@inferred sin(ad)) - sin(a)) < 1e-6
-@test sumabs2(Array(@inferred cos(ad)) - cos(a)) < 1e-6
-@test sumabs2(Array(@inferred tan(ad)) - tan(a)) < 1e-6
-@test sumabs2(Array(@inferred sinh(ad)) - sinh(a)) < 1e-6
-@test sumabs2(Array(@inferred cosh(ad)) - cosh(a)) < 1e-6
-@test sumabs2(Array(@inferred tanh(ad)) - tanh(a)) < 1e-6
-@test sumabs2(Array(@inferred atan2(ad, ad)) - atan2(a, a)) < 1e-6
-@test sumabs2(Array(@inferred atan2(ad, 2)) - atan2(a, 2)) < 1e-6
-@test sumabs2(Array(@inferred atan2(2, ad)) - atan2(2, a)) < 1e-6
+@test sumabs2(Array(@inferred sin(ad)) - sin.(a)) < 1e-6
+@test sumabs2(Array(@inferred cos(ad)) - cos.(a)) < 1e-6
+@test sumabs2(Array(@inferred tan(ad)) - tan.(a)) < 1e-6
+@test sumabs2(Array(@inferred sinh(ad)) - sinh.(a)) < 1e-6
+@test sumabs2(Array(@inferred cosh(ad)) - cosh.(a)) < 1e-6
+@test sumabs2(Array(@inferred tanh(ad)) - tanh.(a)) < 1e-6
+@test sumabs2(Array(@inferred atan2(ad, ad)) - atan2.(a, a)) < 1e-6
+@test sumabs2(Array(@inferred atan2(ad, 2)) - atan2.(a, 2)) < 1e-6
+@test sumabs2(Array(@inferred atan2(2, ad)) - atan2.(2, a)) < 1e-6
 
 #Measures
 @test minimum(a) == @inferred minimum(ad)
@@ -42,8 +42,8 @@ ad = AFArray(a)
 @test sumabs2(Array(@inferred maximum(ad,2)) - maximum(a,2)) < 1e-6
 @test sumabs2(Array(@inferred minimum(ad,1)) - minimum(a,1)) < 1e-6
 @test sumabs2(Array(@inferred minimum(ad,2)) - minimum(a,2)) < 1e-6
-@test sumabs2(Array(@inferred max(ad,0.5f0)) - max(a,0.5f0)) < 1e-6
-@test sumabs2(Array(@inferred min(ad,0.5f0)) - min(a,0.5f0)) < 1e-6
+@test sumabs2(Array(@inferred max(ad,0.5f0)) - max.(a,0.5f0)) < 1e-6
+@test sumabs2(Array(@inferred min(ad,0.5f0)) - min.(a,0.5f0)) < 1e-6
 @test_approx_eq  @inferred(mean(ad)) mean(a)
 @test sumabs2(Array(@inferred mean(ad,1)) - mean(a,1)) < 1e-6
 @test sumabs2(Array(@inferred mean(ad,2)) - mean(a,2)) < 1e-6
