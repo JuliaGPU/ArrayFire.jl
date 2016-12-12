@@ -793,6 +793,12 @@ function af_copy_array(arr::AFArray, _in::Ptr{Void})
     err == 0 || throwAFerror(err)
 end
 
+function af_copy_array(out::Base.Ref, _in::Ptr{Void})
+    err = ccall((:af_copy_array, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}), out, _in)
+    err == 0 || throwAFerror(err)
+end
+
 #=
 function af_write_array(arr::af_array,data,bytes::Cint,src::af_source)
     ccall((:af_write_array,array),af_err,(af_array,Ptr{Void},Cint,af_source),arr,data,bytes,src)
