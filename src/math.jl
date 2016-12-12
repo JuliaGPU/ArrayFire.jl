@@ -38,10 +38,10 @@ for (op,fn) in ((:+, :af_add), (:.+, :af_add), (:-, :af_sub), (:.-, :af_sub), (:
                 (:^, :af_pow), (:.^, :af_pow))
 
     @compat @eval function $op{T<:Real,S<:Real, N}(a::AFArray{T,N}, v::S)
-        b = constant((af_promote(T,S))(v), size(a)...)
+        b = constant((af_promote(T,S))(v), 1)
         ptr = new_ptr()
         $(fn)(ptr, a, b, true)
-        AFArray{af_promote(T,S)}(ptr[])
+        AFArray{af_promote(T,S),N}(ptr[])
     end
 
     @compat @eval function $op{T<:Real,S<:Real, N}(a::AFArray{T,N}, v::Complex{S})
