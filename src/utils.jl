@@ -136,7 +136,7 @@ end
 function vec{T}(a::AFArray{T})
     out = new_ptr()
     af_flat(out, a)
-    AFArray{T}(out[])
+    AFArray{T,1}(out[])
 end
 
 function flipdim{T}(a::AFArray{T}, dim::Int)
