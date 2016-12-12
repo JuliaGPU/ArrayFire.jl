@@ -1,7 +1,7 @@
 using ArrayFire
 using Base.Test
-Pkg.checkout("AutoDiffSource")
-using AutoDiffSource
+
+include("autodiff.jl")
 
 #Basic math
 a = rand(Float32, 10, 10)
