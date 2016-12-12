@@ -1,0 +1,3 @@
+julia 0.5
+Compat 0.8.6
+AutoDiffSource 0.2+

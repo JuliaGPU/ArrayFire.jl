@@ -1,5 +1,6 @@
 using ArrayFire
 using Base.Test
+using AutoDiffSource
 
 #Basic math
 a = rand(Float32, 10, 10)
