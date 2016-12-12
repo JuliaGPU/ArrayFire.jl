@@ -34,20 +34,20 @@ ad = AFArray(a)
 @test sumabs2(Array(@inferred atan2(2, ad)) - atan2(2, a)) < 1e-6
 
 #Measures
-@test minimum(a) == minimum(ad)
-@test maximum(a) == maximum(ad)
-@test sumabs2(Array(maximum(ad,1)) - maximum(a,1)) < 1e-6
-@test sumabs2(Array(maximum(ad,2)) - maximum(a,2)) < 1e-6
-@test sumabs2(Array(minimum(ad,1)) - minimum(a,1)) < 1e-6
-@test sumabs2(Array(minimum(ad,2)) - minimum(a,2)) < 1e-6
-@test sumabs2(Array(max(ad,0.5f0)) - max(a,0.5f0)) < 1e-6
-@test sumabs2(Array(min(ad,0.5f0)) - min(a,0.5f0)) < 1e-6
-@test_approx_eq  mean(ad) mean(a)
-@test sumabs2(Array(mean(ad,1)) - mean(a,1)) < 1e-6
-@test sumabs2(Array(mean(ad,2)) - mean(a,2)) < 1e-6
-@test median(ad) == median(a)
-@test sumabs2(Array(median(ad,1)) - median(a,1)) < 1e-6
-@test_approx_eq var(ad) var(a)
+@test minimum(a) == @inferred minimum(ad)
+@test maximum(a) == @inferred maximum(ad)
+@test sumabs2(Array(@inferred maximum(ad,1)) - maximum(a,1)) < 1e-6
+@test sumabs2(Array(@inferred maximum(ad,2)) - maximum(a,2)) < 1e-6
+@test sumabs2(Array(@inferred minimum(ad,1)) - minimum(a,1)) < 1e-6
+@test sumabs2(Array(@inferred minimum(ad,2)) - minimum(a,2)) < 1e-6
+@test sumabs2(Array(@inferred max(ad,0.5f0)) - max(a,0.5f0)) < 1e-6
+@test sumabs2(Array(@inferred min(ad,0.5f0)) - min(a,0.5f0)) < 1e-6
+@test_approx_eq  @inferred(mean(ad)) mean(a)
+@test sumabs2(Array(@inferred mean(ad,1)) - mean(a,1)) < 1e-6
+@test sumabs2(Array(@inferred mean(ad,2)) - mean(a,2)) < 1e-6
+@test @inferred median(ad) == median(a)
+@test sumabs2(Array(@inferred median(ad,1)) - median(a,1)) < 1e-6
+@test_approx_eq @inferred(var(ad)) var(a)
 
 #Linalg
 @test sumabs2(Array(ad') - a') < 1e-6

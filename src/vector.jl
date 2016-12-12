@@ -5,7 +5,7 @@ import Base: sum, min, max, minimum, maximum, countnz, any, all, sort,
 
 export sortIndex, sortByKey, diff2, minidx, maxidx
 
-# Reduction 
+# Reduction
 
 for (op,fn) in ((:sum, :af_sum_all), (:product, :af_product_all),
                 (:maximum, :af_max_all), (:minimum, af_min_all))
@@ -52,7 +52,7 @@ for (op,fn) in ((:any, :af_any_true_all),(:all, :af_all_true_all))
 end
 
 for (op,fn) in ((:any, :af_any_true), (:all, :af_all_true))
- 
+
     @eval function ($op){T}(a::AFArray{T}, dim::Integer)
         dim = dim - 1
         out = new_ptr()
@@ -62,19 +62,19 @@ for (op,fn) in ((:any, :af_any_true), (:all, :af_all_true))
 
 end
 
-for (op, fn) in ((:sum, :af_sum), (:product, :af_product), 
+for (op, fn) in ((:sum, :af_sum), (:product, :af_product),
                 (:maximum, :af_max), (:minimum, :af_min))
 
-    @eval function ($op){T}(a::AFArray{T}, dim::Integer)
+    @eval function ($op){T,N}(a::AFArray{T,N}, dim::Integer)
         dim = dim - 1
         out = new_ptr()
         $(fn)(out, a, dim)
-        AFArray{T}(out[])
+        AFArray{T,reduce_N(N)}(out[])
     end
 
 end
 
-# Sorting 
+# Sorting
 
 function sort{T,N}(a::AFArray{T,N}, dim::Integer = 1; rev = false)
     if dim == 2
@@ -176,12 +176,12 @@ for (op, fn) in ((:findmax, :af_imax_all), (:findmin, :af_imin_all))
 end
 
 for (op, fn) in ((:minidx, :af_imin), (:maxidx, :af_imax))
-    
+
     @eval function ($op){T}(a::AFArray{T}, dim::Int)
         out = new_ptr()
         idx = new_ptr()
         $(fn)(out, idx, a, dim-1)
-        AFArray{T}(out[]), 
+        AFArray{T}(out[]),
         AFArray{backend_eltype(idx[])}(idx[]) + 1
     end
 

@@ -188,27 +188,27 @@ end
 
 for (op,fn) in ((:max, :af_maxof), (:min, :af_minof))
 
-    @eval function ($op){T,S}(a::AFArray{T}, b::AFArray{S}; batched = true)
+    @eval function ($op){T,S,N1,N2}(a::AFArray{T,N1}, b::AFArray{S,N2}; batched = true)
         out = new_ptr()
         $(fn)(out, a, b, true)
-        AFArray{af_promote(T,S)}(out[])
+        AFArray{af_promote(T,S),compute_N(N1,N2)}(out[])
     end
 
-    @eval function ($op){T,S<:Real}(a::AFArray{T}, b::S)
+    @eval function ($op){T,S<:Real,N}(a::AFArray{T,N}, b::S)
         out = new_ptr()
-        tmp = constant(b, size(a))
+        tmp = constant(b, 1)
         $(fn)(out, a, tmp, true)
-        AFArray{af_promote(T,S)}(out[])
+        AFArray{af_promote(T,S),N}(out[])
     end
-    @eval ($op){T,S<:Real}(b::S, a::AFArray{T}) = max(a, b)
+    @eval ($op){T,S<:Real,N}(b::S, a::AFArray{T,N}) = max(a, b)
 
-    @eval function ($op){T<:Complex,S<:Complex}(a::AFArray{T}, b::S)
+    @eval function ($op){T<:Complex,S<:Complex,N}(a::AFArray{T,N}, b::S)
         out = new_ptr()
-        tmp = constant(b, size(a))
+        tmp = constant(b, 1)
         $(fn)(out, a, tmp, true)
-        AFArray{af_promote(T,S)}(out[])
+        AFArray{af_promote(T,S),N}(out[])
     end
-    @eval ($op){T<:Complex,S<:Complex}(b::S, a::AFArray{T}) = max(a, b)
+    @eval ($op){T<:Complex,S<:Complex,N}(b::S, a::AFArray{T,N}) = max(a, b)
 
 end
 
