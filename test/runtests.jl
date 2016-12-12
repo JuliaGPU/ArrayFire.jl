@@ -82,3 +82,8 @@ ac = deepcopy(ad)
 @test sumabs(ac - ad) == 0
 ac[1] = 0
 @test ac[1] != ad[1]
+
+c1 = Complex(-1,2)
+@test_approx_eq @inferred(constant(c1, 1))  c1
+c2 = Complex(-1.,2.)
+@test_approx_eq @inferred(constant(c2, 1))  c2

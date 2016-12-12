@@ -27,7 +27,7 @@ safediv(x::AFArray, y) = x ./ y
 δdot_power_const2(x, y) = (t = x.^y; (t, z-> y == 2 ? z.*2x : safediv(z.*y.*t, x)))
 δdot_power{T}(x::T, y::T) = (t = x.^y; (t, z->(safediv(z.*y.*t, x), z.*t.*log.(x))))
 δsum(x::AbstractArray) = (t = size(x); (sum(x), z->fill(z, t)))
-δsum(x::AFArray) = (t = size(x); (sum(x), z->AFArray(fill(z, t))))
+δsum(x::AFArray) = (t = size(x); (sum(x), z->constant(z, t)))
 
 rnd(len) = rand(AFVector, len)
 rnd(len1, len2) = rand(AFMatrix, (len1, len2))

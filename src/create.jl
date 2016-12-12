@@ -31,7 +31,7 @@ end
 @compat (::Type{AFArray}){T,N}(a::Array{T,N}) = convert(AFArray{T,N}, a)
 convert{T,N}(::Type{AFArray}, a::Array{T,N}) = AFArray(a)
 
-function constant{T<:Real}(val::T, dims::Integer...)
+function constant{T<:Real,N}(val::T, dims::Vararg{Int64,N})
     n = length(dims)
     dims = Int[dims...]
     for i = n+1:4
@@ -39,25 +39,30 @@ function constant{T<:Real}(val::T, dims::Integer...)
     end
     ptr = new_ptr()
     af_constant!(ptr, val, n, dims, T)
-    AFArray{T}(ptr[])
+    AFArray{T,N}(ptr[])
 end
 
-function constant{T}(val::Complex{T}, dims::Integer...)
+function constant{T<:Integer,N}(val::Complex{T}, dims::Vararg{Int64,N})
     n = length(dims)
     dims = [dims...]
     for i = n+1:4
         push!(dims, 1)
     end
     ptr = new_ptr()
-    if T <: Integer
-        val = convert(Complex{Float32}, val)
+    val2 = convert(Complex{Float32}, val)
+    af_constant_complex!(ptr, val2, n, dims, Float32)
+    AFArray{Complex{Float32},N}(ptr[])
+end
+
+function constant{T,N}(val::Complex{T}, dims::Vararg{Int64,N})
+    n = length(dims)
+    dims = [dims...]
+    for i = n+1:4
+        push!(dims, 1)
     end
-    af_constant_complex!(ptr, val, n, dims, Float32)
-    if T <: Integer
-        AFArray{Complex{Float32}}(ptr[])
-    else
-        AFArray{Complex{T}}(ptr[])
-    end
+    ptr = new_ptr()
+    af_constant_complex!(ptr, val, n, dims, T)
+    AFArray{Complex{T},N}(ptr[])
 end
 constant{T}(val::T, t::Tuple) = constant(val, t...)
 
