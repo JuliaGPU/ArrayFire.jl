@@ -1,4 +1,12 @@
 import Base: elsize, size, ndims, convert, showarray, vec, flipdim, vcat, hcat, cat, reshape, permutedims, circshift, repeat
+# Base.@pure was introduced in 0.5.0-dev+698
+if VERSION >= v"0.5.0"
+    import Base.@pure
+else
+    macro pure(ex)
+        ex
+    end
+end
 
 export AFInfo, replace!, mergeArrays, getDevicePointer, getDataRefCount, deviceMemInfo
 
@@ -10,6 +18,11 @@ immutable Dim4
 end
 
 new_ptr() = Base.RefValue{Ptr{Void}}(C_NULL)
+if VERSION >= v"0.5.0"
+    @pure compute_N(N1,N2) = max(N1,N2)
+else
+    compute_N(N1,N2) = max(N1,N2)
+end
 
 sizeof{T}(a::AFArray{T}) = elsize(a) * length(a)
     

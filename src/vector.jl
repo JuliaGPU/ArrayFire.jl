@@ -76,33 +76,33 @@ end
 
 # Sorting 
 
-function sort{T}(a::AFArray{T}, dim::Integer = 1; rev = false)
+function sort{T,N}(a::AFArray{T,N}, dim::Integer = 1; rev = false)
     if dim == 2
         error("ArrayFire doesn't support sorting along this dimension")
     end
     out = new_ptr()
     af_sort(out, a, Cuint(dim-1), !rev)
-    AFArray{T}(out[])
+    AFArray{T,N}(out[])
 end
 
-function sortperm{T}(a::AFArray{T}, dim::Integer = 1; rev = false)
+function sortperm{T,N}(a::AFArray{T,N}, dim::Integer = 1; rev = false)
     if dim == 2
         error("ArrayFire doesn't support sorting along this dimension")
     end
     out = new_ptr()
     indices = new_ptr()
     af_sort_index(out, indices, a, Cuint(dim-1), !rev)
-    AFArray{Int32}(indices[]) + 1
+    AFArray{Int32,N}(indices[]) + 1
 end
 
-function sortByKey{S,T}(keys::AFArray{S}, values::AFArray{T}, dim::Integer = 1; rev = false)
+function sortByKey{S,T,N}(keys::AFArray{S,N}, values::AFArray{T,N}, dim::Integer = 1; rev = false)
     if dim == 2
         error("ArrayFire doesn't support sorting along this dimension")
     end
     out_keys = new_ptr()
     out_values = new_ptr()
     af_sort_by_key(out_keys, out_values, keys, values, Cuint(dim - 1), !rev)
-    AFArray{S}(out_keys[]), AFArray{T}(out_values[])
+    AFArray{S,N}(out_keys[]), AFArray{T,N}(out_values[])
 end
 
 # Set Operations

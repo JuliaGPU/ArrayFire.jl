@@ -72,3 +72,6 @@ u, s, v = svd(a)
 # FFT - Issue #81
 @test sumabs2(fft(a) - Array(fft(ad))) < 1e-6
 @test sumabs2(ifft(a) - Array(ifft(ad, norm_factor = 0.01))) < 1e-6 # Note the scaling factor. Not sure why. 
+
+# Inference
+@test_throws MethodError ad | ad

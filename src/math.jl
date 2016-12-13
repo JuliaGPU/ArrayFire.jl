@@ -14,7 +14,7 @@ for (op,fn) in ((:+,:af_add), (:.+,:af_add), (:-,:af_sub), (:.-,:af_sub), (:.*,:
                 (:.<<, :af_bitshiftl),(:>>, :af_bitshiftr), (:.>>, :af_bitshiftr),
                 (:^, :af_pow), (:.^, :af_pow ))
 
-    @compat @eval function $op{T,S}(a::AFArray{T}, b::AFArray{S}; batched = true)
+    @compat @eval function $op{T,S, N1, N2}(a::AFArray{T,N1}, b::AFArray{S,N2}; batched = true)
         ptr = new_ptr()
         $(fn)(ptr, a, b, batched)
         AFArray{af_promote(T,S)}(ptr[])
@@ -37,56 +37,57 @@ for (op,fn) in ((:+, :af_add), (:.+, :af_add), (:-, :af_sub), (:.-, :af_sub), (:
                 (:.*, :af_mul), (:./, :af_div), (:%, :af_mod), (:.%, :af_mod),
                 (:^, :af_pow), (:.^, :af_pow))
 
-    @compat @eval function $op{T<:Real,S<:Real}(a::AFArray{T}, v::S)
+    @compat @eval function $op{T<:Real,S<:Real, N}(a::AFArray{T,N}, v::S)
         b = constant((af_promote(T,S))(v), size(a)...)
         ptr = new_ptr()
         $(fn)(ptr, a, b, true)
         AFArray{af_promote(T,S)}(ptr[])
     end
 
-    @compat @eval function $op{T<:Real,S<:Real}(a::AFArray{T}, v::Complex{S})
+    @compat @eval function $op{T<:Real,S<:Real, N}(a::AFArray{T,N}, v::Complex{S})
         b = constant(Complex{af_promote(T,S)}(v), size(a)...)
         ptr = new_ptr()
         $(fn)(ptr, a, b, true)
         AFArray{Complex{af_promote(T,S)}}(ptr[])
     end
 
-    @compat @eval function $op{T<:Real,S<:Real}(v::S, a::AFArray{T})
+    @compat @eval function $op{T<:Real,S<:Real, N}(v::S, a::AFArray{T,N})
         b = constant((af_promote(T,S))(v), size(a)...)
         ptr = new_ptr()
         $(fn)(ptr, b, a, true)
         AFArray{af_promote(T,S)}(ptr[])
     end
 
-    @compat @eval function $op{T<:Real,S<:Real}(v::Complex{S}, a::AFArray{T})
+    @compat @eval function $op{T<:Real,S<:Real, N}(v::Complex{S}, a::AFArray{T,N})
         b = constant(Complex{af_promote(T,S)}(v), size(a)...)
         ptr = new_ptr()
         $(fn)(ptr, b, a, true)
         AFArray{Complex{af_promote(T,S)}}(ptr[])
     end
 
-    @compat @eval function $op{T<:Real,S<:Real}(a::AFArray{Complex{T}}, v::S)
+    @compat @eval function $op{T<:Real,S<:Real, N}(a::AFArray{Complex{T}, N}, v::S)
         b = constant((af_promote(T,S))(v), size(a)...)
         ptr = new_ptr()
         $(fn)(ptr, a, b, true)
         AFArray{Complex{af_promote(T,S)}}(ptr[])
     end
 
-    @compat @eval function $op{T<:Real,S<:Real}(a::AFArray{Complex{T}}, v::Complex{S})
+    @compat @eval function $op{T<:Real,S<:Real,N}(a::AFArray{Complex{T},N}, v::Complex{S})
         b = constant(Complex{af_promote(T,S)}(v), size(a)...)
         ptr = new_ptr()
         $(fn)(ptr, a, b, true)
         AFArray{Complex{af_promote(T,S)}}(ptr[])
     end
 
-    @compat @eval function $op{T<:Real,S<:Real}(v::S, a::AFArray{Complex{T}})
+    @compat @eval function $op{T<:Real,S<:Real,N}(v::S, a::AFArray{Complex{T},N})
         b = constant((af_promote(T,S))(v), size(a)...)
         ptr = new_ptr()
         $(fn)(ptr, b, a, true)
         AFArray{Complex{af_promote(T,S)}}(ptr[])
+
     end
 
-    @compat @eval function $op{T<:Real,S<:Real}(v::Complex{S}, a::AFArray{Complex{T}})
+    @compat @eval function $op{T<:Real,S<:Real,N}(v::Complex{S}, a::AFArray{Complex{T},N})
         b = constant(Complex{af_promote(T,S)}(v), size(a)...)
         ptr = new_ptr()
         $(fn)(ptr, b, a, true)
@@ -236,7 +237,36 @@ for (op,fn) in ((:&, :af_bitand),(:|, :af_bitor), (:$, :af_bitxor),
                 (:.==, :af_eq), (:.!=, :af_neq), (:.>, :af_gt),
                 (:.>=, :af_ge), (:.<, :af_lt), (:.<=, :af_le))
 
-    @eval function ($op)(a::AFArray, b::AFArray; batched = true)
+
+    if op in (:&, :|, :$)
+        @eval function ($op){T<:Integer,S<:Integer,N1,N2}(a::AFArray{T,N1}, b::AFArray{S,N2}; batched = true)
+            out = new_ptr()
+            eval($fn)(out, a, b, batched)
+            AFArray{af_promote(T,S), compute_N(N1,N2)}(out[])
+        end
+    end
+
+    if !(op in (:&, :|, :$))
+        @eval function ($op){T<:Real,S<:Real,N1,N2}(a::AFArray{T,N1}, b::AFArray{S,N2}; batched = true)
+            out = new_ptr()
+            eval($fn)(out, a, b, batched)
+            AFArray{Bool, compute_N(N1,N2)}(out[])
+        end
+    end
+
+    @eval function ($op){N1,N2}(a::AFArray{Bool,N1}, b::AFArray{Bool,N2}; batched = true)
+        out = new_ptr()
+        $(fn)(out, a, b, batched)
+        AFArray{Bool, compute_N(N1,N2)}(out[])
+    end
+
+    @eval function ($op){T,N1,N2}(a::AFArray{T,N1}, b::AFArray{Bool,N2}; batched = true)
+        out = new_ptr()
+        $(fn)(out, a, b, batched)
+        AFArray{T, compute_N(N1,N2)}(out[])
+    end
+
+    @eval function ($op){T, N1,N2}(a::AFArray{Bool,N1}, b::AFArray{T,N2}; batched = true)
         out = new_ptr()
         $(fn)(out, a, b, batched)
         AFArray{backend_eltype(out[])}(out[])
