@@ -19,7 +19,7 @@ end
 typealias AFVector AFArray{Float64,1}
 typealias AFMatrix AFArray{Float64,2}
 
-import AutoDiffSource: δsum, δdot_power, δdot_power_const1, δdot_power_const2
+import AutoDiffSource: δsum, δdot_power, δdot_power_const1, δdot_power_const2, δabs, δsqrt, δexp, δlog
 
 δsum(x::AFArray) = (t = size(x); (sum(x), z->constant(z, t)))
 δdot_power(x::AFArray, y::AbstractFloat) = (t = x.^y; (t, z->(z.*y.*t ./ x, sum(z.*t.*log(x)))))
@@ -29,8 +29,10 @@ import AutoDiffSource: δsum, δdot_power, δdot_power_const1, δdot_power_const
 δdot_power_const1(x, y::AFArray) = (t = x.^y; (t, z->z.*t.*log(x)))
 δdot_power_const2(x::AFArray, y) = (t = x.^y; (t, z-> y == 2 ? z.*2x : z.*y.*t./x))
 δdot_power(x::AFArray, y::AFArray) = (t = x.^y; (t, z->(z.*y.*t./x, z.*t.*log(x))))
-
-
+δabs(x::AFArray) = (abs(x), z->z.*sign(x))
+δsqrt(x::AFArray) = (t = sqrt(x); (t, z->0.5*z./t))
+δexp(x::AFArray) = (t = exp(x); (t, z->z.*t))
+δlog(x::AFArray) = (log(x), z->z./x)
 
 rnd() = rand(AFVector, 1)
 rnd(len) = rand(AFVector, len)
@@ -128,4 +130,13 @@ for o in [:dot]
     δt = Symbol("δ$t")
     @eval @δ $t(x, y) = sum($o(x, y))
     @eval @test checkdiff_inferred($t, $δt, rnd(5), rnd(5))
+end
+
+# (vector), (matrix)
+for o in [:sqrt, :exp, :log, :-]
+    t = gensym(o)
+    δt = Symbol("δ$t")
+    @eval @δ $t(x) = sum($o(x))
+    @eval @test checkdiff_inferred($t, $δt, rnd(5))
+    @eval @test checkdiff_inferred($t, $δt, rnd(2, 3))
 end
