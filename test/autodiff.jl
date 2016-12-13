@@ -84,3 +84,48 @@ for o in [:.+, :.-, :.*, :./, :.^]
     @eval @test checkdiff_inferred($t, $δt, rand(), rnd(5))
     @eval @test checkdiff_inferred($t, $δt, rand(), rnd(3, 2))
 end
+
+# (vector, scalar), (matrix, scalar), (scalar, vector), (scalar, matrix), (const, *), (*, const)
+for o in [:+, :-, :*]
+    t = gensym(o)
+    δt = Symbol("δ$t")
+    @eval @δ $t(x, y) = sum($o(x, y))
+    @eval @test checkdiff_inferred($t, $δt, rnd(5), rand())
+    @eval @test checkdiff_inferred($t, $δt, rnd(3, 2), rand())
+    @eval @test checkdiff_inferred($t, $δt, rand(), rnd(5))
+    @eval @test checkdiff_inferred($t, $δt, rand(), rnd(3, 2))
+
+    t = gensym(o)
+    δt = Symbol("δ$t")
+    @eval @δ $t(x) = sum($o(x, 4.))
+    @eval @test checkdiff_inferred($t, $δt, rnd(5))
+    @eval @test checkdiff_inferred($t, $δt, rnd(3, 2))
+
+    t = gensym(o)
+    δt = Symbol("δ$t")
+    @eval @δ $t(x) = sum($o(5., x))
+    @eval @test checkdiff_inferred($t, $δt, rnd(5))
+    @eval @test checkdiff_inferred($t, $δt, rnd(3, 2))
+end
+
+# (vector, scalar), (matrix, scalar), (*, const)
+for o in [:/]
+    t = gensym(o)
+    δt = Symbol("δ$t")
+    @eval @δ $t(x, y) = sum($o(x, y))
+    @eval @test checkdiff_inferred($t, $δt, rnd(5), rand())
+    @eval @test checkdiff_inferred($t, $δt, rnd(3, 2), rand())
+
+    t = gensym(o)
+    δt = Symbol("δ$t")
+    @eval @δ $t(x) = sum($o(x, 5.))
+    @eval @test checkdiff_inferred($t, $δt, rnd(5))
+    @eval @test checkdiff_inferred($t, $δt, rnd(3, 2))
+end
+
+for o in [:dot]
+    t = gensym(o)
+    δt = Symbol("δ$t")
+    @eval @δ $t(x, y) = sum($o(x, y))
+    @eval @test checkdiff_inferred($t, $δt, rnd(5), rnd(5))
+end
