@@ -217,10 +217,10 @@ for (op,fn) in ((:abs, :af_abs), (:arg, :af_arg),
                 (:floor, :af_floor), (:round, :af_round),
                 (:trunc, :af_trunc))
 
-    @eval function ($op){T}(a::AFArray{T})
+    @eval function ($op){T,N}(a::AFArray{T,N})
         out = new_ptr()
         $(fn)(out, a)
-        AFArray{T}(out[])
+        AFArray{T,N}(out[])
     end
 
 end
