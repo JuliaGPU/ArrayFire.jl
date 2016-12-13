@@ -126,3 +126,10 @@ function falses(::Type{AFArray{Bool}}, dims::Integer...)
     constant(false, dims)
 end
 falses(::Type{AFArray{Bool}}, t::Tuple) = falses(AFArray{T}, t...)
+
+function Base.deepcopy_internal(a::AFArray, stackdict::ObjectIdDict)
+    haskey(stackdict, a) && return stackdict[a]
+    c = AFArray(copy(a))
+    stackdict[a] = c
+    return c
+end
