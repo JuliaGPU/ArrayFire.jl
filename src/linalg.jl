@@ -2,37 +2,37 @@
 
 # Import functions from Base
 
-import Base:dot, 
-            transpose, 
-            ctranspose, 
-            transpose!, 
+import Base:dot,
+            transpose,
+            ctranspose,
+            transpose!,
             ctranspose!,
-            det, 
+            det,
             inv,
-            norm, 
-            rank, 
-            *, 
-            A_mul_Bt, 
-            At_mul_B, 
-            At_mul_Bt, 
-            Ac_mul_B, 
-            A_mul_Bc, 
-            Ac_mul_Bc, 
-            chol, lu, 
-            lufact!, 
-            qr, 
-            qrfact!, 
+            norm,
+            rank,
+            *,
+            A_mul_Bt,
+            At_mul_B,
+            At_mul_Bt,
+            Ac_mul_B,
+            A_mul_Bc,
+            Ac_mul_Bc,
+            chol, lu,
+            lufact!,
+            qr,
+            qrfact!,
             svd,
-            svdfact!, 
-            \, 
+            svdfact!,
+            \,
             diag
 
 # Export Functions
 
-export  isLAPACKAvailable, 
-        chol!, 
-        solveLU, 
-        upper, 
+export  isLAPACKAvailable,
+        chol!,
+        solveLU,
+        upper,
         lower
 
 # Export constants
@@ -57,31 +57,31 @@ export  AF_MAT_NONE,
         AF_NORM_MATRIX_INF,
         AF_NORM_MATRIX_2,
         AF_NORM_MATRIX_L_PQ,
-        AF_NORM_EUCLID 
+        AF_NORM_EUCLID
 
 # Constants
 
 AF_MAT_NONE       = 0
 AF_MAT_TRANS      = 1
 AF_MAT_CTRANS     = 2
-AF_MAT_CONJ       = 4    
-AF_MAT_UPPER      = 32   
-AF_MAT_LOWER      = 64   
-AF_MAT_DIAG_UNIT  = 128  
-AF_MAT_SYM        = 512  
-AF_MAT_POSDEF     = 1024 
-AF_MAT_ORTHOG     = 2048 
-AF_MAT_TRI_DIAG   = 4096 
-AF_MAT_BLOCK_DIAG = 8192  
+AF_MAT_CONJ       = 4
+AF_MAT_UPPER      = 32
+AF_MAT_LOWER      = 64
+AF_MAT_DIAG_UNIT  = 128
+AF_MAT_SYM        = 512
+AF_MAT_POSDEF     = 1024
+AF_MAT_ORTHOG     = 2048
+AF_MAT_TRI_DIAG   = 4096
+AF_MAT_BLOCK_DIAG = 8192
 
-AF_NORM_VECTOR_1 = 0      
-AF_NORM_VECTOR_INF = 1   
-AF_NORM_VECTOR_2 = 2 
-AF_NORM_VECTOR_P = 3    
-AF_NORM_MATRIX_1 = 4   
-AF_NORM_MATRIX_INF = 5   
-AF_NORM_MATRIX_2 = 6 
-AF_NORM_MATRIX_L_PQ = 7   
+AF_NORM_VECTOR_1 = 0
+AF_NORM_VECTOR_INF = 1
+AF_NORM_VECTOR_2 = 2
+AF_NORM_VECTOR_P = 3
+AF_NORM_MATRIX_1 = 4
+AF_NORM_MATRIX_INF = 5
+AF_NORM_MATRIX_2 = 6
+AF_NORM_MATRIX_L_PQ = 7
 AF_NORM_EUCLID = AF_NORM_VECTOR_2
 
 # Dot
@@ -91,7 +91,7 @@ function dot{T,S}(a::AFVector{T}, b::AFVector{S}, lhsprop = AF_MAT_NONE, rhsprop
     af_dot(out, a, b, lhsprop, rhsprop)
     AFVector{af_promote(T,S)}(out[])
 end
-    
+
 # Transpose
 
 function transpose{T}(a::AFArray{T})
@@ -115,7 +115,7 @@ function ctranspose!{T}(a::AFArray{T})
     af_transpose_inplace(a, true)
     a
 end
- 
+
 # Matrix Operations
 
 function det{T<:Real}(a::AFArray{T})
@@ -156,23 +156,27 @@ end
 
 # Matrix Multiply
 
-function *{T,S}(a::AFArray{T}, b::AFArray{S}; lhsprop = AF_MAT_NONE, rhsprop = AF_MAT_NONE)
+function *{T,S,N1,N2}(a::AFArray{T,N1}, b::AFArray{S,N2}; lhsprop = AF_MAT_NONE, rhsprop = AF_MAT_NONE)
     out = new_ptr()
     af_matmul(out, a, b, lhsprop, rhsprop)
-    AFMatrix{af_promote(T,S)}(out[])
+    AFArray{af_promote(T,S),N2}(out[])
 end
 
-A_mul_Bt{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, rhsprop = AF_MAT_TRANS)
+function A_mul_Bt{T,S,N1,N2}(a::AFArray{T,N1}, b::AFArray{S,N2}; lhsprop = AF_MAT_NONE, rhsprop = AF_MAT_TRANS)
+    out = new_ptr()
+    af_matmul(out, a, b, lhsprop, rhsprop)
+    AFArray{af_promote(T,S),2}(out[])
+end
 
-At_mul_B{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsprop = AF_MAT_TRANS)
+At_mul_B(a::AFArray, b::AFArray) = *(a, b, lhsprop = AF_MAT_TRANS)
 
-At_mul_Bt{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsprop = AF_MAT_TRANS, rhsprop = AF_MAT_TRANS)
+At_mul_Bt(a::AFArray, b::AFArray) = A_mul_Bt(a, b, lhsprop = AF_MAT_TRANS)
 
-A_mul_Bc{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, rhsprop=AF_MAT_CTRANS)
+A_mul_Bc{T,S}(a::AFArray{T}, b::AFArray{S}) = A_mul_Bt(a, b, rhsprop=AF_MAT_CTRANS)
 
-Ac_mul_B{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsprop=AF_MAT_CTRANS)
+Ac_mul_B{T,S}(a::AFArray{T}, b::AFArray{S}) = *(a, b, lhsprop=AF_MAT_CTRANS)
 
-Ac_mul_Bc{T,S}(a::AFMatrix{T}, b::AFMatrix{S}) = *(a, b, lhsprop=AF_MAT_CTRANS, rhsprop=AF_MAT_CTRANS)
+Ac_mul_Bc{T,S}(a::AFArray{T}, b::AFArray{S}) = A_mul_Bt(a, b, lhsprop=AF_MAT_CTRANS, rhsprop=AF_MAT_CTRANS)
 
 # LAPACK
 
@@ -212,7 +216,7 @@ function lu(a::AFMatrix)
     u = new_ptr()
     p = new_ptr()
     af_lu(l, u, p, a)
-    AFArray{backend_eltype(l[])}(l[]), AFArray{backend_eltype(u[])}(u[]), 
+    AFArray{backend_eltype(l[])}(l[]), AFArray{backend_eltype(u[])}(u[]),
     (AFArray{backend_eltype(p[])}(p[]) + 1)
 end
 
@@ -227,7 +231,7 @@ function qr(a::AFMatrix)
     r = new_ptr()
     tau = new_ptr()
     af_qr(q, r, tau, a)
-    AFArray{backend_eltype(q[])}(q[]), AFArray{backend_eltype(r[])}(r[]), 
+    AFArray{backend_eltype(q[])}(q[]), AFArray{backend_eltype(r[])}(r[]),
     AFArray{backend_eltype(tau[])}(tau[])
 end
 
