@@ -1,4 +1,4 @@
-import Base: rand, randn, convert, diagm, eye, range, zeros, ones, trues, falses
+import Base: rand, randn, convert, diagm, eye, range, zeros, ones, trues, falses, deepcopy_internal
 export constant, getSeed, setSeed, iota
 
 function rand{T}(::Type{AFArray{T}}, dims::Integer...)
@@ -126,3 +126,10 @@ function falses(::Type{AFArray{Bool}}, dims::Integer...)
     constant(false, dims)
 end
 falses(::Type{AFArray{Bool}}, t::Tuple) = falses(AFArray{T}, t...)
+
+function deepcopy_internal{T,N}(a::AFArray{T,N}, stackdict::ObjectIdDict)
+    haskey(stackdict, a) && return stackdict[a]::AFArray{T,N}
+    c::AFArray{T,N} = copy(a)
+    stackdict[a] = c
+    return c
+end
