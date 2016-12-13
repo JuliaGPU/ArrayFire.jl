@@ -88,4 +88,6 @@ let
     bd = AFArray(b)
     ind = AFArray([false, true, true])
     @test Array(bd[ind]) == Float32[2., 3.]
+    ind[3] = false
+    @test Array(bd[ind]) == Float32[2.]
 end

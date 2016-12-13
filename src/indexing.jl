@@ -35,7 +35,7 @@ immutable index
     ptr::Ptr{Void}
 end
 
-function getindex{T}(a::AFArray{T}, idx::Union{Range,Int,Colon,AFArray}...)
+function getindex{T}(a::AFArray{T}, idx::Union{Range,Int,Colon}...)
     indexers = new_ptr()
     af_create_indexers(indexers)
     indexers = index(indexers[])
@@ -52,6 +52,21 @@ function getindex{T}(a::AFArray{T}, idx::Union{Range,Int,Colon,AFArray}...)
     else
         return outarr
     end
+end 
+
+function getindex{T}(a::AFArray{T}, idx::AFArray...)
+    indexers = new_ptr()
+    af_create_indexers(indexers)
+    indexers = index(indexers[])
+    set_up_index!(idx, indexers)
+    out = new_ptr()
+    n = ndims(a)
+    l = length(idx)
+    l <= n || throw(DimensionMismatch("Number of dimensions is lesser than number of indices"))
+    af_index_gen(out, a, l, indexers)
+    af_release_indexers(indexers)
+    outarr = AFArray{T}(out[])
+    return outarr
 end 
 
 function set_up_index!(idx::Tuple, indexers::index)
