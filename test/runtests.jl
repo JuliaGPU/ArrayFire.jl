@@ -81,3 +81,11 @@ ac = deepcopy(ad)
 @test sumabs(ac - ad) == 0
 ac[1] = 0
 @test ac[1] != ad[1]
+
+# Indexing - issue #96
+let
+    b = Float32[1.,2.,3.]
+    bd = AFArray(b)
+    ind = AFArray([false, true, true])
+    @test Array(bd[ind]) == Float32[2., 3.]
+end
