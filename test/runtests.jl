@@ -93,4 +93,6 @@ let
 end
 
 # Broadcast
-sin(ad) == sin.(ad)
+if VERSION >= v"0.5.0"
+    sin(ad) == sin.(ad)
+end
