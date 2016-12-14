@@ -257,3 +257,7 @@ function deviceMemInfo()
     af_device_mem_info(alloc_bytes, alloc_buffers, lock_bytes, lock_buffers)
     Int(alloc_bytes[]), Int(alloc_buffers[]), Int(lock_bytes[]), Int(lock_buffers[])
 end
+
+if VERSION >= v"0.5.0"
+    Base.broadcast{T}(f::Function, a::AFArray{T}) = f(a)
+end

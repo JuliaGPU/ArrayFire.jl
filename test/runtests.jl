@@ -91,3 +91,6 @@ let
     ind[3] = false
     @test Array(bd[ind]) == Float32[2.]
 end
+
+# Broadcast
+sin(ad) == sin.(ad)
