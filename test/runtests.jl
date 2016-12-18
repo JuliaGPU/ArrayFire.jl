@@ -91,3 +91,8 @@ let
     ind[3] = false
     @test Array(bd[ind]) == Float32[2.]
 end
+
+# Broadcast
+if VERSION >= v"0.5.0"
+    sin(ad) == sin.(ad)
+end
