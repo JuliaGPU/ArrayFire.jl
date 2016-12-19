@@ -11,7 +11,7 @@ type AFArray{T,N} <: AbstractArray{T,N}
     ptr::Ptr{Void}
     function AFArray(ptr::Ptr{Void})
         a = new(ptr)
-        finalizer(a, x -> af_release_array(x))
+        finalizer(a, af_release_array)
         a
     end
 end
