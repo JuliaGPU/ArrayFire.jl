@@ -35,7 +35,7 @@ immutable index
     ptr::Ptr{Void}
 end
 
-function getindex{T}(a::AFArray{T}, idx::Union{Range,Int,Colon}...)
+function getindex{T}(a::AFArray{T}, idx::Union{Range,Int,Colon, AFArray}...)
     indexers = new_ptr()
     af_create_indexers(indexers)
     indexers = index(indexers[])
