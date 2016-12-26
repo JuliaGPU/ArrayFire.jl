@@ -1,6 +1,6 @@
 using ArrayFire
 function warmup()
-    a = rand(10,10)
+    a = rand(Float32, 10,10)
     ad = AFArray(a)
     ad * ad
     a * a
@@ -8,7 +8,7 @@ function warmup()
     fft(ad)
     chol(a*a')
     chol(ad*ad') 
-    rand(AFArray{Float64}, 10, 10)
+    rand(AFArray{Float32}, 10, 10)
     sort(vec(a))
     sort(vec(ad))
 end
@@ -78,7 +78,7 @@ function benchmark()
     println("Time (GPU): $(t2/10)") 
 
     #Cholesky
-    b = a * a' 
+    b = a * a' + 2000 * eye(Float32, 2000)
     bd = AFArray(b)
     info("Cholesky")
     t1 = @elapsed chol(b)
