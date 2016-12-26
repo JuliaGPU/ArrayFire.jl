@@ -61,6 +61,7 @@ a = rand(10, 10)
 ```
 You can transfer this array to the device by calling the `AFArray` constructor on it. 
 ```julia
+using ArrayFire # Don't forget to load the library
 ad = AFArray(a)
 ```
 Now let us perform some simple arithmetic on it:
