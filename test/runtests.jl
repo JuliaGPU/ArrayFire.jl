@@ -97,6 +97,16 @@ if VERSION >= v"0.5.0"
     sin(ad) == sin.(ad)
 end
 
+# Sign - issue #109
+if VERSION >= v"0.5.0"
+    let 
+        a = randn(Float32, 10)
+        ad = AFArray(a)
+        @test_throws MethodError signbit(ad)
+        @test Array(signbit.(ad)) == signbit.(a)
+    end
+end
+
 # Indexing - issue #115
 let 
     x = rand(Float32, 3,3)
