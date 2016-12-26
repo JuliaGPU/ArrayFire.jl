@@ -172,8 +172,9 @@ getActiveBackend()
 ### Arithmetic 
 * `+, -, *, /, ^, &, $, | `
 * `.+, .-, .*, ./, .>, .>=, .<, .<=, .==, .!=, `
-* `complex, conj, real, imag, max, min, abs, round, sign, floor, hypot`
+* `complex, conj, real, imag, max, min, abs, round, floor, hypot`
 * `sigmoid`
+* `signbit` (works only in vectorized form on Julia v0.5 - Ref issue #109)
 
 ### Linear Algebra
 * `chol, svd, lu, qr, lufact!, qrfact!, svdfact!`
