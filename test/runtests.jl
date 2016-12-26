@@ -96,3 +96,12 @@ end
 if VERSION >= v"0.5.0"
     sin(ad) == sin.(ad)
 end
+
+# Indexing - issue #115
+let 
+    x = rand(Float32, 3,3)
+    xd = AFArray(x)
+    y = x[:, [1,3]]
+    yd = xd[:, [1,3]]
+    @test sumabs2(x - Array(xd)) < 1e-6
+end
