@@ -1,6 +1,6 @@
 using Base.Meta
 
-import Base: complex, conj, real, imag, max, min, abs, round, sign, floor, hypot
+import Base: complex, conj, real, imag, max, min, abs, round, signbit, floor, hypot
 import Base: &, |, $, .>, .>=, .<, .<=, !, .==, .!=, ^, .^, /, ./
 import Base: +, .+, -, .-, *, .*, /, ./, %, .%, <<, .<<, >>, .>>, ^, .^
 import Base: sin, cos, tan, sinh, cosh, tanh, asin, acos, atan, cbrt, erf, erfc,
@@ -223,6 +223,9 @@ for (op,fn) in ((:abs, :af_abs), (:arg, :af_arg),
         AFArray{T}(out[])
     end
 
+end
+if VERSION >= v"0.5.0"
+    Base.broadcast{T}(::Type{signbit}, a::AFArray{T}) = convert(AFArray{Bool}, sign(a))
 end
 
 function hypot{T}(a::AFArray{T}, b::AFArray{T}; batched = true)
