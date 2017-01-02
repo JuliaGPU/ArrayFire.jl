@@ -27,11 +27,35 @@ end
 
 function rewrite(line::Expr)
     if line.head == :function
-        name = line.args[1].args[1]
+        hdr = line.args[1].args
+        name = hdr[1]
+        args = hdr[2:end]
         body = line.args[2].args
+        types = body[1].args[3].args
         ret_type = body[1].args[2]
         if ret_type == :af_err
             body[1] = Expr(:call, :af_error, body[1])
+        end
+        num_out = 0
+        for k = 1:length(types)
+            if isa(types[k], Expr) && types[k].args[1] == :Ptr
+                num_out = k
+            else
+                break
+            end
+        end
+        if num_out > 0
+            for k in num_out:-1:1
+                deleteat!(hdr, 2)
+                t = Expr(:curly, :RefValue, types[k].args[2])
+                c = Expr(:call, t, 0)
+                unshift!(body, Expr(:(=), args[k], c))
+            end
+            if num_out == 1
+                push!(body, Expr(:ref, args[1]))
+            else
+                push!(body, Expr(:tuple, map(x -> Expr(:ref, x), args[1:num_out])...))
+            end
         end
         return [line, Expr(:export, name)]
     end

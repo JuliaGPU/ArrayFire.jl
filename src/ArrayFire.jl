@@ -3,6 +3,8 @@ module ArrayFire
 
 export AFArray
 
+import Base.RefValue
+
 include("common.jl")
 include("util.jl")
 include("wrap.jl")
