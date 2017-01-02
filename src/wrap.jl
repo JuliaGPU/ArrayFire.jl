@@ -627,7 +627,7 @@ end
 export af_isnan
 
 function af_make_seq(_begin::Cdouble,_end::Cdouble,step::Cdouble)
-    af_error(ccall((:af_make_seq,af_lib),af_seq,(Cdouble,Cdouble,Cdouble),_begin,_end,step))
+    ccall((:af_make_seq,af_lib),af_seq,(Cdouble,Cdouble,Cdouble),_begin,_end,step)
 end
 
 export af_make_seq
@@ -687,7 +687,7 @@ end
 export af_get_version
 
 function af_get_revision()
-    af_error(ccall((:af_get_revision,af_lib),Cstring,()))
+    ccall((:af_get_revision,af_lib),Cstring,())
 end
 
 export af_get_revision
@@ -1311,10 +1311,16 @@ end
 export af_get_device_ptr
 
 function af_get_last_error(msg,len)
-    af_error(ccall((:af_get_last_error,af_lib),Void,(Ptr{Cstring},Ptr{dim_t}),msg,len))
+    ccall((:af_get_last_error,af_lib),Void,(Ptr{Cstring},Ptr{dim_t}),msg,len)
 end
 
 export af_get_last_error
+
+function af_err_to_string(err::af_err)
+    ccall((:af_err_to_string,af_lib),Cstring,(af_err,),err)
+end
+
+export af_err_to_string
 
 function af_create_features(feat,num::dim_t)
     af_error(ccall((:af_create_features,af_lib),af_err,(Ptr{af_features},dim_t),feat,num))

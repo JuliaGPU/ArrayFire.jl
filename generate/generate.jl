@@ -18,7 +18,7 @@ lib_file(hdr) = "af_lib"
 output_file(hdr) = "../src/wrap.jl"
 
 function wrap_cursor(name, cursor)
-    if startswith(name, "AF") || startswith(name, "DEPRECATED") || startswith(name, "af_err_to_string") ||
+    if startswith(name, "AF") || startswith(name, "DEPRECATED") ||
         name == "bool" || isempty(name) || startswith(name, "SIZE_T") || endswith(name, ".h")
         return false
     end
@@ -29,7 +29,10 @@ function rewrite(line::Expr)
     if line.head == :function
         name = line.args[1].args[1]
         body = line.args[2].args
-        body[1] = Expr(:call, :af_error, body[1])
+        ret_type = body[1].args[2]
+        if ret_type == :af_err
+            body[1] = Expr(:call, :af_error, body[1])
+        end
         return [line, Expr(:export, name)]
     end
     line
