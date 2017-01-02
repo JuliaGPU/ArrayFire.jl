@@ -18,8 +18,25 @@ lib_file(hdr) = "af_lib"
 output_file(hdr) = "../src/af_wrap.jl"
 
 function wrap_cursor(name, cursor)
-    !startswith(name, "AF") && !startswith(name, "DEPRECATED") &&
-    name != "bool" && !isempty(name) && !startswith(name, "SIZE_T")
+    if startswith(name, "AF") || startswith(name, "DEPRECATED") ||
+        name == "bool" || isempty(name) || startswith(name, "SIZE_T") || endswith(name, ".h")
+        return false
+    end
+    true
+end
+
+function rewrite(line::Expr)
+    if line.head == :function
+        name = line.args[1].args[1]
+        return [line, Expr(:export, name)]
+    end
+    line
+end
+
+rewrite(line) = line
+
+function rewriter(input)
+    vcat(map(rewrite, input)...)
 end
 
 const wc = wrap_c.init(;
@@ -29,6 +46,7 @@ const wc = wrap_c.init(;
                        header_wrapped      = wrap_header,
                        header_library      = lib_file,
                        header_outputfile   = output_file,
+                       rewriter            = rewriter,
                        cursor_wrapped      = wrap_cursor)
 
 run(wc)
