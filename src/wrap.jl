@@ -1316,12 +1316,6 @@ end
 
 export af_get_last_error
 
-function af_err_to_string(err::af_err)
-    af_error(ccall((:af_err_to_string,af_lib),Cstring,(af_err,),err))
-end
-
-export af_err_to_string
-
 function af_create_features(feat,num::dim_t)
     af_error(ccall((:af_create_features,af_lib),af_err,(Ptr{af_features},dim_t),feat,num))
 end

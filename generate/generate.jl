@@ -18,7 +18,7 @@ lib_file(hdr) = "af_lib"
 output_file(hdr) = "../src/wrap.jl"
 
 function wrap_cursor(name, cursor)
-    if startswith(name, "AF") || startswith(name, "DEPRECATED") || name == "af_err_to_string" ||
+    if startswith(name, "AF") || startswith(name, "DEPRECATED") || startswith(name, "af_err_to_string") ||
         name == "bool" || isempty(name) || startswith(name, "SIZE_T") || endswith(name, ".h")
         return false
     end
