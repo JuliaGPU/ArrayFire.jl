@@ -4,6 +4,7 @@ module ArrayFire
 export AFArray
 
 include("af_common.jl")
+include("af_util.jl")
 include("af_wrap.jl")
 include("af_init.jl")
 
