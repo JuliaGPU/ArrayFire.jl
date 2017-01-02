@@ -15,7 +15,7 @@ function wrap_header(top_hdr, cursor_header)
 end
 
 lib_file(hdr) = "af_lib"
-output_file(hdr) = "../src/af_wrap.jl"
+output_file(hdr) = "../src/wrap.jl"
 
 function wrap_cursor(name, cursor)
     if startswith(name, "AF") || startswith(name, "DEPRECATED") || name == "af_err_to_string" ||
@@ -43,7 +43,7 @@ end
 
 const wc = wrap_c.init(;
                        headers             = af_header,
-                       common_file         = "../src/af_common.jl",
+                       common_file         = "../src/common.jl",
                        clang_includes      = clang_includes,
                        header_wrapped      = wrap_header,
                        header_library      = lib_file,

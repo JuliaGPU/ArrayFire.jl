@@ -3,9 +3,9 @@ module ArrayFire
 
 export AFArray
 
-include("af_common.jl")
-include("af_util.jl")
-include("af_wrap.jl")
-include("af_init.jl")
+include("common.jl")
+include("util.jl")
+include("wrap.jl")
+include("init.jl")
 
 end
