@@ -10,9 +10,9 @@ end
 
 export af_sum
 
-function af_sum_nan(_in::AFArray,dim::Integer,nanval::Cdouble)
+function af_sum_nan(_in::AFArray,dim::Integer,nanval::Real)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_sum_nan,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in.arr,Cint(dim),nanval))
+    af_error(ccall((:af_sum_nan,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in.arr,Cint(dim),Cdouble(nanval)))
     AFArray!(out[])
 end
 
@@ -26,9 +26,9 @@ end
 
 export af_product
 
-function af_product_nan(_in::AFArray,dim::Integer,nanval::Cdouble)
+function af_product_nan(_in::AFArray,dim::Integer,nanval::Real)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_product_nan,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in.arr,Cint(dim),nanval))
+    af_error(ccall((:af_product_nan,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in.arr,Cint(dim),Cdouble(nanval)))
     AFArray!(out[])
 end
 
@@ -83,10 +83,10 @@ end
 
 export af_sum_all
 
-function af_sum_nan_all(_in::AFArray,nanval::Cdouble)
+function af_sum_nan_all(_in::AFArray,nanval::Real)
     real = RefValue{Cdouble}(0)
     imag = RefValue{Cdouble}(0)
-    af_error(ccall((:af_sum_nan_all,af_lib),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array,Cdouble),real,imag,_in.arr,nanval))
+    af_error(ccall((:af_sum_nan_all,af_lib),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array,Cdouble),real,imag,_in.arr,Cdouble(nanval)))
     (real[],imag[])
 end
 
@@ -101,10 +101,10 @@ end
 
 export af_product_all
 
-function af_product_nan_all(_in::AFArray,nanval::Cdouble)
+function af_product_nan_all(_in::AFArray,nanval::Real)
     real = RefValue{Cdouble}(0)
     imag = RefValue{Cdouble}(0)
-    af_error(ccall((:af_product_nan_all,af_lib),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array,Cdouble),real,imag,_in.arr,nanval))
+    af_error(ccall((:af_product_nan_all,af_lib),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array,Cdouble),real,imag,_in.arr,Cdouble(nanval)))
     (real[],imag[])
 end
 
@@ -851,8 +851,8 @@ end
 
 export af_isnan
 
-function af_make_seq(_begin::Cdouble,_end::Cdouble,step::Cdouble)
-    ccall((:af_make_seq,af_lib),af_seq,(Cdouble,Cdouble,Cdouble),_begin,_end,step)
+function af_make_seq(_begin::Real,_end::Real,step::Real)
+    ccall((:af_make_seq,af_lib),af_seq,(Cdouble,Cdouble,Cdouble),Cdouble(_begin),Cdouble(_end),Cdouble(step))
 end
 
 export af_make_seq
@@ -1004,9 +1004,9 @@ end
 
 export af_set_seq_indexer
 
-function af_set_seq_param_indexer(_begin::Cdouble,_end::Cdouble,step::Cdouble,dim::dim_t,is_batch::Bool)
+function af_set_seq_param_indexer(_begin::Real,_end::Real,step::Real,dim::dim_t,is_batch::Bool)
     indexer = RefValue{af_index_t}(0)
-    af_error(ccall((:af_set_seq_param_indexer,af_lib),af_err,(Ptr{af_index_t},Cdouble,Cdouble,Cdouble,dim_t,Bool),indexer,_begin,_end,step,dim,is_batch))
+    af_error(ccall((:af_set_seq_param_indexer,af_lib),af_err,(Ptr{af_index_t},Cdouble,Cdouble,Cdouble,dim_t,Bool),indexer,Cdouble(_begin),Cdouble(_end),Cdouble(step),dim,is_batch))
     indexer[]
 end
 
@@ -1336,17 +1336,17 @@ end
 
 export af_transpose_inplace
 
-function af_constant(val::Cdouble,ndims::UInt32,dims,_type::af_dtype)
+function af_constant(val::Real,ndims::UInt32,dims,_type::af_dtype)
     arr = RefValue{af_array}(0)
-    af_error(ccall((:af_constant,af_lib),af_err,(Ptr{af_array},Cdouble,UInt32,Ptr{dim_t},af_dtype),arr,val,ndims,dims,_type))
+    af_error(ccall((:af_constant,af_lib),af_err,(Ptr{af_array},Cdouble,UInt32,Ptr{dim_t},af_dtype),arr,Cdouble(val),ndims,dims,_type))
     AFArray!(arr[])
 end
 
 export af_constant
 
-function af_constant_complex(real::Cdouble,imag::Cdouble,ndims::UInt32,dims,_type::af_dtype)
+function af_constant_complex(real::Real,imag::Real,ndims::UInt32,dims,_type::af_dtype)
     arr = RefValue{af_array}(0)
-    af_error(ccall((:af_constant_complex,af_lib),af_err,(Ptr{af_array},Cdouble,Cdouble,UInt32,Ptr{dim_t},af_dtype),arr,real,imag,ndims,dims,_type))
+    af_error(ccall((:af_constant_complex,af_lib),af_err,(Ptr{af_array},Cdouble,Cdouble,UInt32,Ptr{dim_t},af_dtype),arr,Cdouble(real),Cdouble(imag),ndims,dims,_type))
     AFArray!(arr[])
 end
 
@@ -1496,17 +1496,17 @@ end
 
 export af_select
 
-function af_select_scalar_r(cond::AFArray,a::AFArray,b::Cdouble)
+function af_select_scalar_r(cond::AFArray,a::AFArray,b::Real)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_select_scalar_r,af_lib),af_err,(Ptr{af_array},af_array,af_array,Cdouble),out,cond.arr,a.arr,b))
+    af_error(ccall((:af_select_scalar_r,af_lib),af_err,(Ptr{af_array},af_array,af_array,Cdouble),out,cond.arr,a.arr,Cdouble(b)))
     AFArray!(out[])
 end
 
 export af_select_scalar_r
 
-function af_select_scalar_l(cond::AFArray,a::Cdouble,b::AFArray)
+function af_select_scalar_l(cond::AFArray,a::Real,b::AFArray)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_select_scalar_l,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,af_array),out,cond.arr,a,b.arr))
+    af_error(ccall((:af_select_scalar_l,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,af_array),out,cond.arr,Cdouble(a),b.arr))
     AFArray!(out[])
 end
 
@@ -1518,8 +1518,8 @@ end
 
 export af_replace
 
-function af_replace_scalar(a::AFArray,cond::AFArray,b::Cdouble)
-    af_error(ccall((:af_replace_scalar,af_lib),af_err,(af_array,af_array,Cdouble),a.arr,cond.arr,b))
+function af_replace_scalar(a::AFArray,cond::AFArray,b::Real)
+    af_error(ccall((:af_replace_scalar,af_lib),af_err,(af_array,af_array,Cdouble),a.arr,cond.arr,Cdouble(b)))
 end
 
 export af_replace_scalar
@@ -1885,8 +1885,8 @@ end
 
 export af_draw_scatter_3d
 
-function af_draw_hist(wind::af_window,X::AFArray,minval::Cdouble,maxval::Cdouble,props)
-    af_error(ccall((:af_draw_hist,af_lib),af_err,(af_window,af_array,Cdouble,Cdouble,Ptr{af_cell}),wind,X.arr,minval,maxval,props))
+function af_draw_hist(wind::af_window,X::AFArray,minval::Real,maxval::Real,props)
+    af_error(ccall((:af_draw_hist,af_lib),af_err,(af_window,af_array,Cdouble,Cdouble,Ptr{af_cell}),wind,X.arr,Cdouble(minval),Cdouble(maxval),props))
 end
 
 export af_draw_hist
@@ -2094,9 +2094,9 @@ end
 
 export af_skew
 
-function af_histogram(_in::AFArray,nbins::UInt32,minval::Cdouble,maxval::Cdouble)
+function af_histogram(_in::AFArray,nbins::UInt32,minval::Real,maxval::Real)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_histogram,af_lib),af_err,(Ptr{af_array},af_array,UInt32,Cdouble,Cdouble),out,_in.arr,nbins,minval,maxval))
+    af_error(ccall((:af_histogram,af_lib),af_err,(Ptr{af_array},af_array,UInt32,Cdouble,Cdouble),out,_in.arr,nbins,Cdouble(minval),Cdouble(maxval)))
     AFArray!(out[])
 end
 
@@ -2207,9 +2207,9 @@ end
 
 export af_hist_equal
 
-function af_gaussian_kernel(rows::Integer,cols::Integer,sigma_r::Cdouble,sigma_c::Cdouble)
+function af_gaussian_kernel(rows::Integer,cols::Integer,sigma_r::Real,sigma_c::Real)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_gaussian_kernel,af_lib),af_err,(Ptr{af_array},Cint,Cint,Cdouble,Cdouble),out,Cint(rows),Cint(cols),sigma_r,sigma_c))
+    af_error(ccall((:af_gaussian_kernel,af_lib),af_err,(Ptr{af_array},Cint,Cint,Cdouble,Cdouble),out,Cint(rows),Cint(cols),Cdouble(sigma_r),Cdouble(sigma_c)))
     AFArray!(out[])
 end
 
@@ -2392,9 +2392,9 @@ end
 
 export af_inverse
 
-function af_rank(_in::AFArray,tol::Cdouble)
+function af_rank(_in::AFArray,tol::Real)
     rank = RefValue{UInt32}(0)
-    af_error(ccall((:af_rank,af_lib),af_err,(Ptr{UInt32},af_array,Cdouble),rank,_in.arr,tol))
+    af_error(ccall((:af_rank,af_lib),af_err,(Ptr{UInt32},af_array,Cdouble),rank,_in.arr,Cdouble(tol)))
     rank[]
 end
 
@@ -2409,9 +2409,9 @@ end
 
 export af_det
 
-function af_norm(_in::AFArray,_type::af_norm_type,p::Cdouble,q::Cdouble)
+function af_norm(_in::AFArray,_type::af_norm_type,p::Real,q::Real)
     out = RefValue{Cdouble}(0)
-    af_error(ccall((:af_norm,af_lib),af_err,(Ptr{Cdouble},af_array,af_norm_type,Cdouble,Cdouble),out,_in.arr,_type,p,q))
+    af_error(ccall((:af_norm,af_lib),af_err,(Ptr{Cdouble},af_array,af_norm_type,Cdouble,Cdouble),out,_in.arr,_type,Cdouble(p),Cdouble(q)))
     out[]
 end
 
@@ -2555,133 +2555,133 @@ end
 
 export af_approx2
 
-function af_fft(_in::AFArray,norm_factor::Cdouble,odim0::dim_t)
+function af_fft(_in::AFArray,norm_factor::Real,odim0::dim_t)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_fft,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t),out,_in.arr,norm_factor,odim0))
+    af_error(ccall((:af_fft,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t),out,_in.arr,Cdouble(norm_factor),odim0))
     AFArray!(out[])
 end
 
 export af_fft
 
-function af_fft_inplace(_in::AFArray,norm_factor::Cdouble)
-    af_error(ccall((:af_fft_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,norm_factor))
+function af_fft_inplace(_in::AFArray,norm_factor::Real)
+    af_error(ccall((:af_fft_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
 end
 
 export af_fft_inplace
 
-function af_fft2(_in::AFArray,norm_factor::Cdouble,odim0::dim_t,odim1::dim_t)
+function af_fft2(_in::AFArray,norm_factor::Real,odim0::dim_t,odim1::dim_t)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_fft2,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t),out,_in.arr,norm_factor,odim0,odim1))
+    af_error(ccall((:af_fft2,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),odim0,odim1))
     AFArray!(out[])
 end
 
 export af_fft2
 
-function af_fft2_inplace(_in::AFArray,norm_factor::Cdouble)
-    af_error(ccall((:af_fft2_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,norm_factor))
+function af_fft2_inplace(_in::AFArray,norm_factor::Real)
+    af_error(ccall((:af_fft2_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
 end
 
 export af_fft2_inplace
 
-function af_fft3(_in::AFArray,norm_factor::Cdouble,odim0::dim_t,odim1::dim_t,odim2::dim_t)
+function af_fft3(_in::AFArray,norm_factor::Real,odim0::dim_t,odim1::dim_t,odim2::dim_t)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_fft3,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t,dim_t),out,_in.arr,norm_factor,odim0,odim1,odim2))
+    af_error(ccall((:af_fft3,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),odim0,odim1,odim2))
     AFArray!(out[])
 end
 
 export af_fft3
 
-function af_fft3_inplace(_in::AFArray,norm_factor::Cdouble)
-    af_error(ccall((:af_fft3_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,norm_factor))
+function af_fft3_inplace(_in::AFArray,norm_factor::Real)
+    af_error(ccall((:af_fft3_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
 end
 
 export af_fft3_inplace
 
-function af_ifft(_in::AFArray,norm_factor::Cdouble,odim0::dim_t)
+function af_ifft(_in::AFArray,norm_factor::Real,odim0::dim_t)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_ifft,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t),out,_in.arr,norm_factor,odim0))
+    af_error(ccall((:af_ifft,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t),out,_in.arr,Cdouble(norm_factor),odim0))
     AFArray!(out[])
 end
 
 export af_ifft
 
-function af_ifft_inplace(_in::AFArray,norm_factor::Cdouble)
-    af_error(ccall((:af_ifft_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,norm_factor))
+function af_ifft_inplace(_in::AFArray,norm_factor::Real)
+    af_error(ccall((:af_ifft_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
 end
 
 export af_ifft_inplace
 
-function af_ifft2(_in::AFArray,norm_factor::Cdouble,odim0::dim_t,odim1::dim_t)
+function af_ifft2(_in::AFArray,norm_factor::Real,odim0::dim_t,odim1::dim_t)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_ifft2,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t),out,_in.arr,norm_factor,odim0,odim1))
+    af_error(ccall((:af_ifft2,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),odim0,odim1))
     AFArray!(out[])
 end
 
 export af_ifft2
 
-function af_ifft2_inplace(_in::AFArray,norm_factor::Cdouble)
-    af_error(ccall((:af_ifft2_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,norm_factor))
+function af_ifft2_inplace(_in::AFArray,norm_factor::Real)
+    af_error(ccall((:af_ifft2_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
 end
 
 export af_ifft2_inplace
 
-function af_ifft3(_in::AFArray,norm_factor::Cdouble,odim0::dim_t,odim1::dim_t,odim2::dim_t)
+function af_ifft3(_in::AFArray,norm_factor::Real,odim0::dim_t,odim1::dim_t,odim2::dim_t)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_ifft3,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t,dim_t),out,_in.arr,norm_factor,odim0,odim1,odim2))
+    af_error(ccall((:af_ifft3,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),odim0,odim1,odim2))
     AFArray!(out[])
 end
 
 export af_ifft3
 
-function af_ifft3_inplace(_in::AFArray,norm_factor::Cdouble)
-    af_error(ccall((:af_ifft3_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,norm_factor))
+function af_ifft3_inplace(_in::AFArray,norm_factor::Real)
+    af_error(ccall((:af_ifft3_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
 end
 
 export af_ifft3_inplace
 
-function af_fft_r2c(_in::AFArray,norm_factor::Cdouble,pad0::dim_t)
+function af_fft_r2c(_in::AFArray,norm_factor::Real,pad0::dim_t)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_fft_r2c,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t),out,_in.arr,norm_factor,pad0))
+    af_error(ccall((:af_fft_r2c,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t),out,_in.arr,Cdouble(norm_factor),pad0))
     AFArray!(out[])
 end
 
 export af_fft_r2c
 
-function af_fft2_r2c(_in::AFArray,norm_factor::Cdouble,pad0::dim_t,pad1::dim_t)
+function af_fft2_r2c(_in::AFArray,norm_factor::Real,pad0::dim_t,pad1::dim_t)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_fft2_r2c,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t),out,_in.arr,norm_factor,pad0,pad1))
+    af_error(ccall((:af_fft2_r2c,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),pad0,pad1))
     AFArray!(out[])
 end
 
 export af_fft2_r2c
 
-function af_fft3_r2c(_in::AFArray,norm_factor::Cdouble,pad0::dim_t,pad1::dim_t,pad2::dim_t)
+function af_fft3_r2c(_in::AFArray,norm_factor::Real,pad0::dim_t,pad1::dim_t,pad2::dim_t)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_fft3_r2c,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t,dim_t),out,_in.arr,norm_factor,pad0,pad1,pad2))
+    af_error(ccall((:af_fft3_r2c,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),pad0,pad1,pad2))
     AFArray!(out[])
 end
 
 export af_fft3_r2c
 
-function af_fft_c2r(_in::AFArray,norm_factor::Cdouble,is_odd::Bool)
+function af_fft_c2r(_in::AFArray,norm_factor::Real,is_odd::Bool)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_fft_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,norm_factor,is_odd))
+    af_error(ccall((:af_fft_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,Cdouble(norm_factor),is_odd))
     AFArray!(out[])
 end
 
 export af_fft_c2r
 
-function af_fft2_c2r(_in::AFArray,norm_factor::Cdouble,is_odd::Bool)
+function af_fft2_c2r(_in::AFArray,norm_factor::Real,is_odd::Bool)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_fft2_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,norm_factor,is_odd))
+    af_error(ccall((:af_fft2_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,Cdouble(norm_factor),is_odd))
     AFArray!(out[])
 end
 
 export af_fft2_c2r
 
-function af_fft3_c2r(_in::AFArray,norm_factor::Cdouble,is_odd::Bool)
+function af_fft3_c2r(_in::AFArray,norm_factor::Real,is_odd::Bool)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_fft3_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,norm_factor,is_odd))
+    af_error(ccall((:af_fft3_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,Cdouble(norm_factor),is_odd))
     AFArray!(out[])
 end
 
