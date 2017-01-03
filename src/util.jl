@@ -45,3 +45,5 @@ function af_create_array{T,N}(data::AbstractArray{T,N})
                    arr,Ref(data),UInt32(length(sz)),Ref([sz...]),af_type(T)))
     AFArray{T,N}(arr[])
 end
+
+AFArray!(arr::af_array) = AFArray{af_get_type!(arr), af_get_numdims!(arr)}(arr)
