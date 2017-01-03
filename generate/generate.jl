@@ -50,6 +50,9 @@ function rewrite(line::Expr)
                 elseif args[k].args[2] == :Cint
                     args[k].args[2] = :Integer
                     vals[k] = Expr(:call, :Cint, vals[k])
+                elseif args[k].args[2] == :UInt32
+                    args[k].args[2] = :Integer
+                    vals[k] = Expr(:call, :UInt32, vals[k])
                 elseif args[k].args[2] == :Cdouble
                     args[k].args[2] = :Real
                     vals[k] = Expr(:call, :Cdouble, vals[k])
