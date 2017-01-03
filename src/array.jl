@@ -13,3 +13,10 @@ typealias AFVolume{T} AFArray{T,3}
 typealias AFTensor{T} AFArray{T,4}
 
 export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
+
+import Base: convert
+
+function convert{T,N}(::Type{AFArray{T,N}}, a::Array{T,N})
+    arr = af_create_array(Ref(a), Cuint(N), Ref([size(a)...]), af_type(T))
+    AFArray{T,N}(arr)
+end
