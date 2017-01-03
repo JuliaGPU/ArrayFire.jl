@@ -907,14 +907,6 @@ end
 
 export array_to_string
 
-function example_function{T,N}(_in::AFArray{T,N},param::af_someenum_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_example_function,af_lib),af_err,(Ptr{af_array},af_array,af_someenum_t),out,_in.arr,param))
-    AFArray{T,N}(out[])
-end
-
-export example_function
-
 function afversion()
     major = RefValue{Cint}(0)
     minor = RefValue{Cint}(0)
@@ -1020,14 +1012,6 @@ end
 
 export release_indexers
 
-function create_array(data,ndims::Integer,dims,_type::af_dtype)
-    arr = RefValue{af_array}(0)
-    _error(ccall((:af_create_array,af_lib),af_err,(Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),arr,data,UInt32(ndims),dims,_type))
-    AFArray!(arr[])
-end
-
-export create_array
-
 function create_handle(ndims::Integer,dims,_type::af_dtype)
     arr = RefValue{af_array}(0)
     _error(ccall((:af_create_handle,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),arr,UInt32(ndims),dims,_type))
@@ -1061,22 +1045,6 @@ function release_array(arr::AFArray)
 end
 
 export release_array
-
-function retain_array{T,N}(_in::AFArray{T,N})
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_retain_array,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{T,N}(out[])
-end
-
-export retain_array
-
-function get_data_ref_count(_in::AFArray)
-    use_count = RefValue{Cint}(0)
-    _error(ccall((:af_get_data_ref_count,af_lib),af_err,(Ptr{Cint},af_array),use_count,_in.arr))
-    use_count[]
-end
-
-export get_data_ref_count
 
 function afeval(_in::AFArray)
     _error(ccall((:af_eval,af_lib),af_err,(af_array,),_in.arr))
@@ -1536,18 +1504,6 @@ end
 
 export afinit
 
-function info_string(str,verbose::Bool)
-    _error(ccall((:af_info_string,af_lib),af_err,(Ptr{Cstring},Bool),str,verbose))
-end
-
-export info_string
-
-function device_info(d_name,d_platform,d_toolkit,d_compute)
-    _error(ccall((:af_device_info,af_lib),af_err,(Cstring,Cstring,Cstring,Cstring),d_name,d_platform,d_toolkit,d_compute))
-end
-
-export device_info
-
 function get_device_count()
     num_of_devices = RefValue{Cint}(0)
     _error(ccall((:af_get_device_count,af_lib),af_err,(Ptr{Cint},),num_of_devices))
@@ -1597,34 +1553,6 @@ function free_device(ptr)
 end
 
 export free_device
-
-function alloc_pinned(bytes::dim_t)
-    ptr = RefValue{Ptr{Void}}(0)
-    _error(ccall((:af_alloc_pinned,af_lib),af_err,(Ptr{Ptr{Void}},dim_t),ptr,bytes))
-    ptr[]
-end
-
-export alloc_pinned
-
-function free_pinned(ptr)
-    _error(ccall((:af_free_pinned,af_lib),af_err,(Ptr{Void},),ptr))
-end
-
-export free_pinned
-
-function alloc_host(bytes::dim_t)
-    ptr = RefValue{Ptr{Void}}(0)
-    _error(ccall((:af_alloc_host,af_lib),af_err,(Ptr{Ptr{Void}},dim_t),ptr,bytes))
-    ptr[]
-end
-
-export alloc_host
-
-function free_host(ptr)
-    _error(ccall((:af_free_host,af_lib),af_err,(Ptr{Void},),ptr))
-end
-
-export free_host
 
 function device_array(data,ndims::Integer,dims,_type::af_dtype)
     arr = RefValue{af_array}(0)
@@ -1710,12 +1638,6 @@ function get_device_ptr(arr::AFArray)
 end
 
 export get_device_ptr
-
-function get_last_error(msg,len)
-    ccall((:af_get_last_error,af_lib),Void,(Ptr{Cstring},Ptr{dim_t}),msg,len)
-end
-
-export get_last_error
 
 function err_to_string(err::af_err)
     ccall((:af_err_to_string,af_lib),Cstring,(af_err,),err)

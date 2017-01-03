@@ -45,11 +45,15 @@ const renames = Dict("sign" => "signbit", "product" => "prod", "init" => "afinit
                      "copy_array" => "copy", "get_version" => "afversion", "eval" => "afeval",
                      "min" => "minimum", "max" => "maximum")
 
+const ignore = Set(["example_function", "create_array", "retain_array", "get_data_ref_count", "info_string",
+                    "device_info", "alloc_host", "free_host", "alloc_pinned", "free_pinned", "get_last_error"])
+
 function rewrite(line::Expr)
     if line.head == :function
         hdr = line.args[1].args
         name = replace("$(hdr[1])", "af_", "", 1)
         name = get(renames, name, name)
+        in(name, ignore) && return []
         hdr[1] = Symbol(name)
         args = hdr[2:end]
         body = line.args[2].args
