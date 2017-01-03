@@ -32,6 +32,15 @@ function rewrite(line::Expr)
         args = hdr[2:end]
         body = line.args[2].args
         types = body[1].args[3].args
+
+        has_arrays = false
+        for k = 1:length(types)
+            if types[k] == :af_array
+                has_arrays = true
+                break
+            end
+        end
+
         ret_type = body[1].args[2]
         if ret_type == :af_err
             body[1] = Expr(:call, :af_error, body[1])
@@ -39,7 +48,8 @@ function rewrite(line::Expr)
         num_out = 0
         for k = 1:length(types)
             t = types[k]
-            if isa(t, Expr) && t.args[1] == :Ptr && t.args[2] != :Void
+            if isa(t, Expr) && t.args[1] == :Ptr && t.args[2] != :Void && t.args[2] != :Cstring
+                has_arrays |= t.args[2] == :af_array
                 num_out = k
             else
                 break
@@ -58,7 +68,7 @@ function rewrite(line::Expr)
                 push!(body, Expr(:tuple, map(x -> Expr(:ref, x), args[1:num_out])...))
             end
         end
-        return [line, Expr(:export, name)]
+        return has_arrays? line : [line, Expr(:export, name)]
     end
     line
 end
