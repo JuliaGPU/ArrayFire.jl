@@ -27,7 +27,7 @@ end
 
 function return_val(typ, arg)
     if typ.args[2] == :af_array
-        Expr(:call, :AFArray, Expr(:ref, arg))
+        Expr(:call, :AFArray!, Expr(:ref, arg))
     else
         Expr(:ref, arg)
     end
