@@ -2,7 +2,7 @@ type AFArray{T,N}
     arr::af_array
     function AFArray(arr::af_array)
         a = new(arr)
-        finalizer(a, x -> af_release_array(x))
+        finalizer(a, x -> af_release_array(x.arr))
         a
     end
 end

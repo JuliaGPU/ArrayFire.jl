@@ -1022,11 +1022,10 @@ end
 
 export af_release_indexers
 
-function af_create_array(ndims::UInt32,dims,_type::af_dtype)
+function af_create_array(data,ndims::UInt32,dims,_type::af_dtype)
     arr = RefValue{af_array}(0)
-    data = RefValue{Void}(0)
     af_error(ccall((:af_create_array,af_lib),af_err,(Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),arr,data,ndims,dims,_type))
-    (arr[],data[])
+    arr[]
 end
 
 export af_create_array
@@ -1053,10 +1052,8 @@ end
 
 export af_write_array
 
-function af_get_data_ptr(arr::af_array)
-    data = RefValue{Void}(0)
+function af_get_data_ptr(data,arr::af_array)
     af_error(ccall((:af_get_data_ptr,af_lib),af_err,(Ptr{Void},af_array),data,arr))
-    data[]
 end
 
 export af_get_data_ptr
@@ -1599,10 +1596,8 @@ end
 
 export af_alloc_device
 
-function af_free_device()
-    ptr = RefValue{Void}(0)
+function af_free_device(ptr)
     af_error(ccall((:af_free_device,af_lib),af_err,(Ptr{Void},),ptr))
-    ptr[]
 end
 
 export af_free_device
@@ -1615,10 +1610,8 @@ end
 
 export af_alloc_pinned
 
-function af_free_pinned()
-    ptr = RefValue{Void}(0)
+function af_free_pinned(ptr)
     af_error(ccall((:af_free_pinned,af_lib),af_err,(Ptr{Void},),ptr))
-    ptr[]
 end
 
 export af_free_pinned
@@ -1631,19 +1624,16 @@ end
 
 export af_alloc_host
 
-function af_free_host()
-    ptr = RefValue{Void}(0)
+function af_free_host(ptr)
     af_error(ccall((:af_free_host,af_lib),af_err,(Ptr{Void},),ptr))
-    ptr[]
 end
 
 export af_free_host
 
-function af_device_array(ndims::UInt32,dims,_type::af_dtype)
+function af_device_array(data,ndims::UInt32,dims,_type::af_dtype)
     arr = RefValue{af_array}(0)
-    data = RefValue{Void}(0)
     af_error(ccall((:af_device_array,af_lib),af_err,(Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),arr,data,ndims,dims,_type))
-    (arr[],data[])
+    arr[]
 end
 
 export af_device_array
@@ -2011,11 +2001,10 @@ end
 
 export af_save_image
 
-function af_load_image_memory()
+function af_load_image_memory(ptr)
     out = RefValue{af_array}(0)
-    ptr = RefValue{Void}(0)
     af_error(ccall((:af_load_image_memory,af_lib),af_err,(Ptr{af_array},Ptr{Void}),out,ptr))
-    (out[],ptr[])
+    out[]
 end
 
 export af_load_image_memory
@@ -2028,10 +2017,8 @@ end
 
 export af_save_image_memory
 
-function af_delete_image_memory()
-    ptr = RefValue{Void}(0)
+function af_delete_image_memory(ptr)
     af_error(ccall((:af_delete_image_memory,af_lib),af_err,(Ptr{Void},),ptr))
-    ptr[]
 end
 
 export af_delete_image_memory

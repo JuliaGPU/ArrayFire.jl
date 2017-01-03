@@ -38,7 +38,8 @@ function rewrite(line::Expr)
         end
         num_out = 0
         for k = 1:length(types)
-            if isa(types[k], Expr) && types[k].args[1] == :Ptr
+            t = types[k]
+            if isa(t, Expr) && t.args[1] == :Ptr && t.args[2] != :Void
                 num_out = k
             else
                 break
