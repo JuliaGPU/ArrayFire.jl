@@ -1,6 +1,6 @@
-function af_error(err::af_err)
+function _error(err::af_err)
     if err == 0; return; end
-    str = af_err_to_string(err)
+    str = err_to_string(err)
     throw(ErrorException("ArrayFire Error ($err) : $(unsafe_string(str))"))
 end
 
@@ -26,24 +26,24 @@ af_jltype(::Val{u8})  = UInt8
 af_jltype(::Val{s64}) = Int64
 af_jltype(::Val{u64}) = UInt64
 
-function af_get_numdims!(arr::af_array)
+function get_numdims!(arr::af_array)
     result = RefValue{UInt32}(0)
-    af_error(ccall((:af_get_numdims,af_lib),af_err,(Ptr{UInt32},af_array),result,arr))
+    _error(ccall((:af_get_numdims,af_lib),af_err,(Ptr{UInt32},af_array),result,arr))
     Int(result[])
 end
 
-function af_get_type!(arr::af_array)
+function get_type!(arr::af_array)
     _type = RefValue{af_dtype}(0)
-    af_error(ccall((:af_get_type,af_lib),af_err,(Ptr{af_dtype},af_array),_type,arr))
+    _error(ccall((:af_get_type,af_lib),af_err,(Ptr{af_dtype},af_array),_type,arr))
     af_jltype(Val{_type[]}())
 end
 
-function af_create_array{T,N}(data::AbstractArray{T,N})
+function create_array{T,N}(data::AbstractArray{T,N})
     arr = RefValue{af_array}(0)
     sz = size(data)
-    af_error(ccall((:af_create_array,af_lib),af_err,(Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),
+    _error(ccall((:af_create_array,af_lib),af_err,(Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),
                    arr,Ref(data),UInt32(length(sz)),Ref([sz...]),af_type(T)))
     AFArray{T,N}(arr[])
 end
 
-AFArray!(arr::af_array) = AFArray{af_get_type!(arr), af_get_numdims!(arr)}(arr)
+AFArray!(arr::af_array) = AFArray{get_type!(arr), get_numdims!(arr)}(arr)

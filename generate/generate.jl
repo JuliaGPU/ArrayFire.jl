@@ -41,10 +41,16 @@ function return_val(typ, arg, expr)
     end
 end
 
+const renames = Dict("sign" => "signbit", "product" => "prod", "init" => "afinit", "info" => "afinfo",
+                     "copy_array" => "copy", "get_version" => "afversion", "eval" => "afeval",
+                     "min" => "minimum", "max" => "maximum")
+
 function rewrite(line::Expr)
     if line.head == :function
         hdr = line.args[1].args
-        name = hdr[1]
+        name = replace("$(hdr[1])", "af_", "", 1)
+        name = get(renames, name, name)
+        hdr[1] = Symbol(name)
         args = hdr[2:end]
         body = line.args[2].args
         types = body[1].args[3].args
@@ -74,7 +80,7 @@ function rewrite(line::Expr)
 
         ret_type = body[1].args[2]
         if ret_type == :af_err
-            body[1] = Expr(:call, :af_error, body[1])
+            body[1] = Expr(:call, :_error, body[1])
         end
         num_out = 0
         for k = 1:length(types)
@@ -90,7 +96,7 @@ function rewrite(line::Expr)
         end
         if num_out > 0
             if num_input_arrays == 1 && num_output_arrays == 1 && num_out == 1 &&
-                !contains("$name", "_sparse") && !contains("$name", "_true") && !contains("$name", "_is")
+                !contains(name, "_sparse") && !contains(name, "_true") && !contains(name, "_is")
                 hdr[1] = Expr(:curly, hdr[1], :T, :N)
                 for k = 1:length(args)
                     if isa(args[k], Expr) && args[k].args[2] == :AFArray
@@ -116,7 +122,7 @@ function rewrite(line::Expr)
                 unshift!(body, Expr(:(=), args[k], c))
             end
         end
-        return [line, Expr(:export, name)]
+        return [line, Expr(:export, Symbol(name))]
     end
     line
 end
