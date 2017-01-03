@@ -33,6 +33,14 @@ function return_val(typ, arg)
     end
 end
 
+function return_val(typ, arg, expr)
+    if typ.args[2] == :af_array
+        Expr(:call, expr, Expr(:ref, arg))
+    else
+        Expr(:ref, arg)
+    end
+end
+
 function rewrite(line::Expr)
     if line.head == :function
         hdr = line.args[1].args
@@ -42,11 +50,15 @@ function rewrite(line::Expr)
         types = body[1].args[3].args
         vals = view(body[1].args, 4:length(body[1].args))
 
+        num_input_arrays = 0
+        num_output_arrays = 0
+
         for k in 1:length(args)
             if isa(args[k], Expr)
                 if args[k].args[2] == :af_array
                     args[k].args[2] = :AFArray
                     vals[k] = Expr(:., vals[k], QuoteNode(:arr))
+                    num_input_arrays += 1
                 elseif args[k].args[2] == :Cint
                     args[k].args[2] = :Integer
                     vals[k] = Expr(:call, :Cint, vals[k])
@@ -67,6 +79,9 @@ function rewrite(line::Expr)
         num_out = 0
         for k = 1:length(types)
             t = types[k]
+            if isa(t, Expr) && t.args[1] == :Ptr && t.args[2] == :af_array
+                num_output_arrays += 1
+            end
             if isa(t, Expr) && t.args[1] == :Ptr && t.args[2] != :Void && t.args[2] != :Cstring
                 num_out = k
             else
@@ -74,16 +89,25 @@ function rewrite(line::Expr)
             end
         end
         if num_out > 0
+            if num_input_arrays == 1 && num_output_arrays == 1 && num_out == 1 &&
+                !contains("$name", "_sparse") && !contains("$name", "_true")
+                hdr[1] = Expr(:curly, hdr[1], :T, :N)
+                for k = 1:length(args)
+                    if isa(args[k], Expr) && args[k].args[2] == :AFArray
+                        args[k].args[2] = Expr(:curly, :AFArray, :T, :N)
+                    end
+                end
+                push!(body, return_val(types[1], args[1], Expr(:curly, :AFArray, :T, :N)))
+            elseif num_out == 1
+                push!(body, return_val(types[1], args[1]))
+            else
+                push!(body, Expr(:tuple, map(k->return_val(types[k], args[k]), 1:num_out)...))
+            end
             for k in num_out:-1:1
                 deleteat!(hdr, 2)
                 t = Expr(:curly, :RefValue, types[k].args[2])
                 c = Expr(:call, t, 0)
                 unshift!(body, Expr(:(=), args[k], c))
-            end
-            if num_out == 1
-                push!(body, return_val(types[1], args[1]))
-            else
-                push!(body, Expr(:tuple, map(k->return_val(types[k], args[k]), 1:num_out)...))
             end
         end
         return [line, Expr(:export, name)]

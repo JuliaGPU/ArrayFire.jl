@@ -8,5 +8,5 @@ using Base.Test
 @test af_set_manual_eval_flag(true) == nothing
 @test af_get_manual_eval_flag() == true
 arr1 = @inferred AFArray{Int,1}([1, 2])
-arr2 = copy(arr1)
+arr2 = @inferred copy(arr1)
 # @test arr1 == arr2
