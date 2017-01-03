@@ -37,3 +37,11 @@ function af_get_type!(arr::af_array)
     af_error(ccall((:af_get_type,af_lib),af_err,(Ptr{af_dtype},af_array),_type,arr))
     af_jltype(Val{_type[]}())
 end
+
+function af_create_array{T,N}(data::AbstractArray{T,N})
+    arr = RefValue{af_array}(0)
+    sz = size(data)
+    af_error(ccall((:af_create_array,af_lib),af_err,(Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),
+                   arr,data,Cuint(length(sz)),Ref([sz...]),af_type(T)))
+    AFArray{T,N}(arr[])
+end
