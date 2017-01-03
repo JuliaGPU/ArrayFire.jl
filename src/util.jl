@@ -15,6 +15,17 @@ af_type(::Type{UInt8})            = u8
 af_type(::Type{Int64})            = s64
 af_type(::Type{UInt64})           = u64
 
+af_jltype(::Val{f32}) = Float32
+af_jltype(::Val{c32}) = Complex{Float32}
+af_jltype(::Val{f64}) = Float64
+af_jltype(::Val{c64}) = Complex{Float64}
+af_jltype(::Val{b8}) = Bool
+af_jltype(::Val{s32}) = Int32
+af_jltype(::Val{u32}) = UInt32
+af_jltype(::Val{u8}) = UInt8
+af_jltype(::Val{s64}) = Int64
+af_jltype(::Val{u64}) = UInt64
+
 function af_get_numdims!(arr::af_array)
     result = RefValue{UInt32}(0)
     af_error(ccall((:af_get_numdims,af_lib),af_err,(Ptr{UInt32},af_array),result,arr))
@@ -24,26 +35,5 @@ end
 function af_get_type!(arr::af_array)
     _type = RefValue{af_dtype}(0)
     af_error(ccall((:af_get_type,af_lib),af_err,(Ptr{af_dtype},af_array),_type,arr))
-    t = _type[]
-    if t == f32
-        return Float32
-    elseif t == c32
-        return Complex{Float32}
-    elseif t == f64
-        return Float64
-    elseif t == c64
-        return Complex{Float64}
-    elseif t == b8
-        return Bool
-    elseif t == s32
-        return Int32
-    elseif t == u32
-        return UInt32
-    elseif t == u8
-        return UInt8
-    elseif t == s64
-        return Int64
-    elseif t == u64
-        return UInt64
-    end
+    af_jltype(Val{_type[]}())
 end
