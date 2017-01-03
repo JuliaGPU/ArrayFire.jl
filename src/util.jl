@@ -19,10 +19,10 @@ af_jltype(::Val{f32}) = Float32
 af_jltype(::Val{c32}) = Complex{Float32}
 af_jltype(::Val{f64}) = Float64
 af_jltype(::Val{c64}) = Complex{Float64}
-af_jltype(::Val{b8}) = Bool
+af_jltype(::Val{b8})  = Bool
 af_jltype(::Val{s32}) = Int32
 af_jltype(::Val{u32}) = UInt32
-af_jltype(::Val{u8}) = UInt8
+af_jltype(::Val{u8})  = UInt8
 af_jltype(::Val{s64}) = Int64
 af_jltype(::Val{u64}) = UInt64
 
