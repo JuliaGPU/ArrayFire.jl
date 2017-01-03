@@ -16,9 +16,6 @@ export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
 
 import Base: convert, copy
 
-function convert{T,N}(::Type{AFArray{T,N}}, a::Array{T,N})
-    arr = af_create_array(Ref(a), Cuint(N), Ref([size(a)...]), af_type(T))
-    AFArray{T,N}(arr)
-end
-
-copy{T,N}(a::AFArray{T,N}) = AFArray{T,N}(af_copy_array(a))
+AFArray(arr::af_array) = AFArray{af_get_type!(arr), af_get_numdims!(arr)}(arr)
+convert{T,N}(::Type{AFArray{T,N}}, a::Array{T,N}) = af_create_array(a, Cuint(N), Ref([size(a)...]), af_type(T))
+copy{T,N}(a::AFArray{T,N}) = af_copy_array(a)

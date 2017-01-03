@@ -25,6 +25,14 @@ function wrap_cursor(name, cursor)
     true
 end
 
+function return_val(typ, arg)
+    if typ.args[2] == :af_array
+        Expr(:call, :AFArray, Expr(:ref, arg))
+    else
+        Expr(:ref, arg)
+    end
+end
+
 function rewrite(line::Expr)
     if line.head == :function
         hdr = line.args[1].args
@@ -62,9 +70,9 @@ function rewrite(line::Expr)
                 unshift!(body, Expr(:(=), args[k], c))
             end
             if num_out == 1
-                push!(body, Expr(:ref, args[1]))
+                push!(body, return_val(types[1], args[1]))
             else
-                push!(body, Expr(:tuple, map(x -> Expr(:ref, x), args[1:num_out])...))
+                push!(body, Expr(:tuple, map(k->return_val(types[k], args[k]), 1:num_out)...))
             end
         end
         return [line, Expr(:export, name)]
