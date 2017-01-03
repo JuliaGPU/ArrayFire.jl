@@ -43,9 +43,14 @@ function rewrite(line::Expr)
         vals = view(body[1].args, 4:length(body[1].args))
 
         for k in 1:length(args)
-            if isa(args[k], Expr) && args[k].args[2] == :af_array
-                args[k].args[2] = :AFArray
-                vals[k] = Expr(:., vals[k], QuoteNode(:arr))
+            if isa(args[k], Expr)
+                if args[k].args[2] == :af_array
+                    args[k].args[2] = :AFArray
+                    vals[k] = Expr(:., vals[k], QuoteNode(:arr))
+                elseif args[k].args[2] == :Cint
+                    args[k].args[2] = :Integer
+                    vals[k] = Expr(:call, :Cint, vals[k])
+                end
             end
         end
 

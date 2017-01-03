@@ -2,73 +2,73 @@
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
 
-function af_sum(_in::AFArray,dim::Cint)
+function af_sum(_in::AFArray,dim::Integer)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_sum,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,dim))
+    af_error(ccall((:af_sum,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
     AFArray!(out[])
 end
 
 export af_sum
 
-function af_sum_nan(_in::AFArray,dim::Cint,nanval::Cdouble)
+function af_sum_nan(_in::AFArray,dim::Integer,nanval::Cdouble)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_sum_nan,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in.arr,dim,nanval))
+    af_error(ccall((:af_sum_nan,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in.arr,Cint(dim),nanval))
     AFArray!(out[])
 end
 
 export af_sum_nan
 
-function af_product(_in::AFArray,dim::Cint)
+function af_product(_in::AFArray,dim::Integer)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_product,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,dim))
+    af_error(ccall((:af_product,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
     AFArray!(out[])
 end
 
 export af_product
 
-function af_product_nan(_in::AFArray,dim::Cint,nanval::Cdouble)
+function af_product_nan(_in::AFArray,dim::Integer,nanval::Cdouble)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_product_nan,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in.arr,dim,nanval))
+    af_error(ccall((:af_product_nan,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in.arr,Cint(dim),nanval))
     AFArray!(out[])
 end
 
 export af_product_nan
 
-function af_min(_in::AFArray,dim::Cint)
+function af_min(_in::AFArray,dim::Integer)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_min,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,dim))
+    af_error(ccall((:af_min,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
     AFArray!(out[])
 end
 
 export af_min
 
-function af_max(_in::AFArray,dim::Cint)
+function af_max(_in::AFArray,dim::Integer)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_max,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,dim))
+    af_error(ccall((:af_max,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
     AFArray!(out[])
 end
 
 export af_max
 
-function af_all_true(_in::AFArray,dim::Cint)
+function af_all_true(_in::AFArray,dim::Integer)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_all_true,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,dim))
+    af_error(ccall((:af_all_true,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
     AFArray!(out[])
 end
 
 export af_all_true
 
-function af_any_true(_in::AFArray,dim::Cint)
+function af_any_true(_in::AFArray,dim::Integer)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_any_true,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,dim))
+    af_error(ccall((:af_any_true,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
     AFArray!(out[])
 end
 
 export af_any_true
 
-function af_count(_in::AFArray,dim::Cint)
+function af_count(_in::AFArray,dim::Integer)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_count,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,dim))
+    af_error(ccall((:af_count,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
     AFArray!(out[])
 end
 
@@ -155,19 +155,19 @@ end
 
 export af_count_all
 
-function af_imin(_in::AFArray,dim::Cint)
+function af_imin(_in::AFArray,dim::Integer)
     out = RefValue{af_array}(0)
     idx = RefValue{af_array}(0)
-    af_error(ccall((:af_imin,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,Cint),out,idx,_in.arr,dim))
+    af_error(ccall((:af_imin,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,Cint),out,idx,_in.arr,Cint(dim)))
     (AFArray!(out[]),AFArray!(idx[]))
 end
 
 export af_imin
 
-function af_imax(_in::AFArray,dim::Cint)
+function af_imax(_in::AFArray,dim::Integer)
     out = RefValue{af_array}(0)
     idx = RefValue{af_array}(0)
-    af_error(ccall((:af_imax,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,Cint),out,idx,_in.arr,dim))
+    af_error(ccall((:af_imax,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,Cint),out,idx,_in.arr,Cint(dim)))
     (AFArray!(out[]),AFArray!(idx[]))
 end
 
@@ -193,25 +193,25 @@ end
 
 export af_imax_all
 
-function af_accum(_in::AFArray,dim::Cint)
+function af_accum(_in::AFArray,dim::Integer)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_accum,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,dim))
+    af_error(ccall((:af_accum,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
     AFArray!(out[])
 end
 
 export af_accum
 
-function af_scan(_in::AFArray,dim::Cint,op::af_binary_op,inclusive_scan::Bool)
+function af_scan(_in::AFArray,dim::Integer,op::af_binary_op,inclusive_scan::Bool)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_scan,af_lib),af_err,(Ptr{af_array},af_array,Cint,af_binary_op,Bool),out,_in.arr,dim,op,inclusive_scan))
+    af_error(ccall((:af_scan,af_lib),af_err,(Ptr{af_array},af_array,Cint,af_binary_op,Bool),out,_in.arr,Cint(dim),op,inclusive_scan))
     AFArray!(out[])
 end
 
 export af_scan
 
-function af_scan_by_key(key::AFArray,_in::AFArray,dim::Cint,op::af_binary_op,inclusive_scan::Bool)
+function af_scan_by_key(key::AFArray,_in::AFArray,dim::Integer,op::af_binary_op,inclusive_scan::Bool)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_scan_by_key,af_lib),af_err,(Ptr{af_array},af_array,af_array,Cint,af_binary_op,Bool),out,key.arr,_in.arr,dim,op,inclusive_scan))
+    af_error(ccall((:af_scan_by_key,af_lib),af_err,(Ptr{af_array},af_array,af_array,Cint,af_binary_op,Bool),out,key.arr,_in.arr,Cint(dim),op,inclusive_scan))
     AFArray!(out[])
 end
 
@@ -225,17 +225,17 @@ end
 
 export af_where
 
-function af_diff1(_in::AFArray,dim::Cint)
+function af_diff1(_in::AFArray,dim::Integer)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_diff1,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,dim))
+    af_error(ccall((:af_diff1,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
     AFArray!(out[])
 end
 
 export af_diff1
 
-function af_diff2(_in::AFArray,dim::Cint)
+function af_diff2(_in::AFArray,dim::Integer)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_diff2,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,dim))
+    af_error(ccall((:af_diff2,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
     AFArray!(out[])
 end
 
@@ -863,8 +863,8 @@ end
 
 export af_print_array
 
-function af_print_array_gen(exp,arr::AFArray,precision::Cint)
-    af_error(ccall((:af_print_array_gen,af_lib),af_err,(Cstring,af_array,Cint),exp,arr.arr,precision))
+function af_print_array_gen(exp,arr::AFArray,precision::Integer)
+    af_error(ccall((:af_print_array_gen,af_lib),af_err,(Cstring,af_array,Cint),exp,arr.arr,Cint(precision)))
 end
 
 export af_print_array_gen
@@ -901,8 +901,8 @@ end
 
 export af_read_array_key_check
 
-function af_array_to_string(output,exp,arr::AFArray,precision::Cint,transpose::Bool)
-    af_error(ccall((:af_array_to_string,af_lib),af_err,(Ptr{Cstring},Cstring,af_array,Cint,Bool),output,exp,arr.arr,precision,transpose))
+function af_array_to_string(output,exp,arr::AFArray,precision::Integer,transpose::Bool)
+    af_error(ccall((:af_array_to_string,af_lib),af_err,(Ptr{Cstring},Cstring,af_array,Cint,Bool),output,exp,arr.arr,Cint(precision),transpose))
 end
 
 export af_array_to_string
@@ -1084,8 +1084,8 @@ end
 
 export af_eval
 
-function af_eval_multiple(num::Cint,arrays)
-    af_error(ccall((:af_eval_multiple,af_lib),af_err,(Cint,Ptr{af_array}),num,arrays))
+function af_eval_multiple(num::Integer,arrays)
+    af_error(ccall((:af_eval_multiple,af_lib),af_err,(Cint,Ptr{af_array}),Cint(num),arrays))
 end
 
 export af_eval_multiple
@@ -1368,9 +1368,9 @@ end
 
 export af_constant_ulong
 
-function af_range(ndims::UInt32,dims,seq_dim::Cint,_type::af_dtype)
+function af_range(ndims::UInt32,dims,seq_dim::Integer,_type::af_dtype)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_range,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},Cint,af_dtype),out,ndims,dims,seq_dim,_type))
+    af_error(ccall((:af_range,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},Cint,af_dtype),out,ndims,dims,Cint(seq_dim),_type))
     AFArray!(out[])
 end
 
@@ -1392,33 +1392,33 @@ end
 
 export af_identity
 
-function af_diag_create(_in::AFArray,num::Cint)
+function af_diag_create(_in::AFArray,num::Integer)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_diag_create,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,num))
+    af_error(ccall((:af_diag_create,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(num)))
     AFArray!(out[])
 end
 
 export af_diag_create
 
-function af_diag_extract(_in::AFArray,num::Cint)
+function af_diag_extract(_in::AFArray,num::Integer)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_diag_extract,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,num))
+    af_error(ccall((:af_diag_extract,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(num)))
     AFArray!(out[])
 end
 
 export af_diag_extract
 
-function af_join(dim::Cint,first::AFArray,second::AFArray)
+function af_join(dim::Integer,first::AFArray,second::AFArray)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_join,af_lib),af_err,(Ptr{af_array},Cint,af_array,af_array),out,dim,first.arr,second.arr))
+    af_error(ccall((:af_join,af_lib),af_err,(Ptr{af_array},Cint,af_array,af_array),out,Cint(dim),first.arr,second.arr))
     AFArray!(out[])
 end
 
 export af_join
 
-function af_join_many(dim::Cint,n_arrays::UInt32,inputs)
+function af_join_many(dim::Integer,n_arrays::UInt32,inputs)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_join_many,af_lib),af_err,(Ptr{af_array},Cint,UInt32,Ptr{af_array}),out,dim,n_arrays,inputs))
+    af_error(ccall((:af_join_many,af_lib),af_err,(Ptr{af_array},Cint,UInt32,Ptr{af_array}),out,Cint(dim),n_arrays,inputs))
     AFArray!(out[])
 end
 
@@ -1440,9 +1440,9 @@ end
 
 export af_reorder
 
-function af_shift(_in::AFArray,x::Cint,y::Cint,z::Cint,w::Cint)
+function af_shift(_in::AFArray,x::Integer,y::Integer,z::Integer,w::Integer)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_shift,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cint,Cint,Cint),out,_in.arr,x,y,z,w))
+    af_error(ccall((:af_shift,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cint,Cint,Cint),out,_in.arr,Cint(x),Cint(y),Cint(z),Cint(w)))
     AFArray!(out[])
 end
 
@@ -1556,16 +1556,16 @@ end
 
 export af_get_device_count
 
-function af_get_dbl_support(device::Cint)
+function af_get_dbl_support(device::Integer)
     available = RefValue{Bool}(0)
-    af_error(ccall((:af_get_dbl_support,af_lib),af_err,(Ptr{Bool},Cint),available,device))
+    af_error(ccall((:af_get_dbl_support,af_lib),af_err,(Ptr{Bool},Cint),available,Cint(device)))
     available[]
 end
 
 export af_get_dbl_support
 
-function af_set_device(device::Cint)
-    af_error(ccall((:af_set_device,af_lib),af_err,(Cint,),device))
+function af_set_device(device::Integer)
+    af_error(ccall((:af_set_device,af_lib),af_err,(Cint,),Cint(device)))
 end
 
 export af_set_device
@@ -1578,8 +1578,8 @@ end
 
 export af_get_device
 
-function af_sync(device::Cint)
-    af_error(ccall((:af_sync,af_lib),af_err,(Cint,),device))
+function af_sync(device::Integer)
+    af_error(ccall((:af_sync,af_lib),af_err,(Cint,),Cint(device)))
 end
 
 export af_sync
@@ -1645,8 +1645,8 @@ end
 
 export af_device_mem_info
 
-function af_print_mem_info(msg,device_id::Cint)
-    af_error(ccall((:af_print_mem_info,af_lib),af_err,(Cstring,Cint),msg,device_id))
+function af_print_mem_info(msg,device_id::Integer)
+    af_error(ccall((:af_print_mem_info,af_lib),af_err,(Cstring,Cint),msg,Cint(device_id)))
 end
 
 export af_print_mem_info
@@ -1793,9 +1793,9 @@ end
 
 export af_release_features
 
-function af_create_window(width::Cint,height::Cint,title)
+function af_create_window(width::Integer,height::Integer,title)
     out = RefValue{af_window}(0)
-    af_error(ccall((:af_create_window,af_lib),af_err,(Ptr{af_window},Cint,Cint,Cstring),out,width,height,title))
+    af_error(ccall((:af_create_window,af_lib),af_err,(Ptr{af_window},Cint,Cint,Cstring),out,Cint(width),Cint(height),title))
     out[]
 end
 
@@ -1915,8 +1915,8 @@ end
 
 export af_draw_vector_field_2d
 
-function af_grid(wind::af_window,rows::Cint,cols::Cint)
-    af_error(ccall((:af_grid,af_lib),af_err,(af_window,Cint,Cint),wind,rows,cols))
+function af_grid(wind::af_window,rows::Integer,cols::Integer)
+    af_error(ccall((:af_grid,af_lib),af_err,(af_window,Cint,Cint),wind,Cint(rows),Cint(cols)))
 end
 
 export af_grid
@@ -2207,9 +2207,9 @@ end
 
 export af_hist_equal
 
-function af_gaussian_kernel(rows::Cint,cols::Cint,sigma_r::Cdouble,sigma_c::Cdouble)
+function af_gaussian_kernel(rows::Integer,cols::Integer,sigma_r::Cdouble,sigma_c::Cdouble)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_gaussian_kernel,af_lib),af_err,(Ptr{af_array},Cint,Cint,Cdouble,Cdouble),out,rows,cols,sigma_r,sigma_c))
+    af_error(ccall((:af_gaussian_kernel,af_lib),af_err,(Ptr{af_array},Cint,Cint,Cdouble,Cdouble),out,Cint(rows),Cint(cols),sigma_r,sigma_c))
     AFArray!(out[])
 end
 
@@ -3076,9 +3076,9 @@ end
 
 export af_susan
 
-function af_dog(_in::AFArray,radius1::Cint,radius2::Cint)
+function af_dog(_in::AFArray,radius1::Integer,radius2::Integer)
     out = RefValue{af_array}(0)
-    af_error(ccall((:af_dog,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cint),out,_in.arr,radius1,radius2))
+    af_error(ccall((:af_dog,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cint),out,_in.arr,Cint(radius1),Cint(radius2)))
     AFArray!(out[])
 end
 
