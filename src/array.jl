@@ -16,7 +16,8 @@ typealias AFTensor{T} AFArray{T,4}
 
 export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
 
-import Base: convert, copy
+import Base: convert, copy, deepcopy_internal
 
 convert{T,N}(::Type{AFArray{T,N}}, a::AbstractArray{T,N}) = af_create_array(a)
 copy{T,N}(a::AFArray{T,N}) = af_copy_array(a)
+deepcopy_internal{T,N}(a::AFArray{T,N}, d::ObjectIdDict) = haskey(d, a) ? d[a]::AFArray{T,N} : copy(a)
