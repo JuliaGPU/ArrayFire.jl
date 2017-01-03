@@ -32,12 +32,12 @@ function rewrite(line::Expr)
         args = hdr[2:end]
         body = line.args[2].args
         types = body[1].args[3].args
+        vals = view(body[1].args, 4:length(body[1].args))
 
-        has_arrays = false
-        for k = 1:length(types)
-            if types[k] == :af_array
-                has_arrays = true
-                break
+        for k in 1:length(args)
+            if isa(args[k], Expr) && args[k].args[2] == :af_array
+                args[k].args[2] = :AFArray
+                vals[k] = Expr(:., vals[k], QuoteNode(:arr))
             end
         end
 
@@ -49,7 +49,6 @@ function rewrite(line::Expr)
         for k = 1:length(types)
             t = types[k]
             if isa(t, Expr) && t.args[1] == :Ptr && t.args[2] != :Void && t.args[2] != :Cstring
-                has_arrays |= t.args[2] == :af_array
                 num_out = k
             else
                 break
@@ -68,7 +67,7 @@ function rewrite(line::Expr)
                 push!(body, Expr(:tuple, map(x -> Expr(:ref, x), args[1:num_out])...))
             end
         end
-        return has_arrays? line : [line, Expr(:export, name)]
+        return [line, Expr(:export, name)]
     end
     line
 end
