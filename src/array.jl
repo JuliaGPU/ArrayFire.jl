@@ -3,8 +3,8 @@ type AFArray{T,N}
     function AFArray(arr::af_array)
         a = new(arr)
         finalizer(a, x -> af_release_array(x))
-        @assert af_get_type!(arr) == T
-        @assert af_get_numdims!(arr) == N
+        @assert af_get_type!(arr) == T "type mismatch: $(af_get_type!(arr)) != $T"
+        @assert af_get_numdims!(arr) == N "dims mismatch: $(af_get_numdims!(arr)) != $N"
         a
     end
 end

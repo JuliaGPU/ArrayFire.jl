@@ -827,26 +827,26 @@ end
 
 export af_lgamma
 
-function af_iszero{T,N}(_in::AFArray{T,N})
+function af_iszero(_in::AFArray)
     out = RefValue{af_array}(0)
     af_error(ccall((:af_iszero,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{T,N}(out[])
+    AFArray!(out[])
 end
 
 export af_iszero
 
-function af_isinf{T,N}(_in::AFArray{T,N})
+function af_isinf(_in::AFArray)
     out = RefValue{af_array}(0)
     af_error(ccall((:af_isinf,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{T,N}(out[])
+    AFArray!(out[])
 end
 
 export af_isinf
 
-function af_isnan{T,N}(_in::AFArray{T,N})
+function af_isnan(_in::AFArray)
     out = RefValue{af_array}(0)
     af_error(ccall((:af_isnan,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{T,N}(out[])
+    AFArray!(out[])
 end
 
 export af_isnan

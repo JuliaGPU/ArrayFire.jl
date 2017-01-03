@@ -90,7 +90,7 @@ function rewrite(line::Expr)
         end
         if num_out > 0
             if num_input_arrays == 1 && num_output_arrays == 1 && num_out == 1 &&
-                !contains("$name", "_sparse") && !contains("$name", "_true")
+                !contains("$name", "_sparse") && !contains("$name", "_true") && !contains("$name", "_is")
                 hdr[1] = Expr(:curly, hdr[1], :T, :N)
                 for k = 1:length(args)
                     if isa(args[k], Expr) && args[k].args[2] == :AFArray
@@ -99,8 +99,14 @@ function rewrite(line::Expr)
                 end
                 push!(body, return_val(types[1], args[1], Expr(:curly, :AFArray, :T, :N)))
             elseif num_out == 1
+                if num_output_arrays > 0
+                    @printf("No type inference for %s\n", name)
+                end
                 push!(body, return_val(types[1], args[1]))
             else
+                if num_output_arrays > 0
+                    @printf("No type inference for %s\n", name)
+                end
                 push!(body, Expr(:tuple, map(k->return_val(types[k], args[k]), 1:num_out)...))
             end
             for k in num_out:-1:1
