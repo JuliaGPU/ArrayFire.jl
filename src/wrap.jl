@@ -363,10 +363,10 @@ end
 
 export eq
 
-function neq(lhs::AFArray,rhs::AFArray,batch::Bool)
+function neq{T,N}(lhs::AFArray{T,N},rhs::AFArray{T,N},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_neq,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{Bool,N}(out[])
 end
 
 export neq

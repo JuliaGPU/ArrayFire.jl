@@ -50,7 +50,9 @@ const ignore = Set(["example_function", "create_array", "retain_array", "get_dat
                     "get_type", "get_numdims", "join_many", "eval_multiple", "get_size_of", "cast",
                     "constant", "constant_complex", "constant_long", "constant_ulong"])
 
-const booleans = Set(["lt", "gt", "le", "ge", "eq"])
+const booleans = Set(["lt", "gt", "le", "ge", "eq", "neq", "iszero", "isinf", "isnan"])
+
+const maths = Set(["add", "sub", "mul", "div", "rem", "mod", "atan2", "root", "pow", "dot"])
 
 const recast = Dict(:Cint => :Integer, :UInt32 => :Integer, :Cdouble => :Real)
 
@@ -104,7 +106,7 @@ function rewrite(line::Expr)
             end
         end
         if num_out > 0
-            if num_output_arrays == 1 && num_out == 1 && (startswith(name, "is") || in(name, booleans))
+            if num_output_arrays == 1 && num_out == 1 && name in booleans
                 hdr[1] = Expr(:curly, hdr[1], :T, :N)
                 for k = 1:length(args)
                     if isa(args[k], Expr) && args[k].args[2] == :AFArray
