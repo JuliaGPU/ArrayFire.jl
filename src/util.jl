@@ -52,7 +52,7 @@ function create_array{T,N}(data::AbstractArray{T,N})
     arr = RefValue{af_array}(0)
     sz = size(data)
     _error(ccall((:af_create_array,af_lib),af_err,(Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),
-                   arr,Ref(data),UInt32(length(sz)),Ref([sz...]),af_type(T)))
+                   arr,data,UInt32(length(sz)),[sz...],af_type(T)))
     AFArray{T,N}(arr[])
 end
 
