@@ -44,7 +44,7 @@ function run(iterations)
     println("Serial checksum: ", sum(put1))
     tic()
     put2 = blackscholes_serial.(sptprice_gpu, initStrike_gpu, rate_gpu, volatility_gpu, time_gpu)
-    eval(put2)
+    afeval(put2)
     t2 = toq()
     println("Parallel checksum: ", sum(put2))
     return t1, t2
@@ -53,7 +53,7 @@ end
 function driver()
     srand(0)
     tic()
-    iterations = 10^7
+    iterations = 10^6
     blackscholes_serial.(Float32[], Float32[], Float32[], Float32[], Float32[])
     blackscholes_serial(AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]),
                         AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]))
