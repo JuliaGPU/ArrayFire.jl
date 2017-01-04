@@ -65,4 +65,10 @@ function convert_array{T,N}(a::AFArray{T,N})
     ret
 end
 
+function recast_array{T1,N,T2}(::Type{AFArray{T1}},_in::AFArray{T2,N})
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_cast,af_lib),af_err,(Ptr{af_array},af_array,af_dtype),out,_in.arr,af_type(T1)))
+    AFArray{T1,N}(out[])
+end
+
 AFArray!(arr::af_array) = AFArray{get_type(arr), get_numdims(arr)}(arr)

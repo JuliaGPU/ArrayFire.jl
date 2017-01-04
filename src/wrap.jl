@@ -435,14 +435,6 @@ end
 
 export bitshiftr
 
-function cast{T,N}(_in::AFArray{T,N},_type::af_dtype)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_cast,af_lib),af_err,(Ptr{af_array},af_array,af_dtype),out,_in.arr,_type))
-    AFArray{T,N}(out[])
-end
-
-export cast
-
 function minof(lhs::AFArray,rhs::AFArray,batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_minof,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
@@ -925,14 +917,6 @@ end
 
 export get_revision
 
-function get_size_of(_type::af_dtype)
-    size = RefValue{Csize_t}(0)
-    _error(ccall((:af_get_size_of,af_lib),af_err,(Ptr{Csize_t},af_dtype),size,_type))
-    size[]
-end
-
-export get_size_of
-
 function index{T,N}(_in::AFArray{T,N},ndims::Integer,index)
     out = RefValue{af_array}(0)
     _error(ccall((:af_index,af_lib),af_err,(Ptr{af_array},af_array,UInt32,Ptr{af_seq}),out,_in.arr,UInt32(ndims),index))
@@ -1014,9 +998,9 @@ end
 
 export release_indexers
 
-function create_handle(ndims::Integer,dims,_type::af_dtype)
+function create_handle(ndims::Integer,dims,_type::Type)
     arr = RefValue{af_array}(0)
-    _error(ccall((:af_create_handle,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),arr,UInt32(ndims),dims,_type))
+    _error(ccall((:af_create_handle,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),arr,UInt32(ndims),dims,af_type(_type)))
     AFArray!(arr[])
 end
 
@@ -1284,17 +1268,17 @@ end
 
 export transpose_inplace
 
-function constant(val::Real,ndims::Integer,dims,_type::af_dtype)
+function constant(val::Real,ndims::Integer,dims,_type::Type)
     arr = RefValue{af_array}(0)
-    _error(ccall((:af_constant,af_lib),af_err,(Ptr{af_array},Cdouble,UInt32,Ptr{dim_t},af_dtype),arr,Cdouble(val),UInt32(ndims),dims,_type))
+    _error(ccall((:af_constant,af_lib),af_err,(Ptr{af_array},Cdouble,UInt32,Ptr{dim_t},af_dtype),arr,Cdouble(val),UInt32(ndims),dims,af_type(_type)))
     AFArray!(arr[])
 end
 
 export constant
 
-function constant_complex(real::Real,imag::Real,ndims::Integer,dims,_type::af_dtype)
+function constant_complex(real::Real,imag::Real,ndims::Integer,dims,_type::Type)
     arr = RefValue{af_array}(0)
-    _error(ccall((:af_constant_complex,af_lib),af_err,(Ptr{af_array},Cdouble,Cdouble,UInt32,Ptr{dim_t},af_dtype),arr,Cdouble(real),Cdouble(imag),UInt32(ndims),dims,_type))
+    _error(ccall((:af_constant_complex,af_lib),af_err,(Ptr{af_array},Cdouble,Cdouble,UInt32,Ptr{dim_t},af_dtype),arr,Cdouble(real),Cdouble(imag),UInt32(ndims),dims,af_type(_type)))
     AFArray!(arr[])
 end
 
@@ -1316,25 +1300,25 @@ end
 
 export constant_ulong
 
-function range(ndims::Integer,dims,seq_dim::Integer,_type::af_dtype)
+function range(ndims::Integer,dims,seq_dim::Integer,_type::Type)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_range,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},Cint,af_dtype),out,UInt32(ndims),dims,Cint(seq_dim),_type))
+    _error(ccall((:af_range,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},Cint,af_dtype),out,UInt32(ndims),dims,Cint(seq_dim),af_type(_type)))
     AFArray!(out[])
 end
 
 export range
 
-function iota(ndims::Integer,dims,t_ndims::Integer,tdims,_type::af_dtype)
+function iota(ndims::Integer,dims,t_ndims::Integer,tdims,_type::Type)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_iota,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},UInt32,Ptr{dim_t},af_dtype),out,UInt32(ndims),dims,UInt32(t_ndims),tdims,_type))
+    _error(ccall((:af_iota,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},UInt32,Ptr{dim_t},af_dtype),out,UInt32(ndims),dims,UInt32(t_ndims),tdims,af_type(_type)))
     AFArray!(out[])
 end
 
 export iota
 
-function identity(ndims::Integer,dims,_type::af_dtype)
+function identity(ndims::Integer,dims,_type::Type)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_identity,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),out,UInt32(ndims),dims,_type))
+    _error(ccall((:af_identity,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),out,UInt32(ndims),dims,af_type(_type)))
     AFArray!(out[])
 end
 
@@ -1526,9 +1510,9 @@ end
 
 export free_device
 
-function device_array(data,ndims::Integer,dims,_type::af_dtype)
+function device_array(data,ndims::Integer,dims,_type::Type)
     arr = RefValue{af_array}(0)
-    _error(ccall((:af_device_array,af_lib),af_err,(Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),arr,data,UInt32(ndims),dims,_type))
+    _error(ccall((:af_device_array,af_lib),af_err,(Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),arr,data,UInt32(ndims),dims,af_type(_type)))
     AFArray!(arr[])
 end
 
@@ -2069,9 +2053,9 @@ end
 
 export maxfilt
 
-function regions{T,N}(_in::AFArray{T,N},connectivity::af_connectivity,ty::af_dtype)
+function regions{T,N}(_in::AFArray{T,N},connectivity::af_connectivity,ty::Type)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_regions,af_lib),af_err,(Ptr{af_array},af_array,af_connectivity,af_dtype),out,_in.arr,connectivity,ty))
+    _error(ccall((:af_regions,af_lib),af_err,(Ptr{af_array},af_array,af_connectivity,af_dtype),out,_in.arr,connectivity,af_type(ty)))
     AFArray{T,N}(out[])
 end
 
@@ -2360,17 +2344,17 @@ end
 
 export random_engine_get_type
 
-function random_uniform(ndims::Integer,dims,_type::af_dtype,engine::af_random_engine)
+function random_uniform(ndims::Integer,dims,_type::Type,engine::af_random_engine)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_random_uniform,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype,af_random_engine),out,UInt32(ndims),dims,_type,engine))
+    _error(ccall((:af_random_uniform,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype,af_random_engine),out,UInt32(ndims),dims,af_type(_type),engine))
     AFArray!(out[])
 end
 
 export random_uniform
 
-function random_normal(ndims::Integer,dims,_type::af_dtype,engine::af_random_engine)
+function random_normal(ndims::Integer,dims,_type::Type,engine::af_random_engine)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_random_normal,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype,af_random_engine),out,UInt32(ndims),dims,_type,engine))
+    _error(ccall((:af_random_normal,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype,af_random_engine),out,UInt32(ndims),dims,af_type(_type),engine))
     AFArray!(out[])
 end
 
@@ -2412,17 +2396,17 @@ end
 
 export release_random_engine
 
-function randu(ndims::Integer,dims,_type::af_dtype)
+function randu(ndims::Integer,dims,_type::Type)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_randu,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),out,UInt32(ndims),dims,_type))
+    _error(ccall((:af_randu,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),out,UInt32(ndims),dims,af_type(_type)))
     AFArray!(out[])
 end
 
 export randu
 
-function randn(ndims::Integer,dims,_type::af_dtype)
+function randn(ndims::Integer,dims,_type::Type)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_randn,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),out,UInt32(ndims),dims,_type))
+    _error(ccall((:af_randn,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),out,UInt32(ndims),dims,af_type(_type)))
     AFArray!(out[])
 end
 
@@ -2700,9 +2684,9 @@ end
 
 export create_sparse_array
 
-function create_sparse_array_from_ptr(nRows::dim_t,nCols::dim_t,nNZ::dim_t,values,rowIdx,colIdx,_type::af_dtype,stype::af_storage,src::af_source)
+function create_sparse_array_from_ptr(nRows::dim_t,nCols::dim_t,nNZ::dim_t,values,rowIdx,colIdx,_type::Type,stype::af_storage,src::af_source)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_create_sparse_array_from_ptr,af_lib),af_err,(Ptr{af_array},dim_t,dim_t,dim_t,Ptr{Void},Ptr{Cint},Ptr{Cint},af_dtype,af_storage,af_source),out,nRows,nCols,nNZ,values,rowIdx,colIdx,_type,stype,src))
+    _error(ccall((:af_create_sparse_array_from_ptr,af_lib),af_err,(Ptr{af_array},dim_t,dim_t,dim_t,Ptr{Void},Ptr{Cint},Ptr{Cint},af_dtype,af_storage,af_source),out,nRows,nCols,nNZ,values,rowIdx,colIdx,af_type(_type),stype,src))
     AFArray!(out[])
 end
 
@@ -2987,10 +2971,10 @@ end
 
 export dog
 
-function homography(x_src::AFArray,y_src::AFArray,x_dst::AFArray,y_dst::AFArray,htype::af_homography_type,inlier_thr::Cfloat,iterations::Integer,otype::af_dtype)
+function homography(x_src::AFArray,y_src::AFArray,x_dst::AFArray,y_dst::AFArray,htype::af_homography_type,inlier_thr::Cfloat,iterations::Integer,otype::Type)
     H = RefValue{af_array}(0)
     inliers = RefValue{Cint}(0)
-    _error(ccall((:af_homography,af_lib),af_err,(Ptr{af_array},Ptr{Cint},af_array,af_array,af_array,af_array,af_homography_type,Cfloat,UInt32,af_dtype),H,inliers,x_src.arr,y_src.arr,x_dst.arr,y_dst.arr,htype,inlier_thr,UInt32(iterations),otype))
+    _error(ccall((:af_homography,af_lib),af_err,(Ptr{af_array},Ptr{Cint},af_array,af_array,af_array,af_array,af_homography_type,Cfloat,UInt32,af_dtype),H,inliers,x_src.arr,y_src.arr,x_dst.arr,y_dst.arr,htype,inlier_thr,UInt32(iterations),af_type(otype)))
     (AFArray!(H[]),inliers[])
 end
 

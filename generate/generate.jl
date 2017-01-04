@@ -47,9 +47,11 @@ const renames = Dict("sign" => "signbit", "product" => "prod", "init" => "afinit
 
 const ignore = Set(["example_function", "create_array", "retain_array", "get_data_ref_count", "info_string",
                     "device_info", "alloc_host", "free_host", "alloc_pinned", "free_pinned",
-                    "get_type", "get_numdims", "join_many", "eval_multiple"])
+                    "get_type", "get_numdims", "join_many", "eval_multiple", "get_size_of", "cast"])
 
 const booleans = Set(["lt", "gt", "le", "ge", "eq"])
+
+const recast = Dict(:Cint => :Integer, :UInt32 => :Integer, :Cdouble => :Real)
 
 function rewrite(line::Expr)
     if line.head == :function
@@ -72,15 +74,14 @@ function rewrite(line::Expr)
                     args[k].args[2] = :AFArray
                     vals[k] = Expr(:., vals[k], QuoteNode(:arr))
                     num_input_arrays += 1
-                elseif args[k].args[2] == :Cint
-                    args[k].args[2] = :Integer
-                    vals[k] = Expr(:call, :Cint, vals[k])
-                elseif args[k].args[2] == :UInt32
-                    args[k].args[2] = :Integer
-                    vals[k] = Expr(:call, :UInt32, vals[k])
-                elseif args[k].args[2] == :Cdouble
-                    args[k].args[2] = :Real
-                    vals[k] = Expr(:call, :Cdouble, vals[k])
+                elseif args[k].args[2] == :af_dtype
+                    args[k].args[2] = :Type
+                    vals[k] = Expr(:call, :af_type, vals[k])
+                elseif haskey(recast, args[k].args[2])
+                    key = args[k].args[2]
+                    val = recast[key]
+                    args[k].args[2] = val
+                    vals[k] = Expr(:call, key, vals[k])
                 end
             end
         end
