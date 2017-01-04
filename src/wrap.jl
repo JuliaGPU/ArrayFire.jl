@@ -1080,14 +1080,6 @@ end
 
 export get_elements
 
-function get_type(arr::AFArray)
-    _type = RefValue{af_dtype}(0)
-    _error(ccall((:af_get_type,af_lib),af_err,(Ptr{af_dtype},af_array),_type,arr.arr))
-    _type[]
-end
-
-export get_type
-
 function get_dims(arr::AFArray)
     d0 = RefValue{dim_t}(0)
     d1 = RefValue{dim_t}(0)
@@ -1098,14 +1090,6 @@ function get_dims(arr::AFArray)
 end
 
 export get_dims
-
-function get_numdims(arr::AFArray)
-    result = RefValue{UInt32}(0)
-    _error(ccall((:af_get_numdims,af_lib),af_err,(Ptr{UInt32},af_array),result,arr.arr))
-    result[]
-end
-
-export get_numdims
 
 function is_empty(arr::AFArray)
     result = RefValue{Bool}(0)

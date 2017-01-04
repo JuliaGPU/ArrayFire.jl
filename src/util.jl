@@ -36,13 +36,13 @@ af_jltype(::Val{u8})  = UInt8
 af_jltype(::Val{s64}) = Int64
 af_jltype(::Val{u64}) = UInt64
 
-function get_numdims!(arr::af_array)
+function get_numdims(arr::af_array)
     result = RefValue{UInt32}(0)
     _error(ccall((:af_get_numdims,af_lib),af_err,(Ptr{UInt32},af_array),result,arr))
     Int(result[])
 end
 
-function get_type!(arr::af_array)
+function get_type(arr::af_array)
     _type = RefValue{af_dtype}(0)
     _error(ccall((:af_get_type,af_lib),af_err,(Ptr{af_dtype},af_array),_type,arr))
     af_jltype(Val{_type[]}())
@@ -62,4 +62,4 @@ function create_array{T,N}(a::AFArray{T,N})
     ret
 end
 
-AFArray!(arr::af_array) = AFArray{get_type!(arr), get_numdims!(arr)}(arr)
+AFArray!(arr::af_array) = AFArray{get_type(arr), get_numdims(arr)}(arr)

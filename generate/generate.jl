@@ -46,7 +46,8 @@ const renames = Dict("sign" => "signbit", "product" => "prod", "init" => "afinit
                      "min" => "minimum", "max" => "maximum")
 
 const ignore = Set(["example_function", "create_array", "retain_array", "get_data_ref_count", "info_string",
-                    "device_info", "alloc_host", "free_host", "alloc_pinned", "free_pinned", "get_last_error"])
+                    "device_info", "alloc_host", "free_host", "alloc_pinned", "free_pinned", "get_last_error",
+                    "get_type", "get_numdims"])
 
 function rewrite(line::Expr)
     if line.head == :function

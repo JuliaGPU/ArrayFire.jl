@@ -8,6 +8,8 @@ using Base.Test
 @test set_manual_eval_flag(true) == nothing
 @test get_manual_eval_flag() == true
 arr1 = @inferred AFArray{Int,1}([1, 2])
+@test eltype(arr1) == Int
+@test ndims(arr1) == 1
 @test (@inferred size(arr1)) == (2,)
 arr2 = @inferred copy(arr1)
 arr3 = @inferred deepcopy(arr2)
