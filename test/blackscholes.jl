@@ -38,6 +38,7 @@ function run(iterations)
 
     put1 = blackscholes_serial.(sptprice, initStrike, rate, volatility, time)
     put2 = blackscholes_serial.(sptprice_gpu, initStrike_gpu, rate_gpu, volatility_gpu, time_gpu)
+    afeval(put2)
     @test sum(put1) ≈ sum(put2)
     put1, put2
 end
