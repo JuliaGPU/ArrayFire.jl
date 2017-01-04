@@ -14,12 +14,12 @@ typealias AFMatrix{T} AFArray{T,2}
 typealias AFVolume{T} AFArray{T,3}
 typealias AFTensor{T} AFArray{T,4}
 
-export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
+export AFArray, AFVector, AFMatrix, AFVolume, AFTensor, convert_array
 
 import Base: convert, copy, deepcopy_internal
 
-convert{T,N}(::Type{Array{T,N}}, a::AFArray{T,N}) = create_array(a)
-convert{T,N}(::Type{AFArray{T,N}}, a::AbstractArray{T,N}) = create_array(a)
+convert{T,N}(::Type{Array{T,N}}, a::AFArray{T,N}) = convert_array(a)
+convert{T,N}(::Type{AFArray{T,N}}, a::AbstractArray{T,N}) = convert_array(a)
 deepcopy_internal{T,N}(a::AFArray{T,N}, d::ObjectIdDict) = haskey(d, a) ? d[a]::AFArray{T,N} : copy(a)
 
 import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atan2, atanh, cbrt, ceil, clamp, cos, cosh

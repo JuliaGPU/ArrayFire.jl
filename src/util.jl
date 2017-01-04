@@ -48,7 +48,7 @@ function get_type(arr::af_array)
     af_jltype(Val{_type[]}())
 end
 
-function create_array{T,N}(data::AbstractArray{T,N})
+function convert_array{T,N}(data::AbstractArray{T,N})
     arr = RefValue{af_array}(0)
     sz = size(data)
     _error(ccall((:af_create_array,af_lib),af_err,(Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),
@@ -56,7 +56,7 @@ function create_array{T,N}(data::AbstractArray{T,N})
     AFArray{T,N}(arr[])
 end
 
-function create_array{T,N}(a::AFArray{T,N})
+function convert_array{T,N}(a::AFArray{T,N})
     ret = Array{T,N}(size(a))
     get_data_ptr(ret, a)
     ret
