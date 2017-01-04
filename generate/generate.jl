@@ -54,7 +54,8 @@ const recast = Dict(:Cint => :Integer, :UInt32 => :Integer, :Cdouble => :Real)
 
 const booleans1 = Set(["iszero", "isinf", "isnan"])
 const booleans2 = Set(["lt", "gt", "le", "ge", "eq", "neq"])
-const maths     = Set(["add", "sub", "mul", "div", "rem", "mod", "atan2", "root", "pow", "dot"])
+const maths     = Set(["add", "sub", "mul", "div", "rem", "mod", "atan2", "root", "pow", "dot",
+                       "minof", "maxof", "hypot", "cplx2"])
 
 function rewrite(line::Expr)
     if line.head == :function

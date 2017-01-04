@@ -435,18 +435,18 @@ end
 
 export bitshiftr
 
-function minof(lhs::AFArray,rhs::AFArray,batch::Bool)
+function minof{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_minof,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 export minof
 
-function maxof(lhs::AFArray,rhs::AFArray,batch::Bool)
+function maxof{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_maxof,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 export maxof
@@ -531,10 +531,10 @@ end
 
 export ceil
 
-function hypot(lhs::AFArray,rhs::AFArray,batch::Bool)
+function hypot{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_hypot,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 export hypot
@@ -595,10 +595,10 @@ end
 
 export atan2
 
-function cplx2(lhs::AFArray,rhs::AFArray,batch::Bool)
+function cplx2{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_cplx2,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 export cplx2
