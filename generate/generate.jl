@@ -46,7 +46,7 @@ const renames = Dict("sign" => "signbit", "product" => "prod", "init" => "afinit
                      "min" => "minimum", "max" => "maximum", "any_true" => "any", "all_true" => "all")
 
 const ignore = Set(["example_function", "create_array", "retain_array", "get_data_ref_count", "info_string",
-                    "device_info", "alloc_host", "free_host", "alloc_pinned", "free_pinned", "get_last_error",
+                    "device_info", "alloc_host", "free_host", "alloc_pinned", "free_pinned",
                     "get_type", "get_numdims"])
 
 function rewrite(line::Expr)
@@ -93,7 +93,7 @@ function rewrite(line::Expr)
             if isa(t, Expr) && t.args[1] == :Ptr && t.args[2] == :af_array
                 num_output_arrays += 1
             end
-            if isa(t, Expr) && t.args[1] == :Ptr && t.args[2] != :Void && t.args[2] != :Cstring
+            if isa(t, Expr) && t.args[1] == :Ptr && t.args[2] != :Void
                 num_out = k
             else
                 break
@@ -131,7 +131,7 @@ function rewrite(line::Expr)
             for k in num_out:-1:1
                 deleteat!(hdr, 2)
                 t = Expr(:curly, :RefValue, types[k].args[2])
-                c = Expr(:call, t, 0)
+                c = types[k].args[2] == :Cstring ? Expr(:call, t) : Expr(:call, t, 0)
                 unshift!(body, Expr(:(=), args[k], c))
             end
         end

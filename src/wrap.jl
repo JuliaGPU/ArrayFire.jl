@@ -901,8 +901,10 @@ end
 
 export read_array_key_check
 
-function array_to_string(output,exp,arr::AFArray,precision::Integer,transpose::Bool)
+function array_to_string(exp,arr::AFArray,precision::Integer,transpose::Bool)
+    output = RefValue{Cstring}()
     _error(ccall((:af_array_to_string,af_lib),af_err,(Ptr{Cstring},Cstring,af_array,Cint,Bool),output,exp,arr.arr,Cint(precision),transpose))
+    output[]
 end
 
 export array_to_string
@@ -1622,6 +1624,15 @@ function get_device_ptr(arr::AFArray)
 end
 
 export get_device_ptr
+
+function get_last_error()
+    msg = RefValue{Cstring}()
+    len = RefValue{dim_t}(0)
+    ccall((:af_get_last_error,af_lib),Void,(Ptr{Cstring},Ptr{dim_t}),msg,len)
+    (msg[],len[])
+end
+
+export get_last_error
 
 function err_to_string(err::af_err)
     ccall((:af_err_to_string,af_lib),Cstring,(af_err,),err)

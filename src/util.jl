@@ -13,7 +13,8 @@ end
 function _error(err::af_err)
     if err == 0; return; end
     str = err_to_string(err)
-    throw(ErrorException("ArrayFire Error ($err) : $(unsafe_string(str))"))
+    str2 = get_last_error()[1]
+    throw(ErrorException("ArrayFire Error ($err) : $(unsafe_string(str))\n$(unsafe_string(str2))"))
 end
 
 af_type(::Type{Float32})          = f32

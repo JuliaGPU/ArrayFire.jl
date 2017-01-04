@@ -2,26 +2,26 @@
 
 using ArrayFire
 
-function blackscholes_serial(sptprice::AbstractArray{Float32},
-                           strike::AbstractArray{Float32},
-                           rate::AbstractArray{Float32},
-                           volatility::AbstractArray{Float32},
-                           time::AbstractArray{Float32})
-    logterm = log10( sptprice ./ strike)
-    powterm = .5f0 .* volatility .* volatility
-    den = volatility .* sqrt(time)
-    d1 = (((rate .+ powterm) .* time) .+ logterm) ./ den
-    d2 = d1 .- den
+function blackscholes_serial(sptprice,
+                           strike,
+                           rate,
+                           volatility,
+                           time)
+    logterm = log10( sptprice / strike)
+    powterm = .5f0 * volatility * volatility
+    den = volatility * sqrt(time)
+    d1 = (((rate + powterm) * time) + logterm) / den
+    d2 = d1 - den
     NofXd1 = cndf2(d1)
     NofXd2 = cndf2(d2)
-    futureValue = strike .* exp(- rate .* time)
-    c1 = futureValue .* NofXd2
-    call_ = sptprice .* NofXd1 .- c1
-    put  = call_ .- futureValue .+ sptprice
+    futureValue = strike * exp(- rate * time)
+    c1 = futureValue * NofXd2
+    call_ = sptprice * NofXd1 - c1
+    put  = call_ - futureValue + sptprice
 end
 
-@inline function cndf2(in::AbstractArray{Float32})
-    out = 0.5f0 .+ 0.5f0 .* erf(0.707106781f0 .* in)
+@inline function cndf2(in)
+    out = 0.5f0 + 0.5f0 * erf(0.707106781f0 * in)
     return out
 end
 
@@ -39,11 +39,12 @@ function run(iterations)
     time_gpu = AFArray(time)
 
     tic()
-    put1 = blackscholes_serial(sptprice, initStrike, rate, volatility, time)
+    put1 = blackscholes_serial.(sptprice, initStrike, rate, volatility, time)
     t1 = toq()
     println("Serial checksum: ", sum(put1))
     tic()
-    put2 = blackscholes_serial(sptprice_gpu, initStrike_gpu, rate_gpu, volatility_gpu, time_gpu)
+    put2 = blackscholes_serial.(sptprice_gpu, initStrike_gpu, rate_gpu, volatility_gpu, time_gpu)
+    eval(put2)
     t2 = toq()
     println("Parallel checksum: ", sum(put2))
     return t1, t2
@@ -53,8 +54,8 @@ function driver()
     srand(0)
     tic()
     iterations = 10^7
-    blackscholes_serial(Float32[], Float32[], Float32[], Float32[], Float32[])
-    blackscholes_serial(AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]), 
+    blackscholes_serial.(Float32[], Float32[], Float32[], Float32[], Float32[])
+    blackscholes_serial(AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]),
                         AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]))
     println("SELFPRIMED ", toq())
     tserial, tparallel = run(iterations)
