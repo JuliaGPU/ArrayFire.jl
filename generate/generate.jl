@@ -47,7 +47,7 @@ const renames = Dict("sign" => "signbit", "product" => "prod", "init" => "afinit
 
 const ignore = Set(["example_function", "create_array", "retain_array", "get_data_ref_count", "info_string",
                     "device_info", "alloc_host", "free_host", "alloc_pinned", "free_pinned",
-                    "get_type", "get_numdims"])
+                    "get_type", "get_numdims", "join_many", "eval_multiple"])
 
 const booleans = Set(["lt", "gt", "le", "ge", "eq"])
 

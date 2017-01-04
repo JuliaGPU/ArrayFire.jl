@@ -1054,12 +1054,6 @@ end
 
 export afeval
 
-function eval_multiple(num::Integer,arrays)
-    _error(ccall((:af_eval_multiple,af_lib),af_err,(Cint,Ptr{af_array}),Cint(num),arrays))
-end
-
-export eval_multiple
-
 function set_manual_eval_flag(flag::Bool)
     _error(ccall((:af_set_manual_eval_flag,af_lib),af_err,(Bool,),flag))
 end
@@ -1369,14 +1363,6 @@ function join(dim::Integer,first::AFArray,second::AFArray)
 end
 
 export join
-
-function join_many(dim::Integer,n_arrays::Integer,inputs)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_join_many,af_lib),af_err,(Ptr{af_array},Cint,UInt32,Ptr{af_array}),out,Cint(dim),UInt32(n_arrays),inputs))
-    AFArray!(out[])
-end
-
-export join_many
 
 function tile{T,N}(_in::AFArray{T,N},x::Integer,y::Integer,z::Integer,w::Integer)
     out = RefValue{af_array}(0)
