@@ -1,4 +1,4 @@
-type AFArray{T,N}
+type AFArray{T,N} <: AbstractArray{T,N}
     arr::af_array
     function AFArray(arr::af_array)
         @assert get_type(arr) == T "type mismatch: $(get_type(arr)) != $T"
@@ -40,6 +40,7 @@ any(a::AFArray) = any_true_all(a)[1] == 1
 all(a::AFArray) = all_true_all(a)[1] == 1
 sum{T<:Real,N}(a::AFArray{T,N}) = T(sum_all(a)[1])
 sum{T<:Complex,N}(a::AFArray{T,N}) = T(sum_all(a)...)
+
 function broadcast(f, A::AFArray, Bs...)
     old, bcast[] = bcast[], true
     try
