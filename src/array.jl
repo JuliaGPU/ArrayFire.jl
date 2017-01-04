@@ -14,7 +14,7 @@ typealias AFMatrix{T} AFArray{T,2}
 typealias AFVolume{T} AFArray{T,3}
 typealias AFTensor{T} AFArray{T,4}
 
-export AFArray, AFVector, AFMatrix, AFVolume, AFTensor, convert_array
+export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
 
 import Base: convert, copy, deepcopy_internal
 
