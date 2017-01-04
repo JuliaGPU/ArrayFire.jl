@@ -38,5 +38,5 @@ arr9 = AFArray{Complex{Float64},2}([1.0+3im 2. 3.; 4 5 6])
 @test sum(arr9) == 21+3im
 @test typeof(@inferred AFArray{Complex{Float32},2}(arr9)) == AFArray{Complex{Float32},2}
 @test typeof(@inferred AFArray{UInt32}(arr9)) == AFArray{UInt32,2}
-#b = @inferred(1 + arr1)
-#@test sum(b) == 5
+b = @inferred(1 + arr1)
+@test sum(b) == 5

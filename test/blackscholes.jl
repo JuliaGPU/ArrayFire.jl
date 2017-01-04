@@ -43,5 +43,4 @@ function run(iterations)
     put1, put2
 end
 
-#@inferred run(10^3)
-run(10^3)
+@inferred run(10^3)

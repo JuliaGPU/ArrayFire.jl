@@ -1,4 +1,4 @@
-import Base.RefValue
+import Base: RefValue, @pure
 
 global const af_lib = is_unix() ? "libaf" : "af"
 global const bcast = Ref{Bool}(false)
@@ -15,6 +15,37 @@ function _error(err::af_err)
     str = err_to_string(err)
     str2 = get_last_error()[1]
     throw(ErrorException("ArrayFire Error ($err) : $(unsafe_string(str))\n$(unsafe_string(str2))"))
+end
+
+@pure batched(n1, n2) = max(n1, n2)
+
+function typed{T1,T2}(::Type{T1},::Type{T2})
+    if T1 == T2
+        return T1
+    elseif T1 == Complex{Float64} || T2 == Complex{Float64}
+        return Complex{Float64}
+    elseif T1 == Complex{Float32} || T2 == Complex{Float32}
+        (T1 == Float64 || T2 == Float64) && return Complex{Float64}
+        return Complex{Float32}
+    elseif T1 == Float64 || T2 == Float64
+        return Float64
+    elseif T1 == Float32 || T2 == Float32
+        return Float32
+    elseif T1 == UInt64 || T2 == UInt64
+        return UInt64
+    elseif T1 == Int64 || T2 == Int64
+        return Int64
+    elseif T1 == UInt32 || T2 == UInt32
+        return UInt32
+    elseif T1 == Int32 || T2 == Int32
+        return Int32
+    elseif T1 == UInt8 || T2 == UInt8
+        return UInt8
+    elseif T1 == Bool || T2 == Bool
+        return Bool
+    else
+        return Float32
+    end
 end
 
 af_type(::Type{Float32})          = f32

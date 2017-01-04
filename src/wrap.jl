@@ -291,82 +291,82 @@ end
 
 export set_intersect
 
-function add(lhs::AFArray,rhs::AFArray,batch::Bool)
+function add{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_add,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 export add
 
-function sub(lhs::AFArray,rhs::AFArray,batch::Bool)
+function sub{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_sub,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 export sub
 
-function mul(lhs::AFArray,rhs::AFArray,batch::Bool)
+function mul{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_mul,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 export mul
 
-function div(lhs::AFArray,rhs::AFArray,batch::Bool)
+function div{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_div,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 export div
 
-function lt{T,N}(lhs::AFArray{T,N},rhs::AFArray{T,N},batch::Bool)
+function lt{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_lt,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray{Bool,N}(out[])
+    AFArray{Bool,batched(N1,N2)}(out[])
 end
 
 export lt
 
-function gt{T,N}(lhs::AFArray{T,N},rhs::AFArray{T,N},batch::Bool)
+function gt{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_gt,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray{Bool,N}(out[])
+    AFArray{Bool,batched(N1,N2)}(out[])
 end
 
 export gt
 
-function le{T,N}(lhs::AFArray{T,N},rhs::AFArray{T,N},batch::Bool)
+function le{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_le,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray{Bool,N}(out[])
+    AFArray{Bool,batched(N1,N2)}(out[])
 end
 
 export le
 
-function ge{T,N}(lhs::AFArray{T,N},rhs::AFArray{T,N},batch::Bool)
+function ge{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_ge,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray{Bool,N}(out[])
+    AFArray{Bool,batched(N1,N2)}(out[])
 end
 
 export ge
 
-function eq{T,N}(lhs::AFArray{T,N},rhs::AFArray{T,N},batch::Bool)
+function eq{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_eq,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray{Bool,N}(out[])
+    AFArray{Bool,batched(N1,N2)}(out[])
 end
 
 export eq
 
-function neq{T,N}(lhs::AFArray{T,N},rhs::AFArray{T,N},batch::Bool)
+function neq{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_neq,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray{Bool,N}(out[])
+    AFArray{Bool,batched(N1,N2)}(out[])
 end
 
 export neq
@@ -459,18 +459,18 @@ end
 
 export clamp
 
-function rem(lhs::AFArray,rhs::AFArray,batch::Bool)
+function rem{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_rem,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 export rem
 
-function mod(lhs::AFArray,rhs::AFArray,batch::Bool)
+function mod{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_mod,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 export mod
@@ -587,10 +587,10 @@ end
 
 export atan
 
-function atan2(lhs::AFArray,rhs::AFArray,batch::Bool)
+function atan2{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_atan2,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 export atan2
@@ -683,18 +683,18 @@ end
 
 export atanh
 
-function root(lhs::AFArray,rhs::AFArray,batch::Bool)
+function root{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_root,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 export root
 
-function pow(lhs::AFArray,rhs::AFArray,batch::Bool)
+function pow{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_pow,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 export pow
@@ -1237,10 +1237,10 @@ end
 
 export matmul
 
-function dot(lhs::AFArray,rhs::AFArray,optLhs::af_mat_prop,optRhs::af_mat_prop)
+function dot{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},optLhs::af_mat_prop,optRhs::af_mat_prop)
     out = RefValue{af_array}(0)
     _error(ccall((:af_dot,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_mat_prop,af_mat_prop),out,lhs.arr,rhs.arr,optLhs,optRhs))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 export dot

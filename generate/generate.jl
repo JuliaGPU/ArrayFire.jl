@@ -50,11 +50,11 @@ const ignore = Set(["example_function", "create_array", "retain_array", "get_dat
                     "get_type", "get_numdims", "join_many", "eval_multiple", "get_size_of", "cast",
                     "constant", "constant_complex", "constant_long", "constant_ulong"])
 
-const booleans = Set(["lt", "gt", "le", "ge", "eq", "neq", "iszero", "isinf", "isnan"])
-
-const maths = Set(["add", "sub", "mul", "div", "rem", "mod", "atan2", "root", "pow", "dot"])
-
 const recast = Dict(:Cint => :Integer, :UInt32 => :Integer, :Cdouble => :Real)
+
+const booleans1 = Set(["iszero", "isinf", "isnan"])
+const booleans2 = Set(["lt", "gt", "le", "ge", "eq", "neq"])
+const maths     = Set(["add", "sub", "mul", "div", "rem", "mod", "atan2", "root", "pow", "dot"])
 
 function rewrite(line::Expr)
     if line.head == :function
@@ -106,14 +106,23 @@ function rewrite(line::Expr)
             end
         end
         if num_out > 0
-            if name in booleans
+            if name in booleans1
                 hdr[1] = Expr(:curly, hdr[1], :T, :N)
-                for k = 1:length(args)
-                    if isa(args[k], Expr) && args[k].args[2] == :AFArray
-                        args[k].args[2] = Expr(:curly, :AFArray, :T, :N)
-                    end
-                end
+                args[2].args[2] = Expr(:curly, :AFArray, :T, :N)
                 push!(body, return_val(types[1], args[1], Expr(:curly, :AFArray, :Bool, :N)))
+            elseif name in booleans2
+                hdr[1] = Expr(:curly, hdr[1], :T1, :N1, :T2, :N2)
+                args[2].args[2] = Expr(:curly, :AFArray, :T1, :N1)
+                args[3].args[2] = Expr(:curly, :AFArray, :T2, :N2)
+                n = Expr(:call, :batched, :N1, :N2)
+                push!(body, return_val(types[1], args[1], Expr(:curly, :AFArray, :Bool, n)))
+            elseif name in maths
+                hdr[1] = Expr(:curly, hdr[1], :T1, :N1, :T2, :N2)
+                args[2].args[2] = Expr(:curly, :AFArray, :T1, :N1)
+                args[3].args[2] = Expr(:curly, :AFArray, :T2, :N2)
+                t = Expr(:call, :typed, :T1, :T2)
+                n = Expr(:call, :batched, :N1, :N2)
+                push!(body, return_val(types[1], args[1], Expr(:curly, :AFArray, t, n)))
             elseif num_input_arrays == 1 && num_output_arrays == 1 && num_out == 1 &&
                 !contains(name, "_sparse") && !contains(name, "_true")
                 hdr[1] = Expr(:curly, hdr[1], :T, :N)
