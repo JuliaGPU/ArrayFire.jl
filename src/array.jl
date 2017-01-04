@@ -40,4 +40,22 @@ any(a::AFArray) = any_true_all(a)[1] == 1
 all(a::AFArray) = all_true_all(a)[1] == 1
 sum{T<:Real,N}(a::AFArray{T,N}) = T(sum_all(a)[1])
 sum{T<:Complex,N}(a::AFArray{T,N}) = T(sum_all(a)...)
-broadcast(f, A::AFArray, Bs...) = (bcast[] = true; r = f(A, Bs...); bcast[] = false; r)
+function broadcast(f, A::AFArray, Bs...)
+    old, bcast[] = bcast[], true
+    try
+        return f(A, Bs...)
+    finally
+        bcast[] = old
+    end
+end
+
+import Base: /, *, +, -
+
+/(a::AFArray, b::AFArray) = div(a, b, bcast[])
+*(a::Real, b::AFArray)    = mul(AFArray([a]) ,b, true)
+*(a::AFArray, b::AFArray) = mul(a, b, bcast[])
++(a::Real, b::AFArray)    = add(AFArray([a]), b, true)
++(a::AFArray, b::AFArray) = add(a, b, bcast[])
+-(a::Real, b::AFArray)    = sub(AFArray([a]), b, true)
+-(a::AFArray, b::AFArray) = sub(a, b, bcast[])
+-(a::AFArray)             = 0 - a
