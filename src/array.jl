@@ -36,7 +36,7 @@ size(a::AFVector) = (s = get_dims(a); (s[1],))
 size(a::AFMatrix) = (s = get_dims(a); (s[1],s[2]))
 size(a::AFVolume) = (s = get_dims(a); (s[1],s[2],s[3]))
 size(a::AFTensor) = get_dims(a)
-any(a::AFArray) = (t = any_true_all(a); t[1] == 1)
-all(a::AFArray) = (t = all_true_all(a); t[1] == 1)
-sum{T<:Real,N}(a::AFArray{T,N}) = (t = sum_all(a); T(t[1]))
+any(a::AFArray) = any_true_all(a)[1] == 1
+all(a::AFArray) = all_true_all(a)[1] == 1
+sum{T<:Real,N}(a::AFArray{T,N}) = T(sum_all(a)[1])
 sum{T<:Complex,N}(a::AFArray{T,N}) = T(sum_all(a)...)
