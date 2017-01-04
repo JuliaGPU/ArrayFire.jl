@@ -1,6 +1,7 @@
 import Base.RefValue
 
 global const af_lib = is_unix() ? "libaf" : "af"
+global const bcast = Ref{Bool}(false)
 
 function __init__()
     Libdl.dlopen(af_lib)

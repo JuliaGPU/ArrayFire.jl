@@ -16,7 +16,7 @@ typealias AFTensor{T} AFArray{T,4}
 
 export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
 
-import Base: convert, copy, deepcopy_internal
+import Base: convert, copy, deepcopy_internal, broadcast
 
 convert{T,N}(::Type{Array{T,N}}, a::AFArray{T,N}) = convert_array(a)
 convert{T,N}(::Type{AFArray{T,N}}, a::AbstractArray{T,N}) = convert_array(a)
@@ -40,3 +40,4 @@ any(a::AFArray) = any_true_all(a)[1] == 1
 all(a::AFArray) = all_true_all(a)[1] == 1
 sum{T<:Real,N}(a::AFArray{T,N}) = T(sum_all(a)[1])
 sum{T<:Complex,N}(a::AFArray{T,N}) = T(sum_all(a)...)
+broadcast(f, A::AFArray, Bs...) = (bcast[] = true; r = f(A, Bs...); bcast[] = false; r)
