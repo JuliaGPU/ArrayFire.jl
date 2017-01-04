@@ -30,3 +30,7 @@ arr7 = @inferred Array(arr6)
 @test all(isinf(arr6)) == false
 @test all(all(isnan(arr6), 1)) == false
 @test all(all(isinf(arr6), 1)) == false
+@test sum(arr5) == 21
+@test sum(arr6) == 3.
+arr9 = AFArray{Complex{Float64},2}([1.0+3im 2. 3.; 4 5 6])
+@test sum(arr9) == 21+3im
