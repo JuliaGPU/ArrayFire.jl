@@ -56,4 +56,10 @@ function create_array{T,N}(data::AbstractArray{T,N})
     AFArray{T,N}(arr[])
 end
 
+function create_array{T,N}(a::AFArray{T,N})
+    ret = Array{T,N}(size(a))
+    get_data_ptr(ret, a)
+    ret
+end
+
 AFArray!(arr::af_array) = AFArray{get_type!(arr), get_numdims!(arr)}(arr)
