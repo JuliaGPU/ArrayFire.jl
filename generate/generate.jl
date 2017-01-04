@@ -49,6 +49,8 @@ const ignore = Set(["example_function", "create_array", "retain_array", "get_dat
                     "device_info", "alloc_host", "free_host", "alloc_pinned", "free_pinned",
                     "get_type", "get_numdims"])
 
+const booleans = Set(["lt", "gt", "le", "ge", "eq"])
+
 function rewrite(line::Expr)
     if line.head == :function
         hdr = line.args[1].args
@@ -100,7 +102,7 @@ function rewrite(line::Expr)
             end
         end
         if num_out > 0
-            if num_output_arrays == 1 && num_out == 1 && startswith(name, "is")
+            if num_output_arrays == 1 && num_out == 1 && (startswith(name, "is") || in(name, booleans))
                 hdr[1] = Expr(:curly, hdr[1], :T, :N)
                 for k = 1:length(args)
                     if isa(args[k], Expr) && args[k].args[2] == :AFArray

@@ -323,42 +323,42 @@ end
 
 export div
 
-function lt(lhs::AFArray,rhs::AFArray,batch::Bool)
+function lt{T,N}(lhs::AFArray{T,N},rhs::AFArray{T,N},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_lt,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{Bool,N}(out[])
 end
 
 export lt
 
-function gt(lhs::AFArray,rhs::AFArray,batch::Bool)
+function gt{T,N}(lhs::AFArray{T,N},rhs::AFArray{T,N},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_gt,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{Bool,N}(out[])
 end
 
 export gt
 
-function le(lhs::AFArray,rhs::AFArray,batch::Bool)
+function le{T,N}(lhs::AFArray{T,N},rhs::AFArray{T,N},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_le,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{Bool,N}(out[])
 end
 
 export le
 
-function ge(lhs::AFArray,rhs::AFArray,batch::Bool)
+function ge{T,N}(lhs::AFArray{T,N},rhs::AFArray{T,N},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_ge,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{Bool,N}(out[])
 end
 
 export ge
 
-function eq(lhs::AFArray,rhs::AFArray,batch::Bool)
+function eq{T,N}(lhs::AFArray{T,N},rhs::AFArray{T,N},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_eq,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{Bool,N}(out[])
 end
 
 export eq

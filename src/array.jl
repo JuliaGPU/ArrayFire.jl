@@ -58,4 +58,4 @@ import Base: /, *, +, -
 +(a::AFArray, b::AFArray) = add(a, b, bcast[])
 -(a::Real, b::AFArray)    = sub(AFArray([a]), b, true)
 -(a::AFArray, b::AFArray) = sub(a, b, bcast[])
--(a::AFArray)             = 0 - a
+-{T,N}(a::AFArray{T,N})   = T(0) - a
