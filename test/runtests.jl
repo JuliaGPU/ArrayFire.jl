@@ -1,7 +1,6 @@
 using ArrayFire
 using Base.Test
 
-@test afinfo() == nothing
 @test unsafe_string(err_to_string(Cuint(0))) == "Success"
 @test_throws ErrorException set_device(-5)
 @test get_manual_eval_flag() == false
