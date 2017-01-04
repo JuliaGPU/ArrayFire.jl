@@ -106,7 +106,7 @@ function rewrite(line::Expr)
             end
         end
         if num_out > 0
-            if num_output_arrays == 1 && num_out == 1 && name in booleans
+            if name in booleans
                 hdr[1] = Expr(:curly, hdr[1], :T, :N)
                 for k = 1:length(args)
                     if isa(args[k], Expr) && args[k].args[2] == :AFArray
