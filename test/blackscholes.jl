@@ -40,7 +40,7 @@ function run(iterations)
     put2 = blackscholes_serial.(sptprice_gpu, initStrike_gpu, rate_gpu, volatility_gpu, time_gpu)
     afeval(put2)
     @test sum(put1) ≈ sum(put2)
-    put1, put2
+    put2
 end
 
 @inferred run(10^3)
