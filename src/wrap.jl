@@ -1268,38 +1268,6 @@ end
 
 export transpose_inplace
 
-function constant(val::Real,ndims::Integer,dims,_type::Type)
-    arr = RefValue{af_array}(0)
-    _error(ccall((:af_constant,af_lib),af_err,(Ptr{af_array},Cdouble,UInt32,Ptr{dim_t},af_dtype),arr,Cdouble(val),UInt32(ndims),dims,af_type(_type)))
-    AFArray!(arr[])
-end
-
-export constant
-
-function constant_complex(real::Real,imag::Real,ndims::Integer,dims,_type::Type)
-    arr = RefValue{af_array}(0)
-    _error(ccall((:af_constant_complex,af_lib),af_err,(Ptr{af_array},Cdouble,Cdouble,UInt32,Ptr{dim_t},af_dtype),arr,Cdouble(real),Cdouble(imag),UInt32(ndims),dims,af_type(_type)))
-    AFArray!(arr[])
-end
-
-export constant_complex
-
-function constant_long(val::intl,ndims::Integer,dims)
-    arr = RefValue{af_array}(0)
-    _error(ccall((:af_constant_long,af_lib),af_err,(Ptr{af_array},intl,UInt32,Ptr{dim_t}),arr,val,UInt32(ndims),dims))
-    AFArray!(arr[])
-end
-
-export constant_long
-
-function constant_ulong(val::uintl,ndims::Integer,dims)
-    arr = RefValue{af_array}(0)
-    _error(ccall((:af_constant_ulong,af_lib),af_err,(Ptr{af_array},uintl,UInt32,Ptr{dim_t}),arr,val,UInt32(ndims),dims))
-    AFArray!(arr[])
-end
-
-export constant_ulong
-
 function range(ndims::Integer,dims,seq_dim::Integer,_type::Type)
     out = RefValue{af_array}(0)
     _error(ccall((:af_range,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},Cint,af_dtype),out,UInt32(ndims),dims,Cint(seq_dim),af_type(_type)))

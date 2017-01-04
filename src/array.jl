@@ -54,11 +54,14 @@ end
 
 import Base: /, *, +, -
 
+-{T}(a::AFArray{T})       = T(0) - a
+
++(a::Number, b::AFArray)  = add(constant(a, size(b)), b, false)
+-(a::Number, b::AFArray)  = sub(constant(a, size(b)), b, false)
+*(a::Number, b::AFArray)  = mul(constant(a, size(b)), b, false)
+/(a::Number, b::AFArray)  = div(constant(a, size(b)), b, false)
+
 /(a::AFArray, b::AFArray) = div(a, b, bcast[])
-*(a::Real, b::AFArray)    = mul(AFArray([a]) ,b, true)
 *(a::AFArray, b::AFArray) = mul(a, b, bcast[])
-+(a::Real, b::AFArray)    = add(AFArray([a]), b, true)
 +(a::AFArray, b::AFArray) = add(a, b, bcast[])
--(a::Real, b::AFArray)    = sub(AFArray([a]), b, true)
 -(a::AFArray, b::AFArray) = sub(a, b, bcast[])
--{T,N}(a::AFArray{T,N})   = T(0) - a

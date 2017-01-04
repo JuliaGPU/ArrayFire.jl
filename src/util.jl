@@ -72,3 +72,33 @@ function recast_array{T1,N,T2}(::Type{AFArray{T1}},_in::AFArray{T2,N})
 end
 
 AFArray!(arr::af_array) = AFArray{get_type(arr), get_numdims(arr)}(arr)
+
+function constant{T<:Real,N}(val::T,sz::NTuple{N,Int})
+    arr = RefValue{af_array}(0)
+    _error(ccall((:af_constant,af_lib),af_err,(Ptr{af_array},Cdouble,UInt32,Ptr{dim_t},af_dtype),
+                 arr,Cdouble(val),UInt32(N),[sz...],af_type(T)))
+    AFArray{T,N}(arr[])
+end
+
+function constant{T<:Complex,N}(val::T,sz::NTuple{N,Int})
+    arr = RefValue{af_array}(0)
+    _error(ccall((:af_constant_complex,af_lib),af_err,(Ptr{af_array},Cdouble,Cdouble,UInt32,Ptr{dim_t},af_dtype),
+                 arr,Cdouble(real(val)),Cdouble(imag(val)),UInt32(N),[sz...],af_type(_type)))
+    AFArray{T,N}(arr[])
+end
+
+function constant{N}(val::Int,sz::NTuple{N,Int})
+    arr = RefValue{af_array}(0)
+    _error(ccall((:af_constant_long,af_lib),af_err,(Ptr{af_array},intl,UInt32,Ptr{dim_t}),
+                 arr,val,UInt32(N),[sz...]))
+    AFArray{Int,N}(arr[])
+end
+
+function constant{N}(val::UInt,sz::NTuple{N,Int})
+    arr = RefValue{af_array}(0)
+    _error(ccall((:af_constant_ulong,af_lib),af_err,(Ptr{af_array},uintl,UInt32,Ptr{dim_t}),
+                 arr,val,UInt32(N),[sz...]))
+    AFArray{UInt,N}(arr[])
+end
+
+export constant
