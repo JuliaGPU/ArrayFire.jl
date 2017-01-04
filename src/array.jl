@@ -4,7 +4,7 @@ type AFArray{T,N} <: AbstractArray{T,N}
         @assert get_type(arr) == T "type mismatch: $(get_type(arr)) != $T"
         @assert get_numdims(arr) == N "dims mismatch: $(get_numdims(arr)) != $N"
         a = new(arr)
-        finalizer(a, x -> release_array(x))
+        finalizer(a, release_array)
         a
     end
 end
