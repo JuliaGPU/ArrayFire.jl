@@ -1,8 +1,8 @@
 type AFArray{T,N}
     arr::af_array
     function AFArray(arr::af_array)
-        @assert get_type(arr) == T "type mismatch: $(af_get_type(arr)) != $T"
-        @assert get_numdims(arr) == N "dims mismatch: $(af_get_numdims(arr)) != $N"
+        @assert get_type(arr) == T "type mismatch: $(get_type(arr)) != $T"
+        @assert get_numdims(arr) == N "dims mismatch: $(get_numdims(arr)) != $N"
         a = new(arr)
         finalizer(a, x -> release_array(x))
         a
@@ -28,7 +28,7 @@ import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atan2, at
 import Base: count, cov, det, div, dot, erf, erfc, exp, expm1, factorial, fft, floor, gradient, hypot
 import Base: identity, ifft, imag, isinf, isnan, join, lgamma, log, log10, log1p, log2, lu, maximum, mean, median
 import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, scale, select, show
-import Base: signbit, sin, sinh, sort, sqrt, sub, sum, svd, tan, tanh, transpose, trunc, var
+import Base: signbit, sin, sinh, sort, sqrt, sub, sum, svd, tan, tanh, transpose, trunc, var, any, all
 
 eltype{T,N}(a::AFArray{T,N}) = T
 ndims{T,N}(a::AFArray{T,N}) = N
@@ -36,3 +36,5 @@ size(a::AFVector) = (s = get_dims(a); (s[1],))
 size(a::AFMatrix) = (s = get_dims(a); (s[1],s[2]))
 size(a::AFVolume) = (s = get_dims(a); (s[1],s[2],s[3]))
 size(a::AFTensor) = get_dims(a)
+any(a::AFArray) = (t = any_true_all(a); t[1] == 1)
+all(a::AFArray) = (t = all_true_all(a); t[1] == 1)

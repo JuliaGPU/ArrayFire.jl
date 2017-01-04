@@ -43,7 +43,7 @@ end
 
 const renames = Dict("sign" => "signbit", "product" => "prod", "init" => "afinit", "info" => "afinfo",
                      "copy_array" => "copy", "get_version" => "afversion", "eval" => "afeval",
-                     "min" => "minimum", "max" => "maximum")
+                     "min" => "minimum", "max" => "maximum", "any_true" => "any", "all_true" => "all")
 
 const ignore = Set(["example_function", "create_array", "retain_array", "get_data_ref_count", "info_string",
                     "device_info", "alloc_host", "free_host", "alloc_pinned", "free_pinned", "get_last_error",
@@ -100,8 +100,16 @@ function rewrite(line::Expr)
             end
         end
         if num_out > 0
-            if num_input_arrays == 1 && num_output_arrays == 1 && num_out == 1 &&
-                !contains(name, "_sparse") && !contains(name, "_true") && !contains(name, "_is")
+            if num_output_arrays == 1 && num_out == 1 && startswith(name, "is")
+                hdr[1] = Expr(:curly, hdr[1], :T, :N)
+                for k = 1:length(args)
+                    if isa(args[k], Expr) && args[k].args[2] == :AFArray
+                        args[k].args[2] = Expr(:curly, :AFArray, :T, :N)
+                    end
+                end
+                push!(body, return_val(types[1], args[1], Expr(:curly, :AFArray, :Bool, :N)))
+            elseif num_input_arrays == 1 && num_output_arrays == 1 && num_out == 1 &&
+                !contains(name, "_sparse") && !contains(name, "_true")
                 hdr[1] = Expr(:curly, hdr[1], :T, :N)
                 for k = 1:length(args)
                     if isa(args[k], Expr) && args[k].args[2] == :AFArray

@@ -50,21 +50,21 @@ end
 
 export maximum
 
-function all_true(_in::AFArray,dim::Integer)
+function all{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
     _error(ccall((:af_all_true,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
-    AFArray!(out[])
+    AFArray{T,N}(out[])
 end
 
-export all_true
+export all
 
-function any_true(_in::AFArray,dim::Integer)
+function any{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
     _error(ccall((:af_any_true,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
-    AFArray!(out[])
+    AFArray{T,N}(out[])
 end
 
-export any_true
+export any
 
 function count{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
@@ -830,7 +830,7 @@ export lgamma
 function iszero{T,N}(_in::AFArray{T,N})
     out = RefValue{af_array}(0)
     _error(ccall((:af_iszero,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{T,N}(out[])
+    AFArray{Bool,N}(out[])
 end
 
 export iszero
@@ -838,7 +838,7 @@ export iszero
 function isinf{T,N}(_in::AFArray{T,N})
     out = RefValue{af_array}(0)
     _error(ccall((:af_isinf,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{T,N}(out[])
+    AFArray{Bool,N}(out[])
 end
 
 export isinf
@@ -846,7 +846,7 @@ export isinf
 function isnan{T,N}(_in::AFArray{T,N})
     out = RefValue{af_array}(0)
     _error(ccall((:af_isnan,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{T,N}(out[])
+    AFArray{Bool,N}(out[])
 end
 
 export isnan
