@@ -52,6 +52,15 @@ function broadcast(f, A::AFArray, Bs...)
     end
 end
 
+function broadcast(f, A0::Number, A::AFArray, Bs...)
+    old, bcast[] = bcast[], true
+    try
+        return f(A0, A, Bs...)
+    finally
+        bcast[] = old
+    end
+end
+
 import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=
 
 -{T}(a::AFArray{T})       = T(0) - a

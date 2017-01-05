@@ -50,6 +50,17 @@ for op in [:+, :-, :.+, :.-, :.*, :./, :.^]
     @assert @eval sum($op(a1, a2)) ≈ sum(@inferred $op(af1, af2))
 end
 
+a3 = randn(Float32, 2, 3)
+af3 = AFArray(a3)
+a4 = randn(Float32, 2, 3)
+af4 = AFArray(a4)
+
+for op in [:.>, :.>=, :.==, :.!=, :.<, :.<=]
+    @assert @eval all($op(a3, a4) .== Array(@inferred $op(af3, af4)))
+    @assert @eval all($op(0, a4) .== Array(@inferred $op(0, af4)))
+    @assert @eval all($op(a3, 0) .== Array(@inferred $op(af3, 0)))
+end
+
 c1 = rand()
 
 for op in [:+, :-, :*] # :.+, :.-, :.*, :./
