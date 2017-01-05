@@ -1229,10 +1229,10 @@ end
 
 export get_device_id
 
-function matmul(lhs::AFArray,rhs::AFArray,optLhs::af_mat_prop,optRhs::af_mat_prop)
+function matmul{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},optLhs::af_mat_prop,optRhs::af_mat_prop)
     out = RefValue{af_array}(0)
     _error(ccall((:af_matmul,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_mat_prop,af_mat_prop),out,lhs.arr,rhs.arr,optLhs,optRhs))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 export matmul

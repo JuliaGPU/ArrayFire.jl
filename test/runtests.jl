@@ -40,3 +40,18 @@ arr9 = AFArray{Complex{Float64},2}([1.0+3im 2. 3.; 4 5 6])
 @test typeof(@inferred AFArray{UInt32}(arr9)) == AFArray{UInt32,2}
 b = @inferred(1 + arr1)
 @test sum(b) == 5
+
+a1 = rand(2, 3) + rand(2, 3)im
+a2 = rand(2, 3) + rand(2, 3)im
+af1 = @inferred AFArray(a1)
+af2 = @inferred AFArray(a2)
+
+for op in [:+, :-, :.+, :.-, :.*, :./]
+    @assert @eval sum($op(a1, a2)) ≈ sum(@inferred $op(af1, af2))
+end
+
+c1 = rand()
+
+for op in [:+, :-, :*] # :.+, :.-, :.*, :./
+    @assert @eval sum($op(c1, a2)) ≈ sum(@inferred $op(c1, af2))
+end
