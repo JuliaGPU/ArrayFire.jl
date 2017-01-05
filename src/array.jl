@@ -52,7 +52,7 @@ function broadcast(f, A::AFArray, Bs...)
     end
 end
 
-import Base: /, *, +, -, ^, ==, <, >, <=, >=, !
+import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=
 
 -{T}(a::AFArray{T})       = T(0) - a
 !(a::AFArray) = not(a)
@@ -65,6 +65,9 @@ import Base: /, *, +, -, ^, ==, <, >, <=, >=, !
 ==(a::Number, b::AFArray) = eq(constant(a, size(b)),  b, false)
 <(a::Number, b::AFArray)  = lt(constant(a, size(b)),  b, false)
 >(a::Number, b::AFArray)  = gt(constant(a, size(b)),  b, false)
+!=(a::Number, b::AFArray) = neq(constant(a, size(b)),  b, false)
+<=(a::Number, b::AFArray)  = le(constant(a, size(b)),  b, false)
+>=(a::Number, b::AFArray)  = ge(constant(a, size(b)),  b, false)
 
 +(a::AFArray, b::Number)  = add(a, constant(b, size(a)), false)
 -(a::AFArray, b::Number)  = sub(a, constant(b, size(a)), false)
@@ -74,6 +77,9 @@ import Base: /, *, +, -, ^, ==, <, >, <=, >=, !
 ==(a::AFArray, b::Number) = eq(a,  constant(b, size(a)), false)
 <(a::AFArray, b::Number)  = lt(a,  constant(b, size(a)), false)
 >(a::AFArray, b::Number)  = gt(a,  constant(b, size(a)), false)
+!=(a::AFArray, b::Number) = neq(a,  constant(b, size(a)), false)
+<=(a::AFArray, b::Number)  = le(a,  constant(b, size(a)), false)
+>=(a::AFArray, b::Number)  = ge(a,  constant(b, size(a)), false)
 
 +(a::AFArray, b::AFArray) = add(a, b, bcast[])
 -(a::AFArray, b::AFArray) = sub(a, b, bcast[])
@@ -83,6 +89,9 @@ import Base: /, *, +, -, ^, ==, <, >, <=, >=, !
 ==(a::AFArray, b::AFArray) = eq(a, b, bcast[])
 <(a::AFArray, b::AFArray) = lt(a, b, bcast[])
 >(a::AFArray, b::AFArray) = gt(a, b, bcast[])
+!=(a::AFArray, b::AFArray) = neq(a, b, bcast[])
+<=(a::AFArray, b::AFArray) = le(a, b, bcast[])
+>=(a::AFArray, b::AFArray) = ge(a, b, bcast[])
 
 A_mul_B(a::AFArray,   b::AFArray) = matmul(a, b, AF_MAT_NONE,   AF_MAT_NONE)
 Ac_mul_B(a::AFArray,  b::AFArray) = matmul(a, b, AF_MAT_CTRANS, AF_MAT_NONE)
