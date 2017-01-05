@@ -63,11 +63,11 @@ end
 
 c1 = rand()
 
-for op in [:+, :-, :*] # :.+, :.-, :.*, :./
+for op in [:+, :-, :*, :.+, :.-, :.*, :./]
     @assert @eval sum($op(c1, a2)) ≈ sum(@inferred $op(c1, af2))
 end
 
-for op in [:+, :-, :*, :/, :.^] # :.+, :.-, :.*, :./
+for op in [:+, :-, :*, :/, :.^, :.+, :.-, :.*, :./]
     @assert @eval sum($op(a1, c1)) ≈ sum(@inferred $op(af1, c1))
 end
 
