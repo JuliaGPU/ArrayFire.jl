@@ -57,6 +57,8 @@ const booleans2 = Set(["lt", "gt", "le", "ge", "eq", "neq"])
 const maths     = Set(["add", "sub", "mul", "div", "rem", "mod", "atan2", "root", "pow", "dot",
                        "minof", "maxof", "hypot", "cplx2", "matmul"])
 
+const exports = []
+
 function rewrite(line::Expr)
     if line.head == :function
         hdr = line.args[1].args
@@ -151,7 +153,8 @@ function rewrite(line::Expr)
                 unshift!(body, Expr(:(=), args[k], c))
             end
         end
-        return [line, Expr(:export, Symbol(name))]
+        push!(exports, Symbol(name))
+        return line
     end
     line
 end
@@ -159,7 +162,21 @@ end
 rewrite(line) = line
 
 function rewriter(input)
-    vcat(map(rewrite, input)...)
+    out = vcat(map(rewrite, input)...)
+    exp = []
+    te = []
+    for ex in sort(exports)
+        if length(string(Expr(:export, te...))) > 100
+            push!(exp, Expr(:export, te...))
+            empty!(te)
+        end
+        push!(te, ex)
+    end
+    if !isempty(te)
+        push!(exp, Expr(:export, te...))
+    end
+    empty!(exports)
+    vcat(exp, out)
 end
 
 const wc = wrap_c.init(;
