@@ -30,7 +30,7 @@ import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atan2, at
 import Base: count, cov, det, div, dot, erf, erfc, exp, expm1, factorial, fft, floor, gradient, hypot
 import Base: identity, ifft, imag, isinf, isnan, join, lgamma, log, log10, log1p, log2, lu, maximum, mean, median
 import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, scale, select, show
-import Base: signbit, sin, sinh, sort, sqrt, sub, sum, svd, tan, tanh, transpose, trunc, var, any, all
+import Base: sign, signbit, sin, sinh, sort, sqrt, sub, sum, svd, tan, tanh, transpose, trunc, var, any, all
 
 eltype{T,N}(a::AFArray{T,N}) = T
 ndims{T,N}(a::AFArray{T,N}) = N
@@ -52,27 +52,37 @@ function broadcast(f, A::AFArray, Bs...)
     end
 end
 
-import Base: /, *, +, -, ^
+import Base: /, *, +, -, ^, ==, <, >, <=, >=, !
 
 -{T}(a::AFArray{T})       = T(0) - a
+!(a::AFArray) = not(a)
 
 +(a::Number, b::AFArray)  = add(constant(a, size(b)), b, false)
 -(a::Number, b::AFArray)  = sub(constant(a, size(b)), b, false)
 *(a::Number, b::AFArray)  = mul(constant(a, size(b)), b, false)
 /(a::Number, b::AFArray)  = div(constant(a, size(b)), b, false)
 ^(a::Number, b::AFArray)  = pow(constant(a, size(b)), b, false)
+==(a::Number, b::AFArray) = eq(constant(a, size(b)),  b, false)
+<(a::Number, b::AFArray)  = lt(constant(a, size(b)),  b, false)
+>(a::Number, b::AFArray)  = gt(constant(a, size(b)),  b, false)
 
 +(a::AFArray, b::Number)  = add(a, constant(b, size(a)), false)
 -(a::AFArray, b::Number)  = sub(a, constant(b, size(a)), false)
 *(a::AFArray, b::Number)  = mul(a, constant(b, size(a)), false)
 /(a::AFArray, b::Number)  = div(a, constant(b, size(a)), false)
 ^(a::AFArray, b::Number)  = pow(a, constant(b, size(a)), false)
+==(a::AFArray, b::Number) = eq(a,  constant(b, size(a)), false)
+<(a::AFArray, b::Number)  = lt(a,  constant(b, size(a)), false)
+>(a::AFArray, b::Number)  = gt(a,  constant(b, size(a)), false)
 
 +(a::AFArray, b::AFArray) = add(a, b, bcast[])
 -(a::AFArray, b::AFArray) = sub(a, b, bcast[])
 *(a::AFArray, b::AFArray) = bcast[] ? mul(a, b, true) : A_mul_B(a,b)
 /(a::AFArray, b::AFArray) = div(a, b, bcast[])
 ^(a::AFArray, b::AFArray) = pow(a, b, bcast[])
+==(a::AFArray, b::AFArray) = eq(a, b, bcast[])
+<(a::AFArray, b::AFArray) = lt(a, b, bcast[])
+>(a::AFArray, b::AFArray) = gt(a, b, bcast[])
 
 A_mul_B(a::AFArray,   b::AFArray) = matmul(a, b, AF_MAT_NONE,   AF_MAT_NONE)
 Ac_mul_B(a::AFArray,  b::AFArray) = matmul(a, b, AF_MAT_CTRANS, AF_MAT_NONE)
@@ -83,3 +93,5 @@ At_mul_Bc(a::AFArray, b::AFArray) = matmul(a, b, AF_MAT_TRANS,  AF_MAT_CTRANS)
 A_mul_Bt(a::AFArray,  b::AFArray) = matmul(a, b, AF_MAT_NONE,   AF_MAT_TRANS)
 Ac_mul_Bt(a::AFArray, b::AFArray) = matmul(a, b, AF_MAT_CTRANS, AF_MAT_TRANS)
 At_mul_Bt(a::AFArray, b::AFArray) = matmul(a, b, AF_MAT_TRANS,  AF_MAT_TRANS)
+
+sign{T,N}(a::AFArray{T,N}) = (AFArray{T,N}(0<a) - AFArray{T,N}(a<0))

@@ -1,4 +1,6 @@
-import Base: RefValue, @pure
+import Base: RefValue, @pure, display
+
+display(a::AFArray) = (println(typeof(a)); display(Array(a)))
 
 global const af_lib = is_unix() ? "libaf" : "af"
 global const bcast = Ref{Bool}(false)

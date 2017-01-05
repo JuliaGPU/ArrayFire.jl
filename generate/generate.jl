@@ -52,7 +52,7 @@ const ignore = Set(["example_function", "create_array", "retain_array", "get_dat
 
 const recast = Dict(:Cint => :Integer, :UInt32 => :Integer, :Cdouble => :Real)
 
-const booleans1 = Set(["iszero", "isinf", "isnan"])
+const booleans1 = Set(["iszero", "isinf", "isnan", "not"])
 const booleans2 = Set(["lt", "gt", "le", "ge", "eq", "neq"])
 const maths     = Set(["add", "sub", "mul", "div", "rem", "mod", "atan2", "root", "pow", "dot",
                        "minof", "maxof", "hypot", "cplx2", "matmul"])

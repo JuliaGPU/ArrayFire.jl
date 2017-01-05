@@ -59,3 +59,6 @@ end
 for op in [:+, :-, :*, :/, :.^] # :.+, :.-, :.*, :./
     @assert @eval sum($op(a1, c1)) ≈ sum(@inferred $op(af1, c1))
 end
+
+as = Int32[-2 -1 0 1 2]
+@test all(AFArray(sign.(as)) == sign(AFArray(as)))

@@ -390,7 +390,7 @@ export or
 function not{T,N}(_in::AFArray{T,N})
     out = RefValue{af_array}(0)
     _error(ccall((:af_not,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{T,N}(out[])
+    AFArray{Bool,N}(out[])
 end
 
 export not
