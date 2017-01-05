@@ -52,7 +52,7 @@ function broadcast(f, A::AFArray, Bs...)
     end
 end
 
-import Base: /, *, +, -
+import Base: /, *, +, -, ^
 
 -{T}(a::AFArray{T})       = T(0) - a
 
@@ -60,11 +60,19 @@ import Base: /, *, +, -
 -(a::Number, b::AFArray)  = sub(constant(a, size(b)), b, false)
 *(a::Number, b::AFArray)  = mul(constant(a, size(b)), b, false)
 /(a::Number, b::AFArray)  = div(constant(a, size(b)), b, false)
+^(a::Number, b::AFArray)  = pow(constant(a, size(b)), b, false)
+
++(a::AFArray, b::Number)  = add(a, constant(b, size(a)), false)
+-(a::AFArray, b::Number)  = sub(a, constant(b, size(a)), false)
+*(a::AFArray, b::Number)  = mul(a, constant(b, size(a)), false)
+/(a::AFArray, b::Number)  = div(a, constant(b, size(a)), false)
+^(a::AFArray, b::Number)  = pow(a, constant(b, size(a)), false)
 
 +(a::AFArray, b::AFArray) = add(a, b, bcast[])
 -(a::AFArray, b::AFArray) = sub(a, b, bcast[])
 *(a::AFArray, b::AFArray) = bcast[] ? mul(a, b, true) : A_mul_B(a,b)
 /(a::AFArray, b::AFArray) = div(a, b, bcast[])
+^(a::AFArray, b::AFArray) = pow(a, b, bcast[])
 
 A_mul_B(a::AFArray,   b::AFArray) = matmul(a, b, AF_MAT_NONE,   AF_MAT_NONE)
 Ac_mul_B(a::AFArray,  b::AFArray) = matmul(a, b, AF_MAT_CTRANS, AF_MAT_NONE)
