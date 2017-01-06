@@ -327,16 +327,16 @@ function neq{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     AFArray{Bool,batched(N1,N2)}(out[])
 end
 
-function and(lhs::AFArray,rhs::AFArray,batch::Bool)
+function and{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_and,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{Bool,batched(N1,N2)}(out[])
 end
 
-function or(lhs::AFArray,rhs::AFArray,batch::Bool)
+function or{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_or,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{Bool,batched(N1,N2)}(out[])
 end
 
 function not{T,N}(_in::AFArray{T,N})

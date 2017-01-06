@@ -53,7 +53,7 @@ const ignore = Set(["example_function", "create_array", "retain_array", "get_dat
 const recast = Dict(:Cint => :Integer, :UInt32 => :Integer, :Cdouble => :Real)
 
 const booleans1 = Set(["iszero", "isinf", "isnan", "not"])
-const booleans2 = Set(["lt", "gt", "le", "ge", "eq", "neq"])
+const booleans2 = Set(["lt", "gt", "le", "ge", "eq", "neq", "and", "or"])
 const maths     = Set(["add", "sub", "mul", "div", "rem", "mod", "atan2", "root", "pow", "dot",
                        "minof", "maxof", "hypot", "cplx2", "matmul"])
 const floats    = Set(["signbit", "fft_c2r", "fft2_c2r", "fft3_c2r", "real", "imag"])
@@ -111,7 +111,6 @@ function rewrite(line::Expr)
             end
         end
         if num_out > 0
-            @show name
             if name in floats
                 hdr[1] = Expr(:curly, hdr[1], :T, :N)
                 args[2].args[2] = Expr(:curly, :AFArray, :T, :N)
