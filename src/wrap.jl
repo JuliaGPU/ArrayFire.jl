@@ -510,13 +510,13 @@ end
 function real{T,N}(_in::AFArray{T,N})
     out = RefValue{af_array}(0)
     _error(ccall((:af_real,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{T,N}(out[])
+    AFArray{Float32,N}(out[])
 end
 
 function imag{T,N}(_in::AFArray{T,N})
     out = RefValue{af_array}(0)
     _error(ccall((:af_imag,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{T,N}(out[])
+    AFArray{Float32,N}(out[])
 end
 
 function conjg{T,N}(_in::AFArray{T,N})
@@ -1895,19 +1895,19 @@ end
 function fft_r2c{T,N}(_in::AFArray{T,N},norm_factor::Real,pad0::dim_t)
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft_r2c,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t),out,_in.arr,Cdouble(norm_factor),pad0))
-    AFArray{Complex{Float32},N}(out[])
+    AFArray{Complex{T},N}(out[])
 end
 
 function fft2_r2c{T,N}(_in::AFArray{T,N},norm_factor::Real,pad0::dim_t,pad1::dim_t)
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft2_r2c,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),pad0,pad1))
-    AFArray{Complex{Float32},N}(out[])
+    AFArray{Complex{T},N}(out[])
 end
 
 function fft3_r2c{T,N}(_in::AFArray{T,N},norm_factor::Real,pad0::dim_t,pad1::dim_t,pad2::dim_t)
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft3_r2c,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),pad0,pad1,pad2))
-    AFArray{Complex{Float32},N}(out[])
+    AFArray{Complex{T},N}(out[])
 end
 
 function fft_c2r{T,N}(_in::AFArray{T,N},norm_factor::Real,is_odd::Bool)
