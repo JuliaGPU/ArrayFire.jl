@@ -1901,13 +1901,13 @@ end
 function fft2_r2c{T,N}(_in::AFArray{T,N},norm_factor::Real,pad0::dim_t,pad1::dim_t)
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft2_r2c,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),pad0,pad1))
-    AFArray{T,N}(out[])
+    AFArray{Complex{Float32},N}(out[])
 end
 
 function fft3_r2c{T,N}(_in::AFArray{T,N},norm_factor::Real,pad0::dim_t,pad1::dim_t,pad2::dim_t)
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft3_r2c,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),pad0,pad1,pad2))
-    AFArray{T,N}(out[])
+    AFArray{Complex{Float32},N}(out[])
 end
 
 function fft_c2r{T,N}(_in::AFArray{T,N},norm_factor::Real,is_odd::Bool)
@@ -1919,13 +1919,13 @@ end
 function fft2_c2r{T,N}(_in::AFArray{T,N},norm_factor::Real,is_odd::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft2_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,Cdouble(norm_factor),is_odd))
-    AFArray{T,N}(out[])
+    AFArray{Float32,N}(out[])
 end
 
 function fft3_c2r{T,N}(_in::AFArray{T,N},norm_factor::Real,is_odd::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft3_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,Cdouble(norm_factor),is_odd))
-    AFArray{T,N}(out[])
+    AFArray{Float32,N}(out[])
 end
 
 function convolve1(signal::AFArray,filter::AFArray,mode::af_conv_mode,domain::af_conv_domain)

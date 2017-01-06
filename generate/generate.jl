@@ -56,9 +56,8 @@ const booleans1 = Set(["iszero", "isinf", "isnan", "not"])
 const booleans2 = Set(["lt", "gt", "le", "ge", "eq", "neq"])
 const maths     = Set(["add", "sub", "mul", "div", "rem", "mod", "atan2", "root", "pow", "dot",
                        "minof", "maxof", "hypot", "cplx2", "matmul"])
-const floats    = Set(["signbit", "fft_c2r"])
-const complexes = Set(["fft_r2c"])
-
+const floats    = Set(["signbit", "fft_c2r", "fft2_c2r", "fft3_c2r"])
+const complexes = Set(["fft_r2c", "fft2_r2c", "fft3_r2c"])
 
 const exports = []
 
