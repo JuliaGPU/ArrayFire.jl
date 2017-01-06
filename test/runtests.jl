@@ -63,7 +63,7 @@ end
 
 c1 = rand()
 
-for op in [:+, :-, :*, :.+, :.-, :.*, :./]
+for op in [:+, :-, :*, :.+, :.-, :.*, :./, :.^]
     @assert @eval sum($op(c1, a2)) ≈ sum(@inferred $op(c1, af2))
 end
 
@@ -73,5 +73,10 @@ end
 
 as = Int32[-2 -1 0 1 2]
 @test all(AFArray(sign.(as)) == sign(AFArray(as)))
+@test !any(!(AFArray(sign.(as)) == sign(AFArray(as))))
 
 @test typeof(@inferred fft_r2c(AFArray(rand(Float32, 10)), 1.0, 0)) == AFArray{Complex{Float32}, 1}
+
+
+@test (@inferred size(AFArray(rand(1,2,3)))) == (1,2,3)
+@test (@inferred size(AFArray(rand(1,2,3,4)))) == (1,2,3,4)
