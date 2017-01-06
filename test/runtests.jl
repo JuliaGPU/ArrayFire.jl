@@ -80,3 +80,14 @@ as = Int32[-2 -1 0 1 2]
 
 @test (@inferred size(AFArray(rand(1,2,3)))) == (1,2,3)
 @test (@inferred size(AFArray(rand(1,2,3,4)))) == (1,2,3,4)
+
+am = rand(Float32, 3, 3)
+amf = AFArray(am)
+
+@test sum(amf * amf) ≈ sum(am * am)
+@test sum(amf * amf') ≈ sum(am * am')
+@test sum(A_mul_Bt(amf, amf)) ≈ sum(am * am')
+@test sum(amf' * amf) ≈ sum(am' * am)
+@test sum(At_mul_B(amf, amf)) ≈ sum(am' * am)
+@test sum(amf' * amf') ≈ sum(am' * am')
+@test sum(At_mul_Bt(amf, amf)) ≈ sum(am' * am')

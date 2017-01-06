@@ -102,14 +102,15 @@ import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=
 <=(a::AFArray, b::AFArray) = le(a, b, bcast[])
 >=(a::AFArray, b::AFArray) = ge(a, b, bcast[])
 
+import Base: Ac_mul_B, At_mul_B, A_mul_Bc, Ac_mul_Bc, A_mul_Bt, At_mul_Bt
+export A_mul_B
+
 A_mul_B(a::AFArray,   b::AFArray) = matmul(a, b, AF_MAT_NONE,   AF_MAT_NONE)
 Ac_mul_B(a::AFArray,  b::AFArray) = matmul(a, b, AF_MAT_CTRANS, AF_MAT_NONE)
 At_mul_B(a::AFArray,  b::AFArray) = matmul(a, b, AF_MAT_TRANS,  AF_MAT_NONE)
 A_mul_Bc(a::AFArray,  b::AFArray) = matmul(a, b, AF_MAT_NONE,   AF_MAT_CTRANS)
 Ac_mul_Bc(a::AFArray, b::AFArray) = matmul(a, b, AF_MAT_CTRANS, AF_MAT_CTRANS)
-At_mul_Bc(a::AFArray, b::AFArray) = matmul(a, b, AF_MAT_TRANS,  AF_MAT_CTRANS)
 A_mul_Bt(a::AFArray,  b::AFArray) = matmul(a, b, AF_MAT_NONE,   AF_MAT_TRANS)
-Ac_mul_Bt(a::AFArray, b::AFArray) = matmul(a, b, AF_MAT_CTRANS, AF_MAT_TRANS)
 At_mul_Bt(a::AFArray, b::AFArray) = matmul(a, b, AF_MAT_TRANS,  AF_MAT_TRANS)
 
 sign{T,N}(a::AFArray{T,N}) = (AFArray{T,N}(0<a) - AFArray{T,N}(a<0))
