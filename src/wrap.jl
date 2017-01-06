@@ -507,16 +507,16 @@ function cplx{T,N}(_in::AFArray{T,N})
     AFArray{T,N}(out[])
 end
 
-function real{T,N}(_in::AFArray{T,N})
+function real{T,N}(_in::AFArray{Complex{T},N})
     out = RefValue{af_array}(0)
     _error(ccall((:af_real,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{Float32,N}(out[])
+    AFArray{T,N}(out[])
 end
 
-function imag{T,N}(_in::AFArray{T,N})
+function imag{T,N}(_in::AFArray{Complex{T},N})
     out = RefValue{af_array}(0)
     _error(ccall((:af_imag,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{Float32,N}(out[])
+    AFArray{T,N}(out[])
 end
 
 function conjg{T,N}(_in::AFArray{T,N})
@@ -1910,22 +1910,22 @@ function fft3_r2c{T,N}(_in::AFArray{T,N},norm_factor::Real,pad0::dim_t,pad1::dim
     AFArray{Complex{T},N}(out[])
 end
 
-function fft_c2r{T,N}(_in::AFArray{T,N},norm_factor::Real,is_odd::Bool)
+function fft_c2r{T,N}(_in::AFArray{Complex{T},N},norm_factor::Real,is_odd::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,Cdouble(norm_factor),is_odd))
-    AFArray{Float32,N}(out[])
+    AFArray{T,N}(out[])
 end
 
-function fft2_c2r{T,N}(_in::AFArray{T,N},norm_factor::Real,is_odd::Bool)
+function fft2_c2r{T,N}(_in::AFArray{Complex{T},N},norm_factor::Real,is_odd::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft2_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,Cdouble(norm_factor),is_odd))
-    AFArray{Float32,N}(out[])
+    AFArray{T,N}(out[])
 end
 
-function fft3_c2r{T,N}(_in::AFArray{T,N},norm_factor::Real,is_odd::Bool)
+function fft3_c2r{T,N}(_in::AFArray{Complex{T},N},norm_factor::Real,is_odd::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft3_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,Cdouble(norm_factor),is_odd))
-    AFArray{Float32,N}(out[])
+    AFArray{T,N}(out[])
 end
 
 function convolve1(signal::AFArray,filter::AFArray,mode::af_conv_mode,domain::af_conv_domain)
