@@ -149,7 +149,7 @@ end
 for (arr, fn) in ((:(AFVector{Complex{T}}), :af_fft_c2r), (:(AFMatrix{Complex{T}}), :af_fft2_c2r),
                     (:(AFArray{Complex{T},3}), :af_fft3_c2r))
 
-    @eval function fftC2R{T<:Real}(a::($arr); is_odd = false, norm_factor = 0.)
+    @eval function fftC2R{T<:Real}(a::($arr), is_odd; norm_factor = 1.)
         out = new_ptr()
         $(fn)(out, a, norm_factor, is_odd)
         AFArray{T}(out[])
@@ -157,21 +157,21 @@ for (arr, fn) in ((:(AFVector{Complex{T}}), :af_fft_c2r), (:(AFMatrix{Complex{T}
 
 end
 
-function fftR2C{T}(a::AFVector{T}, pad1::Integer; norm_factor = 0.)
+function fftR2C{T}(a::AFVector{T}, pad1 = 0; norm_factor = 1.)
     out = new_ptr()
     af_fft_r2c(out, a, norm_factor, pad1)
     AFArray{Complex{T}}(out[])
 end
 
-function fftR2C{T}(a::AFMatrix{T}, pad1::Integer, pad2::Integer; norm_factor = 0.)
+function fftR2C{T}(a::AFMatrix{T}, pad1 = 0, pad2 = 0; norm_factor = 1.)
     out = new_ptr()
-    af_fft2_r2c(out, a, norm_factor, pad1)
+    af_fft2_r2c(out, a, norm_factor, pad1, pad2)
     AFArray{Complex{T}}(out[])
 end
 
-function fftR2C{T}(a::AFArray{T,3}, pad1::Integer, pad2::Integer, pad3::Integer; norm_factor = 0.)
+function fftR2C{T}(a::AFArray{T,3}, pad1 = 0, pad2 = 0, pad3 = 0; norm_factor = 1.)
     out = new_ptr()
-    af_fft3_r2c(out, a, norm_factor, pad1)
+    af_fft3_r2c(out, a, norm_factor, pad1, pad2, pad3)
     AFArray{Complex{T}}(out[])
 end
 

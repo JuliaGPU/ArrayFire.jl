@@ -49,13 +49,13 @@ ad = AFArray(a)
 @test sumabs2(Array(median(ad,1)) - median(a,1)) < 1e-6
 @test_approx_eq var(ad) var(a)
 
-#Linalg 
+#Linalg
 @test sumabs2(Array(ad') - a') < 1e-6
 ld, ud, pd = lu(ad)
 l, u, p = lu(a)
 @test sumabs(Array(ld) - l) < 1e-5
-@test sumabs(Array(ud) - u) < 1e-5 
-@test sumabs(Array(pd) - p) < 1e-5 
+@test sumabs(Array(ud) - u) < 1e-5
+@test sumabs(Array(pd) - p) < 1e-5
 @test sumabs2(Array(chol(ad*ad')) - chol(a*a')) < 1e-5
 @test sumabs2(Array(ctranspose(chol(ad*ad'))) - ctranspose(chol(a*a'))) < 1e-5
 ud, sd, vtd = svd(ad)
@@ -64,14 +64,18 @@ u, s, v = svd(a)
 @test sumabs(Array(sd) - s) < 1e-4
 @test sumabs(Array(vtd') - v) < 1e-4
 
-#Complex numbers 
+#Complex numbers
 @test Array(complex(ad,ad)) == complex(a,a)
 @test Array(real(complex(ad,ad))) == real(complex(a,a))
 @test Array(imag(complex(a,a))) == imag(complex(a,a))
 
 # FFT - Issue #81
 @test sumabs2(fft(a) - Array(fft(ad))) < 1e-6
-@test sumabs2(ifft(a) - Array(ifft(ad, norm_factor = 0.01))) < 1e-6 # Note the scaling factor. Not sure why. 
+@test sumabs2(ifft(a) - Array(ifft(ad, norm_factor = 1/length(a)))) < 1e-6 # Note that the scaling factor is required because ArrayFire's IFFT is unnormalized as opposed to Julia's IFFT.
+b = rfft(a)
+bd = AFArray(b)
+@test sumabs2(irfft(b, size(a,1)) - Array(fftC2R(bd, isodd(size(a,1)), norm_factor = 1/length(a)))) < 1e-6
+@test sumabs2(rfft(a) - Array(fftR2C(ad,0,0))) < 1e-6
 
 # Inference
 @test_throws MethodError ad | ad
@@ -99,7 +103,7 @@ end
 
 # Sign - issue #109
 if VERSION >= v"0.5.0"
-    let 
+    let
         a = randn(Float32, 10)
         ad = AFArray(a)
         @test_throws MethodError signbit(ad)
@@ -108,7 +112,7 @@ if VERSION >= v"0.5.0"
 end
 
 # Indexing - issue #115
-let 
+let
     x = rand(Float32, 3,3)
     xd = AFArray(x)
     y = x[:, [1,3]]

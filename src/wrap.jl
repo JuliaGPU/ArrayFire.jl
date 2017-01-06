@@ -3,7 +3,7 @@
 
 
 function af_sum(out::Base.Ref, _in::AFArray, dim::Integer)
-    err= ccall((:af_sum,af_lib), 
+    err= ccall((:af_sum,af_lib),
                 Cint ,(Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr , dim)
     err == 0 || throwAFerror(err)
 end
@@ -16,7 +16,7 @@ function af_sum_nan(out::Base.Ref, _in::AFArray, dim::Int, nanval::Real)
 end
 
 function af_product(out::Base.Ref, _in::AFArray, dim::Integer)
-    err= ccall((:af_product,af_lib), 
+    err= ccall((:af_product,af_lib),
                 Cint ,(Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr , dim)
     err == 0 || throwAFerror(err)
 end
@@ -29,37 +29,37 @@ function af_product_nan(out::Base.Ref, _in::AFArray, dim::Int, nanval::Real)
 end
 
 function af_min(out::Base.Ref, _in::AFArray, dim::Integer)
-    err = ccall((:af_min,af_lib), 
+    err = ccall((:af_min,af_lib),
                 Cint ,(Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr , dim)
     err == 0 || throwAFerror(err)
 end
 
 function af_max(out::Base.Ref, _in::AFArray, dim::Integer)
-    err = ccall((:af_max,af_lib), 
+    err = ccall((:af_max,af_lib),
                 Cint ,(Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr , dim)
     err == 0 || throwAFerror(err)
 end
 
 function af_all_true(out::Base.Ref, _in::AFArray, dim::Integer)
-    err = ccall((:af_all_true,af_lib), 
+    err = ccall((:af_all_true,af_lib),
                 Cint ,(Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr , dim)
     err == 0 || throwAFerror(err)
 end
 
 function af_any_true(out::Base.Ref, _in::AFArray, dim::Integer)
-    err = ccall((:af_any_true,af_lib), 
+    err = ccall((:af_any_true,af_lib),
                 Cint ,(Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr , dim)
     err == 0 || throwAFerror(err)
 end
 
 function af_count(out::Base.Ref,_in::AFArray,dim::Integer)
-    err = ccall((:af_count,af_lib), 
+    err = ccall((:af_count,af_lib),
                 Cint ,(Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr , dim)
     err == 0 || throwAFerror(err)
 end
 
 function af_sum_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
-    err= ccall((:af_sum_all, af_lib), 
+    err= ccall((:af_sum_all, af_lib),
                 Cint, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
     err == 0 || throwAFerror(err)
 end
@@ -72,7 +72,7 @@ function af_sum_nan_all(real::Base.Ref, imag::Base.Ref, _in::AFArray, nanval::Re
 end
 
 function af_product_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
-    err= ccall((:af_product_all, af_lib), 
+    err= ccall((:af_product_all, af_lib),
                 Cint, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
     err == 0 || throwAFerror(err)
 end
@@ -85,31 +85,31 @@ function af_product_nan_all(real::Base.Ref, imag::Base.Ref, _in::AFArray, nanval
 end
 
 function af_min_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
-    err = ccall((:af_min_all, af_lib), 
+    err = ccall((:af_min_all, af_lib),
                 Cint, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
     err == 0 || throwAFerror(err)
 end
 
 function af_max_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
-    err = ccall((:af_max_all, af_lib), 
+    err = ccall((:af_max_all, af_lib),
                 Cint, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
     err == 0 || throwAFerror(err)
 end
 
 function af_all_true_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
-    err = ccall((:af_all_true_all, af_lib), 
+    err = ccall((:af_all_true_all, af_lib),
                 Cint, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
     err == 0 || throwAFerror(err)
 end
 
 function af_any_true_all(real::Base.Ref, imag::Base.Ref, _in::AFArray)
-    err = ccall((:af_any_true_all, af_lib), 
+    err = ccall((:af_any_true_all, af_lib),
                 Cint, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
     err == 0 || throwAFerror(err)
 end
 
 function af_count_all(real::Base.Ref, imag::Base.Ref,_in::AFArray)
-    err = ccall((:af_count_all, af_lib), 
+    err = ccall((:af_count_all, af_lib),
                 Cint, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
     err == 0 || throwAFerror(err)
 end
@@ -122,7 +122,7 @@ function af_imin(out::Base.Ref, idx::Base.Ref, _in::AFArray, dim::Int)
 end
 
 function af_imax(out::Base.Ref, idx::Base.Ref, _in::AFArray, dim::Int)
-    err = ccall((:af_imax, af_lib), Cint, 
+    err = ccall((:af_imax, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint),
                 out, idx, _in.ptr, dim)
     err == 0 || throwAFerror(err)
@@ -171,71 +171,71 @@ function af_diff2(out::Base.Ref, _in::AFArray, dim::Cint)
 end
 
 function af_sort(out::Base.Ref, _in::AFArray, dim::UInt32, isAscending::Bool)
-    err = ccall((:af_sort, af_lib), Cint, 
-                (Ptr{Void}, Ptr{Void}, UInt32, Bool), 
+    err = ccall((:af_sort, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, UInt32, Bool),
                 out, _in.ptr, dim, isAscending)
     err == 0 || throwAFerror(err)
 end
 
 function af_sort_index(out::Base.Ref, indices::Base.Ref, _in::AFArray, dim::UInt32, isAscending::Bool)
-    err = ccall((:af_sort_index, af_lib), Cint, 
-                (Ptr{Void}, Ptr{Void}, Ptr{Void}, UInt32, Bool), 
+    err = ccall((:af_sort_index, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, UInt32, Bool),
                 out, indices, _in.ptr, dim, isAscending)
     err == 0 || throwAFerror(err)
 end
 
-function af_sort_by_key(out_keys::Base.Ref, out_values::Base.Ref, keys::AFArray, 
+function af_sort_by_key(out_keys::Base.Ref, out_values::Base.Ref, keys::AFArray,
                         values::AFArray, dim::UInt32, isAscending::Bool)
-    err = ccall((:af_sort_by_key, af_lib), Cint, 
-                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}, UInt32, Bool), 
+    err = ccall((:af_sort_by_key, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}, UInt32, Bool),
                 out_keys , out_values, keys.ptr, values.ptr, dim, isAscending)
     err == 0 || throwAFerror(err)
 end
 
 function af_set_unique(out::Base.Ref, _in::AFArray, is_sorted::Bool)
-    err = ccall((:af_set_unique, af_lib), Cint, 
-                (Ptr{Void}, Ptr{Void}, Bool), 
+    err = ccall((:af_set_unique, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Bool),
                 out, _in.ptr, is_sorted)
     err == 0 || throwAFerror(err)
 end
 
 function af_set_union(out::Base.Ref, first::AFArray, second::AFArray, is_unique::Bool)
-    err = ccall((:af_set_union, af_lib), Cint, 
-                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool), 
+    err = ccall((:af_set_union, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
                 out, first.ptr, second.ptr, is_unique)
     err == 0 || throwAFerror(err)
 end
 
 function af_set_intersect(out::Base.Ref, first::AFArray, second::AFArray, is_unique::Bool)
-    err = ccall((:af_set_intersect, af_lib), Cint, 
-                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool), 
+    err = ccall((:af_set_intersect, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
                 out , first.ptr, second.ptr, is_unique)
     err == 0 || throwAFerror(err)
 end
 
 function af_add(out::Base.Ref, lhs::AFArray, rhs::AFArray,batch::Bool = true)
-    err = ccall((:af_add, af_lib), 
+    err = ccall((:af_add, af_lib),
                 Cint, (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
                 out, lhs.ptr, rhs.ptr, batch)
     err == 0 || throwAFerror(err)
 end
 
 function af_sub(out::Base.Ref, lhs::AFArray, rhs::AFArray,batch::Bool = true)
-    err = ccall((:af_sub, af_lib), 
+    err = ccall((:af_sub, af_lib),
                 Cint, (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
                 out, lhs.ptr, rhs.ptr, batch)
     err == 0 || throwAFerror(err)
 end
 
 function af_mul(out::Base.Ref, lhs::AFArray, rhs::AFArray,batch::Bool = true)
-    err = ccall((:af_mul, af_lib), 
+    err = ccall((:af_mul, af_lib),
                 Cint, (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
                 out, lhs.ptr, rhs.ptr, batch)
     err == 0 || throwAFerror(err)
 end
 
 function af_div(out::Base.Ref, lhs::AFArray, rhs::AFArray,batch::Bool = true)
-    err = ccall((:af_div, af_lib), 
+    err = ccall((:af_div, af_lib),
                 Cint, (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
                 out, lhs.ptr, rhs.ptr, batch)
     err == 0 || throwAFerror(err)
@@ -325,15 +325,15 @@ function af_bitxor(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
 end
 
 function af_bitshiftl(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
-    err = ccall((:af_bitshiftl, af_lib), Cint, 
+    err = ccall((:af_bitshiftl, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
                 out, lhs.ptr, rhs.ptr, batch)
     err == 0 || throwAFerror(err)
 end
 
 function af_bitshiftr(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
-    err = ccall((:af_bitshiftr, af_lib), Cint, 
-                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool), 
+    err = ccall((:af_bitshiftr, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
                 out, lhs.ptr, rhs.ptr, batch)
     err == 0 || throwAFerror(err)
 end
@@ -367,50 +367,50 @@ function af_rem(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
 end
 
 function af_mod(out::Base.Ref, lhs::AFArray, rhs::AFArray, batch::Bool)
-    err = ccall((:af_mod, af_lib), Cint, 
+    err = ccall((:af_mod, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
                 out, lhs.ptr, rhs.ptr, batch)
     err == 0 || throwAFerror(err)
 end
 
 function af_abs(out::Base.Ref, _in::AFArray)
-    err = ccall((:af_abs, af_lib), Cint, 
+    err = ccall((:af_abs, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}), out, _in.ptr)
     err == 0 || throwAFerror(err)
 end
 
 function af_arg(out::Base.Ref, _in::AFArray)
-    err = ccall((:af_arg, af_lib), Cint, 
+    err = ccall((:af_arg, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}), out, _in.ptr)
     err == 0 || throwAFerror(err)
 end
 
 function af_sign(out::Base.Ref, _in::AFArray)
-    err = ccall((:af_sign, af_lib), Cint, 
+    err = ccall((:af_sign, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}), out, _in.ptr)
     err == 0 || throwAFerror(err)
 end
 
 function af_round(out::Base.Ref, _in::AFArray)
-    err = ccall((:af_round, af_lib), Cint, 
+    err = ccall((:af_round, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}), out, _in.ptr)
     err == 0 || throwAFerror(err)
 end
 
 function af_trunc(out::Base.Ref, _in::AFArray)
-    err = ccall((:af_trunc, af_lib), Cint, 
+    err = ccall((:af_trunc, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}), out, _in.ptr)
     err == 0 || throwAFerror(err)
 end
 
 function af_floor(out::Base.Ref, _in::AFArray)
-    err = ccall((:af_floor, af_lib), Cint, 
+    err = ccall((:af_floor, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}), out, _in.ptr)
     err == 0 || throwAFerror(err)
 end
 
 function af_ceil(out::Base.Ref, _in::AFArray)
-    err = ccall((:af_ceil, af_lib), Cint, 
+    err = ccall((:af_ceil, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}), out, _in.ptr)
     err == 0 || throwAFerror(err)
 end
@@ -473,7 +473,7 @@ end
 
 
 function af_cplx(out::Base.Ref, _in::AFArray)
-    err = ccall((:af_cplx, af_lib), Cint, 
+    err = ccall((:af_cplx, af_lib), Cint,
                 (Ptr{Void},Ptr{Void}), out, _in.ptr)
     err == 0 || throwAFerror(err)
 end
@@ -491,7 +491,7 @@ function af_imag(out::Base.Ref, _in::AFArray)
 end
 
 function af_conjg(out::Base.Ref, _in::AFArray)
-    err = ccall((:af_conjg, af_lib), Cint, 
+    err = ccall((:af_conjg, af_lib), Cint,
                 (Ptr{Void},Ptr{Void}), out, _in.ptr)
     err == 0 || throwAFerror(err)
 end
@@ -655,7 +655,7 @@ function af_isnan(out::Base.Ref, _in::AFArray)
 end
 
 function af_make_seq(_begin::Real, _end::Real, step::Real)
-    ccall((:af_make_seq, af_lib), seq, 
+    ccall((:af_make_seq, af_lib), seq,
                 (Cdouble,Cdouble,Cdouble), _begin, _end, step)
 end
 
@@ -708,14 +708,14 @@ end
 =#
 
 function af_index(out::Base.Ref, _in::AFArray, ndims::UInt32, index::Union{seq, Vector{seq}})
-    err = ccall((:af_index, af_lib), Cint, 
+    err = ccall((:af_index, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, UInt32, Ptr{seq}),
                 out, _in.ptr, ndims, pointer(index))
     err == 0 || throwAFerror(err)
 end
 
 function af_lookup(out::Base.Ref, _in::AFArray, indices::AFArray, dim::UInt32)
-    err = ccall((:af_lookup, af_lib), Cint, 
+    err = ccall((:af_lookup, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}, UInt32),
                 out, _in.ptr, indices, dim)
     err == 0 || throwAFerror(err)
@@ -755,7 +755,7 @@ function af_set_array_indexer(indexer::index, idx::AFArray, dim::Int)
 end
 
 function af_set_seq_indexer(indexer::index, idx::seq, dim::Int, is_batch::Bool)
-    err = ccall((:af_set_seq_indexer, af_lib), Cint, 
+    err = ccall((:af_set_seq_indexer, af_lib), Cint,
                 (Ptr{Void}, Ptr{seq}, Cint, Bool),
                 indexer.ptr, pointer_from_objref(idx), dim, is_batch)
     err == 0 || throwAFerror(err)
@@ -799,8 +799,8 @@ function af_write_array(arr::af_array,data,bytes::Cint,src::af_source)
 end
 
 function af_get_data_ptr!(ret::Vector{UInt8}, x::AFArray, T::DataType)
-    err = ccall((:af_get_data_ptr, af_lib), 
-                Cint, (Ptr{T}, Ptr{Ptr{Void}}), 
+    err = ccall((:af_get_data_ptr, af_lib),
+                Cint, (Ptr{T}, Ptr{Ptr{Void}}),
                 pointer(ret), x.ptr)
     err == 0 || throwAFerror(err)
 end
@@ -836,14 +836,14 @@ function af_get_elements(elems::Vector{Int}, arr::AFArray)
 end
 
 function af_get_type(_type::Base.Ref, arr::Ptr{Void})
-    err = ccall((:af_get_type, af_lib), Cint, 
+    err = ccall((:af_get_type, af_lib), Cint,
                 (Ptr{Cuint}, Ptr{Void}), _type, arr)
     err == 0 || throwAFerror(err)
 end
 
 function af_get_dims!(d1::Base.Ref, d2::Base.Ref, d3::Base.Ref, d4::Base.Ref, arr::AFArray)
-    err = ccall((:af_get_dims, af_lib), 
-                Cint, 
+    err = ccall((:af_get_dims, af_lib),
+                Cint,
                 (Ptr{Cuint}, Ptr{Cuint}, Ptr{Cuint}, Ptr{Cuint}, Ptr{Void}),
                 d1, d2, d3, d4, arr.ptr)
     err == 0 || throwAFerror(err)
@@ -858,7 +858,7 @@ function af_get_numdims!(n::Base.Ref, ptr::Ptr{Void})
 end
 
 function af_is_empty(result::Base.Ref, arr::AFArray)
-    err = ccall((:af_is_empty, af_lib), Cint, 
+    err = ccall((:af_is_empty, af_lib), Cint,
                 (Ptr{Bool}, Ptr{Void}), result, arr.ptr)
     err == 0 || throwAFerror(err)
 end
@@ -966,7 +966,7 @@ function af_get_device_id(device::Base.Ref,_in::AFArray)
 end
 
 function af_get_active_backend(backend)
-    err = ccall((:af_get_active_backend, af_lib), Cint, 
+    err = ccall((:af_get_active_backend, af_lib), Cint,
                 (Ptr{Cuint},) , backend)
     err == 0 || throwAFerror(err)
 end
@@ -985,7 +985,7 @@ function af_dot(out::Base.Ref, lhs::AFArray, rhs::AFArray, optLhs::Int, optRhs::
 end
 
 function af_transpose(out::Base.Ref, _in::AFArray, conjugate::Bool)
-    err = ccall((:af_transpose, af_lib), Cint, 
+    err = ccall((:af_transpose, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Bool), out, _in.ptr, conjugate)
     err == 0 || throwAFerror(err)
 end
@@ -997,7 +997,7 @@ function af_transpose_inplace(_in::AFArray, conjugate::Bool)
 end
 
 function af_constant!(ptr::Base.Ref, val::Real, n::Int, dims::Vector{Int}, T::DataType)
-    err = ccall((:af_constant, af_lib), Cint, 
+    err = ccall((:af_constant, af_lib), Cint,
                 (Ptr{Void}, Cdouble, Cint, Ptr{Int}, Cuint),
                 ptr, val, n, pointer(dims), aftype(T))
     err == 0 || throwAFerror(err)
@@ -1006,7 +1006,7 @@ end
 function af_constant_complex!(ptr::Base.Ref, val::Complex, n::Int, dims::Vector{Int}, T::DataType)
     r = real(val)
     i = imag(val)
-    err = ccall((:af_constant_complex, af_lib), Cint, 
+    err = ccall((:af_constant_complex, af_lib), Cint,
                 (Ptr{Void}, Cdouble, Cdouble, Cint, Ptr{Int}, Cuint),
                 ptr, r, i, n, pointer(dims), aftype(Complex{T}))
     err == 0 || throwAFerror(err)
@@ -1028,34 +1028,34 @@ end
 
 function af_range(out::Base.Ref, ndims::UInt32, dims::Vector{Int}, seq_dim::Int, _type::DataType)
     err = ccall((:af_range, af_lib), Cint,
-                (Ptr{Void}, UInt32, Ptr{Int}, Cint, Cuint), 
+                (Ptr{Void}, UInt32, Ptr{Int}, Cint, Cuint),
                 out, ndims, pointer(dims), seq_dim, aftype(_type))
     err == 0 || throwAFerror(err)
 end
 
 function af_iota(out::Base.Ref, ndims::UInt32, dims::Vector{Int}, t_ndims::UInt32, tdims::Vector{Int}, _type::DataType)
-    err = ccall((:af_iota, af_lib), Cint, 
-                (Ptr{Void}, UInt32, Ptr{Int}, UInt32, Ptr{Int}, Cuint), 
+    err = ccall((:af_iota, af_lib), Cint,
+                (Ptr{Void}, UInt32, Ptr{Int}, UInt32, Ptr{Int}, Cuint),
                 out, ndims, pointer(dims), t_ndims, pointer(tdims),aftype(_type))
     err == 0 || throwAFerror(err)
 end
 
 function af_randu(ptr::Base.Ref, dims::Vector{Int}, T::DataType)
-    err = ccall((:af_randu,af_lib), 
-                Cint, (Ptr{Ptr{Void}}, Cint, Ptr{Int}, Cuint), 
+    err = ccall((:af_randu,af_lib),
+                Cint, (Ptr{Ptr{Void}}, Cint, Ptr{Int}, Cuint),
                 ptr , length(dims), pointer(dims), aftype(T))
     err == 0 || throwAFerror(err)
 end
 
 function af_randn(ptr::Base.Ref, dims::Vector{Int}, T::DataType)
-    err = ccall((:af_randn,af_lib), 
-                Cint, (Ptr{Ptr{Void}}, Cint, Ptr{Int}, Cuint), 
+    err = ccall((:af_randn,af_lib),
+                Cint, (Ptr{Ptr{Void}}, Cint, Ptr{Int}, Cuint),
                 ptr , length(dims), pointer(dims), aftype(T))
     err == 0 || throwAFerror(err)
 end
 
 function af_set_seed(seed::Cuint)
-    err = ccall((:af_set_seed, af_lib), Cint, 
+    err = ccall((:af_set_seed, af_lib), Cint,
                 (Cuint,), seed)
     err == 0 || throwAFerror(err)
 end
@@ -1144,7 +1144,7 @@ function af_lower(out::Base.Ref, _in::AFArray, is_unit_diag::Bool)
                 (Ptr{Void}, Ptr{Void}, Bool),
                 out, _in.ptr, is_unit_diag)
     err == 0 || throwAFerror(err)
-end 
+end
 
 function af_upper(out::Base.Ref, _in::AFArray, is_unit_diag::Bool)
     err = ccall((:af_upper, af_lib), Cint,
@@ -1189,7 +1189,7 @@ function af_replace_scalar(a::AFArray, cond::AFArray, b::Real)
 end
 
 function af_info()
-    err = ccall((:af_info, af_lib), Cint, () ) 
+    err = ccall((:af_info, af_lib), Cint, () )
     err == 0 || throwAFerror(err)
 end
 
@@ -1433,7 +1433,7 @@ function af_load_image(out::Base.Ref,filename::AbstractString, isColor::Bool)
 end
 
 function af_save_image(filename::AbstractString, _in::AFArray)
-    err = ccall((:af_save_image, af_lib), Cint, 
+    err = ccall((:af_save_image, af_lib), Cint,
                 (Cstring, Ptr{Void}), filename, _in.ptr)
     err == 0 || throwAFerror(err)
 end
@@ -1482,70 +1482,70 @@ function af_transform(out::Base.Ref, _in::AFArray, transform::AFArray, odim0::In
 end
 
 function af_transform_coordinates(out::Base.Ref, tf::AFArray, d0::Real, d1::Real)
-    err = ccall((:af_transform_coordinates, af_lib), Cint, 
+    err = ccall((:af_transform_coordinates, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cfloat, Cfloat),
                 out, tf.ptr, d0, d1)
     err == 0 || throwAFerror(err)
 end
 
 function af_rotate(out::Base.Ref, _in::AFArray, theta::Real, crop::Bool, method::Int)
-    err = ccall((:af_rotate, af_lib), Cint, 
+    err = ccall((:af_rotate, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cfloat, Bool, Cint),
                 out, _in.ptr, theta, crop, method)
     err == 0 || throwAFerror(err)
 end
 
-function af_translate(out::Base.Ref, _in::AFArray, trans0::Real, trans1::Real, 
+function af_translate(out::Base.Ref, _in::AFArray, trans0::Real, trans1::Real,
                         odim0::Int, odim1::Int, method::Int)
-    err = ccall((:af_translate, af_lib), Cint, 
+    err = ccall((:af_translate, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cfloat, Cfloat, Cint, Cint, Cint),
                 out, _in.ptr, trans0, trans1, odim0, odim1, method)
     err == 0 || throwAFerror(err)
 end
 
-function af_scale(out::Base.Ref, _in::AFArray, scale0::Real, scale1::Real, 
+function af_scale(out::Base.Ref, _in::AFArray, scale0::Real, scale1::Real,
                     odim0::Int, odim1::Int, method::Int)
-    err = ccall((:af_scale, af_lib), Cint, 
-                (Ptr{Void}, Ptr{Void}, Cfloat, Cfloat, Cint, Cint, Cint), 
+    err = ccall((:af_scale, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Cfloat, Cfloat, Cint, Cint, Cint),
                 out, _in.ptr, scale0, scale1, odim0, odim1, method)
     err == 0 || throwAFerror(err)
 end
 
-function af_skew(out::Base.Ref, _in::AFArray, skew0::Real, skew1::Real, 
+function af_skew(out::Base.Ref, _in::AFArray, skew0::Real, skew1::Real,
                     odim0::Int, odim1::Int, method::Int, inverse::Bool)
-    err = ccall((:af_skew, af_lib), Cint, 
+    err = ccall((:af_skew, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cfloat, Cfloat, Cint, Cint, Cint, Bool),
                 out, _in.ptr, skew0, skew1, odim0, odim1, method, inverse)
     err == 0 || throwAFerror(err)
 end
 
 function af_histogram(out::Base.Ref, _in::AFArray, nbins::UInt32,minval::Cdouble,maxval::Cdouble)
-    err = ccall((:af_histogram, af_lib), Cint, 
+    err = ccall((:af_histogram, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, UInt32, Cdouble, Cdouble),
                 out, _in.ptr, nbins, minval, maxval)
     err == 0 || throwAFerror(err)
 end
 
 function af_dilate(out::Base.Ref, _in::AFArray, mask::AFArray)
-    err = ccall((:af_dilate, af_lib), Cint, 
+    err = ccall((:af_dilate, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}), out, _in.ptr, mask)
     err == 0 || throwAFerror(err)
 end
 
 function af_dilate3(out::Base.Ref, _in::AFArray, mask::AFArray)
-    err = ccall((:af_dilate3, af_lib), Cint, 
+    err = ccall((:af_dilate3, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}), out, _in.ptr, mask)
     err == 0 || throwAFerror(err)
 end
 
 function af_erode(out::Base.Ref, _in::AFArray, mask::AFArray)
-    err = ccall((:af_erode, af_lib), Cint, 
+    err = ccall((:af_erode, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}), out, _in.ptr, mask)
     err == 0 || throwAFerror(err)
 end
 
 function af_erode3(out::Base.Ref, _in::AFArray, mask::AFArray)
-    err = ccall((:af_erode3, af_lib), Cint, 
+    err = ccall((:af_erode3, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}), out, _in.ptr, mask)
     err == 0 || throwAFerror(err)
 end
@@ -1558,7 +1558,7 @@ function af_bilateral(out::Base.Ref, _in::AFArray, spatial_sigma::Cdouble, chrom
 end
 
 function af_mean_shift(out::Base.Ref, _in::AFArray, spatial_sigma::Cfloat, chromatic_sigma::Cfloat, iter::Cuint, is_color::Bool)
-    err = ccall((:af_mean_shift, af_lib), Cint, 
+    err = ccall((:af_mean_shift, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cfloat, Cfloat, UInt32, Bool),
                 out, _in.ptr, spatial_sigma, chromatic_sigma, iter, is_color)
     err == 0 || throwAFerror(err)
@@ -1566,27 +1566,27 @@ end
 
 function af_medfilt(out::Base.Ref, _in::AFArray, wind_length::Int, wind_width::Int, edge_pad::Int)
     err = ccall((:af_medfilt, af_lib), Cint,
-                (Ptr{Void}, Ptr{Void}, Cint, Cint, Cint), 
+                (Ptr{Void}, Ptr{Void}, Cint, Cint, Cint),
                 out, _in.ptr, wind_length, wind_width, edge_pad)
     err == 0 || throwAFerror(err)
 end
 
 function af_minfilt(out::Base.Ref, _in::AFArray, wind_length::Int, wind_width::Int, edge_pad::Int)
-    err = ccall((:af_minfilt, af_lib), Cint, 
+    err = ccall((:af_minfilt, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cint, Cint, Cint),
                 out, _in.ptr, wind_length, wind_width, edge_pad)
     err == 0 || throwAFerror(err)
 end
 
 function af_maxfilt(out::Base.Ref, _in::AFArray, wind_length::Int, wind_width::Int, edge_pad::Int)
-    err = ccall((:af_maxfilt, af_lib), Cint, 
+    err = ccall((:af_maxfilt, af_lib), Cint,
                 (Ptr{af_array}, Ptr{Void}, Cint, Cint, Cint),
                 out, _in.ptr, wind_length, wind_width, edge_pad)
     err == 0 || throwAFerror(err)
 end
 
 function af_regions(out::Base.Ref, _in::AFArray, connectivity::Int, ty::DataType)
-    err = ccall((:af_regions, af_lib), Cint, 
+    err = ccall((:af_regions, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cint, Cuint),
                 out, _in.ptr, Cint, aftype(ty))
     err == 0 || throwAFerror(err)
@@ -1614,7 +1614,7 @@ function af_gray2rgb(out::Base.Ref, _in::AFArray, rFactor::Cdouble, gFactor::Cdo
 end
 
 function af_hist_equal(out::Base.Ref, _in::AFArray, hist::AFArray)
-    err = ccall((:af_hist_equal, af_lib), Cint, 
+    err = ccall((:af_hist_equal, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}),
                 out, _in.ptr, hist.ptr)
     err == 0 || throwAFerror(err)
@@ -1628,7 +1628,7 @@ function af_gaussian_kernel(out::Base.Ref, rows::Int, cols::Int, sigma_r::Real, 
 end
 
 function af_hsv2rgb(out::Base.Ref, _in::AFArray)
-    err = ccall((:af_hsv2rgb, af_lib), Cint, 
+    err = ccall((:af_hsv2rgb, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}), out, _in.ptr)
     err == 0 || throwAFerror(err)
 end
@@ -1641,7 +1641,7 @@ end
 
 function af_color_space(out::Base.Ref, image::AFArray, to::Int, from::Int)
     err = ccall((:af_color_space, af_lib), Cint,
-                (Ptr{Void}, Ptr{Void}, Cint, Cint), 
+                (Ptr{Void}, Ptr{Void}, Cint, Cint),
                 out, image.ptr, to, from)
     err == 0 || throwAFerror(err)
 end
@@ -1661,20 +1661,20 @@ end
 =#
 
 function af_ycbcr2rgb(out::Base.Ref, _in::AFArray, standard::Int)
-    err = ccall((:af_ycbcr2rgb, af_lib), Cint, 
+    err = ccall((:af_ycbcr2rgb, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr, standard)
     err == 0 || throwAFerror(err)
 end
 
 function af_rgb2ycbcr(out::Base.Ref, _in::AFArray, standard::Int)
-    err = ccall((:af_rgb2ycbcr, af_lib), Cint, 
+    err = ccall((:af_rgb2ycbcr, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cint), out, _in.ptr, standard)
     err == 0 || throwAFerror(err)
 end
 
 function af_svd(u::Base.Ref, s::Base.Ref, vt::Base.Ref, _in::AFArray)
-    err = ccall((:af_svd, af_lib), Cint, 
-                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}), 
+    err = ccall((:af_svd, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}),
                 u, s, vt, _in.ptr)
     err == 0 || throwAFerror(err)
 end
@@ -1687,7 +1687,7 @@ function af_svd_inplace(u::Base.Ref, s::Base.Ref, vt::Base.Ref, _in::AFArray)
 end
 
 function af_lu(lower::Base.Ref, upper::Base.Ref, pivot::Base.Ref, _in::AFArray)
-    err = ccall((:af_lu, af_lib), Cint, 
+    err = ccall((:af_lu, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}),
                 lower, upper, pivot, _in.ptr)
     err == 0 || throwAFerror(err)
@@ -1701,21 +1701,21 @@ function af_lu_inplace(pivot::Base.Ref, _in::AFArray, is_lapack_piv::Bool)
 end
 
 function af_qr(q::Base.Ref, r::Base.Ref, tau::Base.Ref, _in::AFArray)
-    err = ccall((:af_qr, af_lib), Cint, 
+    err = ccall((:af_qr, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}),
                 q, r, tau, _in.ptr)
     err == 0 || throwAFerror(err)
 end
 
 function af_qr_inplace(tau::Base.Ref, _in::AFArray)
-    err = ccall((:af_qr_inplace, af_lib), Cint, 
+    err = ccall((:af_qr_inplace, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}), tau, _in.ptr)
     err == 0 || throwAFerror(err)
 end
 
 function af_cholesky(out::Base.Ref, info::Base.Ref, _in::AFArray, is_upper::Bool)
-    err = ccall((:af_cholesky, af_lib), Cint, 
-                (Ptr{Void}, Ptr{Cint}, Ptr{Void}, Bool),    
+    err = ccall((:af_cholesky, af_lib), Cint,
+                (Ptr{Void}, Ptr{Cint}, Ptr{Void}, Bool),
                 out, info, _in.ptr, is_upper)
     err == 0 || throwAFerror(err)
 end
@@ -1748,19 +1748,19 @@ function af_inverse(out::Base.Ref, _in::AFArray, options::Int)
 end
 
 function af_rank(rank::Base.Ref, _in::AFArray, tol::Cdouble)
-    err = ccall((:af_rank, af_lib), Cint, 
+    err = ccall((:af_rank, af_lib), Cint,
                 (Ptr{UInt32}, Ptr{Void}, Cdouble), rank, _in.ptr, tol)
     err == 0 || throwAFerror(err)
 end
 
 function af_det(real::Base.Ref, imag::Base.Ref, _in::AFArray)
-    err = ccall((:af_det, af_lib), Cint, 
+    err = ccall((:af_det, af_lib), Cint,
                 (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Void}), real, imag, _in.ptr)
     err == 0 || throwAFerror(err)
 end
 
 function af_norm(out::Base.Ref, _in::AFArray, _type::Int, p::Real, q::Real)
-    err = ccall((:af_norm, af_lib), Cint, 
+    err = ccall((:af_norm, af_lib), Cint,
                 (Ptr{Cdouble}, Ptr{Void}, Cint, Cdouble, Cdouble),
                 out, _in.ptr, _type, p, q)
     err == 0 || throwAFerror(err)
@@ -1800,20 +1800,20 @@ function af_fft_inplace(_in::AFArray, norm_factor::Cdouble)
 end
 
 function af_fft2(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, odim0::Int, odim1::Int)
-    err = ccall((:af_fft2, af_lib), Cint, 
+    err = ccall((:af_fft2, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cdouble, Cint, Cint),
                 out, _in.ptr, norm_factor, odim0, odim1)
     err == 0 || throwAFerror(err)
 end
 
 function af_fft2_inplace(_in::AFArray, norm_factor::Cdouble)
-    err = ccall((:af_fft2_inplace, af_lib), Cint, 
+    err = ccall((:af_fft2_inplace, af_lib), Cint,
             (AFArray, Cdouble), _in.ptr, norm_factor)
     err == 0 || throwAFerror(err)
 end
 
 function af_fft3(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, odim0::Int, odim1::Int, odim2::Int)
-    err = ccall((:af_fft3, af_lib), Cint, 
+    err = ccall((:af_fft3, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cdouble, Cint, Cint, Cint),
                 out, _in.ptr, norm_factor, odim0, odim1, odim2)
     err == 0 || throwAFerror(err)
@@ -1840,7 +1840,7 @@ end
 
 function af_ifft2(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, odim0::Int, odim1::Int)
     err = ccall((:af_ifft2, af_lib), Cint,
-                (Ptr{Void}, Ptr{Void}, Cdouble, Cint, Cint), 
+                (Ptr{Void}, Ptr{Void}, Cdouble, Cint, Cint),
                 out, _in.ptr, norm_factor, odim0, odim1)
     err == 0 || throwAFerror(err)
 end
@@ -1852,7 +1852,7 @@ function af_ifft2_inplace(_in::AFArray, norm_factor::Cdouble)
 end
 
 function af_ifft3(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, odim0::Int, odim1::Int, odim2::Int)
-    err = ccall((:af_ifft3, af_lib), Cint, 
+    err = ccall((:af_ifft3, af_lib), Cint,
                 (Ptr{Void},Ptr{Void}, Cdouble, Cint, Cint, Cint),
                 out, _in.ptr, norm_factor, odim0, odim1, odim2)
     err == 0 || throwAFerror(err)
@@ -1866,41 +1866,41 @@ end
 
 function af_fft_r2c(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, pad0::Int)
     err = ccall((:af_fft_r2c, af_lib), Cint,
-                (Ptr{Void}, Ptr{Void}, Cdouble, dim_t),
+                (Ptr{Void}, Ptr{Void}, Cdouble, Cint),
                 out, _in.ptr, norm_factor, pad0)
     err == 0 || throwAFerror(err)
 end
 
 function af_fft2_r2c(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, pad0::Int, pad1::Int)
-    err = ccall((:af_fft2_r2c, af_lib), Cint, 
+    err = ccall((:af_fft2_r2c, af_lib), Cint,
             (Ptr{Void}, Ptr{Void}, Cdouble, Cint, Cint),
             out, _in.ptr, norm_factor, pad0, pad1)
     err == 0 || throwAFerror(err)
 end
 
 function af_fft3_r2c(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, pad0::Int, pad1::Int, pad2::Int)
-    errr = ccall((:af_fft3_r2c, af_lib), Cint,
+    err = ccall((:af_fft3_r2c, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cdouble, Cint, Cint, Cint),
                 out, _in.ptr, norm_factor, pad0, pad1, pad2)
     err == 0 || throwAFerror(err)
 end
 
 function af_fft_c2r(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, is_odd::Bool)
-    err = ccall((:af_fft_c2r, af_lib), Cint, 
+    err = ccall((:af_fft_c2r, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cdouble, Bool),
                 out, _in.ptr, norm_factor, is_odd)
     err == 0 || throwAFerror(err)
 end
 
 function af_fft2_c2r(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, is_odd::Bool)
-    err = ccall((:af_fft2_c2r, af_lib), Cint, 
+    err = ccall((:af_fft2_c2r, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cdouble, Bool),
                 out, _in.ptr, norm_factor, is_odd)
     err == 0 || throwAFerror(err)
 end
 
 function af_fft3_c2r(out::Base.Ref, _in::AFArray, norm_factor::Cdouble, is_odd::Bool)
-    err = ccall((:af_fft3_c2r, af_lib), Cint, 
+    err = ccall((:af_fft3_c2r, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cdouble, Bool),
                 out, _in.ptr, norm_factor, is_odd)
     err == 0 || throwAFerror(err)
@@ -1969,45 +1969,45 @@ function af_iir(y::Base.Ref, b::AFArray, a::AFArray, x::AFArray)
 end
 
 function af_mean(out::Base.Ref, _in::AFArray, dim::Cuint)
-    err = ccall((:af_mean, af_lib), Cint, 
+    err = ccall((:af_mean, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cuint), out, _in.ptr ,dim)
     err == 0 || throwAFerror(err)
 end
 
 function af_mean_weighted(out::Base.Ref, _in::AFArray,weights::AFArray, dim::Cuint)
-    err = ccall((:af_mean_weighted, af_lib), Cint, 
+    err = ccall((:af_mean_weighted, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cuint), out, _in.ptr, weights.ptr, dim)
     err == 0 || throwAFerror(err)
 end
 
 function af_var(out::Base.Ref, _in::AFArray, isbiased::Bool, dim::Cuint)
-    err = ccall((:af_var, af_lib), Cint, 
+    err = ccall((:af_var, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Bool, Cuint), out, _in.ptr , isbiased, dim)
     err == 0 || throwAFerror(err)
 end
 
 function af_var_weighted(out::Base.Ref, _in::AFArray, weights::AFArray, dim::Cuint)
-    err = ccall((:af_var_weighted, af_lib), Cint, 
+    err = ccall((:af_var_weighted, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cuint), out, _in.ptr, weights.ptr, dim)
     err == 0 || throwAFerror(err)
 end
 
 
 function af_stdev(out::Base.Ref, _in::AFArray, dim::Cuint)
-    err = ccall((:af_stdev, af_lib), Cint, 
+    err = ccall((:af_stdev, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cuint), out, _in.ptr ,dim)
     err == 0 || throwAFerror(err)
 end
 
 function af_cov(out::Base.Ref, X::AFArray, Y::AFArray, isbiased::Bool)
     err = ccall((:af_cov, af_lib), Cint,
-                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool), 
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, Bool),
                 out, X.ptr, Y.ptr, isbiased)
     err == 0 || throwAFerror(err)
 end
 
 function af_median(out::Base.Ref, _in::AFArray, dim::Cuint)
-    err = ccall((:af_median, af_lib), Cint, 
+    err = ccall((:af_median, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cuint), out, _in.ptr ,dim)
     err == 0 || throwAFerror(err)
 end
@@ -2054,24 +2054,24 @@ function af_corrcoef(real::Base.Ref, imag::Base.Ref, X::AFArray, Y::AFArray)
     err == 0 || throwAFerror(err)
 end
 
-function af_fast(out::Base.Ref, _in::AFArray, thr::Real, arc_length::UInt32, 
+function af_fast(out::Base.Ref, _in::AFArray, thr::Real, arc_length::UInt32,
                     non_max::Bool, feature_ratio::Real, edge::UInt32)
-    err = ccall((:af_fast, af_lib), Cint, 
+    err = ccall((:af_fast, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cfloat, UInt32, Bool, Cfloat, UInt32),
                 out, _in.ptr, thr, arc_length, non_max, feature_ratio, edge)
     err == 0 || throwAFerror(err)
 end
 
-function af_harris(out::Base.Ref, _in::AFArray, max_corners::UInt32, 
+function af_harris(out::Base.Ref, _in::AFArray, max_corners::UInt32,
                     min_response::Real, sigma::Real, block_size::UInt32, k_thr::Real)
-    err = ccall((:af_harris, af_lib), Cint, 
+    err = ccall((:af_harris, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, UInt32, Cfloat, Cfloat, UInt32, Cfloat),
                 out, _in.ptr, max_corners, min_response, sigma, block_size, k_thr)
     err == 0 || throwAFerror(err)
 end
 
-function af_orb(feat::Base.Ref, desc::Base.Ref, _in::AFArray, 
-                fast_thr::Real, max_feat::UInt32, scl_fctr::Real, 
+function af_orb(feat::Base.Ref, desc::Base.Ref, _in::AFArray,
+                fast_thr::Real, max_feat::UInt32, scl_fctr::Real,
                 levels::UInt32, blur_img::Bool)
     err = ccall((:af_orb, af_lib), Cint,
             (Ptr{Void}, Ptr{Void}, Ptr{Void}, Cfloat, UInt32, Cfloat, UInt32, Bool),
@@ -2079,29 +2079,29 @@ function af_orb(feat::Base.Ref, desc::Base.Ref, _in::AFArray,
     err == 0 || throwAFerror(err)
 end
 
-function af_sift(feat::Base.Ref, desc::Base.Ref, _in::AFArray, n_layers::UInt32, 
-                contrast_thr::Real, edge_thr::Real, init_sigma::Real, double_input::Bool, 
+function af_sift(feat::Base.Ref, desc::Base.Ref, _in::AFArray, n_layers::UInt32,
+                contrast_thr::Real, edge_thr::Real, init_sigma::Real, double_input::Bool,
                 intensity_scale::Real, feature_ratio::Real)
-    err = ccall((:af_sift, af_lib), Cint, 
-                (Ptr{Void}, Ptr{Void}, Ptr{Void}, UInt32, Cfloat, 
+    err = ccall((:af_sift, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, UInt32, Cfloat,
                 Cfloat, Cfloat, Bool, Cfloat, Cfloat),
-                feat,desc, _in.ptr, n_layers, contrast_thr, edge_thr, 
+                feat,desc, _in.ptr, n_layers, contrast_thr, edge_thr,
                 init_sigma, double_input, intensity_scale, feature_ratio)
     err == 0 || throwAFerror(err)
 end
 
-function af_gloh(feat::Base.Ref, desc::Base.Ref, _in::AFArray, n_layers::UInt32, 
-                contrast_thr::Real, edge_thr::Real, init_sigma::Real, double_input::Bool, 
+function af_gloh(feat::Base.Ref, desc::Base.Ref, _in::AFArray, n_layers::UInt32,
+                contrast_thr::Real, edge_thr::Real, init_sigma::Real, double_input::Bool,
                 intensity_scale::Real, feature_ratio::Real)
-    err = ccall((:af_gloh, af_lib), Cint, 
-                (Ptr{Void}, Ptr{Void}, Ptr{Void}, UInt32, Cfloat, 
+    err = ccall((:af_gloh, af_lib), Cint,
+                (Ptr{Void}, Ptr{Void}, Ptr{Void}, UInt32, Cfloat,
                 Cfloat, Cfloat, Bool, Cfloat, Cfloat),
-                feat,desc, _in.ptr, n_layers, contrast_thr, edge_thr, 
+                feat,desc, _in.ptr, n_layers, contrast_thr, edge_thr,
                 init_sigma, double_input, intensity_scale, feature_ratio)
     err == 0 || throwAFerror(err)
 end
 
-function af_hamming_matcher(idx::Base.Ref, dist::Base.Ref, query::AFArray, 
+function af_hamming_matcher(idx::Base.Ref, dist::Base.Ref, query::AFArray,
                             train::AFArray, dist_dim::Int, n_dist::UInt32)
     err = ccall((:af_hamming_matcher,vision), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, UInt32),
@@ -2109,7 +2109,7 @@ function af_hamming_matcher(idx::Base.Ref, dist::Base.Ref, query::AFArray,
     err == 0 || throwAFerror(err)
 end
 
-function af_nearest_neighbour(idx::Base.Ref, dist::Base.Ref, query::AFArray, 
+function af_nearest_neighbour(idx::Base.Ref, dist::Base.Ref, query::AFArray,
                                 train::AFArray, dist_dim::Int, n_dist::UInt32,dist_type::Int)
     err = ccall((:af_nearest_neighbour,vision), Cint,
                 (Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}, Cint, UInt32, Cint),
@@ -2123,7 +2123,7 @@ function af_match_template(out,search_img::af_array,template_img::af_array,m_typ
 end
 =#
 
-function af_susan(out::Base.Ref, _in::AFArray, radius::UInt32, 
+function af_susan(out::Base.Ref, _in::AFArray, radius::UInt32,
                     diff_thr::Real, geom_thr::Real, feature_ratio::Real, edge::UInt32)
     err = ccall((:af_susan,af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, UInt32, Cfloat, Cfloat, Cfloat, UInt32),
@@ -2132,7 +2132,7 @@ function af_susan(out::Base.Ref, _in::AFArray, radius::UInt32,
 end
 
 function af_dog(out::Base.Ref, _in::AFArray, radius1::Int, radius2::Int)
-    err = ccall((:af_dog, af_lib), Cint, 
+    err = ccall((:af_dog, af_lib), Cint,
                 (Ptr{Void}, Ptr{Void}, Cint, Cint),
                 out, _in.ptr, radius1, radius2)
     err == 0 || throwAFerror(err)
