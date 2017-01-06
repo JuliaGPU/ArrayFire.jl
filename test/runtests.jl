@@ -73,3 +73,5 @@ end
 
 as = Int32[-2 -1 0 1 2]
 @test all(AFArray(sign.(as)) == sign(AFArray(as)))
+
+@test typeof(fft_r2c(AFArray(rand(Float32, 10)), 1.0, 0)) == AFArray{Complex{Float32}, 1}

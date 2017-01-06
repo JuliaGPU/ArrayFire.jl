@@ -420,7 +420,7 @@ end
 function signbit{T,N}(_in::AFArray{T,N})
     out = RefValue{af_array}(0)
     _error(ccall((:af_sign,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{T,N}(out[])
+    AFArray{Float32,N}(out[])
 end
 
 function round{T,N}(_in::AFArray{T,N})
@@ -1895,7 +1895,7 @@ end
 function fft_r2c{T,N}(_in::AFArray{T,N},norm_factor::Real,pad0::dim_t)
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft_r2c,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t),out,_in.arr,Cdouble(norm_factor),pad0))
-    AFArray{T,N}(out[])
+    AFArray{Complex{Float32},N}(out[])
 end
 
 function fft2_r2c{T,N}(_in::AFArray{T,N},norm_factor::Real,pad0::dim_t,pad1::dim_t)
@@ -1913,7 +1913,7 @@ end
 function fft_c2r{T,N}(_in::AFArray{T,N},norm_factor::Real,is_odd::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,Cdouble(norm_factor),is_odd))
-    AFArray{T,N}(out[])
+    AFArray{Float32,N}(out[])
 end
 
 function fft2_c2r{T,N}(_in::AFArray{T,N},norm_factor::Real,is_odd::Bool)

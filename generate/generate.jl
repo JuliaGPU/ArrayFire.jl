@@ -56,6 +56,9 @@ const booleans1 = Set(["iszero", "isinf", "isnan", "not"])
 const booleans2 = Set(["lt", "gt", "le", "ge", "eq", "neq"])
 const maths     = Set(["add", "sub", "mul", "div", "rem", "mod", "atan2", "root", "pow", "dot",
                        "minof", "maxof", "hypot", "cplx2", "matmul"])
+const floats    = Set(["signbit", "fft_c2r"])
+const complexes = Set(["fft_r2c"])
+
 
 const exports = []
 
@@ -109,7 +112,15 @@ function rewrite(line::Expr)
             end
         end
         if num_out > 0
-            if name in booleans1
+            if name in floats
+                hdr[1] = Expr(:curly, hdr[1], :T, :N)
+                args[2].args[2] = Expr(:curly, :AFArray, :T, :N)
+                push!(body, return_val(types[1], args[1], Expr(:curly, :AFArray, :Float32, :N)))
+            elseif name in complexes
+                hdr[1] = Expr(:curly, hdr[1], :T, :N)
+                args[2].args[2] = Expr(:curly, :AFArray, :T, :N)
+                push!(body, return_val(types[1], args[1], Expr(:curly, :AFArray, Expr(:curly, :Complex, :Float32), :N)))
+            elseif name in booleans1
                 hdr[1] = Expr(:curly, hdr[1], :T, :N)
                 args[2].args[2] = Expr(:curly, :AFArray, :T, :N)
                 push!(body, return_val(types[1], args[1], Expr(:curly, :AFArray, :Bool, :N)))
