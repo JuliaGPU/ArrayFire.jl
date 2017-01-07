@@ -5,5 +5,6 @@ include("common.jl")
 include("array.jl")
 include("util.jl")
 include("wrap.jl")
+include("random.jl")
 
 end

@@ -102,7 +102,7 @@ import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=
 <=(a::AFArray, b::AFArray) = le(a, b, bcast[])
 >=(a::AFArray, b::AFArray) = ge(a, b, bcast[])
 
-import Base: Ac_mul_B, At_mul_B, A_mul_Bc, Ac_mul_Bc, A_mul_Bt, At_mul_Bt
+import Base: Ac_mul_B, At_mul_B, A_mul_Bc, Ac_mul_Bc, A_mul_Bt, At_mul_Bt, transpose, ctranspose
 export A_mul_B
 
 A_mul_B(a::AFArray,   b::AFArray) = matmul(a, b, AF_MAT_NONE,   AF_MAT_NONE)
@@ -114,3 +114,24 @@ A_mul_Bt(a::AFArray,  b::AFArray) = matmul(a, b, AF_MAT_NONE,   AF_MAT_TRANS)
 At_mul_Bt(a::AFArray, b::AFArray) = matmul(a, b, AF_MAT_TRANS,  AF_MAT_TRANS)
 
 sign{T,N}(a::AFArray{T,N}) = (AFArray{T,N}(0<a) - AFArray{T,N}(a<0))
+
+function At_mul_B{T1, T2}(a::AFVector{T1},  b::AFArray{T2})
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_matmul,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_mat_prop,af_mat_prop),
+                 out,a.arr,b.arr,AF_MAT_TRANS, AF_MAT_NONE))
+    AFArray{typed(T1,T2),1}(out[])
+end
+
+function A_mul_B{T1,T2}(a::AFMatrix{T1}, b::AFVector{T2})
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_matmul,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_mat_prop,af_mat_prop),
+                 out,a.arr,b.arr,AF_MAT_NONE, AF_MAT_NONE))
+    AFArray{typed(T1,T2),1}(out[])
+end
+
+function transpose{T,N}(_in::AFArray{T,N},conjugate::Bool=false)
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_transpose,af_lib),af_err,(Ptr{af_array},af_array,Bool),out,_in.arr,conjugate))
+    AFArray{T,2}(out[])
+end
+ctranspose(in::AFArray) = transpose(in, true)

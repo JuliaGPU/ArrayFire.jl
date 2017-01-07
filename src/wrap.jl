@@ -986,12 +986,6 @@ function dot_all(lhs::AFArray,rhs::AFArray,optLhs::af_mat_prop,optRhs::af_mat_pr
     (real[],imag[])
 end
 
-function transpose{T,N}(_in::AFArray{T,N},conjugate::Bool)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_transpose,af_lib),af_err,(Ptr{af_array},af_array,Bool),out,_in.arr,conjugate))
-    AFArray{T,N}(out[])
-end
-
 function transpose_inplace(_in::AFArray,conjugate::Bool)
     _error(ccall((:af_transpose_inplace,af_lib),af_err,(af_array,Bool),_in.arr,conjugate))
 end
