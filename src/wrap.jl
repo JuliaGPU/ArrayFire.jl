@@ -43,8 +43,8 @@ export sift, sigmoid, signbit, sin, sinh, skew, sobel_operator, solve, solve_lu,
 export sparse_convert_to, sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx, sparse_get_storage
 export sparse_get_values, sparse_to_dense, sqrt, stdev, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all
 export susan, svd, svd_inplace, sync, tan, tanh, tgamma, tile, transform, transform_coordinates, translate
-export transpose, transpose_inplace, trunc, unlock_array, unlock_device_ptr, unwrap, upper, var, var_all
-export var_all_weighted, var_weighted, where, wrap, write_array, ycbcr2rgb
+export transpose_inplace, trunc, unlock_array, unlock_device_ptr, unwrap, upper, var, var_all, var_all_weighted
+export var_weighted, where, wrap, write_array, ycbcr2rgb
 
 function sum{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
