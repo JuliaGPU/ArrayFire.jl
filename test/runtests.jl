@@ -1,8 +1,6 @@
 using ArrayFire
 using Base.Test
 
-include("autodiff.jl")
-
 @test unsafe_string(err_to_string(Cuint(0))) == "Success"
 @test_throws ErrorException set_device(-5)
 @test get_manual_eval_flag() == false
@@ -92,4 +90,5 @@ amf = AFArray(am)
 @test sum(amf' * amf') ≈ sum(am' * am')
 @test sum(At_mul_Bt(amf, amf)) ≈ sum(am' * am')
 
+include("autodiff.jl")
 include("blackscholes.jl")
