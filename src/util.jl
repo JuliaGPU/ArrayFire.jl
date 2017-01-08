@@ -7,7 +7,7 @@ function afgc(threshold = 7e9)
     lock_buffers = RefValue{Csize_t}(0)
     err = ccall((:af_device_mem_info,af_lib),af_err,(Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t}),
                 alloc_bytes,alloc_buffers,lock_bytes,lock_buffers)
-    if err == 0 && alloc_bytes[] > 7e9
+    if err == 0 && alloc_bytes[] > threshold
         gc()
         err = ccall((:af_device_gc,af_lib),af_err,())
     end
