@@ -31,20 +31,20 @@ export medfilt1, medfilt2, median, median_all, min_all, minfilt, minimum, minof,
 export moments_all, mul, nearest_neighbour, neq, norm, not, or, orb, pow, pow2, print_array, print_array_gen
 export print_mem_info, prod, product_all, product_nan, product_nan_all, qr, qr_inplace, randn, random_engine_get_seed
 export random_engine_get_type, random_engine_set_seed, random_engine_set_type, random_normal, random_uniform
-export randu, range, rank, read_array_index, read_array_key, read_array_key_check, real, regions, release_array
-export release_features, release_indexers, release_random_engine, rem, reorder, replace, replace_scalar
-export resize, retain_features, retain_random_engine, rgb2gray, rgb2hsv, rgb2ycbcr, root, rotate, round
-export sat, save_array, save_image, save_image_memory, save_image_native, scale, scan, scan_by_key, select
-export select_scalar_l, select_scalar_r, set_array_indexer, set_axes_limits_2d, set_axes_limits_3d, set_axes_limits_compute
-export set_axes_titles, set_backend, set_default_random_engine_type, set_device, set_fft_plan_cache_size
-export set_intersect, set_manual_eval_flag, set_mem_step_size, set_position, set_seed, set_seq_indexer
-export set_seq_param_indexer, set_size, set_title, set_union, set_unique, set_visibility, shift, show
-export sift, sigmoid, signbit, sin, sinh, skew, sobel_operator, solve, solve_lu, sort, sort_by_key, sort_index
-export sparse_convert_to, sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx, sparse_get_storage
-export sparse_get_values, sparse_to_dense, sqrt, stdev, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all
-export susan, svd, svd_inplace, sync, tan, tanh, tgamma, tile, transform, transform_coordinates, translate
-export transpose_inplace, trunc, unlock_array, unlock_device_ptr, unwrap, upper, var, var_all, var_all_weighted
-export var_weighted, where, wrap, write_array, ycbcr2rgb
+export randu, range, rank, read_array_index, read_array_key, read_array_key_check, real, regions, release_features
+export release_indexers, release_random_engine, rem, reorder, replace, replace_scalar, resize, retain_features
+export retain_random_engine, rgb2gray, rgb2hsv, rgb2ycbcr, root, rotate, round, sat, save_array, save_image
+export save_image_memory, save_image_native, scale, scan, scan_by_key, select, select_scalar_l, select_scalar_r
+export set_array_indexer, set_axes_limits_2d, set_axes_limits_3d, set_axes_limits_compute, set_axes_titles
+export set_backend, set_default_random_engine_type, set_device, set_fft_plan_cache_size, set_intersect
+export set_manual_eval_flag, set_mem_step_size, set_position, set_seed, set_seq_indexer, set_seq_param_indexer
+export set_size, set_title, set_union, set_unique, set_visibility, shift, show, sift, sigmoid, signbit
+export sin, sinh, skew, sobel_operator, solve, solve_lu, sort, sort_by_key, sort_index, sparse_convert_to
+export sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx, sparse_get_storage, sparse_get_values
+export sparse_to_dense, sqrt, stdev, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all, susan, svd, svd_inplace
+export sync, tan, tanh, tgamma, tile, transform, transform_coordinates, translate, transpose_inplace, trunc
+export unlock_array, unlock_device_ptr, unwrap, upper, var, var_all, var_all_weighted, var_weighted, where
+export wrap, write_array, ycbcr2rgb
 
 function sum{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
@@ -814,10 +814,6 @@ end
 
 function get_data_ptr(data,arr::AFArray)
     _error(ccall((:af_get_data_ptr,af_lib),af_err,(Ptr{Void},af_array),data,arr.arr))
-end
-
-function release_array(arr::AFArray)
-    _error(ccall((:af_release_array,af_lib),af_err,(af_array,),arr.arr))
 end
 
 function afeval(_in::AFArray)

@@ -14,6 +14,10 @@ function afgc(threshold = 7e9)
     return err
 end
 
+function release_array(arr::AFArray)
+    ccall((:af_release_array,af_lib),af_err,(af_array,),arr.arr)
+end
+
 export afgc
 
 display(a::AFArray) = (println(typeof(a)); display(Array(a)))
