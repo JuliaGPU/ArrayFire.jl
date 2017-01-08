@@ -1,5 +1,21 @@
 import Base: RefValue, @pure, display
 
+function afgc(threshold = 7e9)
+    alloc_bytes = RefValue{Csize_t}(0)
+    alloc_buffers = RefValue{Csize_t}(0)
+    lock_bytes = RefValue{Csize_t}(0)
+    lock_buffers = RefValue{Csize_t}(0)
+    err = ccall((:af_device_mem_info,af_lib),af_err,(Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t}),
+                alloc_bytes,alloc_buffers,lock_bytes,lock_buffers)
+    if err == 0 && alloc_bytes[] > 7e9
+        gc()
+        err = ccall((:af_device_gc,af_lib),af_err,())
+    end
+    return err
+end
+
+export afgc
+
 display(a::AFArray) = (println(typeof(a)); display(Array(a)))
 
 global const af_lib = is_unix() ? "libaf" : "af"
@@ -13,7 +29,7 @@ function __init__()
 end
 
 function _error(err::af_err)
-    if err == 0; return; end
+    if err == 0 && afgc() == 0 ; return ; end
     str = err_to_string(err)
     str2 = get_last_error()[1]
     throw(ErrorException("ArrayFire Error ($err) : $(unsafe_string(str))\n$(unsafe_string(str2))"))
