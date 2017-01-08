@@ -1,6 +1,6 @@
 import Base: RefValue, @pure, display
 
-function afgc(threshold = 7e9)
+function afgc(threshold = 6e9)
     alloc_bytes = RefValue{Csize_t}(0)
     alloc_buffers = RefValue{Csize_t}(0)
     lock_bytes = RefValue{Csize_t}(0)
@@ -33,7 +33,12 @@ function __init__()
 end
 
 function _error(err::af_err)
-    if err == 0 && afgc() == 0 ; return ; end
+    if err == 0
+        err = afgc()
+        if err == 0
+            return
+        end
+    end
     str = err_to_string(err)
     str2 = get_last_error()[1]
     throw(ErrorException("ArrayFire Error ($err) : $(unsafe_string(str))\n$(unsafe_string(str2))"))
