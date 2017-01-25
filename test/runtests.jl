@@ -119,3 +119,18 @@ let
     yd = xd[:, [1,3]]
     @test sumabs2(x - Array(xd)) < 1e-6
 end
+
+# Return types of sum reduction
+let
+    for T in (Float32, Complex{Float32}, Int32, 
+              Int64, UInt32, UInt8, UInt64, Bool)
+        s = AFArray(rand(T, 10))
+        if T == UInt8
+            @test typeof(sum(s)) == UInt32
+        elseif T == Bool
+            @test typeof(sum(s)) == Int64
+        else
+            @test typeof(sum(s)) == T
+        end
+    end
+end

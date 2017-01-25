@@ -14,14 +14,28 @@ for (op,fn) in ((:sum, :af_sum_all), (:product, :af_product_all),
         real = Base.Ref{Cdouble}(0)
         imag = Base.Ref{Cdouble}(0)
         $(fn)(real, imag, a)
-        real[]
+        T(real[])
     end
 
-    @eval function ($op){T<:Complex}(a::AFArray{T})
+    @eval function ($op){T<:UInt8}(a::AFArray{T})
         real = Base.Ref{Cdouble}(0)
         imag = Base.Ref{Cdouble}(0)
         $(fn)(real, imag, a)
-        complex(real[], imag[])
+        UInt32(real[])
+    end
+
+    @eval function ($op){T<:Bool}(a::AFArray{T})
+        real = Base.Ref{Cdouble}(0)
+        imag = Base.Ref{Cdouble}(0)
+        $(fn)(real, imag, a)
+        Int64(real[])
+    end
+
+    @eval function ($op){T<:Real}(a::AFArray{Complex{T}})
+        real = Base.Ref{Cdouble}(0)
+        imag = Base.Ref{Cdouble}(0)
+        $(fn)(real, imag, a)
+        complex(T(real[]), T(imag[]))
     end
 
 end
