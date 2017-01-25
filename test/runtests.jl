@@ -134,3 +134,19 @@ let
         end
     end
 end
+
+# Issue #125
+let
+    a = rand(Float32, 5, 5)
+    ad = AFArray(a)
+    for f in (.>, .>=, .<, .<=, .==)
+        for val in (0.5f0, 1)
+            b = f(val, a)
+            bd = f(val, ad)
+            @test sumabs2(b - Array(bd)) < 1e-6
+            b = f(a, val)
+            bd = f(ad, val)
+            @test sumabs2(b - Array(bd)) < 1e-6
+        end
+    end
+end
