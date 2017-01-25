@@ -281,7 +281,12 @@ for (op,fn) in ((:&, :af_bitand),(:|, :af_bitor), (:$, :af_bitxor),
         $(fn)(out, a, tmp, batched)
         AFArray{backend_eltype(out[])}(out[])
     end
-    @eval ($op)(b::Real, a::AFArray) = ($op)(a, b)
+    @eval function ($op)(a::Real, b::AFArray; batched = true)
+        out = new_ptr()
+        tmp = constant(a, size(b))
+        $(fn)(out, tmp, b, batched)
+        AFArray{backend_eltype(out[])}(out[])
+    end
 
 end
 
