@@ -84,11 +84,6 @@ function getBackendId(a::AFArray)
     backend
 end
 
-function sync()
-    b = getActiveBackendId()
-    af_sync(b)
-end
-
 function sync(b::Int)
     af_sync(b)
 end

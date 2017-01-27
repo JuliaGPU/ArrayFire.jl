@@ -18,7 +18,7 @@ function matmul(a::AFArray, b::AFArray)
         r = a * b
         ArrayFire.eval(r)
     end
-    sync()
+    sync(0)
 end
 
 function fast_fourier(a::AFArray)
@@ -26,7 +26,7 @@ function fast_fourier(a::AFArray)
         r = fft(a)
         ArrayFire.eval(r)
     end
-    sync()
+    sync(0)
 end
 
 function cholesky(a::AFArray)
@@ -34,7 +34,7 @@ function cholesky(a::AFArray)
         r = chol(a)
         ArrayFire.eval(r)
     end
-    sync()
+    sync(0)
 end
 
 function random()
@@ -42,7 +42,7 @@ function random()
         r = rand(AFArray{Float32}, 5000, 5000)
         ArrayFire.eval(r)
     end
-    sync()
+    sync(0)
 end
 
 function sorting(a::AFArray)
@@ -50,7 +50,7 @@ function sorting(a::AFArray)
         r = sort(a)
         ArrayFire.eval(r)
     end
-    sync()
+    sync(0)
 end
 
 function benchmark()
