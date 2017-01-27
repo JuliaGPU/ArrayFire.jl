@@ -150,3 +150,13 @@ let
         end
     end
 end
+
+# Issue #131
+let 
+    setDevice(0)
+    for i = 1:10
+        a = rand(AFArray{Float32}, 10)
+        a + 1
+    end
+    sync(0)
+end
