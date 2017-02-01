@@ -29,8 +29,8 @@ export lu_inplace, make_seq, match_template, matmul, max_all, maxfilt, maximum, 
 export mean_all_weighted, mean_shift, mean_weighted, medfilt, medfilt1, medfilt2, median, median_all, min_all
 export minfilt, minimum, minof, mod, moments, moments_all, mul, nearest_neighbour, neq, norm, not, or
 export orb, pow, pow2, print_array, print_array_gen, print_mem_info, prod, product_all, product_nan, product_nan_all
-export qr, qr_inplace, randn, random_engine_get_seed, random_engine_get_type, random_engine_set_seed, random_engine_set_type
-export random_normal, random_uniform, randu, range, rank, read_array_index, read_array_key, read_array_key_check
+export qr, qr_inplace, random_engine_get_seed, random_engine_get_type, random_engine_set_seed, random_engine_set_type
+export random_normal, random_uniform, range, rank, read_array_index, read_array_key, read_array_key_check
 export real, regions, release_features, release_indexers, release_random_engine, rem, reorder, replace
 export replace, resize, retain_features, retain_random_engine, rgb2gray, rgb2hsv, rgb2ycbcr, root, rotate
 export round, sat, save_array, save_image, save_image_memory, save_image_native, scale, scan, scan_by_key
@@ -1744,18 +1744,6 @@ end
 
 function release_random_engine(engine::af_random_engine)
     _error(ccall((:af_release_random_engine,af_lib),af_err,(af_random_engine,),engine))
-end
-
-function randu(ndims::Integer,dims,_type::Type)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_randu,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),out,UInt32(ndims),dims,af_type(_type)))
-    AFArray!(out[])
-end
-
-function randn(ndims::Integer,dims,_type::Type)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_randn,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),out,UInt32(ndims),dims,af_type(_type)))
-    AFArray!(out[])
 end
 
 function set_seed(seed::uintl)
