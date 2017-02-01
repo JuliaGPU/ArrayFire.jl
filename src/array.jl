@@ -18,6 +18,7 @@ export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
 
 import Base: convert, copy, deepcopy_internal, broadcast
 
+convert{T,N}(::Type{AFArray{T,N}}, a::AFArray{T,N}) = a
 convert{T1,T2,N}(::Type{AFArray{T1}}, a::AFArray{T2,N}) = recast_array(AFArray{T1}, a)::AFArray{T1,N}
 convert{T1,T2,N}(::Type{AFArray{T1,N}}, a::AFArray{T2,N}) = recast_array(AFArray{T1}, a)::AFArray{T1,N}
 convert{T,N}(::Type{Array{T,N}}, a::AFArray{T,N}) = convert_array(a)
