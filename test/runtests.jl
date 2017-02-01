@@ -45,7 +45,7 @@ af1 = @inferred AFArray(a1)
 af2 = @inferred AFArray(a2)
 
 for op in [:+, :-, :.+, :.-, :.*, :./, :.^]
-    @assert @eval sum($op(a1, a2)) ≈ sum(@inferred $op(af1, af2))
+    @test @eval sum($op(a1, a2)) ≈ sum(@inferred $op(af1, af2))
 end
 
 a3 = randn(Float32, 2, 3)
@@ -54,19 +54,19 @@ a4 = randn(Float32, 2, 3)
 af4 = AFArray(a4)
 
 for op in [:.>, :.>=, :.==, :.!=, :.<, :.<=]
-    @assert @eval all($op(a3, a4) .== Array(@inferred $op(af3, af4)))
-    @assert @eval all($op(0, a4) .== Array(@inferred $op(0, af4)))
-    @assert @eval all($op(a3, 0) .== Array(@inferred $op(af3, 0)))
+    @test @eval all($op(a3, a4) .== Array(@inferred $op(af3, af4)))
+    @test @eval all($op(0, a4) .== Array(@inferred $op(0, af4)))
+    @test @eval all($op(a3, 0) .== Array(@inferred $op(af3, 0)))
 end
 
 c1 = rand()
 
 for op in [:+, :-, :*, :.+, :.-, :.*, :./, :.^]
-    @assert @eval sum($op(c1, a2)) ≈ sum(@inferred $op(c1, af2))
+    @test @eval sum($op(c1, a2)) ≈ sum(@inferred $op(c1, af2))
 end
 
 for op in [:+, :-, :*, :/, :.^, :.+, :.-, :.*, :./]
-    @assert @eval sum($op(a1, c1)) ≈ sum(@inferred $op(af1, c1))
+    @test @eval sum($op(a1, c1)) ≈ sum(@inferred $op(af1, c1))
 end
 
 as = Int32[-2 -1 0 1 2]
@@ -130,9 +130,9 @@ af4 = AFArray(a4)
 c1 = rand(UInt8)
 
 for op in [:<<, :>>, :&, :|, :xor]
-    @assert @eval all($op.(a3, a4) .== Array(@inferred $op(af3, af4)))
-    @assert @eval all($op.(c1, a4) .== Array(@inferred $op(c1, af4)))
-    @assert @eval all($op.(a3, c1) .== Array(@inferred $op(af3, c1)))
+    @test @eval all($op.(a3, a4) .== Array(@inferred $op(af3, af4)))
+    @test @eval all($op.(c1, a4) .== Array(@inferred $op(c1, af4)))
+    @test @eval all($op.(a3, c1) .== Array(@inferred $op(af3, c1)))
 end
 
 a3 = rand(Bool, 2, 3)
@@ -142,7 +142,7 @@ af4 = AFArray(a4)
 c1 = rand(Bool)
 
 for op in [:&, :|, :xor]
-    @assert @eval all($op.(a3, a4) .== Array(@inferred $op(af3, af4)))
-    @assert @eval all($op.(c1, a4) .== Array(@inferred $op(c1, af4)))
-    @assert @eval all($op.(a3, c1) .== Array(@inferred $op(af3, c1)))
+    @test @eval all($op.(a3, a4) .== Array(@inferred $op(af3, af4)))
+    @test @eval all($op.(c1, a4) .== Array(@inferred $op(c1, af4)))
+    @test @eval all($op.(a3, c1) .== Array(@inferred $op(af3, c1)))
 end
