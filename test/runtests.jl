@@ -92,5 +92,21 @@ amf = AFArray(am)
 
 @test all(vec(amf) == AFArray(vec(am)))
 
+srand(AFArray, rand(Int))
+
 include("autodiff.jl")
 include("blackscholes.jl")
+
+@test size(rand(AFArray, 1)) == (1,)
+@test size(rand(AFArray, 1, 2)) == (1,2)
+@test size(rand(AFArray{Float64}, 1)) == (1,)
+@test size(rand(AFArray{Float64}, 1, 2)) == (1,2)
+@test size(rand(AFArray{Float64}, 1)) == (1,)
+@test size(rand(AFArray{Float64}, 1, 2)) == (1,2)
+
+@test size(randn(AFArray, 1)) == (1,)
+@test size(randn(AFArray, 1, 2)) == (1,2)
+@test size(randn(AFArray{Float64}, 1)) == (1,)
+@test size(randn(AFArray{Float64}, 1, 2)) == (1,2)
+@test size(randn(AFArray{Float64}, 1)) == (1,)
+@test size(randn(AFArray{Float64}, 1, 2)) == (1,2)

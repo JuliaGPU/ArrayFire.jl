@@ -43,11 +43,11 @@ import AutoDiffSource: δabs, δsqrt, δexp, δlog, δtimes, δtimes_const1, δt
 δtimes_const1(x, y::AFArray) = (x*y, z->(At_mul_B(x,z)))
 δtimes_const2(x::AFArray, y) = (x*y, z->(A_mul_Bt(z,y)))
 
-rnd() = rand(AFArray, Float64, 1)
-rnd(len) = rand(AFArray, Float64, len)
-rnd(len1, len2) = rand(AFArray, Float64, (len1, len2))
-rndn(len) = randn(AFArray, Float64, len)
-rndn(len1, len2) = randn(AFArray, Float64, (len1, len2))
+rnd() = rand(AFArray{Float64}, 1)
+rnd(len) = rand(AFArray{Float64}, len)
+rnd(len1, len2) = rand(AFArray{Float64}, (len1, len2))
+rndn(len) = randn(AFArray{Float64}, len)
+rndn(len1, len2) = randn(AFArray{Float64}, (len1, len2))
 
 @test checkdiff_inferred(sum, δsum, rndn(3)+rnd(3))
 @test checkdiff_inferred(sum, δsum, rnd(3, 2) + rndn(3, 2))
