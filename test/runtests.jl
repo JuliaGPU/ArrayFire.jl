@@ -135,11 +135,11 @@ for op in [:&, :|, :xor]
     @test @eval all($op.(a3, c1) .== Array(@inferred $op(af3, c1)))
 end
 
-a3 = rand(UInt32, 2, 3)
+a3 = rand(UInt64, 2, 3)
 af3 = AFArray(a3)
-a4 = rand(UInt32, 2, 3)
+a4 = rand(UInt64, 2, 3)
 af4 = AFArray(a4)
-c1 = rand(UInt32)
+c1 = rand(UInt64)
 
 for op in [:<<, :>>, :&, :|, :xor]
     @test @eval all($op.(a3, a4) .== Array(@inferred $op(af3, af4)))
