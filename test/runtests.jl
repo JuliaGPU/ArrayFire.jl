@@ -179,4 +179,4 @@ c = AFArray([4 5 6; 7 8 9])
 @test Array(select(a, 0, b)) == [0 2 0]
 @test Array(select(a, b, 0)) == [1 0 3]
 
-plot(rand(AFArray, 10), rand(AFArray, 10))
+#plot(rand(AFArray, 10), rand(AFArray, 10))
