@@ -1,6 +1,6 @@
 import Base: RefValue, @pure, display
 
-export constant, select
+export constant, select, get_last_error, err_to_string
 
 function afgc(threshold = 6e9)
     alloc_bytes = RefValue{Csize_t}(0)
@@ -42,8 +42,8 @@ function _error(err::af_err)
         end
     end
     str = err_to_string(err)
-    str2 = get_last_error()[1]
-    throw(ErrorException("ArrayFire Error ($err) : $(unsafe_string(str))\n$(unsafe_string(str2))"))
+    str2 = get_last_error()
+    throw(ErrorException("ArrayFire Error ($err) : $str\n$str2"))
 end
 
 @pure batched(n1, n2) = max(n1, n2)
@@ -182,4 +182,15 @@ function select{T1,T2,N2}(cond::AFArray{Bool},a::T1,b::AFArray{T2,N2})
     out = RefValue{af_array}(0)
     _error(ccall((:af_select_scalar_l,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,af_array),out,cond.arr,Cdouble(a),b.arr))
     AFArray{typed(T1,T2),N2}(out[])
+end
+
+function err_to_string(err::af_err)
+    unsafe_string(ccall((:af_err_to_string,af_lib),Cstring,(af_err,),err))
+end
+
+function get_last_error()
+    msg = RefValue{Cstring}()
+    len = RefValue{dim_t}(0)
+    ccall((:af_get_last_error,af_lib),Void,(Ptr{Cstring},Ptr{dim_t}),msg,len)
+    unsafe_string(msg[])
 end

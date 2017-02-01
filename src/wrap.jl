@@ -12,12 +12,12 @@ export create_window, delete_image_memory, destroy_window, det, device_array, de
 export diag_create, diag_extract, diff1, diff2, dilate, dilate3, div, dog, dot, dot_all, draw_hist, draw_image
 export draw_plot, draw_plot3, draw_plot_2d, draw_plot_3d, draw_plot_nd, draw_scatter, draw_scatter3, draw_scatter_2d
 export draw_scatter_3d, draw_scatter_nd, draw_surface, draw_vector_field_2d, draw_vector_field_3d, draw_vector_field_nd
-export eq, erf, erfc, erode, erode3, err_to_string, exp, expm1, factorial, fast, fft, fft2, fft2_c2r, fft2_inplace
-export fft2_r2c, fft3, fft3_c2r, fft3_inplace, fft3_r2c, fft_c2r, fft_convolve1, fft_convolve2, fft_convolve3
-export fft_inplace, fft_r2c, fir, flip, floor, free_device, gaussian_kernel, ge, get_active_backend, get_available_backends
+export eq, erf, erfc, erode, erode3, exp, expm1, factorial, fast, fft, fft2, fft2_c2r, fft2_inplace, fft2_r2c
+export fft3, fft3_c2r, fft3_inplace, fft3_r2c, fft_c2r, fft_convolve1, fft_convolve2, fft_convolve3, fft_inplace
+export fft_r2c, fir, flip, floor, free_device, gaussian_kernel, ge, get_active_backend, get_available_backends
 export get_backend_count, get_backend_id, get_data_ptr, get_dbl_support, get_default_random_engine, get_device
 export get_device_count, get_device_id, get_device_ptr, get_dims, get_elements, get_features_num, get_features_orientation
-export get_features_score, get_features_size, get_features_xpos, get_features_ypos, get_last_error, get_manual_eval_flag
+export get_features_score, get_features_size, get_features_xpos, get_features_ypos, get_manual_eval_flag
 export get_mem_step_size, get_revision, get_seed, gloh, gradient, gray2rgb, grid, gt, hamming_matcher
 export harris, hist_equal, histogram, homography, hsv2rgb, hypot, identity, ifft, ifft2, ifft2_inplace
 export ifft3, ifft3_inplace, ifft_inplace, iir, imag, imax, imax_all, imin, imin_all, index, index_gen
@@ -1174,17 +1174,6 @@ function get_device_ptr(arr::AFArray)
     ptr = RefValue{Ptr{Void}}(0)
     _error(ccall((:af_get_device_ptr,af_lib),af_err,(Ptr{Ptr{Void}},af_array),ptr,arr.arr))
     ptr[]
-end
-
-function get_last_error()
-    msg = RefValue{Cstring}()
-    len = RefValue{dim_t}(0)
-    ccall((:af_get_last_error,af_lib),Void,(Ptr{Cstring},Ptr{dim_t}),msg,len)
-    (msg[],len[])
-end
-
-function err_to_string(err::af_err)
-    ccall((:af_err_to_string,af_lib),Cstring,(af_err,),err)
 end
 
 function create_features(num::dim_t)

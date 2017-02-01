@@ -1,7 +1,7 @@
 using ArrayFire
 using Base.Test
 
-@test unsafe_string(err_to_string(Cuint(0))) == "Success"
+@test err_to_string(Cuint(0)) == "Success"
 @test_throws ErrorException set_device(-5)
 @test get_manual_eval_flag() == false
 @test set_manual_eval_flag(true) == nothing
@@ -178,3 +178,5 @@ c = AFArray([4 5 6; 7 8 9])
 @test Array(select(a, b, c)) == [1 5 3; 1 8 3]
 @test Array(select(a, 0, b)) == [0 2 0]
 @test Array(select(a, b, 0)) == [1 0 3]
+
+plot(rand(AFArray, 10), rand(AFArray, 10))
