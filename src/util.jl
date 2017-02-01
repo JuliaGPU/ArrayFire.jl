@@ -1,4 +1,4 @@
-import Base: RefValue, @pure, display
+import Base: RefValue, @pure, display, show
 
 export constant, select, get_last_error, err_to_string
 
@@ -22,7 +22,8 @@ end
 
 export afgc
 
-display(a::AFArray) = (println(typeof(a)); display(Array(a)))
+display(a::AFArray) = (print("AFArray: "); display(Array(a)))
+show(c::IOContext, a::AFArray) = (print(c, "AFArray: "); show(c, Array(a)))
 
 global const af_lib = is_unix() ? "libaf" : "af"
 global const bcast = Ref{Bool}(false)
