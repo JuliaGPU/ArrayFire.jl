@@ -154,7 +154,6 @@ af4 = AFArray(a4)
 c1 = mod(rand(Int64), 10)
 
 for op in [:<<, :>>, :&, :|, :xor]
-    @show op
     @test @eval all($op.(a3, a4) .== Array(@inferred $op(af3, af4)))
     @test @eval all($op.(c1, a4) .== Array(@inferred $op(c1, af4)))
     @test @eval all($op.(a3, c1) .== Array(@inferred $op(af3, c1)))
