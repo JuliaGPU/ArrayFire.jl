@@ -50,7 +50,7 @@ const ignore = Set(["example_function", "create_array", "retain_array", "get_dat
                     "device_info", "alloc_host", "free_host", "alloc_pinned", "free_pinned",
                     "get_type", "get_numdims", "join_many", "eval_multiple", "get_size_of", "cast",
                     "constant", "constant_complex", "constant_long", "constant_ulong", "transpose",
-                    "release_array", "flat", "select", "get_last_error", "err_to_string"])
+                    "release_array", "flat", "select", "get_last_error", "err_to_string", "moddims"])
 
 const recast = Dict(:Cint => :Integer, :UInt32 => :Integer, :Cdouble => :Real)
 

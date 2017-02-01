@@ -179,4 +179,7 @@ c = AFArray([4 5 6; 7 8 9])
 @test Array(select(a, 0, b)) == [0 2 0]
 @test Array(select(a, b, 0)) == [1 0 3]
 
+@test size(reshape(c, 6)) == (6, )
+@test size(reshape(c, (3,2))) == (3, 2)
+
 #plot(rand(AFArray, 10), rand(AFArray, 10))

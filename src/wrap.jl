@@ -27,23 +27,23 @@ export is_sparse, is_vector, is_window_closed, isinf, isnan, iszero, join, le, l
 export load_image_native, lock_array, lock_device_ptr, log, log10, log1p, log2, lookup, lower, lt, lu
 export lu_inplace, make_seq, match_template, matmul, max_all, maxfilt, maximum, maxof, mean, mean_all
 export mean_all_weighted, mean_shift, mean_weighted, medfilt, medfilt1, medfilt2, median, median_all, min_all
-export minfilt, minimum, minof, mod, moddims, moments, moments_all, mul, nearest_neighbour, neq, norm
-export not, or, orb, pow, pow2, print_array, print_array_gen, print_mem_info, prod, product_all, product_nan
-export product_nan_all, qr, qr_inplace, randn, random_engine_get_seed, random_engine_get_type, random_engine_set_seed
-export random_engine_set_type, random_normal, random_uniform, randu, range, rank, read_array_index, read_array_key
-export read_array_key_check, real, regions, release_features, release_indexers, release_random_engine
-export rem, reorder, replace, replace, resize, retain_features, retain_random_engine, rgb2gray, rgb2hsv
-export rgb2ycbcr, root, rotate, round, sat, save_array, save_image, save_image_memory, save_image_native
-export scale, scan, scan_by_key, set_array_indexer, set_axes_limits_2d, set_axes_limits_3d, set_axes_limits_compute
-export set_axes_titles, set_backend, set_default_random_engine_type, set_device, set_fft_plan_cache_size
-export set_intersect, set_manual_eval_flag, set_mem_step_size, set_position, set_seed, set_seq_indexer
-export set_seq_param_indexer, set_size, set_title, set_union, set_unique, set_visibility, shift, show
-export sift, sigmoid, signbit, sin, sinh, skew, sobel_operator, solve, solve_lu, sort, sort_by_key, sort_index
-export sparse_convert_to, sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx, sparse_get_storage
-export sparse_get_values, sparse_to_dense, sqrt, stdev, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all
-export susan, svd, svd_inplace, sync, tan, tanh, tgamma, tile, transform, transform_coordinates, translate
-export transpose_inplace, trunc, unlock_array, unlock_device_ptr, unwrap, upper, var, var_all, var_all_weighted
-export var_weighted, where, wrap, write_array, ycbcr2rgb
+export minfilt, minimum, minof, mod, moments, moments_all, mul, nearest_neighbour, neq, norm, not, or
+export orb, pow, pow2, print_array, print_array_gen, print_mem_info, prod, product_all, product_nan, product_nan_all
+export qr, qr_inplace, randn, random_engine_get_seed, random_engine_get_type, random_engine_set_seed, random_engine_set_type
+export random_normal, random_uniform, randu, range, rank, read_array_index, read_array_key, read_array_key_check
+export real, regions, release_features, release_indexers, release_random_engine, rem, reorder, replace
+export replace, resize, retain_features, retain_random_engine, rgb2gray, rgb2hsv, rgb2ycbcr, root, rotate
+export round, sat, save_array, save_image, save_image_memory, save_image_native, scale, scan, scan_by_key
+export set_array_indexer, set_axes_limits_2d, set_axes_limits_3d, set_axes_limits_compute, set_axes_titles
+export set_backend, set_default_random_engine_type, set_device, set_fft_plan_cache_size, set_intersect
+export set_manual_eval_flag, set_mem_step_size, set_position, set_seed, set_seq_indexer, set_seq_param_indexer
+export set_size, set_title, set_union, set_unique, set_visibility, shift, show, sift, sigmoid, signbit
+export sin, sinh, skew, sobel_operator, solve, solve_lu, sort, sort_by_key, sort_index, sparse_convert_to
+export sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx, sparse_get_storage, sparse_get_values
+export sparse_to_dense, sqrt, stdev, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all, susan, svd, svd_inplace
+export sync, tan, tanh, tgamma, tile, transform, transform_coordinates, translate, transpose_inplace, trunc
+export unlock_array, unlock_device_ptr, unwrap, upper, var, var_all, var_all_weighted, var_weighted, where
+export wrap, write_array, ycbcr2rgb
 
 function sum{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
@@ -1036,12 +1036,6 @@ end
 function shift{T,N}(_in::AFArray{T,N},x::Integer,y::Integer,z::Integer,w::Integer)
     out = RefValue{af_array}(0)
     _error(ccall((:af_shift,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cint,Cint,Cint),out,_in.arr,Cint(x),Cint(y),Cint(z),Cint(w)))
-    AFArray{T,N}(out[])
-end
-
-function moddims{T,N}(_in::AFArray{T,N},ndims::Integer,dims)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_moddims,af_lib),af_err,(Ptr{af_array},af_array,UInt32,Ptr{dim_t}),out,_in.arr,UInt32(ndims),dims))
     AFArray{T,N}(out[])
 end
 

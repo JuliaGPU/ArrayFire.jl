@@ -123,7 +123,7 @@ xor(a::AFArray, b::Integer) = bitxor(a,    constant(b, size(a)), false)
 >>(a::AFArray, b::AFArray)  = bitshiftr(a, b, bcast[])
 xor(a::AFArray, b::AFArray) = bitxor(a, b, bcast[])
 
-import Base: Ac_mul_B, At_mul_B, A_mul_Bc, Ac_mul_Bc, A_mul_Bt, At_mul_Bt, transpose, ctranspose, vec
+import Base: Ac_mul_B, At_mul_B, A_mul_Bc, Ac_mul_Bc, A_mul_Bt, At_mul_Bt, transpose, ctranspose, vec, reshape
 export A_mul_B
 
 A_mul_B(a::AFArray,   b::AFArray) = matmul(a, b, AF_MAT_NONE,   AF_MAT_NONE)
@@ -162,3 +162,10 @@ function vec{T,N}(_in::AFArray{T,N})
     _error(ccall((:af_flat,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,1}(out[])
 end
+
+function reshape{T,N}(_in::AFArray{T},dims::NTuple{N,Int})
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_moddims,af_lib),af_err,(Ptr{af_array},af_array,UInt32,Ptr{dim_t}),out,_in.arr,UInt32(length(dims)),[dims...]))
+    AFArray{T,N}(out[])
+end
+reshape(a::AFArray, t::Int...) = reshape(a, t)
