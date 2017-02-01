@@ -147,7 +147,7 @@ for op in [:&, :|, :xor]
     @test @eval all($op.(a3, c1) .== Array(@inferred $op(af3, c1)))
 end
 
-a3 = rand(Int64, 2, 3)
+a3 = abs(rand(Int64, 2, 3))
 af3 = AFArray(a3)
 a4 = mod.(rand(Int64, 2, 3), 10)
 af4 = AFArray(a4)
