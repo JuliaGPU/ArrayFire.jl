@@ -1,5 +1,7 @@
 import Base: RefValue, @pure, display
 
+export constant, select
+
 function afgc(threshold = 6e9)
     alloc_bytes = RefValue{Csize_t}(0)
     alloc_buffers = RefValue{Csize_t}(0)
@@ -164,4 +166,20 @@ function constant{N}(val::UInt,sz::NTuple{N,Int})
     AFArray{UInt,N}(arr[])
 end
 
-export constant
+function select{T1,N1,T2,N2}(cond::AFArray{Bool},a::AFArray{T1,N1},b::AFArray{T2,N2})
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_select,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_array),out,cond.arr,a.arr,b.arr))
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
+end
+
+function select{T1,N1,T2<:Real}(cond::AFArray{Bool},a::AFArray{T1,N1},b::T2)
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_select_scalar_r,af_lib),af_err,(Ptr{af_array},af_array,af_array,Cdouble),out,cond.arr,a.arr,Cdouble(b)))
+    AFArray{typed(T1,T2),N1}(out[])
+end
+
+function select{T1,T2,N2}(cond::AFArray{Bool},a::T1,b::AFArray{T2,N2})
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_select_scalar_l,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,af_array),out,cond.arr,Cdouble(a),b.arr))
+    AFArray{typed(T1,T2),N2}(out[])
+end

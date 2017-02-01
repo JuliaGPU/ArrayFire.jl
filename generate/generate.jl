@@ -43,13 +43,14 @@ end
 
 const renames = Dict("sign" => "signbit", "product" => "prod", "init" => "afinit", "info" => "afinfo",
                      "copy_array" => "copy", "get_version" => "afversion", "eval" => "afeval",
-                     "min" => "minimum", "max" => "maximum", "any_true" => "any", "all_true" => "all")
+                     "min" => "minimum", "max" => "maximum", "any_true" => "any", "all_true" => "all",
+                     "select_scalar_l" => "select", "select_scalar_r" => "select", "replace_scalar" => "replace")
 
 const ignore = Set(["example_function", "create_array", "retain_array", "get_data_ref_count", "info_string",
                     "device_info", "alloc_host", "free_host", "alloc_pinned", "free_pinned",
                     "get_type", "get_numdims", "join_many", "eval_multiple", "get_size_of", "cast",
                     "constant", "constant_complex", "constant_long", "constant_ulong", "transpose",
-                    "release_array", "flat"])
+                    "release_array", "flat", "select"])
 
 const recast = Dict(:Cint => :Integer, :UInt32 => :Integer, :Cdouble => :Real)
 

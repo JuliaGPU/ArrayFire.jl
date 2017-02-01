@@ -170,3 +170,11 @@ for op in [:&, :|, :xor]
     @test @eval all($op.(c1, a4) .== Array(@inferred $op(c1, af4)))
     @test @eval all($op.(a3, c1) .== Array(@inferred $op(af3, c1)))
 end
+
+a = AFArray([true false true])
+b = AFArray([1 2 3])
+c = AFArray([4 5 6; 7 8 9])
+
+@test Array(select(a, b, c)) == [1 5 3; 1 8 3]
+@test Array(select(a, 0, b)) == [0 2 0]
+@test Array(select(a, b, 0)) == [1 0 3]

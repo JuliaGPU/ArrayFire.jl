@@ -32,18 +32,18 @@ export not, or, orb, pow, pow2, print_array, print_array_gen, print_mem_info, pr
 export product_nan_all, qr, qr_inplace, randn, random_engine_get_seed, random_engine_get_type, random_engine_set_seed
 export random_engine_set_type, random_normal, random_uniform, randu, range, rank, read_array_index, read_array_key
 export read_array_key_check, real, regions, release_features, release_indexers, release_random_engine
-export rem, reorder, replace, replace_scalar, resize, retain_features, retain_random_engine, rgb2gray
-export rgb2hsv, rgb2ycbcr, root, rotate, round, sat, save_array, save_image, save_image_memory, save_image_native
-export scale, scan, scan_by_key, select, select_scalar_l, select_scalar_r, set_array_indexer, set_axes_limits_2d
-export set_axes_limits_3d, set_axes_limits_compute, set_axes_titles, set_backend, set_default_random_engine_type
-export set_device, set_fft_plan_cache_size, set_intersect, set_manual_eval_flag, set_mem_step_size, set_position
-export set_seed, set_seq_indexer, set_seq_param_indexer, set_size, set_title, set_union, set_unique, set_visibility
-export shift, show, sift, sigmoid, signbit, sin, sinh, skew, sobel_operator, solve, solve_lu, sort, sort_by_key
-export sort_index, sparse_convert_to, sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx
-export sparse_get_storage, sparse_get_values, sparse_to_dense, sqrt, stdev, stdev_all, sub, sum, sum_all
-export sum_nan, sum_nan_all, susan, svd, svd_inplace, sync, tan, tanh, tgamma, tile, transform, transform_coordinates
-export translate, transpose_inplace, trunc, unlock_array, unlock_device_ptr, unwrap, upper, var, var_all
-export var_all_weighted, var_weighted, where, wrap, write_array, ycbcr2rgb
+export rem, reorder, replace, replace, resize, retain_features, retain_random_engine, rgb2gray, rgb2hsv
+export rgb2ycbcr, root, rotate, round, sat, save_array, save_image, save_image_memory, save_image_native
+export scale, scan, scan_by_key, set_array_indexer, set_axes_limits_2d, set_axes_limits_3d, set_axes_limits_compute
+export set_axes_titles, set_backend, set_default_random_engine_type, set_device, set_fft_plan_cache_size
+export set_intersect, set_manual_eval_flag, set_mem_step_size, set_position, set_seed, set_seq_indexer
+export set_seq_param_indexer, set_size, set_title, set_union, set_unique, set_visibility, shift, show
+export sift, sigmoid, signbit, sin, sinh, skew, sobel_operator, solve, solve_lu, sort, sort_by_key, sort_index
+export sparse_convert_to, sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx, sparse_get_storage
+export sparse_get_values, sparse_to_dense, sqrt, stdev, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all
+export susan, svd, svd_inplace, sync, tan, tanh, tgamma, tile, transform, transform_coordinates, translate
+export transpose_inplace, trunc, unlock_array, unlock_device_ptr, unwrap, upper, var, var_all, var_all_weighted
+export var_weighted, where, wrap, write_array, ycbcr2rgb
 
 function sum{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
@@ -1063,29 +1063,11 @@ function upper{T,N}(_in::AFArray{T,N},is_unit_diag::Bool)
     AFArray{T,N}(out[])
 end
 
-function select(cond::AFArray,a::AFArray,b::AFArray)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_select,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_array),out,cond.arr,a.arr,b.arr))
-    AFArray!(out[])
-end
-
-function select_scalar_r(cond::AFArray,a::AFArray,b::Real)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_select_scalar_r,af_lib),af_err,(Ptr{af_array},af_array,af_array,Cdouble),out,cond.arr,a.arr,Cdouble(b)))
-    AFArray!(out[])
-end
-
-function select_scalar_l(cond::AFArray,a::Real,b::AFArray)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_select_scalar_l,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,af_array),out,cond.arr,Cdouble(a),b.arr))
-    AFArray!(out[])
-end
-
 function replace(a::AFArray,cond::AFArray,b::AFArray)
     _error(ccall((:af_replace,af_lib),af_err,(af_array,af_array,af_array),a.arr,cond.arr,b.arr))
 end
 
-function replace_scalar(a::AFArray,cond::AFArray,b::Real)
+function replace(a::AFArray,cond::AFArray,b::Real)
     _error(ccall((:af_replace_scalar,af_lib),af_err,(af_array,af_array,Cdouble),a.arr,cond.arr,Cdouble(b)))
 end
 
