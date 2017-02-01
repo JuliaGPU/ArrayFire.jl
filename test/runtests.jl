@@ -122,3 +122,27 @@ include("blackscholes.jl")
 @test size(randn(AFArray{Float64}, 1, 2)) == (1,2)
 @test size(randn(AFArray{Float64}, 1)) == (1,)
 @test size(randn(AFArray{Float64}, 1, 2)) == (1,2)
+
+a3 = rand(UInt8, 2, 3)
+af3 = AFArray(a3)
+a4 = rand(UInt8, 2, 3)
+af4 = AFArray(a4)
+c1 = rand(UInt8)
+
+for op in [:<<, :>>, :&, :|, :xor]
+    @assert @eval all($op.(a3, a4) .== Array(@inferred $op(af3, af4)))
+    @assert @eval all($op.(c1, a4) .== Array(@inferred $op(c1, af4)))
+    @assert @eval all($op.(a3, c1) .== Array(@inferred $op(af3, c1)))
+end
+
+a3 = rand(Bool, 2, 3)
+af3 = AFArray(a3)
+a4 = rand(Bool, 2, 3)
+af4 = AFArray(a4)
+c1 = rand(Bool)
+
+for op in [:&, :|, :xor]
+    @assert @eval all($op.(a3, a4) .== Array(@inferred $op(af3, af4)))
+    @assert @eval all($op.(c1, a4) .== Array(@inferred $op(c1, af4)))
+    @assert @eval all($op.(a3, c1) .== Array(@inferred $op(af3, c1)))
+end

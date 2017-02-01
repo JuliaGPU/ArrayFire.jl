@@ -344,34 +344,34 @@ function not{T,N}(_in::AFArray{T,N})
     AFArray{Bool,N}(out[])
 end
 
-function bitand(lhs::AFArray,rhs::AFArray,batch::Bool)
+function bitand{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_bitand,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function bitor(lhs::AFArray,rhs::AFArray,batch::Bool)
+function bitor{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_bitor,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function bitxor(lhs::AFArray,rhs::AFArray,batch::Bool)
+function bitxor{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_bitxor,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function bitshiftl(lhs::AFArray,rhs::AFArray,batch::Bool)
+function bitshiftl{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_bitshiftl,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function bitshiftr(lhs::AFArray,rhs::AFArray,batch::Bool)
+function bitshiftr{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_bitshiftr,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
-    AFArray!(out[])
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
 function minof{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)

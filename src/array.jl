@@ -61,7 +61,7 @@ function broadcast(f, A0::Number, A::AFArray, Bs...)
     end
 end
 
-import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=
+import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=, &, |, <<, >>, xor
 
 -{T}(a::AFArray{T})       = T(0) - a
 !(a::AFArray) = not(a)
@@ -74,9 +74,16 @@ import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=
 ==(a::Number, b::AFArray) = eq(constant(a, size(b)),  b, false)
 <(a::Number, b::AFArray)  = lt(constant(a, size(b)),  b, false)
 >(a::Number, b::AFArray)  = gt(constant(a, size(b)),  b, false)
-!=(a::Number, b::AFArray) = neq(constant(a, size(b)),  b, false)
-<=(a::Number, b::AFArray)  = le(constant(a, size(b)),  b, false)
->=(a::Number, b::AFArray)  = ge(constant(a, size(b)),  b, false)
+!=(a::Number, b::AFArray) = neq(constant(a, size(b)), b, false)
+<=(a::Number, b::AFArray) = le(constant(a, size(b)),  b, false)
+>=(a::Number, b::AFArray) = ge(constant(a, size(b)),  b, false)
+(&)(a::Bool, b::AFArray)     = and(constant(a, size(b)),       b, false)
+|(a::Bool, b::AFArray)     = or(constant(a, size(b)),        b, false)
+(&)(a::Integer, b::AFArray)   = bitand(constant(a, size(b)),    b, false)
+|(a::Integer, b::AFArray)   = bitor(constant(a, size(b)),     b, false)
+<<(a::Integer, b::AFArray)  = bitshiftl(constant(a, size(b)), b, false)
+>>(a::Integer, b::AFArray)  = bitshiftr(constant(a, size(b)), b, false)
+xor(a::Integer, b::AFArray) = bitxor(constant(a, size(b)),    b, false)
 
 +(a::AFArray, b::Number)  = add(a, constant(b, size(a)), false)
 -(a::AFArray, b::Number)  = sub(a, constant(b, size(a)), false)
@@ -86,9 +93,16 @@ import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=
 ==(a::AFArray, b::Number) = eq(a,  constant(b, size(a)), false)
 <(a::AFArray, b::Number)  = lt(a,  constant(b, size(a)), false)
 >(a::AFArray, b::Number)  = gt(a,  constant(b, size(a)), false)
-!=(a::AFArray, b::Number) = neq(a,  constant(b, size(a)), false)
-<=(a::AFArray, b::Number)  = le(a,  constant(b, size(a)), false)
->=(a::AFArray, b::Number)  = ge(a,  constant(b, size(a)), false)
+!=(a::AFArray, b::Number) = neq(a, constant(b, size(a)), false)
+<=(a::AFArray, b::Number) = le(a,  constant(b, size(a)), false)
+>=(a::AFArray, b::Number) = ge(a,  constant(b, size(a)), false)
+(&)(a::AFArray, b::Bool)     = and(a,       constant(b, size(a)), false)
+|(a::AFArray, b::Bool)     = or(a,        constant(b, size(a)), false)
+(&)(a::AFArray, b::Integer)   = bitand(a,    constant(b, size(a)), false)
+|(a::AFArray, b::Integer)   = bitor(a,     constant(b, size(a)), false)
+<<(a::AFArray, b::Integer)  = bitshiftl(a, constant(b, size(a)), false)
+>>(a::AFArray, b::Integer)  = bitshiftr(a, constant(b, size(a)), false)
+xor(a::AFArray, b::Integer) = bitxor(a,    constant(b, size(a)), false)
 
 +(a::AFArray, b::AFArray) = add(a, b, bcast[])
 -(a::AFArray, b::AFArray) = sub(a, b, bcast[])
@@ -101,6 +115,13 @@ import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=
 !=(a::AFArray, b::AFArray) = neq(a, b, bcast[])
 <=(a::AFArray, b::AFArray) = le(a, b, bcast[])
 >=(a::AFArray, b::AFArray) = ge(a, b, bcast[])
+(&)(a::AFArray{Bool}, b::AFArray{Bool})  = and(a, b, bcast[])
+|(a::AFArray{Bool}, b::AFArray{Bool})  = or(a, b, bcast[])
+(&)(a::AFArray, b::AFArray)   = bitand(a, b, bcast[])
+|(a::AFArray, b::AFArray)   = bitor(a, b, bcast[])
+<<(a::AFArray, b::AFArray)  = bitshiftl(a, b, bcast[])
+>>(a::AFArray, b::AFArray)  = bitshiftr(a, b, bcast[])
+xor(a::AFArray, b::AFArray) = bitxor(a, b, bcast[])
 
 import Base: Ac_mul_B, At_mul_B, A_mul_Bc, Ac_mul_Bc, A_mul_Bt, At_mul_Bt, transpose, ctranspose, vec
 export A_mul_B

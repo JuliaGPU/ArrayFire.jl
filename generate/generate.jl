@@ -56,7 +56,8 @@ const recast = Dict(:Cint => :Integer, :UInt32 => :Integer, :Cdouble => :Real)
 const booleans1 = Set(["iszero", "isinf", "isnan", "not"])
 const booleans2 = Set(["lt", "gt", "le", "ge", "eq", "neq", "and", "or"])
 const maths     = Set(["add", "sub", "mul", "div", "rem", "mod", "atan2", "root", "pow", "dot",
-                       "minof", "maxof", "hypot", "cplx2", "matmul"])
+                       "minof", "maxof", "hypot", "cplx2", "matmul",
+                       "bitshiftl", "bitshiftr", "bitxor", "bitand", "bitor"])
 const floats    = Set(["signbit"])
 const c2rs      = Set(["fft_c2r", "fft2_c2r", "fft3_c2r", "real", "imag"])
 const complexes = Set(["fft_r2c", "fft2_r2c", "fft3_r2c"])
