@@ -102,7 +102,7 @@ import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=
 <=(a::AFArray, b::AFArray) = le(a, b, bcast[])
 >=(a::AFArray, b::AFArray) = ge(a, b, bcast[])
 
-import Base: Ac_mul_B, At_mul_B, A_mul_Bc, Ac_mul_Bc, A_mul_Bt, At_mul_Bt, transpose, ctranspose
+import Base: Ac_mul_B, At_mul_B, A_mul_Bc, Ac_mul_Bc, A_mul_Bt, At_mul_Bt, transpose, ctranspose, vec
 export A_mul_B
 
 A_mul_B(a::AFArray,   b::AFArray) = matmul(a, b, AF_MAT_NONE,   AF_MAT_NONE)
@@ -135,3 +135,9 @@ function transpose{T,N}(_in::AFArray{T,N},conjugate::Bool=false)
     AFArray{T,2}(out[])
 end
 ctranspose(in::AFArray) = transpose(in, true)
+
+function vec{T,N}(_in::AFArray{T,N})
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_flat,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
+    AFArray{T,1}(out[])
+end

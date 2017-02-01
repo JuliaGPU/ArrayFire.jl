@@ -14,37 +14,36 @@ export draw_plot, draw_plot3, draw_plot_2d, draw_plot_3d, draw_plot_nd, draw_sca
 export draw_scatter_3d, draw_scatter_nd, draw_surface, draw_vector_field_2d, draw_vector_field_3d, draw_vector_field_nd
 export eq, erf, erfc, erode, erode3, err_to_string, exp, expm1, factorial, fast, fft, fft2, fft2_c2r, fft2_inplace
 export fft2_r2c, fft3, fft3_c2r, fft3_inplace, fft3_r2c, fft_c2r, fft_convolve1, fft_convolve2, fft_convolve3
-export fft_inplace, fft_r2c, fir, flat, flip, floor, free_device, gaussian_kernel, ge, get_active_backend
-export get_available_backends, get_backend_count, get_backend_id, get_data_ptr, get_dbl_support, get_default_random_engine
-export get_device, get_device_count, get_device_id, get_device_ptr, get_dims, get_elements, get_features_num
-export get_features_orientation, get_features_score, get_features_size, get_features_xpos, get_features_ypos
-export get_last_error, get_manual_eval_flag, get_mem_step_size, get_revision, get_seed, gloh, gradient
-export gray2rgb, grid, gt, hamming_matcher, harris, hist_equal, histogram, homography, hsv2rgb, hypot
-export identity, ifft, ifft2, ifft2_inplace, ifft3, ifft3_inplace, ifft_inplace, iir, imag, imax, imax_all
-export imin, imin_all, index, index_gen, inverse, iota, is_bool, is_column, is_complex, is_double, is_empty
-export is_floating, is_image_io_available, is_integer, is_lapack_available, is_locked_array, is_real, is_realfloating
-export is_row, is_scalar, is_single, is_sparse, is_vector, is_window_closed, isinf, isnan, iszero, join
-export le, lgamma, load_image, load_image_memory, load_image_native, lock_array, lock_device_ptr, log
-export log10, log1p, log2, lookup, lower, lt, lu, lu_inplace, make_seq, match_template, matmul, max_all
-export maxfilt, maximum, maxof, mean, mean_all, mean_all_weighted, mean_shift, mean_weighted, medfilt
-export medfilt1, medfilt2, median, median_all, min_all, minfilt, minimum, minof, mod, moddims, moments
-export moments_all, mul, nearest_neighbour, neq, norm, not, or, orb, pow, pow2, print_array, print_array_gen
-export print_mem_info, prod, product_all, product_nan, product_nan_all, qr, qr_inplace, randn, random_engine_get_seed
-export random_engine_get_type, random_engine_set_seed, random_engine_set_type, random_normal, random_uniform
-export randu, range, rank, read_array_index, read_array_key, read_array_key_check, real, regions, release_features
-export release_indexers, release_random_engine, rem, reorder, replace, replace_scalar, resize, retain_features
-export retain_random_engine, rgb2gray, rgb2hsv, rgb2ycbcr, root, rotate, round, sat, save_array, save_image
-export save_image_memory, save_image_native, scale, scan, scan_by_key, select, select_scalar_l, select_scalar_r
-export set_array_indexer, set_axes_limits_2d, set_axes_limits_3d, set_axes_limits_compute, set_axes_titles
-export set_backend, set_default_random_engine_type, set_device, set_fft_plan_cache_size, set_intersect
-export set_manual_eval_flag, set_mem_step_size, set_position, set_seed, set_seq_indexer, set_seq_param_indexer
-export set_size, set_title, set_union, set_unique, set_visibility, shift, show, sift, sigmoid, signbit
-export sin, sinh, skew, sobel_operator, solve, solve_lu, sort, sort_by_key, sort_index, sparse_convert_to
-export sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx, sparse_get_storage, sparse_get_values
-export sparse_to_dense, sqrt, stdev, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all, susan, svd, svd_inplace
-export sync, tan, tanh, tgamma, tile, transform, transform_coordinates, translate, transpose_inplace, trunc
-export unlock_array, unlock_device_ptr, unwrap, upper, var, var_all, var_all_weighted, var_weighted, where
-export wrap, write_array, ycbcr2rgb
+export fft_inplace, fft_r2c, fir, flip, floor, free_device, gaussian_kernel, ge, get_active_backend, get_available_backends
+export get_backend_count, get_backend_id, get_data_ptr, get_dbl_support, get_default_random_engine, get_device
+export get_device_count, get_device_id, get_device_ptr, get_dims, get_elements, get_features_num, get_features_orientation
+export get_features_score, get_features_size, get_features_xpos, get_features_ypos, get_last_error, get_manual_eval_flag
+export get_mem_step_size, get_revision, get_seed, gloh, gradient, gray2rgb, grid, gt, hamming_matcher
+export harris, hist_equal, histogram, homography, hsv2rgb, hypot, identity, ifft, ifft2, ifft2_inplace
+export ifft3, ifft3_inplace, ifft_inplace, iir, imag, imax, imax_all, imin, imin_all, index, index_gen
+export inverse, iota, is_bool, is_column, is_complex, is_double, is_empty, is_floating, is_image_io_available
+export is_integer, is_lapack_available, is_locked_array, is_real, is_realfloating, is_row, is_scalar, is_single
+export is_sparse, is_vector, is_window_closed, isinf, isnan, iszero, join, le, lgamma, load_image, load_image_memory
+export load_image_native, lock_array, lock_device_ptr, log, log10, log1p, log2, lookup, lower, lt, lu
+export lu_inplace, make_seq, match_template, matmul, max_all, maxfilt, maximum, maxof, mean, mean_all
+export mean_all_weighted, mean_shift, mean_weighted, medfilt, medfilt1, medfilt2, median, median_all, min_all
+export minfilt, minimum, minof, mod, moddims, moments, moments_all, mul, nearest_neighbour, neq, norm
+export not, or, orb, pow, pow2, print_array, print_array_gen, print_mem_info, prod, product_all, product_nan
+export product_nan_all, qr, qr_inplace, randn, random_engine_get_seed, random_engine_get_type, random_engine_set_seed
+export random_engine_set_type, random_normal, random_uniform, randu, range, rank, read_array_index, read_array_key
+export read_array_key_check, real, regions, release_features, release_indexers, release_random_engine
+export rem, reorder, replace, replace_scalar, resize, retain_features, retain_random_engine, rgb2gray
+export rgb2hsv, rgb2ycbcr, root, rotate, round, sat, save_array, save_image, save_image_memory, save_image_native
+export scale, scan, scan_by_key, select, select_scalar_l, select_scalar_r, set_array_indexer, set_axes_limits_2d
+export set_axes_limits_3d, set_axes_limits_compute, set_axes_titles, set_backend, set_default_random_engine_type
+export set_device, set_fft_plan_cache_size, set_intersect, set_manual_eval_flag, set_mem_step_size, set_position
+export set_seed, set_seq_indexer, set_seq_param_indexer, set_size, set_title, set_union, set_unique, set_visibility
+export shift, show, sift, sigmoid, signbit, sin, sinh, skew, sobel_operator, solve, solve_lu, sort, sort_by_key
+export sort_index, sparse_convert_to, sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx
+export sparse_get_storage, sparse_get_values, sparse_to_dense, sqrt, stdev, stdev_all, sub, sum, sum_all
+export sum_nan, sum_nan_all, susan, svd, svd_inplace, sync, tan, tanh, tgamma, tile, transform, transform_coordinates
+export translate, transpose_inplace, trunc, unlock_array, unlock_device_ptr, unwrap, upper, var, var_all
+export var_all_weighted, var_weighted, where, wrap, write_array, ycbcr2rgb
 
 function sum{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
@@ -1043,12 +1042,6 @@ end
 function moddims{T,N}(_in::AFArray{T,N},ndims::Integer,dims)
     out = RefValue{af_array}(0)
     _error(ccall((:af_moddims,af_lib),af_err,(Ptr{af_array},af_array,UInt32,Ptr{dim_t}),out,_in.arr,UInt32(ndims),dims))
-    AFArray{T,N}(out[])
-end
-
-function flat{T,N}(_in::AFArray{T,N})
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_flat,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
