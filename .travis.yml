@@ -10,13 +10,16 @@ install:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - sudo apt-get update
   - sudo apt-get install libfreeimage-dev libatlas3gf-base libfftw3-dev cmake
-  - wget http://ci.arrayfire.org/userContent/Linux/ArrayFire-no-gl-v3.4.2_Linux_x86_64.sh
+  - wget http://ci.arrayfire.org/userContent/Linux/ArrayFire-v3.4.2_Linux_x86_64.sh
   - ls -l
-  - sudo chmod +x ArrayFire-no-gl-v3.4.2_Linux_x86_64.sh
-  - sudo ./ArrayFire-no-gl-v3.4.2_Linux_x86_64.sh --exclude-subdir --prefix=/usr/local
+  - sudo chmod +x ArrayFire-v3.4.2_Linux_x86_64.sh
+  - sudo ./ArrayFire-v3.4.2_Linux_x86_64.sh --exclude-subdir --prefix=/usr/local
 before_script:
   - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
   - julia -e 'Pkg.add("AutoDiffSource"); Pkg.checkout("AutoDiffSource");'
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
 after_success:
   # push coverage results to Coveralls
   #  - julia -e 'cd(Pkg.dir("ArrayFire")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
