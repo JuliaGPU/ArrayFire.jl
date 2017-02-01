@@ -90,5 +90,7 @@ amf = AFArray(am)
 @test sum(amf' * amf') ≈ sum(am' * am')
 @test sum(At_mul_Bt(amf, amf)) ≈ sum(am' * am')
 
+@test all(vec(amf) == AFArray(vec(am)))
+
 include("autodiff.jl")
 include("blackscholes.jl")
