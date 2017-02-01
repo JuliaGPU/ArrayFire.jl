@@ -20,6 +20,6 @@ function plot(x, y)
     if cwin[] == 0
         figure(1)
     end
-    draw_plot(windows[cwin[]], x, y, Ref(af_cell(0, 0, pointer(""), AF_COLORMAP_COLORS)))
+    draw_plot(windows[cwin[]], x, y, Ref(af_cell(0, 0, pointer(""), AF_COLORMAP_DEFAULT)))
     show(windows[cwin[]])
 end
