@@ -91,7 +91,11 @@ function rewrite(line::Expr)
                     key = args[k].args[2]
                     val = recast[key]
                     args[k].args[2] = val
-                    vals[k] = Expr(:call, key, vals[k])
+                    if vals[k] == :dim
+                        vals[k] = Expr(:call, key, Expr(:call, :-, vals[k], 1))
+                    else
+                        vals[k] = Expr(:call, key, vals[k])
+                    end
                 end
             end
         end

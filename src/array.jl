@@ -2,7 +2,6 @@ type AFArray{T,N} <: AbstractArray{T,N}
     arr::af_array
     function AFArray(arr::af_array)
         @assert get_type(arr) == T "type mismatch: $(get_type(arr)) != $T"
-        @assert get_numdims(arr) == N "dims mismatch: $(get_numdims(arr)) != $N"
         a = new(arr)
         finalizer(a, release_array)
         a
@@ -38,7 +37,7 @@ ndims{T,N}(a::AFArray{T,N}) = N
 size(a::AFVector) = (s = get_dims(a); (s[1],))
 size(a::AFMatrix) = (s = get_dims(a); (s[1],s[2]))
 size(a::AFVolume) = (s = get_dims(a); (s[1],s[2],s[3]))
-size(a::AFTensor) = get_dims(a)
+size(a::AFTensor) = (s = get_dims(a); (s[1],s[2],s[3],s[4]))
 any(a::AFArray) = any_true_all(a)[1] == 1
 all(a::AFArray) = all_true_all(a)[1] == 1
 sum{T<:Real,N}(a::AFArray{T,N}) = T(sum_all(a)[1])

@@ -109,6 +109,11 @@ function get_type(arr::af_array)
     af_jltype(Val{_type[]}())
 end
 
+function check_type_numdims{T,N}(arr::AFArray{T,N})
+    @assert get_type(arr) == T "type mismatch: $(get_type(arr)) != $T"
+    @assert get_numdims(arr) == N "dims mismatch: $(get_numdims(arr)) != $N"
+end
+
 function convert_array{T,N}(data::AbstractArray{T,N})
     arr = RefValue{af_array}(0)
     sz = size(data)

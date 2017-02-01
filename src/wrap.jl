@@ -47,55 +47,55 @@ export var_all_weighted, var_weighted, where, wrap, write_array, ycbcr2rgb
 
 function sum{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_sum,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
+    _error(ccall((:af_sum,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
 function sum_nan{T,N}(_in::AFArray{T,N},dim::Integer,nanval::Real)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_sum_nan,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in.arr,Cint(dim),Cdouble(nanval)))
+    _error(ccall((:af_sum_nan,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in.arr,Cint(dim - 1),Cdouble(nanval)))
     AFArray{T,N}(out[])
 end
 
 function prod{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_product,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
+    _error(ccall((:af_product,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
 function product_nan{T,N}(_in::AFArray{T,N},dim::Integer,nanval::Real)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_product_nan,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in.arr,Cint(dim),Cdouble(nanval)))
+    _error(ccall((:af_product_nan,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in.arr,Cint(dim - 1),Cdouble(nanval)))
     AFArray{T,N}(out[])
 end
 
 function minimum{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_min,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
+    _error(ccall((:af_min,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
 function maximum{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_max,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
+    _error(ccall((:af_max,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
 function all{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_all_true,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
+    _error(ccall((:af_all_true,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
 function any{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_any_true,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
+    _error(ccall((:af_any_true,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
 function count{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_count,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
+    _error(ccall((:af_count,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
@@ -165,14 +165,14 @@ end
 function imin(_in::AFArray,dim::Integer)
     out = RefValue{af_array}(0)
     idx = RefValue{af_array}(0)
-    _error(ccall((:af_imin,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,Cint),out,idx,_in.arr,Cint(dim)))
+    _error(ccall((:af_imin,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,Cint),out,idx,_in.arr,Cint(dim - 1)))
     (AFArray!(out[]),AFArray!(idx[]))
 end
 
 function imax(_in::AFArray,dim::Integer)
     out = RefValue{af_array}(0)
     idx = RefValue{af_array}(0)
-    _error(ccall((:af_imax,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,Cint),out,idx,_in.arr,Cint(dim)))
+    _error(ccall((:af_imax,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,Cint),out,idx,_in.arr,Cint(dim - 1)))
     (AFArray!(out[]),AFArray!(idx[]))
 end
 
@@ -194,19 +194,19 @@ end
 
 function accum{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_accum,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
+    _error(ccall((:af_accum,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
 function scan{T,N}(_in::AFArray{T,N},dim::Integer,op::af_binary_op,inclusive_scan::Bool)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_scan,af_lib),af_err,(Ptr{af_array},af_array,Cint,af_binary_op,Bool),out,_in.arr,Cint(dim),op,inclusive_scan))
+    _error(ccall((:af_scan,af_lib),af_err,(Ptr{af_array},af_array,Cint,af_binary_op,Bool),out,_in.arr,Cint(dim - 1),op,inclusive_scan))
     AFArray{T,N}(out[])
 end
 
 function scan_by_key(key::AFArray,_in::AFArray,dim::Integer,op::af_binary_op,inclusive_scan::Bool)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_scan_by_key,af_lib),af_err,(Ptr{af_array},af_array,af_array,Cint,af_binary_op,Bool),out,key.arr,_in.arr,Cint(dim),op,inclusive_scan))
+    _error(ccall((:af_scan_by_key,af_lib),af_err,(Ptr{af_array},af_array,af_array,Cint,af_binary_op,Bool),out,key.arr,_in.arr,Cint(dim - 1),op,inclusive_scan))
     AFArray!(out[])
 end
 
@@ -218,33 +218,33 @@ end
 
 function diff1{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_diff1,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
+    _error(ccall((:af_diff1,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
 function diff2{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_diff2,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim)))
+    _error(ccall((:af_diff2,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
 function sort{T,N}(_in::AFArray{T,N},dim::Integer,isAscending::Bool)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_sort,af_lib),af_err,(Ptr{af_array},af_array,UInt32,Bool),out,_in.arr,UInt32(dim),isAscending))
+    _error(ccall((:af_sort,af_lib),af_err,(Ptr{af_array},af_array,UInt32,Bool),out,_in.arr,UInt32(dim - 1),isAscending))
     AFArray{T,N}(out[])
 end
 
 function sort_index(_in::AFArray,dim::Integer,isAscending::Bool)
     out = RefValue{af_array}(0)
     indices = RefValue{af_array}(0)
-    _error(ccall((:af_sort_index,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,UInt32,Bool),out,indices,_in.arr,UInt32(dim),isAscending))
+    _error(ccall((:af_sort_index,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,UInt32,Bool),out,indices,_in.arr,UInt32(dim - 1),isAscending))
     (AFArray!(out[]),AFArray!(indices[]))
 end
 
 function sort_by_key(keys::AFArray,values::AFArray,dim::Integer,isAscending::Bool)
     out_keys = RefValue{af_array}(0)
     out_values = RefValue{af_array}(0)
-    _error(ccall((:af_sort_by_key,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,af_array,UInt32,Bool),out_keys,out_values,keys.arr,values.arr,UInt32(dim),isAscending))
+    _error(ccall((:af_sort_by_key,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,af_array,UInt32,Bool),out_keys,out_values,keys.arr,values.arr,UInt32(dim - 1),isAscending))
     (AFArray!(out_keys[]),AFArray!(out_values[]))
 end
 
@@ -742,7 +742,7 @@ end
 
 function lookup(_in::AFArray,indices::AFArray,dim::Integer)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_lookup,af_lib),af_err,(Ptr{af_array},af_array,af_array,UInt32),out,_in.arr,indices.arr,UInt32(dim)))
+    _error(ccall((:af_lookup,af_lib),af_err,(Ptr{af_array},af_array,af_array,UInt32),out,_in.arr,indices.arr,UInt32(dim - 1)))
     AFArray!(out[])
 end
 
@@ -1017,7 +1017,7 @@ end
 
 function join(dim::Integer,first::AFArray,second::AFArray)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_join,af_lib),af_err,(Ptr{af_array},Cint,af_array,af_array),out,Cint(dim),first.arr,second.arr))
+    _error(ccall((:af_join,af_lib),af_err,(Ptr{af_array},Cint,af_array,af_array),out,Cint(dim - 1),first.arr,second.arr))
     AFArray!(out[])
 end
 
@@ -1047,7 +1047,7 @@ end
 
 function flip{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_flip,af_lib),af_err,(Ptr{af_array},af_array,UInt32),out,_in.arr,UInt32(dim)))
+    _error(ccall((:af_flip,af_lib),af_err,(Ptr{af_array},af_array,UInt32),out,_in.arr,UInt32(dim - 1)))
     AFArray{T,N}(out[])
 end
 
