@@ -1808,7 +1808,7 @@ end
 
 function af_fft2_inplace(_in::AFArray, norm_factor::Cdouble)
     err = ccall((:af_fft2_inplace, af_lib), Cint,
-            (AFArray, Cdouble), _in.ptr, norm_factor)
+            (Ptr{Void}, Cdouble), _in.ptr, norm_factor)
     err == 0 || throwAFerror(err)
 end
 
