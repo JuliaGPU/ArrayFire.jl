@@ -160,3 +160,14 @@ let
     end
     sync(0)
 end
+
+# Issue #133
+let 
+    for sz in ((10,), (10, 10), (10, 10, 10))
+        a = rand(Complex{Float32}, sz...)
+        ad = AFArray(a)
+        fft!(a)
+        fft!(ad)
+        @test sumabs2(a - Array(ad)) < 1e-6
+    end
+end
