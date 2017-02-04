@@ -14,6 +14,7 @@ function enter_scope()
     push!(scopes, Vector{AFArray}())
 end
 
+matches(k, except::Void) = false
 matches(k, except::AFArray) = k === except
 matches(k, except) = any(x -> x === k, except)
 
