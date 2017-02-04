@@ -4,7 +4,7 @@ language: julia
 os:
   - linux
 julia:
-  - 0.5
+  - release
   - nightly
 notifications:
   email: false
