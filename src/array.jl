@@ -175,3 +175,54 @@ function reshape{T,N}(_in::AFArray{T},dims::NTuple{N,Int})
     AFArray{T,N}(out[])
 end
 reshape(a::AFArray, t::Int...) = reshape(a, t)
+
+if VERSION < v"0.6-"
+import Base: ./, .*, .+, .-, .^, .==, .<, .>, .<=, .>=, .!=, .<<, .>>
+export xor
+
+.-{T}(a::AFArray{T})       = T(0) - a
+
+.+(a::Number, b::AFArray)  = add(constant(a, size(b)), b, false)
+.-(a::Number, b::AFArray)  = sub(constant(a, size(b)), b, false)
+.*(a::Number, b::AFArray)  = mul(constant(a, size(b)), b, false)
+./(a::Number, b::AFArray)  = div(constant(a, size(b)), b, false)
+.^(a::Number, b::AFArray)  = pow(constant(a, size(b)), b, false)
+.==(a::Number, b::AFArray) = eq(constant(a, size(b)),  b, false)
+.<(a::Number, b::AFArray)  = lt(constant(a, size(b)),  b, false)
+.>(a::Number, b::AFArray)  = gt(constant(a, size(b)),  b, false)
+.!=(a::Number, b::AFArray) = neq(constant(a, size(b)), b, false)
+.<=(a::Number, b::AFArray) = le(constant(a, size(b)),  b, false)
+.>=(a::Number, b::AFArray) = ge(constant(a, size(b)),  b, false)
+.<<(a::Integer, b::AFArray)  = bitshiftl(constant(a, size(b)), b, false)
+.>>(a::Integer, b::AFArray)  = bitshiftr(constant(a, size(b)), b, false)
+
+.+(a::AFArray, b::Number)  = add(a, constant(b, size(a)), false)
+.-(a::AFArray, b::Number)  = sub(a, constant(b, size(a)), false)
+.*(a::AFArray, b::Number)  = mul(a, constant(b, size(a)), false)
+./(a::AFArray, b::Number)  = div(a, constant(b, size(a)), false)
+.^(a::AFArray, b::Number)  = pow(a, constant(b, size(a)), false)
+.==(a::AFArray, b::Number) = eq(a,  constant(b, size(a)), false)
+.<(a::AFArray, b::Number)  = lt(a,  constant(b, size(a)), false)
+.>(a::AFArray, b::Number)  = gt(a,  constant(b, size(a)), false)
+.!=(a::AFArray, b::Number) = neq(a, constant(b, size(a)), false)
+.<=(a::AFArray, b::Number) = le(a,  constant(b, size(a)), false)
+.>=(a::AFArray, b::Number) = ge(a,  constant(b, size(a)), false)
+.<<(a::AFArray, b::Integer)  = bitshiftl(a, constant(b, size(a)), false)
+.>>(a::AFArray, b::Integer)  = bitshiftr(a, constant(b, size(a)), false)
+
+.+(a::AFArray, b::AFArray) = add(a, b, true)
+.-(a::AFArray, b::AFArray) = sub(a, b, true)
+.*(a::AFArray, b::AFArray) = mul(a, b, true)
+./(a::AFArray, b::AFArray) = div(a, b, true)
+.^(a::AFArray, b::AFArray) = pow(a, b, true)
+.==(a::AFArray, b::AFArray) = eq(a, b, true)
+.<(a::AFArray, b::AFArray) = lt(a, b, true)
+.>(a::AFArray, b::AFArray) = gt(a, b, true)
+.!=(a::AFArray, b::AFArray) = neq(a, b, true)
+.<=(a::AFArray, b::AFArray) = le(a, b, true)
+.>=(a::AFArray, b::AFArray) = ge(a, b, true)
+.<<(a::AFArray, b::AFArray)  = bitshiftl(a, b, true)
+.>>(a::AFArray, b::AFArray)  = bitshiftr(a, b, true)
+xor(a, b) = a $ b
+
+end

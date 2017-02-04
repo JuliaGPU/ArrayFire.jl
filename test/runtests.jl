@@ -92,11 +92,11 @@ amf = AFArray(am)
 @test sum(amf' * amf') ≈ sum(am' * am')
 @test sum(At_mul_Bt(amf, amf)) ≈ sum(am' * am')
 
-@test all(Array(sum(amf, 1)) .≈ sum(am, 1))
-@test all(Array(sum(amf, 2)) .≈ sum(am, 2))
+@test all(Array(sum(amf, 1)) ≈ sum(am, 1))
+@test all(Array(sum(amf, 2)) ≈ sum(am, 2))
 
-@test all(Array(prod(amf, 1)) .≈ prod(am, 1))
-@test all(Array(prod(amf, 2)) .≈ prod(am, 2))
+@test all(Array(prod(amf, 1)) ≈ prod(am, 1))
+@test all(Array(prod(amf, 2)) ≈ prod(am, 2))
 
 @test all(Array(minimum(amf, 1)) .== minimum(am, 1))
 @test all(Array(minimum(amf, 2)) .== minimum(am, 2))
