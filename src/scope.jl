@@ -1,8 +1,8 @@
-export @scope, scope
+export @afgc
 
-macro scope(expr)
-    @assert expr.head == :function "scope only works on functions"
-    sc = (:(scope() do ; end))
+macro afgc(expr)
+    @assert expr.head == :function || expr.head == :(=) "Only works on functions or assignments"
+    sc = (:(ArrayFire.scope() do ; end))
     sc.args[2].args[2] = expr.args[2]
     expr.args[2] = sc
     esc(expr)
