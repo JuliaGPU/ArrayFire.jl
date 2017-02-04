@@ -15,7 +15,7 @@ end
 
 function sc2(a, b)
     afscope(1) do
-        for k = 1:100
+        for k = 1:10
             b = sc1(a, b)
         end
         return b
