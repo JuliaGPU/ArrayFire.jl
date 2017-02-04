@@ -31,7 +31,6 @@ function leave_scope(except)
 end
 
 function scope(f)
-    num = 0
     enter_scope()
     r = f()
     leave_scope(r)
