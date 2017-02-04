@@ -227,3 +227,9 @@ if VERSION < v"0.6-"
         xor(a, b) = a $ b
     end
 end
+
+import Base: fill, zeros, ones
+
+fill(::Type{AFArray}, a, dims) = constant(a, dims)
+zeros{T}(::Type{AFArray{T}}, dims::Tuple) = constant(T(0), dims)
+ones{T}(::Type{AFArray{T}}, dims::Tuple) = constant(T(1), dims)

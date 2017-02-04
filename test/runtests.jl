@@ -1,6 +1,10 @@
 using ArrayFire
 using Base.Test
 
+@test sum(fill(AFArray, 1, (1, 2))) == 2
+@test sum(ones(AFArray{Float32}, (1, 2))) == 2f0
+@test eltype(zeros(AFArray{Float32}, (1, 2))) == Float32
+
 include("scope.jl")
 
 @test err_to_string(Cuint(0)) == "Success"
