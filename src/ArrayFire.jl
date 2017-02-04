@@ -7,5 +7,6 @@ include("util.jl")
 include("wrap.jl")
 include("random.jl")
 include("graphics.jl")
+include("scope.jl")
 
 end
