@@ -1,6 +1,10 @@
-export @afscope, afscope
+export @scope, scope
 
-macro afscope(expr)
+macro scope(expr)
+    @assert expr.head == :function "scope only works on functions"
+    sc = (:(scope() do ; end))
+    sc.args[2].args[2] = expr.args[2]
+    expr.args[2] = sc
     esc(expr)
 end
 
@@ -10,21 +14,26 @@ function enter_scope()
     push!(scopes, Vector{AFArray}())
 end
 
-function leave_scope(num)
+matches(k, except::AFArray) = k === except
+matches(k, except) = any(x -> x === k, except)
+
+function leave_scope(except)
     scope = pop!(scopes)
-    for k = 1:length(scope) - num
-        finalize(scope[k])
-    end
-    if !(isempty(scopes))
-        append!(scopes[end], scope[end-num+1:end])
+    for k in scope
+        if matches(k, except)
+            if !isempty(scopes)
+                push!(scopes[end], k)
+            end
+        else
+            finalize(k)
+        end
     end
 end
 
-function afscope(f, num)
+function scope(f)
+    num = 0
     enter_scope()
-    try
-        f()
-    finally
-        leave_scope(num)
-    end
+    r = f()
+    leave_scope(r)
+    return r
 end
