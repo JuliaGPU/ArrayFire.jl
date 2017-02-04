@@ -1,6 +1,35 @@
 using ArrayFire
 using Base.Test
 
+#Basic math
+a = rand(Float32, 10, 10)
+ad = AFArray(a)
+@test sum(abs2, Array(ad + 2) - (a + 2)) < 1e-6
+@test sum(abs2, Array(ad .+ 2) - (a .+ 2)) < 1e-6
+@test sum(abs2, Array(2 + ad) - (2 + a)) < 1e-6
+@test sum(abs2, Array(2 .+ ad) - (2 .+ a)) < 1e-6
+@test sum(abs2, Array(ad - 2) - (a - 2)) < 1e-6
+@test sum(abs2, Array(ad .- 2) - (a .- 2)) < 1e-6
+@test sum(abs2, Array(2 - ad) - (2 - a)) < 1e-6
+@test sum(abs2, Array(2 .- ad) - (2 .- a)) < 1e-6
+@test sum(abs2, Array(ad * 2) - (a * 2)) < 1e-6
+@test sum(abs2, Array(ad .* 2) - (a .* 2)) < 1e-6
+@test sum(abs2, Array(2 * ad) - (2 * a)) < 1e-6
+@test sum(abs2, Array(2 .* ad) - (2 .* a)) < 1e-6
+@test sum(abs2, Array(ad / 2) - (a / 2)) < 1e-6
+@test sum(abs2, Array(ad ./ 2) - (a ./ 2)) < 1e-6
+@test sum(abs2, Array(2 ./ ad) - (2 ./ a)) < 1e-6
+@test sum(abs2, Array(ad .^ 2) - (a .^ 2)) < 1e-6
+@test sum(abs2, Array(2 .^ ad) - (2 .^ a)) < 1e-6
+
+#Trig functions
+@test sum(abs2, Array(sin.(ad)) - sin.(a)) < 1e-6
+@test sum(abs2, Array(cos.(ad)) - cos.(a)) < 1e-6
+@test sum(abs2, Array(tan.(ad)) - tan.(a)) < 1e-6
+@test sum(abs2, Array(sinh.(ad)) - sinh.(a)) < 1e-6
+@test sum(abs2, Array(cosh.(ad)) - cosh.(a)) < 1e-6
+@test sum(abs2, Array(tanh.(ad)) - tanh.(a)) < 1e-6
+
 @test sum(fill(AFArray, 1, (1, 2))) == 2
 @test sum(ones(AFArray{Float32}, (1, 2))) == 2f0
 @test eltype(zeros(AFArray{Float32}, (1, 2))) == Float32
