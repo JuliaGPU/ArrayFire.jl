@@ -2,11 +2,7 @@
 
 using ArrayFire
 
-function blackscholes_serial(sptprice,
-                           strike,
-                           rate,
-                           volatility,
-                           time)
+function blackscholes_serial(sptprice, strike, rate, volatility, time)
     logterm = log10( sptprice / strike)
     powterm = .5f0 * volatility * volatility
     den = volatility * sqrt(time)
@@ -45,6 +41,7 @@ function run(iterations)
     tic()
     put2 = blackscholes_serial.(sptprice_gpu, initStrike_gpu, rate_gpu, volatility_gpu, time_gpu)
     afeval(put2)
+    sync(0)
     t2 = toq()
     println("Parallel checksum: ", sum(put2))
     return t1, t2
@@ -55,9 +52,11 @@ function driver()
     tic()
     iterations = 10^6
     blackscholes_serial.(Float32[], Float32[], Float32[], Float32[], Float32[])
-    blackscholes_serial(AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]),
-                        AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]))
+    blackscholes_serial.(AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]),
+                         AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]))
     println("SELFPRIMED ", toq())
+    tserial, tparallel = run(iterations)
+    tserial, tparallel = run(iterations)
     tserial, tparallel = run(iterations)
     println("Time taken for CPU = $tserial")
     println("Time taken for GPU = $tparallel")
