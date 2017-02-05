@@ -234,3 +234,9 @@ import Base: fill, zeros, ones
 fill(::Type{AFArray}, a, dims) = constant(a, dims)
 zeros{T}(::Type{AFArray{T}}, dims::Tuple) = constant(T(0), dims)
 ones{T}(::Type{AFArray{T}}, dims::Tuple) = constant(T(1), dims)
+
+function abs{T,N}(_in::AFArray{Complex{T},N})
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_abs,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
+    AFArray{T,N}(out[])
+end

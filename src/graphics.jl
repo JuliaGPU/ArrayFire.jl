@@ -1,7 +1,7 @@
 global const cwin = Ref{Int}(0)
 global const windows = Dict{Int,af_window}()
 
-export figure, plot
+export figure, plot, image
 
 function figure(n)
     if !haskey(windows, n)
@@ -21,5 +21,13 @@ function plot(x, y)
         figure(1)
     end
     draw_plot(windows[cwin[]], x, y, Ref(af_cell(0, 0, pointer(""), AF_COLORMAP_DEFAULT)))
+    show(windows[cwin[]])
+end
+
+function image(img)
+    if cwin[] == 0
+        figure(1)
+    end
+    draw_image(windows[cwin[]], img, Ref(af_cell(0, 0, pointer(""), AF_COLORMAP_SPECTRUM)))
     show(windows[cwin[]])
 end
