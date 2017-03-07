@@ -5,7 +5,7 @@ os:
   - linux
 julia:
   - release
-  - nightly
+#  - nightly
 notifications:
   email: false
 install:
