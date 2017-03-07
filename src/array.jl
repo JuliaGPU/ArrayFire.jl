@@ -21,7 +21,6 @@ export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
 import Base: convert, copy, deepcopy_internal, broadcast, issparse, sparse
 
 sparse{T,N}(a::AFArray{T,N}) = create_sparse_array_from_dense(a, AF_STORAGE_CSR)
-sparse(I::AFArray, J::AFArray, V::AFArray, n, m) = create_sparse_array(n, m, V, I, J, AF_STORAGE_CSR)
 
 convert{T,N}(::Type{AFArray{T,N}}, a::AFArray{T,N}) = a
 convert{T,N}(::Type{AFArray{T}}, a::AFArray{T,N}) = a
