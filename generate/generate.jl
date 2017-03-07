@@ -178,7 +178,12 @@ function rewrite(line::Expr)
             end
         end
         push!(exports, Symbol(name))
-        return line
+    elseif line.head == :const || line.head == :typealias
+        if isa(line.args[1], Symbol)
+            push!(exports, line.args[1])
+        else
+            push!(exports, line.args[1].args[1])
+        end
     end
     line
 end
