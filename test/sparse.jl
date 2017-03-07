@@ -5,13 +5,13 @@ A = AFArray(rand(10,10));
 n = 10;
 
 Ie = AFArray(eye(10))
-Aid = create_sparse_array_from_dense(Ie,AF_STORAGE_CSR)
+Aid = sparse(Ie)
 
 @test issparse(Aid)
 
 I = AFArray(vec(collect(1:n)))
 J = AFArray(vec(collect(1:n)))
 V = AFArray(ones(n))
-Aid2 = create_sparse_array(n,n,V,I,J,AF_STORAGE_CSR)
+Aid2 = sparse(I,J,V, n, n)
 
 @test issparse(Aid2)
