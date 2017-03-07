@@ -18,7 +18,7 @@ typealias AFTensor{T} AFArray{T,4}
 
 export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
 
-import Base: convert, copy, deepcopy_internal, broadcast
+import Base: convert, copy, deepcopy_internal, broadcast, issparse
 
 convert{T,N}(::Type{AFArray{T,N}}, a::AFArray{T,N}) = a
 convert{T,N}(::Type{AFArray{T}}, a::AFArray{T,N}) = a

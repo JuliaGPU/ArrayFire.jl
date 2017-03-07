@@ -126,7 +126,7 @@ function convert_array{T,N}(data::AbstractArray{T,N})
 end
 
 function convert_array{T,N}(a::AFArray{T,N})
-    if is_sparse(a)
+    if issparse(a)
         a = sparse_to_dense(a)
     end
     ret = Array{T,N}(size(a))
