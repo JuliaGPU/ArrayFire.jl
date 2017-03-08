@@ -39,7 +39,7 @@ convert{T}(::Type{SparseMatrixCSC}, a::AFArray{T}) = convert_array_to_sparse(a):
 deepcopy_internal{T,N}(a::AFArray{T,N}, d::ObjectIdDict) = haskey(d, a) ? d[a]::AFArray{T,N} : copy(a)
 
 import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atan2, atanh, cbrt, ceil, clamp, cos, cosh
-import Base: count, cov, det, div, dot, erfc, exp, expm1, factorial, fft, floor, gradient, hypot
+import Base: count, cov, det, div, dot, exp, expm1, factorial, fft, floor, gradient, hypot
 import Base: identity, ifft, imag, isinf, isnan, join, lgamma, log, log10, log1p, log2, lu, maximum, mean, median
 import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, scale, select, show
 import Base: sign, signbit, sin, sinh, sort, sqrt, sub, sum, svd, tan, tanh, transpose, trunc, var, any, all
@@ -233,10 +233,10 @@ if VERSION < v"0.6-"
         .>>(a::AFArray, b::AFArray)  = bitshiftr(a, b, true)
         xor(a, b) = a $ b
     end
-    import Base: erf
+    import Base: erf, erfc
 else
     using SpecialFunctions
-    import SpecialFunctions: erf
+    import SpecialFunctions: erf, erfc
 end
 
 import Base: fill, zeros, ones
