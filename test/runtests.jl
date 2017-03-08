@@ -1,6 +1,8 @@
 using ArrayFire
 using Base.Test
 
+include("sparse.jl")
+
 #Basic math
 a = rand(Float32, 10, 10)
 ad = AFArray(a)
@@ -219,5 +221,3 @@ c = AFArray([4 5 6; 7 8 9])
 @test size(reshape(c, (3,2))) == (3, 2)
 
 #plot(rand(AFArray, 10), rand(AFArray, 10))
-
-include("sparse.jl")

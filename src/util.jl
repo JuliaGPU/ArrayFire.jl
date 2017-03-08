@@ -22,7 +22,7 @@ end
 
 export afgc
 
-toa(a) = issparse(a) ? Array(a) : SparseMatrixCSC(a)
+toa(a) = issparse(a) ?  SparseMatrixCSC(a) : Array(a)
 display(a::AFArray) = (print("AFArray: "); display(toa(a)))
 show(c::IOContext, a::AFArray) = (print(c, "AFArray: "); show(c, toa(a)))
 
@@ -135,18 +135,22 @@ function convert_array{T,N}(a::AFArray{T,N})
     ret
 end
 
+function convert_array_to_sparse(a::SparseMatrixCSC)
+    sz = size(a)
+    create_sparse_array(sz[1], sz[2], AFArray(a.nzval), AFArray(a.rowval-1), AFArray(a.colptr-1), AF_STORAGE_CSR)
+end
+
 function convert_array_to_sparse(a::AFArray)
     @assert issparse(a) "AFArray is not sparse"
     sz = size(a)
     @assert length(sz) == 2 "AFArray is not a matrix"
-    nzval, colptr, rowval, d = sparse_get_info(a)
+    nzval, rowval, colptr, d = sparse_get_info(a)
     if d == AF_STORAGE_CSR
         SparseMatrixCSC(sz[1], sz[2], Array(colptr+1), Array(rowval+1), Array(nzval))
     else
         convert_array_to_sparse(sparse_convert_to(a, AF_STORAGE_CSR))
     end
 end
-
 
 function recast_array{T1,N,T2}(::Type{AFArray{T1}},_in::AFArray{T2,N})
     out = RefValue{af_array}(0)

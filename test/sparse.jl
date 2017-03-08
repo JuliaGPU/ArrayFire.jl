@@ -9,15 +9,18 @@ Aid = sparse(Ie)
 
 @test issparse(Aid)
 
-e2 = SparseMatrixCSC(Aid)
-
-@test e2 == sparse(eye(10))
-
 Ie2 = full(Aid)
 
 @test !issparse(Ie2)
 
 @test all(Ie2 == Ie)
+
+e = sparse(eye(10))
+a1 = AFArray(e)
+@test issparse(a1)
+
+e2 = SparseMatrixCSC(a1)
+@test e2 == e
 
 I = AFArray(vec(collect(1:n)))
 J = AFArray(vec(collect(1:n)))

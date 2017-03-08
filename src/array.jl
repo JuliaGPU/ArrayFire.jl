@@ -29,11 +29,13 @@ convert{T,N}(::Type{AFArray}, a::AFArray{T,N}) = a
 convert{T1,T2,N}(::Type{AFArray{T1}}, a::AFArray{T2,N}) = recast_array(AFArray{T1}, a)::AFArray{T1,N}
 convert{T1,T2,N}(::Type{AFArray{T1,N}}, a::AFArray{T2,N}) = recast_array(AFArray{T1}, a)::AFArray{T1,N}
 convert{T,N}(::Type{Array{T,N}}, a::AFArray{T,N}) = convert_array(a)
-convert{T,N}(::Type{AFArray{T,N}}, a::AbstractArray{T,N}) = convert_array(a)
+convert{T,N}(::Type{AFArray{T,N}}, a::Array{T,N}) = convert_array(a)
 convert{T,N}(::Type{Array}, a::AFArray{T,N}) = convert_array(a)::Array{T,N}
-convert{T,N}(::Type{AFArray}, a::AbstractArray{T,N}) = convert_array(a)::AFArray{T,N}
-convert{T,N}(::Type{SparseMatrixCSC{T}}, a::AFArray{T,N}) = convert_array_to_sparse(a)::SparseMatrixCSC{T,Int}
-convert{T,N}(::Type{SparseMatrixCSC}, a::AFArray{T,N}) = convert_array_to_sparse(a)::SparseMatrixCSC{T,Int}
+convert{T,N}(::Type{AFArray}, a::Array{T,N}) = convert_array(a)::AFArray{T,N}
+convert{T}(::Type{AFArray{T}}, a::SparseMatrixCSC{T}) = convert_array_to_sparse(a)::AFArray{T,2}
+convert{T}(::Type{AFArray}, a::SparseMatrixCSC{T}) = convert_array_to_sparse(a)::AFArray{T,2}
+convert{T}(::Type{SparseMatrixCSC{T}}, a::AFArray{T}) = convert_array_to_sparse(a)::SparseMatrixCSC{T,Int}
+convert{T}(::Type{SparseMatrixCSC}, a::AFArray{T}) = convert_array_to_sparse(a)::SparseMatrixCSC{T,Int}
 deepcopy_internal{T,N}(a::AFArray{T,N}, d::ObjectIdDict) = haskey(d, a) ? d[a]::AFArray{T,N} : copy(a)
 
 import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atan2, atanh, cbrt, ceil, clamp, cos, cosh
