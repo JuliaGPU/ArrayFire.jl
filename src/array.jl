@@ -32,6 +32,8 @@ convert{T,N}(::Type{Array{T,N}}, a::AFArray{T,N}) = convert_array(a)
 convert{T,N}(::Type{AFArray{T,N}}, a::AbstractArray{T,N}) = convert_array(a)
 convert{T,N}(::Type{Array}, a::AFArray{T,N}) = convert_array(a)::Array{T,N}
 convert{T,N}(::Type{AFArray}, a::AbstractArray{T,N}) = convert_array(a)::AFArray{T,N}
+convert{T,N}(::Type{SparseMatrixCSC{T}}, a::AFArray{T,N}) = convert_array_to_sparse(a)::SparseMatrixCSC{T,Int}
+convert{T,N}(::Type{SparseMatrixCSC}, a::AFArray{T,N}) = convert_array_to_sparse(a)::SparseMatrixCSC{T,Int}
 deepcopy_internal{T,N}(a::AFArray{T,N}, d::ObjectIdDict) = haskey(d, a) ? d[a]::AFArray{T,N} : copy(a)
 
 import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atan2, atanh, cbrt, ceil, clamp, cos, cosh

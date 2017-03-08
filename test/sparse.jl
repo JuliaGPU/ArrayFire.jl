@@ -9,6 +9,10 @@ Aid = sparse(Ie)
 
 @test issparse(Aid)
 
+e2 = SparseMatrixCSC(Aid)
+
+@test e2 == sparse(eye(10))
+
 Ie2 = full(Aid)
 
 @test !issparse(Ie2)

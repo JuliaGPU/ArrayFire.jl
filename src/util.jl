@@ -22,8 +22,9 @@ end
 
 export afgc
 
-display(a::AFArray) = (print("AFArray: "); display(Array(a)))
-show(c::IOContext, a::AFArray) = (print(c, "AFArray: "); show(c, Array(a)))
+toa(a) = issparse(a) ? Array(a) : SparseMatrixCSC(a)
+display(a::AFArray) = (print("AFArray: "); display(toa(a)))
+show(c::IOContext, a::AFArray) = (print(c, "AFArray: "); show(c, toa(a)))
 
 global const af_lib = is_unix() ? "libaf" : "af"
 global const bcast = Ref{Bool}(false)
@@ -133,6 +134,19 @@ function convert_array{T,N}(a::AFArray{T,N})
     get_data_ptr(ret, a)
     ret
 end
+
+function convert_array_to_sparse(a::AFArray)
+    @assert issparse(a) "AFArray is not sparse"
+    sz = size(a)
+    @assert length(sz) == 2 "AFArray is not a matrix"
+    nzval, colptr, rowval, d = sparse_get_info(a)
+    if d == AF_STORAGE_CSR
+        SparseMatrixCSC(sz[1], sz[2], Array(colptr+1), Array(rowval+1), Array(nzval))
+    else
+        convert_array_to_sparse(sparse_convert_to(a, AF_STORAGE_CSR))
+    end
+end
+
 
 function recast_array{T1,N,T2}(::Type{AFArray{T1}},_in::AFArray{T2,N})
     out = RefValue{af_array}(0)
