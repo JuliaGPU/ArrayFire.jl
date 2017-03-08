@@ -14,7 +14,7 @@ export draw_plot, draw_plot3, draw_plot_2d, draw_plot_3d, draw_plot_nd, draw_sca
 export draw_scatter_3d, draw_scatter_nd, draw_surface, draw_vector_field_2d, draw_vector_field_3d, draw_vector_field_nd
 export eq, erf, erfc, erode, erode3, exp, expm1, factorial, fast, fft, fft2, fft2_c2r, fft2_inplace, fft2_r2c
 export fft3, fft3_c2r, fft3_inplace, fft3_r2c, fft_c2r, fft_convolve1, fft_convolve2, fft_convolve3, fft_inplace
-export fft_r2c, fir, flip, floor, free_device, gaussian_kernel, ge, get_active_backend, get_available_backends
+export fft_r2c, fir, flip, floor, free_device, full, gaussian_kernel, ge, get_active_backend, get_available_backends
 export get_backend_count, get_backend_id, get_data_ptr, get_dbl_support, get_default_random_engine, get_device
 export get_device_count, get_device_id, get_device_ptr, get_dims, get_elements, get_features_num, get_features_orientation
 export get_features_score, get_features_size, get_features_xpos, get_features_ypos, get_manual_eval_flag
@@ -40,8 +40,8 @@ export set_manual_eval_flag, set_mem_step_size, set_position, set_seed, set_seq_
 export set_size, set_title, set_union, set_unique, set_visibility, shift, show, sift, sigmoid, signbit
 export sin, sinh, skew, sobel_operator, solve, solve_lu, sort, sort_by_key, sort_index, sparse_convert_to
 export sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx, sparse_get_storage, sparse_get_values
-export sparse_to_dense, sqrt, stdev, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all, susan, svd, svd_inplace
-export sync, tan, tanh, tgamma, tile, transform, transform_coordinates, translate, transpose_inplace, trunc
+export sqrt, stdev, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all, susan, svd, svd_inplace, sync
+export tan, tanh, tgamma, tile, transform, transform_coordinates, translate, transpose_inplace, trunc
 export unlock_array, unlock_device_ptr, unwrap, upper, var, var_all, var_all_weighted, var_weighted, where
 export wrap, write_array, ycbcr2rgb
 
@@ -1964,7 +1964,7 @@ function sparse_convert_to{T,N}(_in::AFArray{T,N},destStorage::af_storage)
     AFArray{T,N}(out[])
 end
 
-function sparse_to_dense{T,N}(sparse::AFArray{T,N})
+function full{T,N}(sparse::AFArray{T,N})
     out = RefValue{af_array}(0)
     _error(ccall((:af_sparse_to_dense,af_lib),af_err,(Ptr{af_array},af_array),out,sparse.arr))
     AFArray{T,N}(out[])

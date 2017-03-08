@@ -45,7 +45,7 @@ const renames = Dict("sign" => "signbit", "product" => "prod", "init" => "afinit
                      "copy_array" => "copy", "get_version" => "afversion", "eval" => "afeval",
                      "min" => "minimum", "max" => "maximum", "any_true" => "any", "all_true" => "all",
                      "select_scalar_l" => "select", "select_scalar_r" => "select", "replace_scalar" => "replace",
-                     "is_sparse" => "issparse")
+                     "is_sparse" => "issparse", "sparse_to_dense" => "full")
 
 const ignore = Set(["example_function", "create_array", "retain_array", "get_data_ref_count", "info_string",
                     "device_info", "alloc_host", "free_host", "alloc_pinned", "free_pinned",

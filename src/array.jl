@@ -18,7 +18,7 @@ typealias AFTensor{T} AFArray{T,4}
 
 export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
 
-import Base: convert, copy, deepcopy_internal, broadcast, issparse, sparse
+import Base: convert, copy, deepcopy_internal, broadcast, issparse, sparse, full
 
 sparse{T,N}(a::AFArray{T,N}) = create_sparse_array_from_dense(a, AF_STORAGE_CSR)
 

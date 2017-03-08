@@ -9,6 +9,12 @@ Aid = sparse(Ie)
 
 @test issparse(Aid)
 
+Ie2 = full(Aid)
+
+@test !issparse(Ie2)
+
+@test all(Ie2 == Ie)
+
 I = AFArray(vec(collect(1:n)))
 J = AFArray(vec(collect(1:n)))
 V = AFArray(ones(n))

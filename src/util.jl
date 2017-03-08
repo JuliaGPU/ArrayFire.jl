@@ -127,7 +127,7 @@ end
 
 function convert_array{T,N}(a::AFArray{T,N})
     if issparse(a)
-        a = sparse_to_dense(a)
+        a = full(a)
     end
     ret = Array{T,N}(size(a))
     get_data_ptr(ret, a)
