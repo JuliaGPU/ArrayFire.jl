@@ -29,12 +29,12 @@ export af_marker_type, af_mat_prop, af_match_type, af_moment_type, af_norm_type,
 export af_someenum_t, af_source, af_storage, af_window, af_ycc_std, b8, c32, c64, dim_t, f32, f64, intl
 export s16, s32, s64, u16, u32, u64, u8, uintl
 
-typealias dim_t Clonglong
-typealias intl Clonglong
-typealias uintl Culonglong
+const dim_t = Clonglong
+const intl = Clonglong
+const uintl = Culonglong
 
 # begin enum af_err
-typealias af_err UInt32
+const af_err = UInt32
 const AF_SUCCESS = (UInt32)(0)
 const AF_ERR_NO_MEM = (UInt32)(101)
 const AF_ERR_DRIVER = (UInt32)(102)
@@ -59,7 +59,7 @@ const AF_ERR_UNKNOWN = (UInt32)(999)
 # end enum af_err
 
 # begin enum af_dtype
-typealias af_dtype UInt32
+const af_dtype = UInt32
 const f32 = (UInt32)(0)
 const c32 = (UInt32)(1)
 const f64 = (UInt32)(2)
@@ -75,15 +75,15 @@ const u16 = (UInt32)(11)
 # end enum af_dtype
 
 # begin enum af_source
-typealias af_source UInt32
+const af_source = UInt32
 const afDevice = (UInt32)(0)
 const afHost = (UInt32)(1)
 # end enum af_source
 
-typealias af_array Ptr{Void}
+const af_array = Ptr{Void}
 
 # begin enum af_interp_type
-typealias af_interp_type UInt32
+const af_interp_type = UInt32
 const AF_INTERP_NEAREST = (UInt32)(0)
 const AF_INTERP_LINEAR = (UInt32)(1)
 const AF_INTERP_BILINEAR = (UInt32)(2)
@@ -97,32 +97,32 @@ const AF_INTERP_BICUBIC_SPLINE = (UInt32)(9)
 # end enum af_interp_type
 
 # begin enum af_border_type
-typealias af_border_type UInt32
+const af_border_type = UInt32
 const AF_PAD_ZERO = (UInt32)(0)
 const AF_PAD_SYM = (UInt32)(1)
 # end enum af_border_type
 
 # begin enum af_connectivity
-typealias af_connectivity UInt32
+const af_connectivity = UInt32
 const AF_CONNECTIVITY_4 = (UInt32)(4)
 const AF_CONNECTIVITY_8 = (UInt32)(8)
 # end enum af_connectivity
 
 # begin enum af_conv_mode
-typealias af_conv_mode UInt32
+const af_conv_mode = UInt32
 const AF_CONV_DEFAULT = (UInt32)(0)
 const AF_CONV_EXPAND = (UInt32)(1)
 # end enum af_conv_mode
 
 # begin enum af_conv_domain
-typealias af_conv_domain UInt32
+const af_conv_domain = UInt32
 const AF_CONV_AUTO = (UInt32)(0)
 const AF_CONV_SPATIAL = (UInt32)(1)
 const AF_CONV_FREQ = (UInt32)(2)
 # end enum af_conv_domain
 
 # begin enum af_match_type
-typealias af_match_type UInt32
+const af_match_type = UInt32
 const AF_SAD = (UInt32)(0)
 const AF_ZSAD = (UInt32)(1)
 const AF_LSAD = (UInt32)(2)
@@ -135,14 +135,14 @@ const AF_SHD = (UInt32)(8)
 # end enum af_match_type
 
 # begin enum af_ycc_std
-typealias af_ycc_std UInt32
+const af_ycc_std = UInt32
 const AF_YCC_601 = (UInt32)(601)
 const AF_YCC_709 = (UInt32)(709)
 const AF_YCC_2020 = (UInt32)(2020)
 # end enum af_ycc_std
 
 # begin enum af_cspace_t
-typealias af_cspace_t UInt32
+const af_cspace_t = UInt32
 const AF_GRAY = (UInt32)(0)
 const AF_RGB = (UInt32)(1)
 const AF_HSV = (UInt32)(2)
@@ -150,7 +150,7 @@ const AF_YCbCr = (UInt32)(3)
 # end enum af_cspace_t
 
 # begin enum af_mat_prop
-typealias af_mat_prop UInt32
+const af_mat_prop = UInt32
 const AF_MAT_NONE = (UInt32)(0)
 const AF_MAT_TRANS = (UInt32)(1)
 const AF_MAT_CTRANS = (UInt32)(2)
@@ -166,7 +166,7 @@ const AF_MAT_BLOCK_DIAG = (UInt32)(8192)
 # end enum af_mat_prop
 
 # begin enum af_norm_type
-typealias af_norm_type UInt32
+const af_norm_type = UInt32
 const AF_NORM_VECTOR_1 = (UInt32)(0)
 const AF_NORM_VECTOR_INF = (UInt32)(1)
 const AF_NORM_VECTOR_2 = (UInt32)(2)
@@ -179,7 +179,7 @@ const AF_NORM_EUCLID = (UInt32)(2)
 # end enum af_norm_type
 
 # begin enum af_image_format
-typealias af_image_format UInt32
+const af_image_format = UInt32
 const AF_FIF_BMP = (UInt32)(0)
 const AF_FIF_ICO = (UInt32)(1)
 const AF_FIF_JPEG = (UInt32)(2)
@@ -196,7 +196,7 @@ const AF_FIF_RAW = (UInt32)(34)
 # end enum af_image_format
 
 # begin enum af_moment_type
-typealias af_moment_type UInt32
+const af_moment_type = UInt32
 const AF_MOMENT_M00 = (UInt32)(1)
 const AF_MOMENT_M01 = (UInt32)(2)
 const AF_MOMENT_M10 = (UInt32)(4)
@@ -205,13 +205,13 @@ const AF_MOMENT_FIRST_ORDER = (UInt32)(15)
 # end enum af_moment_type
 
 # begin enum af_homography_type
-typealias af_homography_type UInt32
+const af_homography_type = UInt32
 const AF_HOMOGRAPHY_RANSAC = (UInt32)(0)
 const AF_HOMOGRAPHY_LMEDS = (UInt32)(1)
 # end enum af_homography_type
 
 # begin enum af_backend
-typealias af_backend UInt32
+const af_backend = UInt32
 const AF_BACKEND_DEFAULT = (UInt32)(0)
 const AF_BACKEND_CPU = (UInt32)(1)
 const AF_BACKEND_CUDA = (UInt32)(2)
@@ -219,12 +219,12 @@ const AF_BACKEND_OPENCL = (UInt32)(4)
 # end enum af_backend
 
 # begin enum af_someenum_t
-typealias af_someenum_t UInt32
+const af_someenum_t = UInt32
 const AF_ID = (UInt32)(0)
 # end enum af_someenum_t
 
 # begin enum af_binary_op
-typealias af_binary_op UInt32
+const af_binary_op = UInt32
 const AF_BINARY_ADD = (UInt32)(0)
 const AF_BINARY_MUL = (UInt32)(1)
 const AF_BINARY_MIN = (UInt32)(2)
@@ -232,7 +232,7 @@ const AF_BINARY_MAX = (UInt32)(3)
 # end enum af_binary_op
 
 # begin enum af_random_engine_type
-typealias af_random_engine_type UInt32
+const af_random_engine_type = UInt32
 const AF_RANDOM_ENGINE_PHILOX_4X32_10 = (UInt32)(100)
 const AF_RANDOM_ENGINE_THREEFRY_2X32_16 = (UInt32)(200)
 const AF_RANDOM_ENGINE_MERSENNE_GP11213 = (UInt32)(300)
@@ -243,7 +243,7 @@ const AF_RANDOM_ENGINE_DEFAULT = (UInt32)(100)
 # end enum af_random_engine_type
 
 # begin enum af_colormap
-typealias af_colormap UInt32
+const af_colormap = UInt32
 const AF_COLORMAP_DEFAULT = (UInt32)(0)
 const AF_COLORMAP_SPECTRUM = (UInt32)(1)
 const AF_COLORMAP_COLORS = (UInt32)(2)
@@ -254,7 +254,7 @@ const AF_COLORMAP_BLUE = (UInt32)(6)
 # end enum af_colormap
 
 # begin enum af_marker_type
-typealias af_marker_type UInt32
+const af_marker_type = UInt32
 const AF_MARKER_NONE = (UInt32)(0)
 const AF_MARKER_POINT = (UInt32)(1)
 const AF_MARKER_CIRCLE = (UInt32)(2)
@@ -266,7 +266,7 @@ const AF_MARKER_STAR = (UInt32)(7)
 # end enum af_marker_type
 
 # begin enum af_storage
-typealias af_storage UInt32
+const af_storage = UInt32
 const AF_STORAGE_DENSE = (UInt32)(0)
 const AF_STORAGE_CSR = (UInt32)(1)
 const AF_STORAGE_CSC = (UInt32)(2)
@@ -295,8 +295,8 @@ type af_cdouble
     imag::Cdouble
 end
 
-typealias af_features Ptr{Void}
-typealias af_window Culonglong
+const af_features = Ptr{Void}
+const af_window = Culonglong
 
 type af_cell
     row::Cint
@@ -305,4 +305,4 @@ type af_cell
     cmap::af_colormap
 end
 
-typealias af_random_engine Ptr{Void}
+const af_random_engine = Ptr{Void}

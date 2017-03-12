@@ -184,6 +184,10 @@ function rewrite(line::Expr)
         else
             push!(exports, line.args[1].args[1])
         end
+        if line.head == :typealias
+            line.head = :(=)
+            line = Expr(:const, line)
+        end
     end
     line
 end
