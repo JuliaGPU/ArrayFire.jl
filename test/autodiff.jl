@@ -19,9 +19,6 @@ function checkdiff_inferred(f, δf, x0...)
     checkgrad(f, remap(x), remap(∂x))
 end
 
-typealias AFVector AFArray{Float64,1}
-typealias AFMatrix AFArray{Float64,2}
-
 import AutoDiffSource: δsum, δdot_power, δdot_power_const1, δdot_power_const2
 import AutoDiffSource: δabs, δsqrt, δexp, δlog, δtimes, δtimes_const1, δtimes_const2
 
