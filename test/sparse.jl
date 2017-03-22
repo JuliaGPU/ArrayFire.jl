@@ -15,12 +15,16 @@ Ie2 = full(Aid)
 
 @test all(Ie2 == Ie)
 
-e = sparse(eye(10))
+e = sprand(10, 20, 0.2)
+c = randn(20)
 a1 = AFArray(e)
+c1 = AFArray(c)
 @test issparse(a1)
 
 e2 = SparseMatrixCSC(a1)
 @test e2 == e
+
+@test sum(e * c) ≈ sum(a1 * c1)
 
 I = AFArray(vec(collect(1:n)))
 J = AFArray(vec(collect(1:n)))

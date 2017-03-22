@@ -122,7 +122,7 @@ function convert_array{T,N}(data::AbstractArray{T,N})
     arr = RefValue{af_array}(0)
     sz = size(data)
     _error(ccall((:af_create_array,af_lib),af_err,(Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),
-                   arr,data,UInt32(length(sz)),[sz...],af_type(T)))
+                 arr,data,UInt32(length(sz)),[sz...],af_type(T)))
     AFArray{T,N}(arr[])
 end
 
@@ -137,16 +137,19 @@ end
 
 function convert_array_to_sparse(a::SparseMatrixCSC)
     sz = size(a)
-    create_sparse_array(sz[1], sz[2], AFArray(a.nzval), AFArray(a.rowval-1), AFArray(a.colptr-1), AF_STORAGE_CSR)
+    at = transpose(a)
+    colptr = AFArray(Vector{Int32}(at.colptr-1))
+    rowval = AFArray(Vector{Int32}(at.rowval-1))
+    create_sparse_array(sz[1], sz[2], AFArray(at.nzval), colptr, rowval, AF_STORAGE_CSR)
 end
 
 function convert_array_to_sparse(a::AFArray)
     @assert issparse(a) "AFArray is not sparse"
     sz = size(a)
     @assert length(sz) == 2 "AFArray is not a matrix"
-    nzval, rowval, colptr, d = sparse_get_info(a)
+    nzval, colptr, rowval, d = sparse_get_info(a)
     if d == AF_STORAGE_CSR
-        SparseMatrixCSC(sz[1], sz[2], Array(colptr+1), Array(rowval+1), Array(nzval))
+        transpose(SparseMatrixCSC(sz[2], sz[1], Array(colptr+1), Array(rowval+1), Array(nzval)))
     else
         convert_array_to_sparse(sparse_convert_to(a, AF_STORAGE_CSR))
     end
