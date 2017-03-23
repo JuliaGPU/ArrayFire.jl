@@ -1,6 +1,7 @@
 using ArrayFire
 using Base.Test
 
+include("indexing.jl")
 include("sparse.jl")
 
 #Basic math
