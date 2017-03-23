@@ -1,6 +1,10 @@
 import Base: getindex, setindex!
 
-Base.IndexStyle(::Type{AFArray}) = Base.IndexCartesian()
+if VERSION < v"0.6-"
+    Base.LinearIndexing(::Type{AFArray}) = Base.LinearSlow()
+else
+    Base.IndexStyle(::Type{AFArray}) = Base.IndexCartesian()
+end
 
 create_seq(r::UnitRange) = af_seq(r.start-1, r.stop-1, 1)
 create_seq(r::StepRange) = af_seq(r.start-1, r.stop-1, r.step)
