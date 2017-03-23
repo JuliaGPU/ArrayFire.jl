@@ -31,19 +31,18 @@ export minfilt, minimum, minof, mod, moments, moments_all, mul, nearest_neighbou
 export orb, pow, pow2, print_array, print_array_gen, print_mem_info, prod, product_all, product_nan, product_nan_all
 export qr, qr_inplace, random_engine_get_seed, random_engine_get_type, random_engine_set_seed, random_engine_set_type
 export random_normal, random_uniform, range, rank, read_array_index, read_array_key, read_array_key_check
-export real, regions, release_features, release_indexers, release_random_engine, rem, reorder, replace
-export replace, resize, retain_features, retain_random_engine, rgb2gray, rgb2hsv, rgb2ycbcr, root, rotate
-export round, sat, save_array, save_image, save_image_memory, save_image_native, scale, scan, scan_by_key
-export set_array_indexer, set_axes_limits_2d, set_axes_limits_3d, set_axes_limits_compute, set_axes_titles
-export set_backend, set_default_random_engine_type, set_device, set_fft_plan_cache_size, set_intersect
-export set_manual_eval_flag, set_mem_step_size, set_position, set_seed, set_seq_indexer, set_seq_param_indexer
-export set_size, set_title, set_union, set_unique, set_visibility, shift, show, sift, sigmoid, signbit
-export sin, sinh, skew, sobel_operator, solve, solve_lu, sort, sort_by_key, sort_index, sparse_convert_to
-export sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx, sparse_get_storage, sparse_get_values
-export sqrt, stdev, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all, susan, svd, svd_inplace, sync
-export tan, tanh, tgamma, tile, transform, transform_coordinates, translate, transpose_inplace, trunc
-export unlock_array, unlock_device_ptr, unwrap, upper, var, var_all, var_all_weighted, var_weighted, where
-export wrap, write_array, ycbcr2rgb
+export real, regions, release_features, release_random_engine, rem, reorder, replace, replace, resize
+export retain_features, retain_random_engine, rgb2gray, rgb2hsv, rgb2ycbcr, root, rotate, round, sat, save_array
+export save_image, save_image_memory, save_image_native, scale, scan, scan_by_key, set_array_indexer, set_axes_limits_2d
+export set_axes_limits_3d, set_axes_limits_compute, set_axes_titles, set_backend, set_default_random_engine_type
+export set_device, set_fft_plan_cache_size, set_intersect, set_manual_eval_flag, set_mem_step_size, set_position
+export set_seed, set_seq_param_indexer, set_size, set_title, set_union, set_unique, set_visibility, shift
+export show, sift, sigmoid, signbit, sin, sinh, skew, sobel_operator, solve, solve_lu, sort, sort_by_key
+export sort_index, sparse_convert_to, sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx
+export sparse_get_storage, sparse_get_values, sqrt, stdev, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all
+export susan, svd, svd_inplace, sync, tan, tanh, tgamma, tile, transform, transform_coordinates, translate
+export transpose_inplace, trunc, unlock_array, unlock_device_ptr, unwrap, upper, var, var_all, var_all_weighted
+export var_weighted, where, wrap, write_array, ycbcr2rgb
 
 function sum{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
@@ -776,23 +775,10 @@ function set_array_indexer(idx::AFArray,dim::dim_t)
     indexer[]
 end
 
-function set_seq_indexer(dim::dim_t,is_batch::Bool)
-    indexer = RefValue{af_index_t}(0)
-    idx = RefValue{af_seq}(0)
-    _error(ccall((:af_set_seq_indexer,af_lib),af_err,(Ptr{af_index_t},Ptr{af_seq},dim_t,Bool),indexer,idx,dim,is_batch))
-    (indexer[],idx[])
-end
-
 function set_seq_param_indexer(_begin::Real,_end::Real,step::Real,dim::dim_t,is_batch::Bool)
     indexer = RefValue{af_index_t}(0)
     _error(ccall((:af_set_seq_param_indexer,af_lib),af_err,(Ptr{af_index_t},Cdouble,Cdouble,Cdouble,dim_t,Bool),indexer,Cdouble(_begin),Cdouble(_end),Cdouble(step),dim,is_batch))
     indexer[]
-end
-
-function release_indexers()
-    indexers = RefValue{af_index_t}(0)
-    _error(ccall((:af_release_indexers,af_lib),af_err,(Ptr{af_index_t},),indexers))
-    indexers[]
 end
 
 function create_handle(ndims::Integer,dims,_type::Type)
