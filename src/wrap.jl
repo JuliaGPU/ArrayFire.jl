@@ -3,14 +3,14 @@
 
 
 export abs, accum, acos, acosh, add, afeval, afinfo, afinit, afversion, all, all_true_all, alloc_device
-export and, any, any_true_all, approx1, approx2, arg, array_to_string, asin, asinh, assign_gen, assign_seq
-export atan, atan2, atanh, bilateral, bitand, bitor, bitshiftl, bitshiftr, bitxor, cbrt, ceil, cholesky
-export cholesky_inplace, clamp, color_space, conjg, convolve1, convolve2, convolve2_sep, convolve3, copy
-export corrcoef, cos, cosh, count, count_all, cov, cplx, cplx2, create_features, create_handle, create_indexers
-export create_random_engine, create_sparse_array, create_sparse_array_from_dense, create_sparse_array_from_ptr
-export create_window, delete_image_memory, destroy_window, det, device_array, device_gc, device_mem_info
-export diag_create, diag_extract, diff1, diff2, dilate, dilate3, div, dog, dot, dot_all, draw_hist, draw_image
-export draw_plot, draw_plot3, draw_plot_2d, draw_plot_3d, draw_plot_nd, draw_scatter, draw_scatter3, draw_scatter_2d
+export and, any, any_true_all, approx1, approx2, arg, array_to_string, asin, asinh, assign_seq, atan, atan2
+export atanh, bilateral, bitand, bitor, bitshiftl, bitshiftr, bitxor, cbrt, ceil, cholesky, cholesky_inplace
+export clamp, color_space, conjg, convolve1, convolve2, convolve2_sep, convolve3, copy, corrcoef, cos
+export cosh, count, count_all, cov, cplx, cplx2, create_features, create_handle, create_indexers, create_random_engine
+export create_sparse_array, create_sparse_array_from_dense, create_sparse_array_from_ptr, create_window
+export delete_image_memory, destroy_window, det, device_array, device_gc, device_mem_info, diag_create
+export diag_extract, diff1, diff2, dilate, dilate3, div, dog, dot, dot_all, draw_hist, draw_image, draw_plot
+export draw_plot3, draw_plot_2d, draw_plot_3d, draw_plot_nd, draw_scatter, draw_scatter3, draw_scatter_2d
 export draw_scatter_3d, draw_scatter_nd, draw_surface, draw_vector_field_2d, draw_vector_field_3d, draw_vector_field_nd
 export eq, erf, erfc, erode, erode3, exp, expm1, factorial, fast, fft, fft2, fft2_c2r, fft2_inplace, fft2_r2c
 export fft3, fft3_c2r, fft3_inplace, fft3_r2c, fft_c2r, fft_convolve1, fft_convolve2, fft_convolve3, fft_inplace
@@ -755,12 +755,6 @@ function index_gen{T,N}(_in::AFArray{T,N},ndims::dim_t,indices)
     out = RefValue{af_array}(0)
     _error(ccall((:af_index_gen,af_lib),af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t}),out,_in.arr,ndims,indices))
     AFArray{T,N}(out[])
-end
-
-function assign_gen(lhs::AFArray,ndims::dim_t,indices,rhs::AFArray)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_assign_gen,af_lib),af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t},af_array),out,lhs.arr,ndims,indices,rhs.arr))
-    AFArray!(out[])
 end
 
 function create_indexers()
