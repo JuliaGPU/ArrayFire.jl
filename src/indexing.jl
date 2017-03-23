@@ -51,3 +51,26 @@ function setindex!{T,S}(lhs::AFArray{T}, rhs::AFArray{S}, idx::Union{Range,Int,C
     release_indexers(indexers)
     rhs
 end
+
+function setindex!{T,S<:Real}(lhs::AFArray{T}, val::S, idx::Union{Range,Int,Colon,AFArray}...)
+    sz = get_sizes(idx, lhs)
+    rhs = constant(T(val), sz)
+    setindex!(lhs, rhs, idx...)
+    val
+end
+
+function get_sizes(idx::Tuple, lhs::AFArray)
+    s = Array{Int}(length(idx))
+    for i = 1:length(idx)
+        if typeof(idx[i]) <: Range
+            s[i] = length(idx[i])
+        elseif idx[i] == Colon()
+            s[i] = size(lhs,i)
+        elseif typeof(idx[i]) <: Integer
+            s[i] = 1
+        elseif typeof(idx[i]) <: AFArray
+            s[i] = length(idx[i])
+        end
+    end
+    (s...)
+end
