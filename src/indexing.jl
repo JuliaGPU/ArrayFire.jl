@@ -99,7 +99,7 @@ function setindex!{T,S}(lhs::AFArray{T}, rhs::AFArray{S}, idx::Union{Range,Int,C
     rhs
 end
 
-function setindex!{T,S<:Real}(lhs::AFArray{T}, val::S, idx::Union{Range,Int,Colon,AFArray}...)
+function setindex!{T,S}(lhs::AFArray{T}, val::S, idx::Union{Range,Int,Colon,AFArray}...)
     sz = get_sizes(idx, lhs)
     rhs = constant(T(val), sz...)
     setindex!(lhs, rhs, idx...)
