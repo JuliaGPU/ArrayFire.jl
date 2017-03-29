@@ -172,6 +172,13 @@ let
     end
 end
 
+# Issue #143
+let 
+    AD = AFArray(ones(Float32,3,3)+im*ones(Float32,3,3))
+    AH = Array(AD)
+    @test sumabs2(Array(abs(AD)) - abs(AH)) < 1e-6
+end
+
 # Issue #103
 let
     a = rand(AFArray{Complex64}, 2, 2)
