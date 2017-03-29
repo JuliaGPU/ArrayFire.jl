@@ -171,3 +171,10 @@ let
         @test sumabs2(a - Array(ad)) < 1e-6
     end
 end
+
+# Issue #143
+let 
+    AD = AFArray(ones(Float32,3,3)+im*ones(Float32,3,3))
+    AH = Array(AD)
+    @test sumabs2(Array(abs(AD)) - abs(AH)) < 1e-6
+end

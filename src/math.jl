@@ -217,7 +217,12 @@ for (op,fn) in ((:abs, :af_abs), (:arg, :af_arg),
                 (:floor, :af_floor), (:round, :af_round),
                 (:trunc, :af_trunc))
 
-    @eval function ($op){T}(a::AFArray{T})
+    @eval function ($op){T<:Real}(a::AFArray{T})
+        out = new_ptr()
+        $(fn)(out, a)
+        AFArray{T}(out[])
+    end
+    @eval function ($op){T<:Real}(a::AFArray{Complex{T}})
         out = new_ptr()
         $(fn)(out, a)
         AFArray{T}(out[])
