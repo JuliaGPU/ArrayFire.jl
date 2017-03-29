@@ -171,3 +171,10 @@ let
         @test sumabs2(a - Array(ad)) < 1e-6
     end
 end
+
+# Issue #103
+let
+    a = rand(AFArray{Complex64}, 2, 2)
+    a[1]  = Float32(1)+Float32(2)im
+    @test a[1] == 1.0f0 + 2.0f0im
+end
