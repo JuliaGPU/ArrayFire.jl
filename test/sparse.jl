@@ -25,10 +25,3 @@ e2 = SparseMatrixCSC(a1)
 @test e2 == e
 
 @test sum(e * c) ≈ sum(a1 * c1)
-
-I = AFArray(vec(collect(1:n)))
-J = AFArray(vec(collect(1:n)))
-V = AFArray(ones(n))
-Aid2 = create_sparse_array(n, n, V, I, J, AF_STORAGE_CSR)
-
-@test issparse(Aid2)
