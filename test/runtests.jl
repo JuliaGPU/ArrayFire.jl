@@ -139,6 +139,10 @@ amf = AFArray(am)
 
 @test all(Array(maximum(amf, 1)) .== maximum(am, 1))
 @test all(Array(maximum(amf, 2)) .== maximum(am, 2))
+@test maximum(amf) == maximum(am)
+@test minimum(amf) == minimum(am)
+@test mean(amf) == mean(am)
+@test median(amf) == median(am)
 
 @test all(vec(amf) == AFArray(vec(am)))
 

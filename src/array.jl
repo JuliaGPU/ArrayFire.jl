@@ -52,6 +52,10 @@ size(a::AFVolume) = (s = get_dims(a); (s[1],s[2],s[3]))
 size(a::AFTensor) = (s = get_dims(a); (s[1],s[2],s[3],s[4]))
 any(a::AFArray) = any_true_all(a)[1] == 1
 all(a::AFArray) = all_true_all(a)[1] == 1
+maximum{T<:Real}(a::AFArray{T}) = max_all(a)[1]
+minimum{T<:Real}(a::AFArray{T}) = min_all(a)[1]
+mean{T<:Real}(a::AFArray{T}) = mean_all(a)[1]
+median{T<:Real}(a::AFArray{T}) = median_all(a)[1]
 sum{T<:Real,N}(a::AFArray{T,N}) = T(sum_all(a)[1])
 sum{T<:Complex,N}(a::AFArray{T,N}) = T(sum_all(a)...)
 
