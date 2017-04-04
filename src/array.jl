@@ -248,8 +248,12 @@ end
 import Base: fill, zeros, ones
 
 fill(::Type{AFArray}, a, dims) = constant(a, dims)
-zeros{T}(::Type{AFArray{T}}, dims::Tuple) = constant(T(0), dims)
-ones{T}(::Type{AFArray{T}}, dims::Tuple) = constant(T(1), dims)
+fill{T,N}(::Type{AFArray{T}}, a, dims::NTuple{N,Int}) = constant(T(a), dims)
+fill{T,N}(::Type{AFArray{T,N}}, a, dims::NTuple{N,Int}) = constant(T(a), dims)
+zeros{T,N}(::Type{AFArray{T}}, dims::NTuple{N,Int}) = constant(T(0), dims)
+zeros{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(0), dims)
+ones{T,N}(::Type{AFArray{T}}, dims::NTuple{N,Int}) = constant(T(1), dims)
+ones{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(1), dims)
 
 function abs{T,N}(_in::AFArray{Complex{T},N})
     out = RefValue{af_array}(0)

@@ -34,8 +34,12 @@ ad = AFArray(a)
 @test sum(abs2, Array(tanh.(ad)) - tanh.(a)) < 1e-6
 
 @test sum(fill(AFArray, 1, (1, 2))) == 2
+@test sum(fill(AFArray{Float32}, 1, (1, 2))) == 2
+@test sum(fill(AFArray{Float32,2}, 1, (1, 2))) == 2
 @test sum(ones(AFArray{Float32}, (1, 2))) == 2f0
+@test sum(ones(AFArray{Float32,2}, (1, 2))) == 2f0
 @test eltype(zeros(AFArray{Float32}, (1, 2))) == Float32
+@test eltype(zeros(AFArray{Float32,2}, (1, 2))) == Float32
 
 include("scope.jl")
 
