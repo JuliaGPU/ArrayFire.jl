@@ -219,3 +219,12 @@ function get_last_error()
     ccall((:af_get_last_error,af_lib),Void,(Ptr{Cstring},Ptr{dim_t}),msg,len)
     unsafe_string(msg[])
 end
+
+function cat{T,N1,N2}(dim::Integer,first::AFArray{T,N1},second::AFArray{T,N2})
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_join,af_lib),af_err,(Ptr{af_array},Cint,af_array,af_array),out,Cint(dim - 1),first.arr,second.arr))
+    AFArray{T,batched(N1,N2)}(out[])
+end
+
+hcat(first::AFArray, second::AFArray) = cat(2, first, second)
+vcat(first::AFArray, second::AFArray) = cat(1, first, second)
