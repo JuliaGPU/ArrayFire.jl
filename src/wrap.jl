@@ -23,7 +23,7 @@ export harris, hist_equal, histogram, homography, hsv2rgb, hypot, identity, ifft
 export ifft3, ifft3_inplace, ifft_inplace, iir, imag, imax, imax_all, imin, imin_all, index, index_gen
 export inverse, iota, is_bool, is_column, is_complex, is_double, is_empty, is_floating, is_image_io_available
 export is_integer, is_lapack_available, is_locked_array, is_real, is_realfloating, is_row, is_scalar, is_single
-export is_vector, is_window_closed, isinf, isnan, issparse, iszero, join, le, lgamma, load_image, load_image_memory
+export is_vector, is_window_closed, isinf, isnan, issparse, iszero, le, lgamma, load_image, load_image_memory
 export load_image_native, lock_array, lock_device_ptr, log, log10, log1p, log2, lookup, lower, lt, lu
 export lu_inplace, make_seq, match_template, matmul, max_all, maxfilt, maximum, maxof, mean, mean_all
 export mean_all_weighted, mean_shift, mean_weighted, medfilt, medfilt1, medfilt2, median, median_all, min_all
@@ -993,12 +993,6 @@ function diag_extract{T,N}(_in::AFArray{T,N},num::Integer)
     out = RefValue{af_array}(0)
     _error(ccall((:af_diag_extract,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(num)))
     AFArray{T,N}(out[])
-end
-
-function join(dim::Integer,first::AFArray,second::AFArray)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_join,af_lib),af_err,(Ptr{af_array},Cint,af_array,af_array),out,Cint(dim - 1),first.arr,second.arr))
-    AFArray!(out[])
 end
 
 function tile{T,N}(_in::AFArray{T,N},x::Integer,y::Integer,z::Integer,w::Integer)
