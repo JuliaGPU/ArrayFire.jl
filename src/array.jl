@@ -42,7 +42,7 @@ import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atan2, at
 import Base: count, cov, det, div, dot, exp, expm1, factorial, fft, floor, gradient, hypot
 import Base: identity, ifft, imag, isinf, isnan, iszero, join, lgamma, log, log10, log1p, log2, lu, maximum, mean, median
 import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, select, show
-import Base: sign, signbit, sin, sinh, sort, sqrt, sum, svd, tan, tanh, transpose, trunc, var, any, all
+import Base: sign, signbit, sin, sinh, sort, std, sqrt, sum, svd, tan, tanh, transpose, trunc, var, any, all
 
 eltype{T,N}(a::AFArray{T,N}) = T
 ndims{T,N}(a::AFArray{T,N}) = N
@@ -55,6 +55,8 @@ all(a::AFArray) = all_true_all(a)[1] == 1
 maximum{T<:Real}(a::AFArray{T}) = max_all(a)[1]
 minimum{T<:Real}(a::AFArray{T}) = min_all(a)[1]
 mean{T<:Real}(a::AFArray{T}) = mean_all(a)[1]
+std{T<:Real}(a::AFArray{T}) = sqrt(var_all(a, false)[1])
+var{T<:Real}(a::AFArray{T}) = var_all(a, false)[1]
 median{T<:Real}(a::AFArray{T}) = median_all(a)[1]
 sum{T<:Real,N}(a::AFArray{T,N}) = T(sum_all(a)[1])
 sum{T<:Complex,N}(a::AFArray{T,N}) = T(sum_all(a)...)

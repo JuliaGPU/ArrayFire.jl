@@ -142,6 +142,8 @@ amf = AFArray(am)
 @test maximum(amf) == maximum(am)
 @test minimum(amf) == minimum(am)
 @test mean(amf) == mean(am)
+@test std(amf) ≈ std(am)
+@test var(amf) ≈ var(am)
 @test median(amf) == median(am)
 
 @test all(vec(amf) == AFArray(vec(am)))
