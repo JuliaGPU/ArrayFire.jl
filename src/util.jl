@@ -228,3 +228,10 @@ end
 
 hcat(first::AFArray, second::AFArray) = cat(2, first, second)
 vcat(first::AFArray, second::AFArray) = cat(1, first, second)
+
+function conv{T,N}(signal::AFArray{T,N}, filter::AFArray)
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_fft_convolve1,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_conv_mode),
+                 out,signal.arr,filter.arr,AF_CONV_EXPAND))
+    AFArray{T,N}(out[])
+end

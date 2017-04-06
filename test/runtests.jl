@@ -155,6 +155,12 @@ amf = AFArray(am)
 
 @test all(vec(amf) == AFArray(vec(am)))
 
+signal = rand(Float32, 100)
+signalf = AFArray(signal)
+filt = rand(Float32, 3)
+filtf = AFArray(filt)
+@test all(conv(signal, filt) .≈ Array(conv(signalf, filtf)))
+
 srand(AFArray, rand(Int))
 
 include("autodiff.jl")
