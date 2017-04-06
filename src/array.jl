@@ -256,6 +256,13 @@ zeros{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(0), dims)
 ones{T,N}(::Type{AFArray{T}}, dims::NTuple{N,Int}) = constant(T(1), dims)
 ones{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(1), dims)
 
+fill{T}(::Type{AFArray{T}}, a, dims::Int...) = constant(T(a), dims)
+fill{T,N}(::Type{AFArray{T,N}}, a, dims::Int...) = constant(T(a), dims)
+zeros{T}(::Type{AFArray{T}}, dims::Int...) = constant(T(0), dims)
+zeros{T,N}(::Type{AFArray{T,N}}, dims::Int...) = constant(T(0), dims)
+ones{T}(::Type{AFArray{T}}, dims::Int...) = constant(T(1), dims)
+ones{T,N}(::Type{AFArray{T,N}}, dims::Int...) = constant(T(1), dims)
+
 function abs{T,N}(_in::AFArray{Complex{T},N})
     out = RefValue{af_array}(0)
     _error(ccall((:af_abs,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
