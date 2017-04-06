@@ -40,7 +40,7 @@ export set_seed, set_seq_param_indexer, set_size, set_title, set_union, set_uniq
 export show, sift, sigmoid, signbit, sin, sinh, skew, sobel_operator, solve, solve_lu, sort, sort_by_key
 export sort_index, sparse_convert_to, sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx
 export sparse_get_storage, sparse_get_values, sqrt, stdev, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all
-export susan, svd, svd_inplace, sync, tan, tanh, tgamma, tile, transform, transform_coordinates, translate
+export susan, svd_inplace, sync, tan, tanh, tgamma, tile, transform, transform_coordinates, translate
 export transpose_inplace, trunc, unlock_array, unlock_device_ptr, unwrap, upper, var, var_all, var_all_weighted
 export var_weighted, where, wrap, write_array, ycbcr2rgb
 
@@ -1556,14 +1556,6 @@ function moments_all(_in::AFArray,moment::af_moment_type)
     out = RefValue{Cdouble}(0)
     _error(ccall((:af_moments_all,af_lib),af_err,(Ptr{Cdouble},af_array,af_moment_type),out,_in.arr,moment))
     out[]
-end
-
-function svd(_in::AFArray)
-    u = RefValue{af_array}(0)
-    s = RefValue{af_array}(0)
-    vt = RefValue{af_array}(0)
-    _error(ccall((:af_svd,af_lib),af_err,(Ptr{af_array},Ptr{af_array},Ptr{af_array},af_array),u,s,vt,_in.arr))
-    (AFArray!(u[]),AFArray!(s[]),AFArray!(vt[]))
 end
 
 function svd_inplace(_in::AFArray)

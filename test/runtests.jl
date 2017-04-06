@@ -155,8 +155,9 @@ amf = AFArray(am)
 
 @test all(vec(amf) == AFArray(vec(am)))
 @test typeof(norm(amf)) == Float32
-@test norm(amf) ≈ sqrt(sum(am .^ 2))
-@test norm(arr9) ≈ sqrt(sum(abs(arr9 .^ 2)))
+@test @inferred(norm(amf)) ≈ norm(am)
+@test @inferred(norm(arr9)) ≈ sqrt(sum(abs(arr9 .^ 2)))
+u,s,v = @inferred(svd(amf))
 
 signal = rand(Float32, 100)
 signalf = AFArray(signal)

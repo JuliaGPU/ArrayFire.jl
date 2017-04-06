@@ -236,5 +236,14 @@ function conv{T,N}(signal::AFArray{T,N}, filter::AFArray)
     AFArray{T,N}(out[])
 end
 
-norm(a::AFArray{Float32})::Float32 = norm(a, AF_NORM_EUCLID, 1, 1)
-norm(a::AFArray) = norm(a, AF_NORM_EUCLID, 1, 1)
+norm(a::AFArray{Float32,2})::Float32 = svd(a)[2][1]
+norm(a::AFArray{Float64,2}) = svd(a)[2][1]
+norm(a::AFArray) = norm(a, AF_NORM_EUCLID, 0, 0)
+
+function svd{T}(_in::AFArray{T,2})
+    u = RefValue{af_array}(0)
+    s = RefValue{af_array}(0)
+    vt = RefValue{af_array}(0)
+    _error(ccall((:af_svd,af_lib),af_err,(Ptr{af_array},Ptr{af_array},Ptr{af_array},af_array),u,s,vt,_in.arr))
+    (AFArray{T,1}(u[]),AFArray{T,1}(s[]),AFArray{T,1}(vt[]))
+end
