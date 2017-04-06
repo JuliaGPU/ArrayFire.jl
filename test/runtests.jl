@@ -159,7 +159,7 @@ signal = rand(Float32, 100)
 signalf = AFArray(signal)
 filt = rand(Float32, 3)
 filtf = AFArray(filt)
-@test all(conv(signal, filt) .≈ Array(conv(signalf, filtf)))
+@test all(conv(signal, filt) .≈ Array(@inferred conv(signalf, filtf)))
 
 srand(AFArray, rand(Int))
 
