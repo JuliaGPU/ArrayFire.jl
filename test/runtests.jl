@@ -154,6 +154,9 @@ amf = AFArray(am)
 @test median(amf) == median(am)
 
 @test all(vec(amf) == AFArray(vec(am)))
+@test typeof(norm(amf)) == Float32
+@test norm(amf) ≈ sqrt(sum(am .^ 2))
+@test norm(arr9) ≈ sqrt(sum(abs(arr9 .^ 2)))
 
 signal = rand(Float32, 100)
 signalf = AFArray(signal)

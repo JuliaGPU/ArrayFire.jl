@@ -235,3 +235,6 @@ function conv{T,N}(signal::AFArray{T,N}, filter::AFArray)
                  out,signal.arr,filter.arr,AF_CONV_EXPAND))
     AFArray{T,N}(out[])
 end
+
+norm(a::AFArray{Float32})::Float32 = norm(a, AF_NORM_EUCLID, 1, 1)
+norm(a::AFArray) = norm(a, AF_NORM_EUCLID, 1, 1)
