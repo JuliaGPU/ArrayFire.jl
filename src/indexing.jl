@@ -44,6 +44,14 @@ function getindex{T}(a::AFArray{T}, idx::Union{Range,Int,Colon,AFArray}...)
     out
 end
 
+function getindex{T}(a::AFArray{T}, idx::Int...)
+    @assert length(idx) <= length(size(a))
+    indexers = create_indexers(idx)
+    out = index_gen(a, length(idx), indexers)
+    release_indexers(indexers)
+    Array(out)[1]
+end
+
 function setindex!{T,S}(lhs::AFArray{T}, rhs::AFArray{S}, idx::Union{Range,Int,Colon,AFArray}...)
     @assert length(idx) <= length(size(lhs))
     indexers = create_indexers(idx)
