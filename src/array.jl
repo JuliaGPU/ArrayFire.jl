@@ -258,8 +258,10 @@ ones{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(1), dims)
 
 fill{T}(::Type{AFArray{T}}, a, dims::Int...) = constant(T(a), dims)
 fill{T,N}(::Type{AFArray{T,N}}, a, dims::Int...) = constant(T(a), dims)
+zeros{T,N}(a::AFArray{T,N}) = constant(T(0), size(a))
 zeros{T}(::Type{AFArray{T}}, dims::Int...) = constant(T(0), dims)
 zeros{T,N}(::Type{AFArray{T,N}}, dims::Int...) = constant(T(0), dims)
+ones{T,N}(a::AFArray{T,N}) = constant(T(1), size(a))
 ones{T}(::Type{AFArray{T}}, dims::Int...) = constant(T(1), dims)
 ones{T,N}(::Type{AFArray{T,N}}, dims::Int...) = constant(T(1), dims)
 

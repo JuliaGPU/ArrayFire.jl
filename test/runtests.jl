@@ -40,6 +40,8 @@ ad = AFArray(a)
 @test sum(ones(AFArray{Float32,2}, (1, 2))) == 2f0
 @test eltype(zeros(AFArray{Float32}, (1, 2))) == Float32
 @test eltype(zeros(AFArray{Float32,2}, (1, 2))) == Float32
+@test typeof(zeros(ad)) == AFArray{Float32, 2}
+@test typeof(ones(ad)) == AFArray{Float32, 2}
 
 include("scope.jl")
 
