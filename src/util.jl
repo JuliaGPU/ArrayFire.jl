@@ -2,7 +2,7 @@ import Base: RefValue, @pure, display, show
 
 export constant, select, get_last_error, err_to_string
 
-function afgc(threshold = 6e9)
+function afgc(threshold = 4e9)
     alloc_bytes = RefValue{Csize_t}(0)
     alloc_buffers = RefValue{Csize_t}(0)
     lock_bytes = RefValue{Csize_t}(0)
