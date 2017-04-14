@@ -17,8 +17,8 @@ install:
 # libglfw3-dev mesa-utils
   - wget http://ci.arrayfire.org/userContent/Linux/ArrayFire-no-gl-v3.4.2_Linux_x86_64.sh
   - ls -l
-  - sudo chmod +x ArrayFire-v3.4.2_Linux_x86_64.sh
-  - sudo ./ArrayFire-v3.4.2_Linux_x86_64.sh --exclude-subdir --prefix=/usr/local
+  - sudo chmod +x ArrayFire-no-gl-v3.4.2_Linux_x86_64.sh
+  - sudo ./ArrayFire-no-gl-v3.4.2_Linux_x86_64.sh --exclude-subdir --prefix=/usr/local
 before_script:
   - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
 #  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x24"
