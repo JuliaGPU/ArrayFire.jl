@@ -46,6 +46,7 @@ rnd(len1, len2) = rand(AFArray{Float64}, (len1, len2))
 rndn(len) = randn(AFArray{Float64}, len)
 rndn(len1, len2) = randn(AFArray{Float64}, (len1, len2))
 
+@testset "Autodiff" begin
 @test checkdiff_inferred(sum, δsum, rndn(3)+rnd(3))
 @test checkdiff_inferred(sum, δsum, rnd(3, 2) + rndn(3, 2))
 
@@ -138,3 +139,4 @@ end
 #end
 
 #@assert checkdiff_inferred(autoencoderError, δautoencoderError, rndn(3,3), rndn(3,3), rnd(3,3), rndn(3), rndn(3), rndn(3))
+end

@@ -176,6 +176,7 @@ srand(AFArray, rand(Int))
 include("autodiff.jl")
 include("blackscholes.jl")
 
+@testset "Sizes" begin
 @test size(rand(AFArray, 1)) == (1,)
 @test size(rand(AFArray, 1, 2)) == (1,2)
 @test size(rand(AFArray{Float64}, 1)) == (1,)
@@ -189,6 +190,7 @@ include("blackscholes.jl")
 @test size(randn(AFArray{Float64}, 1, 2)) == (1,2)
 @test size(randn(AFArray{Float64}, 1)) == (1,)
 @test size(randn(AFArray{Float64}, 1, 2)) == (1,2)
+end
 
 a3 = rand(UInt8, 2, 3)
 af3 = AFArray(a3)
@@ -254,6 +256,7 @@ c = AFArray([4 5 6; 7 8 9])
 
 s = rand(AFArray{Float32}, 10)
 sh = Array(s)
-
+@testset "Sort" begin
 @test Array(@inferred sort(s)) == sort(sh)
 @test Array(@inferred sortperm(s)) == sortperm(sh)
+end
