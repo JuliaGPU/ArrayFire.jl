@@ -247,3 +247,20 @@ function svd{T}(_in::AFArray{T,2})
     _error(ccall((:af_svd,af_lib),af_err,(Ptr{af_array},Ptr{af_array},Ptr{af_array},af_array),u,s,vt,_in.arr))
     (AFArray{T,1}(u[]),AFArray{T,1}(s[]),AFArray{T,1}(vt[]))
 end
+
+function sort{T,N}(_in::AFArray{T,N},dim::Integer=1,isAscending::Bool=true)
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_sort,af_lib),af_err,(Ptr{af_array},af_array,UInt32,Bool),out,_in.arr,UInt32(dim - 1),isAscending))
+    AFArray{T,N}(out[])
+end
+
+function sort_index{T,N}(_in::AFArray{T,N},dim::Integer=1,isAscending::Bool=true)
+    out = RefValue{af_array}(0)
+    indices = RefValue{af_array}(0)
+    _error(ccall((:af_sort_index,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,UInt32,Bool),out,indices,_in.arr,UInt32(dim - 1),isAscending))
+    (AFArray{T,N}(out[]),AFArray{Int32,N}(indices[]))
+end
+
+function sortperm{T,N}(a::AFArray{T,N}, dim::Integer=1,isAscending::Bool=true)
+    sort_index(a,dim,isAscending)[2]
+end

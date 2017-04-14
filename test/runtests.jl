@@ -247,3 +247,9 @@ c = AFArray([4 5 6; 7 8 9])
 @test size(reshape(c, (3,2))) == (3, 2)
 
 #plot(rand(AFArray, 10), rand(AFArray, 10))
+
+s = rand(AFArray{Float32}, 10)
+sh = Array(s)
+
+@test Array(@inferred sort(s)) == sort(sh)
+@test Array(@inferred sortperm(s)) == sortperm(sh)

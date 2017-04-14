@@ -37,12 +37,12 @@ export save_image, save_image_memory, save_image_native, scale, scan, scan_by_ke
 export set_axes_limits_3d, set_axes_limits_compute, set_axes_titles, set_backend, set_default_random_engine_type
 export set_device, set_fft_plan_cache_size, set_intersect, set_manual_eval_flag, set_mem_step_size, set_position
 export set_seed, set_seq_param_indexer, set_size, set_title, set_union, set_unique, set_visibility, shift
-export show, sift, sigmoid, signbit, sin, sinh, skew, sobel_operator, solve, solve_lu, sort, sort_by_key
-export sort_index, sparse_convert_to, sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx
-export sparse_get_storage, sparse_get_values, sqrt, stdev, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all
-export susan, svd_inplace, sync, tan, tanh, tgamma, tile, transform, transform_coordinates, translate
-export transpose_inplace, trunc, unlock_array, unlock_device_ptr, unwrap, upper, var, var_all, var_all_weighted
-export var_weighted, where, wrap, write_array, ycbcr2rgb
+export show, sift, sigmoid, signbit, sin, sinh, skew, sobel_operator, solve, solve_lu, sort_by_key, sparse_convert_to
+export sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx, sparse_get_storage, sparse_get_values
+export sqrt, stdev, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all, susan, svd_inplace, sync, tan
+export tanh, tgamma, tile, transform, transform_coordinates, translate, transpose_inplace, trunc, unlock_array
+export unlock_device_ptr, unwrap, upper, var, var_all, var_all_weighted, var_weighted, where, wrap, write_array
+export ycbcr2rgb
 
 function sum{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
@@ -225,19 +225,6 @@ function diff2{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
     _error(ccall((:af_diff2,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
-end
-
-function sort{T,N}(_in::AFArray{T,N},dim::Integer,isAscending::Bool)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_sort,af_lib),af_err,(Ptr{af_array},af_array,UInt32,Bool),out,_in.arr,UInt32(dim - 1),isAscending))
-    AFArray{T,N}(out[])
-end
-
-function sort_index(_in::AFArray,dim::Integer,isAscending::Bool)
-    out = RefValue{af_array}(0)
-    indices = RefValue{af_array}(0)
-    _error(ccall((:af_sort_index,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,UInt32,Bool),out,indices,_in.arr,UInt32(dim - 1),isAscending))
-    (AFArray!(out[]),AFArray!(indices[]))
 end
 
 function sort_by_key(keys::AFArray,values::AFArray,dim::Integer,isAscending::Bool)
