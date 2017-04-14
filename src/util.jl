@@ -1,6 +1,6 @@
 import Base: RefValue, @pure, display, show
 
-export constant, select, get_last_error, err_to_string
+export constant, select, get_last_error, err_to_string, sort_index
 
 function afgc(threshold = 4e9)
     alloc_bytes = RefValue{Csize_t}(0)
@@ -258,9 +258,9 @@ function sort_index{T,N}(_in::AFArray{T,N},dim::Integer=1,isAscending::Bool=true
     out = RefValue{af_array}(0)
     indices = RefValue{af_array}(0)
     _error(ccall((:af_sort_index,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,UInt32,Bool),out,indices,_in.arr,UInt32(dim - 1),isAscending))
-    (AFArray{T,N}(out[]),AFArray{Int32,N}(indices[]))
+    (AFArray{T,N}(out[]),AFArray{UInt32,N}(indices[]))
 end
 
 function sortperm{T,N}(a::AFArray{T,N}, dim::Integer=1,isAscending::Bool=true)
-    sort_index(a,dim,isAscending)[2]
+    sort_index(a,dim,isAscending)[2]+1
 end
