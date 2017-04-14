@@ -11,20 +11,21 @@ notifications:
   email: false
 install:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - sudo apt-add-repository -y ppa:keithw/glfw3
+#  - sudo apt-add-repository -y ppa:keithw/glfw3
   - sudo apt-get update
-  - sudo apt-get install libfreeimage-dev libatlas3gf-base libfftw3-dev cmake libglfw3-dev mesa-utils
-  - wget http://ci.arrayfire.org/userContent/Linux/ArrayFire-v3.4.2_Linux_x86_64.sh
+  - sudo apt-get install libfreeimage-dev libatlas3gf-base libfftw3-dev cmake
+# libglfw3-dev mesa-utils
+  - wget http://ci.arrayfire.org/userContent/Linux/ArrayFire-no-gl-v3.4.2_Linux_x86_64.sh
   - ls -l
   - sudo chmod +x ArrayFire-v3.4.2_Linux_x86_64.sh
   - sudo ./ArrayFire-v3.4.2_Linux_x86_64.sh --exclude-subdir --prefix=/usr/local
 before_script:
   - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
-  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x24"
+#  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x24"
   - julia -e 'Pkg.add("AutoDiffSource"); Pkg.checkout("AutoDiffSource");'
-  - "export DISPLAY=:99.0"
-  - sleep 3 # give xvfb some time to start
-  - glxinfo
+#  - "export DISPLAY=:99.0"
+#  - sleep 3 # give xvfb some time to start
+#  - glxinfo
 after_success:
   # push coverage results to Coveralls
   - julia -e 'cd(Pkg.dir("ArrayFire")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
