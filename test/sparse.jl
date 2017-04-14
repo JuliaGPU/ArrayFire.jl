@@ -1,3 +1,4 @@
+@testset "Sparse" begin
 A = AFArray(rand(10,10));
 @test !issparse(A)
 
@@ -25,3 +26,4 @@ e2 = SparseMatrixCSC(a1)
 @test e2 == e
 
 @test sum(e * c) ≈ sum(a1 * c1)
+end

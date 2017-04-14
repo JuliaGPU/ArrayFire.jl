@@ -1,3 +1,4 @@
+@testset "Scope" begin
 gc()
 device_gc()
 
@@ -29,3 +30,4 @@ afeval(b)
 ending = device_mem_info()[4]
 
 @test ending - start == 3
+end

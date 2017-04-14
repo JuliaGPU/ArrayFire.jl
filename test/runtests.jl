@@ -7,6 +7,8 @@ include("sparse.jl")
 #Basic math
 a = rand(Float32, 10, 10)
 ad = AFArray(a)
+
+@testset "Math" begin
 @test sum(abs2, Array(ad + 2) - (a + 2)) < 1e-6
 @test sum(abs2, Array(ad .+ 2) - (a .+ 2)) < 1e-6
 @test sum(abs2, Array(2 + ad) - (2 + a)) < 1e-6
@@ -42,9 +44,11 @@ ad = AFArray(a)
 @test eltype(zeros(AFArray{Float32,2}, (1, 2))) == Float32
 @test typeof(zeros(ad)) == AFArray{Float32, 2}
 @test typeof(ones(ad)) == AFArray{Float32, 2}
+end
 
 include("scope.jl")
 
+@testset "Arrays" begin
 @test err_to_string(Cuint(0)) == "Success"
 @test_throws ErrorException set_device(-5)
 @test get_manual_eval_flag() == false
@@ -85,6 +89,7 @@ arr9 = AFArray{Complex{Float64},2}([1.0+3im 2. 3.; 4 5 6])
 @test typeof(@inferred AFArray{UInt32}(arr9)) == AFArray{UInt32,2}
 b = @inferred(1 + arr1)
 @test sum(b) == 5
+end
 
 a1 = rand(2, 3) + rand(2, 3)im
 a2 = rand(2, 3) + rand(2, 3)im
@@ -158,7 +163,6 @@ amf = AFArray(am)
 @test all(vec(amf) == AFArray(vec(am)))
 @test typeof(norm(amf)) == Float32
 @test @inferred(norm(amf)) ≈ norm(am)
-@test @inferred(norm(arr9)) ≈ sqrt(sum(abs(arr9 .^ 2)))
 u,s,v = @inferred(svd(amf))
 
 signal = rand(Float32, 100)
