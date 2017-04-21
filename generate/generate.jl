@@ -53,7 +53,8 @@ const ignore = Set(["example_function", "create_array", "retain_array", "get_dat
                     "constant", "constant_complex", "constant_long", "constant_ulong", "transpose",
                     "release_array", "flat", "select", "get_last_error", "err_to_string", "moddims",
                     "randu", "randn", "set_seq_indexer", "release_indexers", "assign_gen", "join", "svd",
-                    "sort", "sort_index"])
+                    "sort", "sort_index", "mean", "mean_weighted", "var", "var_weighted",
+                    "stdev", "median", "set_array_indexer", "set_seq_param_indexer"])
 
 const recast = Dict(:Cint => :Integer, :UInt32 => :Integer, :Cdouble => :Real)
 

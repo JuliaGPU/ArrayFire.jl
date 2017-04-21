@@ -25,24 +25,23 @@ export inverse, iota, is_bool, is_column, is_complex, is_double, is_empty, is_fl
 export is_integer, is_lapack_available, is_locked_array, is_real, is_realfloating, is_row, is_scalar, is_single
 export is_vector, is_window_closed, isinf, isnan, issparse, iszero, le, lgamma, load_image, load_image_memory
 export load_image_native, lock_array, lock_device_ptr, log, log10, log1p, log2, lookup, lower, lt, lu
-export lu_inplace, make_seq, match_template, matmul, max_all, maxfilt, maximum, maxof, mean, mean_all
-export mean_all_weighted, mean_shift, mean_weighted, medfilt, medfilt1, medfilt2, median, median_all, min_all
-export minfilt, minimum, minof, mod, moments, moments_all, mul, nearest_neighbour, neq, norm, not, or
-export orb, pow, pow2, print_array, print_array_gen, print_mem_info, prod, product_all, product_nan, product_nan_all
-export qr, qr_inplace, random_engine_get_seed, random_engine_get_type, random_engine_set_seed, random_engine_set_type
-export random_normal, random_uniform, range, rank, read_array_index, read_array_key, read_array_key_check
-export real, regions, release_features, release_random_engine, rem, reorder, replace, replace, resize
-export retain_features, retain_random_engine, rgb2gray, rgb2hsv, rgb2ycbcr, root, rotate, round, sat, save_array
-export save_image, save_image_memory, save_image_native, scale, scan, scan_by_key, set_array_indexer, set_axes_limits_2d
-export set_axes_limits_3d, set_axes_limits_compute, set_axes_titles, set_backend, set_default_random_engine_type
-export set_device, set_fft_plan_cache_size, set_intersect, set_manual_eval_flag, set_mem_step_size, set_position
-export set_seed, set_seq_param_indexer, set_size, set_title, set_union, set_unique, set_visibility, shift
-export show, sift, sigmoid, signbit, sin, sinh, skew, sobel_operator, solve, solve_lu, sort_by_key, sparse_convert_to
-export sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx, sparse_get_storage, sparse_get_values
-export sqrt, stdev, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all, susan, svd_inplace, sync, tan
-export tanh, tgamma, tile, transform, transform_coordinates, translate, transpose_inplace, trunc, unlock_array
-export unlock_device_ptr, unwrap, upper, var, var_all, var_all_weighted, var_weighted, where, wrap, write_array
-export ycbcr2rgb
+export lu_inplace, make_seq, match_template, matmul, max_all, maxfilt, maximum, maxof, mean_all, mean_all_weighted
+export mean_shift, medfilt, medfilt1, medfilt2, median_all, min_all, minfilt, minimum, minof, mod, moments
+export moments_all, mul, nearest_neighbour, neq, norm, not, or, orb, pow, pow2, print_array, print_array_gen
+export print_mem_info, prod, product_all, product_nan, product_nan_all, qr, qr_inplace, random_engine_get_seed
+export random_engine_get_type, random_engine_set_seed, random_engine_set_type, random_normal, random_uniform
+export range, rank, read_array_index, read_array_key, read_array_key_check, real, regions, release_features
+export release_random_engine, rem, reorder, replace, replace, resize, retain_features, retain_random_engine
+export rgb2gray, rgb2hsv, rgb2ycbcr, root, rotate, round, sat, save_array, save_image, save_image_memory
+export save_image_native, scale, scan, scan_by_key, set_axes_limits_2d, set_axes_limits_3d, set_axes_limits_compute
+export set_axes_titles, set_backend, set_default_random_engine_type, set_device, set_fft_plan_cache_size
+export set_intersect, set_manual_eval_flag, set_mem_step_size, set_position, set_seed, set_size, set_title
+export set_union, set_unique, set_visibility, shift, show, sift, sigmoid, signbit, sin, sinh, skew, sobel_operator
+export solve, solve_lu, sort_by_key, sparse_convert_to, sparse_get_col_idx, sparse_get_info, sparse_get_nnz
+export sparse_get_row_idx, sparse_get_storage, sparse_get_values, sqrt, stdev_all, sub, sum, sum_all, sum_nan
+export sum_nan_all, susan, svd_inplace, sync, tan, tanh, tgamma, tile, transform, transform_coordinates
+export translate, transpose_inplace, trunc, unlock_array, unlock_device_ptr, unwrap, upper, var_all, var_all_weighted
+export where, wrap, write_array, ycbcr2rgb
 
 function sum{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
@@ -748,18 +747,6 @@ function create_indexers()
     indexers = RefValue{Ptr{af_index_t}}(0)
     _error(ccall((:af_create_indexers,af_lib),af_err,(Ptr{Ptr{af_index_t}},),indexers))
     indexers[]
-end
-
-function set_array_indexer(idx::AFArray,dim::dim_t)
-    indexer = RefValue{af_index_t}(0)
-    _error(ccall((:af_set_array_indexer,af_lib),af_err,(Ptr{af_index_t},af_array,dim_t),indexer,idx.arr,dim))
-    indexer[]
-end
-
-function set_seq_param_indexer(_begin::Real,_end::Real,step::Real,dim::dim_t,is_batch::Bool)
-    indexer = RefValue{af_index_t}(0)
-    _error(ccall((:af_set_seq_param_indexer,af_lib),af_err,(Ptr{af_index_t},Cdouble,Cdouble,Cdouble,dim_t,Bool),indexer,Cdouble(_begin),Cdouble(_end),Cdouble(step),dim,is_batch))
-    indexer[]
 end
 
 function create_handle(ndims::Integer,dims,_type::Type)
@@ -1962,46 +1949,10 @@ function sparse_get_storage(_in::AFArray)
     out[]
 end
 
-function mean{T,N}(_in::AFArray{T,N},dim::dim_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_mean,af_lib),af_err,(Ptr{af_array},af_array,dim_t),out,_in.arr,dim))
-    AFArray{T,N}(out[])
-end
-
-function mean_weighted(_in::AFArray,weights::AFArray,dim::dim_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_mean_weighted,af_lib),af_err,(Ptr{af_array},af_array,af_array,dim_t),out,_in.arr,weights.arr,dim))
-    AFArray!(out[])
-end
-
-function var{T,N}(_in::AFArray{T,N},isbiased::Bool,dim::dim_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_var,af_lib),af_err,(Ptr{af_array},af_array,Bool,dim_t),out,_in.arr,isbiased,dim))
-    AFArray{T,N}(out[])
-end
-
-function var_weighted(_in::AFArray,weights::AFArray,dim::dim_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_var_weighted,af_lib),af_err,(Ptr{af_array},af_array,af_array,dim_t),out,_in.arr,weights.arr,dim))
-    AFArray!(out[])
-end
-
-function stdev{T,N}(_in::AFArray{T,N},dim::dim_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_stdev,af_lib),af_err,(Ptr{af_array},af_array,dim_t),out,_in.arr,dim))
-    AFArray{T,N}(out[])
-end
-
 function cov(X::AFArray,Y::AFArray,isbiased::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_cov,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,X.arr,Y.arr,isbiased))
     AFArray!(out[])
-end
-
-function median{T,N}(_in::AFArray{T,N},dim::dim_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_median,af_lib),af_err,(Ptr{af_array},af_array,dim_t),out,_in.arr,dim))
-    AFArray{T,N}(out[])
 end
 
 function mean_all(_in::AFArray)
