@@ -9,86 +9,86 @@ a = rand(Float32, 10, 10)
 ad = AFArray(a)
 
 @testset "Math" begin
-@test sum(abs2, Array(ad + 2) - (a + 2)) < 1e-6
-@test sum(abs2, Array(ad .+ 2) - (a .+ 2)) < 1e-6
-@test sum(abs2, Array(2 + ad) - (2 + a)) < 1e-6
-@test sum(abs2, Array(2 .+ ad) - (2 .+ a)) < 1e-6
-@test sum(abs2, Array(ad - 2) - (a - 2)) < 1e-6
-@test sum(abs2, Array(ad .- 2) - (a .- 2)) < 1e-6
-@test sum(abs2, Array(2 - ad) - (2 - a)) < 1e-6
-@test sum(abs2, Array(2 .- ad) - (2 .- a)) < 1e-6
-@test sum(abs2, Array(ad * 2) - (a * 2)) < 1e-6
-@test sum(abs2, Array(ad .* 2) - (a .* 2)) < 1e-6
-@test sum(abs2, Array(2 * ad) - (2 * a)) < 1e-6
-@test sum(abs2, Array(2 .* ad) - (2 .* a)) < 1e-6
-@test sum(abs2, Array(ad / 2) - (a / 2)) < 1e-6
-@test sum(abs2, Array(ad ./ 2) - (a ./ 2)) < 1e-6
-@test sum(abs2, Array(2 ./ ad) - (2 ./ a)) < 1e-6
-@test sum(abs2, Array(ad .^ 2) - (a .^ 2)) < 1e-6
-@test sum(abs2, Array(2 .^ ad) - (2 .^ a)) < 1e-6
+    @test sum(abs2, Array(ad + 2) - (a + 2)) < 1e-6
+    @test sum(abs2, Array(ad .+ 2) - (a .+ 2)) < 1e-6
+    @test sum(abs2, Array(2 + ad) - (2 + a)) < 1e-6
+    @test sum(abs2, Array(2 .+ ad) - (2 .+ a)) < 1e-6
+    @test sum(abs2, Array(ad - 2) - (a - 2)) < 1e-6
+    @test sum(abs2, Array(ad .- 2) - (a .- 2)) < 1e-6
+    @test sum(abs2, Array(2 - ad) - (2 - a)) < 1e-6
+    @test sum(abs2, Array(2 .- ad) - (2 .- a)) < 1e-6
+    @test sum(abs2, Array(ad * 2) - (a * 2)) < 1e-6
+    @test sum(abs2, Array(ad .* 2) - (a .* 2)) < 1e-6
+    @test sum(abs2, Array(2 * ad) - (2 * a)) < 1e-6
+    @test sum(abs2, Array(2 .* ad) - (2 .* a)) < 1e-6
+    @test sum(abs2, Array(ad / 2) - (a / 2)) < 1e-6
+    @test sum(abs2, Array(ad ./ 2) - (a ./ 2)) < 1e-6
+    @test sum(abs2, Array(2 ./ ad) - (2 ./ a)) < 1e-6
+    @test sum(abs2, Array(ad .^ 2) - (a .^ 2)) < 1e-6
+    @test sum(abs2, Array(2 .^ ad) - (2 .^ a)) < 1e-6
 
-#Trig functions
-@test sum(abs2, Array(sin.(ad)) - sin.(a)) < 1e-6
-@test sum(abs2, Array(cos.(ad)) - cos.(a)) < 1e-6
-@test sum(abs2, Array(tan.(ad)) - tan.(a)) < 1e-6
-@test sum(abs2, Array(sinh.(ad)) - sinh.(a)) < 1e-6
-@test sum(abs2, Array(cosh.(ad)) - cosh.(a)) < 1e-6
-@test sum(abs2, Array(tanh.(ad)) - tanh.(a)) < 1e-6
+    #Trig functions
+    @test sum(abs2, Array(sin.(ad)) - sin.(a)) < 1e-6
+    @test sum(abs2, Array(cos.(ad)) - cos.(a)) < 1e-6
+    @test sum(abs2, Array(tan.(ad)) - tan.(a)) < 1e-6
+    @test sum(abs2, Array(sinh.(ad)) - sinh.(a)) < 1e-6
+    @test sum(abs2, Array(cosh.(ad)) - cosh.(a)) < 1e-6
+    @test sum(abs2, Array(tanh.(ad)) - tanh.(a)) < 1e-6
 
-@test sum(fill(AFArray, 1, (1, 2))) == 2
-@test sum(fill(AFArray{Float32}, 1, (1, 2))) == 2
-@test sum(fill(AFArray{Float32,2}, 1, (1, 2))) == 2
-@test sum(ones(AFArray{Float32}, (1, 2))) == 2f0
-@test sum(ones(AFArray{Float32,2}, (1, 2))) == 2f0
-@test eltype(zeros(AFArray{Float32}, (1, 2))) == Float32
-@test eltype(zeros(AFArray{Float32,2}, (1, 2))) == Float32
-@test typeof(zeros(ad)) == AFArray{Float32, 2}
-@test typeof(ones(ad)) == AFArray{Float32, 2}
+    @test sum(fill(AFArray, 1, (1, 2))) == 2
+    @test sum(fill(AFArray{Float32}, 1, (1, 2))) == 2
+    @test sum(fill(AFArray{Float32,2}, 1, (1, 2))) == 2
+    @test sum(ones(AFArray{Float32}, (1, 2))) == 2f0
+    @test sum(ones(AFArray{Float32,2}, (1, 2))) == 2f0
+    @test eltype(zeros(AFArray{Float32}, (1, 2))) == Float32
+    @test eltype(zeros(AFArray{Float32,2}, (1, 2))) == Float32
+    @test typeof(zeros(ad)) == AFArray{Float32, 2}
+    @test typeof(ones(ad)) == AFArray{Float32, 2}
 end
 
 include("scope.jl")
 
 @testset "Arrays" begin
-@test err_to_string(Cuint(0)) == "Success"
-@test_throws ErrorException set_device(-5)
-@test get_manual_eval_flag() == false
-@test set_manual_eval_flag(true) == nothing
-@test get_manual_eval_flag() == true
-arr1 = @inferred AFArray{Int,1}([1, 2])
-@test eltype(arr1) == Int
-@test ndims(arr1) == 1
-@test (@inferred size(arr1)) == (2,)
-arr2 = @inferred copy(arr1)
-arr3 = @inferred deepcopy(arr2)
-@test typeof(arr3) == typeof(arr2)
-arr4 = @inferred Array{Int,1}(arr1)
-@test arr4 == [1, 2]
-arr5 = AFArray{Int,2}([1 2 3; 4 5 6])
-@test (@inferred size(arr5)) == (2,3)
-@test size(@inferred cat(2, arr1, arr5)) == (2, 4)
-@test size(@inferred hcat(arr1, arr5)) == (2, 4)
-@test size(@inferred vcat(arr1', arr5')) == (4, 2)
-arr6 = @inferred AFArray([1., 2.])
-arr7 = @inferred Array(arr6)
-@test @inferred eltype(arr6) == eltype(arr7)
-@test @inferred ndims(arr6) == ndims(arr7)
-@test @inferred size(arr6) == size(arr7)
-@test @inferred any(@inferred isnan(arr6)) == false
-@test @inferred any(@inferred isinf(arr6)) == false
-@test @inferred any(@inferred any(isnan(arr6), 1)) == false
-@test @inferred any(@inferred any(isinf(arr6), 1)) == false
-@test @inferred all(@inferred isnan(arr6)) == false
-@test @inferred all(@inferred isinf(arr6)) == false
-@test @inferred all(@inferred all(isnan(arr6), 1)) == false
-@test @inferred all(@inferred all(isinf(arr6), 1)) == false
-@test sum(arr5) == 21
-@test sum(arr6) == 3.
-arr9 = AFArray{Complex{Float64},2}([1.0+3im 2. 3.; 4 5 6])
-@test sum(arr9) == 21+3im
-@test typeof(@inferred AFArray{Complex{Float32},2}(arr9)) == AFArray{Complex{Float32},2}
-@test typeof(@inferred AFArray{UInt32}(arr9)) == AFArray{UInt32,2}
-b = @inferred(1 + arr1)
-@test sum(b) == 5
+    @test err_to_string(Cuint(0)) == "Success"
+    @test_throws ErrorException set_device(-5)
+    @test get_manual_eval_flag() == false
+    @test set_manual_eval_flag(true) == nothing
+    @test get_manual_eval_flag() == true
+    arr1 = @inferred AFArray{Int,1}([1, 2])
+    @test eltype(arr1) == Int
+    @test ndims(arr1) == 1
+    @test (@inferred size(arr1)) == (2,)
+    arr2 = @inferred copy(arr1)
+    arr3 = @inferred deepcopy(arr2)
+    @test typeof(arr3) == typeof(arr2)
+    arr4 = @inferred Array{Int,1}(arr1)
+    @test arr4 == [1, 2]
+    arr5 = AFArray{Int,2}([1 2 3; 4 5 6])
+    @test (@inferred size(arr5)) == (2,3)
+    @test size(@inferred cat(2, arr1, arr5)) == (2, 4)
+    @test size(@inferred hcat(arr1, arr5)) == (2, 4)
+    @test size(@inferred vcat(arr1', arr5')) == (4, 2)
+    arr6 = @inferred AFArray([1., 2.])
+    arr7 = @inferred Array(arr6)
+    @test @inferred eltype(arr6) == eltype(arr7)
+    @test @inferred ndims(arr6) == ndims(arr7)
+    @test @inferred size(arr6) == size(arr7)
+    @test @inferred any(@inferred isnan(arr6)) == false
+    @test @inferred any(@inferred isinf(arr6)) == false
+    @test @inferred any(@inferred any(isnan(arr6), 1)) == false
+    @test @inferred any(@inferred any(isinf(arr6), 1)) == false
+    @test @inferred all(@inferred isnan(arr6)) == false
+    @test @inferred all(@inferred isinf(arr6)) == false
+    @test @inferred all(@inferred all(isnan(arr6), 1)) == false
+    @test @inferred all(@inferred all(isinf(arr6), 1)) == false
+    @test sum(arr5) == 21
+    @test sum(arr6) == 3.
+    arr9 = AFArray{Complex{Float64},2}([1.0+3im 2. 3.; 4 5 6])
+    @test sum(arr9) == 21+3im
+    @test typeof(@inferred AFArray{Complex{Float32},2}(arr9)) == AFArray{Complex{Float32},2}
+    @test typeof(@inferred AFArray{UInt32}(arr9)) == AFArray{UInt32,2}
+    b = @inferred(1 + arr1)
+    @test sum(b) == 5
 end
 
 a1 = rand(2, 3) + rand(2, 3)im
@@ -177,19 +177,19 @@ include("autodiff.jl")
 include("blackscholes.jl")
 
 @testset "Sizes" begin
-@test size(rand(AFArray, 1)) == (1,)
-@test size(rand(AFArray, 1, 2)) == (1,2)
-@test size(rand(AFArray{Float64}, 1)) == (1,)
-@test size(rand(AFArray{Float64}, 1, 2)) == (1,2)
-@test size(rand(AFArray{Float64}, 1)) == (1,)
-@test size(rand(AFArray{Float64}, 1, 2)) == (1,2)
+    @test size(rand(AFArray, 1)) == (1,)
+    @test size(rand(AFArray, 1, 2)) == (1,2)
+    @test size(rand(AFArray{Float64}, 1)) == (1,)
+    @test size(rand(AFArray{Float64}, 1, 2)) == (1,2)
+    @test size(rand(AFArray{Float64}, 1)) == (1,)
+    @test size(rand(AFArray{Float64}, 1, 2)) == (1,2)
 
-@test size(randn(AFArray, 1)) == (1,)
-@test size(randn(AFArray, 1, 2)) == (1,2)
-@test size(randn(AFArray{Float64}, 1)) == (1,)
-@test size(randn(AFArray{Float64}, 1, 2)) == (1,2)
-@test size(randn(AFArray{Float64}, 1)) == (1,)
-@test size(randn(AFArray{Float64}, 1, 2)) == (1,2)
+    @test size(randn(AFArray, 1)) == (1,)
+    @test size(randn(AFArray, 1, 2)) == (1,2)
+    @test size(randn(AFArray{Float64}, 1)) == (1,)
+    @test size(randn(AFArray{Float64}, 1, 2)) == (1,2)
+    @test size(randn(AFArray{Float64}, 1)) == (1,)
+    @test size(randn(AFArray{Float64}, 1, 2)) == (1,2)
 end
 
 a3 = rand(UInt8, 2, 3)
@@ -257,6 +257,8 @@ c = AFArray([4 5 6; 7 8 9])
 s = rand(AFArray{Float32}, 10)
 sh = Array(s)
 @testset "Sort" begin
-@test Array(@inferred sort(s)) == sort(sh)
-@test Array(@inferred sortperm(s)) == sortperm(sh)
+    @test Array(@inferred sort(s)) == sort(sh)
+    @test Array(@inferred sortperm(s)) == sortperm(sh)
 end
+gc()
+device_gc()
