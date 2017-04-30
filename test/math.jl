@@ -40,8 +40,6 @@ ad = AFArray(a)
     @test typeof(ones(ad)) == AFArray{Float32, 2}
 end
 
-include("scope.jl")
-
 @testset "Arrays" begin
     @test err_to_string(Cuint(0)) == "Success"
     @test_throws ErrorException set_device(-5)
