@@ -21,7 +21,7 @@ end
     return out
 end
 
-function run(iterations)
+function runs(iterations)
     sptprice   = Float32[ 42.0 for i = 1:iterations ]
     initStrike = Float32[ 40.0 + (i / iterations) for i = 1:iterations ]
     rate       = Float32[ 0.5 for i = 1:iterations ]
@@ -55,9 +55,9 @@ function driver()
     blackscholes_serial.(AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]),
                          AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]))
     println("SELFPRIMED ", toq())
-    tserial, tparallel = run(iterations)
-    tserial, tparallel = run(iterations)
-    tserial, tparallel = run(iterations)
+    tserial, tparallel = runs(iterations)
+    tserial, tparallel = runs(iterations)
+    tserial, tparallel = runs(iterations)
     println("Time taken for CPU = $tserial")
     println("Time taken for GPU = $tparallel")
     println("Speedup = $(tserial / tparallel)")
