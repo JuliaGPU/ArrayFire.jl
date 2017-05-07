@@ -11,10 +11,10 @@ type AFArray{T,N} <: AbstractArray{T,N}
     end
 end
 
-typealias AFVector{T} AFArray{T,1}
-typealias AFMatrix{T} AFArray{T,2}
-typealias AFVolume{T} AFArray{T,3}
-typealias AFTensor{T} AFArray{T,4}
+@compat AFVector{T} = AFArray{T,1}
+@compat AFMatrix{T} = AFArray{T,2}
+@compat AFVolume{T} = AFArray{T,3}
+@compat AFTensor{T} = AFArray{T,4}
 
 export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
 
@@ -194,7 +194,7 @@ reshape(a::AFArray, t::Int...) = reshape(a, t)
 if VERSION < v"0.6-"
     @eval begin
         import Base: ./, .*, .+, .-, .^, .==, .<, .>, .<=, .>=, .!=, .<<, .>>
-        export xor
+            export xor
 
         .-{T}(a::AFArray{T})       = T(0) - a
 
