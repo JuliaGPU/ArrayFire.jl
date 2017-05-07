@@ -8,4 +8,5 @@ using Base.Test
     include("sparse.jl")
     include("math.jl")
     include("blackscholes.jl")
+    include("autodiff.jl")
 end

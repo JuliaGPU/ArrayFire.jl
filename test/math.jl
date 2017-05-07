@@ -162,8 +162,6 @@ filtf = AFArray(filt)
 
 srand(AFArray, rand(Int))
 
-include("autodiff.jl")
-
 @testset "Sizes" begin
     @test size(rand(AFArray, 1)) == (1,)
     @test size(rand(AFArray, 1, 2)) == (1,2)
