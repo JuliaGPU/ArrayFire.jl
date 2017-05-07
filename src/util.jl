@@ -5,25 +5,14 @@ export constant, select, get_last_error, err_to_string, sort_index
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
 
 global const af_threshold = Ref(4e9)
-global const af_gc_count = Ref(0)
 
 function afgc()
-    af_alloc_bytes = RefValue{Csize_t}(0)
-    af_alloc_buffers = RefValue{Csize_t}(0)
-    af_lock_bytes = RefValue{Csize_t}(0)
-    af_lock_buffers = RefValue{Csize_t}(0)
-    err = ccall((:af_device_mem_info,af_lib),af_err,
-                (Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t}),
-                af_alloc_bytes,af_alloc_buffers,af_lock_bytes,af_lock_buffers)
-    _error(err)
-    if af_alloc_bytes[] > af_threshold[]
-        if af_gc_count[] == 1
+    alloc_bytes, alloc_buffers, lock_bytes, lock_buffers =  device_mem_info()
+    if alloc_bytes > af_threshold[]
+        if lock_buffers > af_threshold[]
             gc()
         end
-        err = ccall((:af_device_gc,af_lib),af_err,())
-        af_gc_count[] += 1
-    else
-        af_gc_count[] = 0
+        device_gc()
     end
     nothing
 end
@@ -49,12 +38,11 @@ function __init__()
 end
 
 function _error(err::af_err)
-    if err == 0
-        return
+    if err != 0
+        str = err_to_string(err)
+        str2 = get_last_error()
+        error("ArrayFire Error ($err) : $str\n$str2")
     end
-    str = err_to_string(err)
-    str2 = get_last_error()
-    throw(ErrorException("ArrayFire Error ($err) : $str\n$str2"))
 end
 
 @pure batched(n1, n2) = max(n1, n2)
