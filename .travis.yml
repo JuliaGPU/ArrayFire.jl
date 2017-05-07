@@ -26,6 +26,9 @@ before_script:
 #  - "export DISPLAY=:99.0"
 #  - sleep 3 # give xvfb some time to start
 #  - glxinfo
+script:
+#  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - julia -e 'Pkg.clone(pwd()); Pkg.test("ArrayFire"; coverage=true)'
 after_success:
   # push coverage results to Coveralls
   - julia -e 'cd(Pkg.dir("ArrayFire")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
