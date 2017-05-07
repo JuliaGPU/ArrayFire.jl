@@ -92,16 +92,31 @@ af_type(::Type{UInt8})            = u8
 af_type(::Type{Int64})            = s64
 af_type(::Type{UInt64})           = u64
 
-af_jltype(::Val{f32}) = Float32
-af_jltype(::Val{c32}) = Complex{Float32}
-af_jltype(::Val{f64}) = Float64
-af_jltype(::Val{c64}) = Complex{Float64}
-af_jltype(::Val{b8})  = Bool
-af_jltype(::Val{s32}) = Int32
-af_jltype(::Val{u32}) = UInt32
-af_jltype(::Val{u8})  = UInt8
-af_jltype(::Val{s64}) = Int64
-af_jltype(::Val{u64}) = UInt64
+function af_jltype(i::af_dtype)::Type
+    if i == f32
+        return Float32
+    elseif i == c32
+        return Complex{Float32}
+    elseif i == f64
+        return Float64
+    elseif i == c64
+        return Complex{Float64}
+    elseif i == b8
+        return Bool
+    elseif i == s32
+        return Int32
+    elseif i == u32
+        return UInt32
+    elseif i == u8
+        return UInt8
+    elseif i == s64
+        return Int64
+    elseif i == u64
+        return UInt64
+    else
+        error("Unknown type: $i")
+    end
+end
 
 function get_numdims(arr::af_array)
     result = RefValue{UInt32}(0)
@@ -114,7 +129,7 @@ function get_type(arr::af_array)
     _type = RefValue{af_dtype}(0)
     _error(ccall((:af_get_type,af_lib),af_err,
                  (Ptr{af_dtype},af_array),_type,arr))
-    af_jltype(Val{_type[]}())
+    af_jltype(_type[])
 end
 
 function check_type_numdims{T,N}(arr::AFArray{T,N})
