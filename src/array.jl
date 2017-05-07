@@ -1,7 +1,7 @@
 type AFArray{T,N} <: AbstractArray{T,N}
     arr::af_array
     function AFArray(arr::af_array)
-        @assert get_type(arr) == T "type mismatch: $(get_type(arr)) != $T"
+        #        @assert get_type(arr) == T "type mismatch: $(get_type(arr)) != $T"
         a = new(arr)
         finalizer(a, release_array)
         if !isempty(scopes)
