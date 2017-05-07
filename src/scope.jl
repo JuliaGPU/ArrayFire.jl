@@ -1,5 +1,3 @@
-export @afgc
-
 macro afgc(expr)
     @assert expr.head == :function || expr.head == :(=) "Only works on functions or assignments"
     sc = (:(ArrayFire.scope() do ; end))
@@ -29,6 +27,7 @@ function leave_scope(except)
             finalize(k)
         end
     end
+    afgc()
 end
 
 function scope(f)
@@ -37,3 +36,5 @@ function scope(f)
     leave_scope(r)
     return r
 end
+
+export @afgc

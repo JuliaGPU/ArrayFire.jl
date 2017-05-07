@@ -4,16 +4,25 @@ import Base: RefValue, @pure, display, show
 export constant, select, get_last_error, err_to_string, sort_index
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
 
-function afgc(threshold = 4e9)
-    alloc_bytes = RefValue{Csize_t}(0)
-    alloc_buffers = RefValue{Csize_t}(0)
-    lock_bytes = RefValue{Csize_t}(0)
-    lock_buffers = RefValue{Csize_t}(0)
-    err = ccall((:af_device_mem_info,af_lib),af_err,(Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t}),
-                alloc_bytes,alloc_buffers,lock_bytes,lock_buffers)
-    if err == 0 && alloc_bytes[] > threshold
-        gc()
+global const af_alloc_bytes = RefValue{Csize_t}(0)
+global const af_alloc_buffers = RefValue{Csize_t}(0)
+global const af_lock_bytes = RefValue{Csize_t}(0)
+global const af_lock_buffers = RefValue{Csize_t}(0)
+global const af_threshold = Ref(4e9)
+global const af_gc_count = Ref(0)
+
+function afgc()
+    err = ccall((:af_device_mem_info,af_lib),af_err,
+                (Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t}),
+                af_alloc_bytes,af_alloc_buffers,af_lock_bytes,af_lock_buffers)
+    if err == 0 && af_alloc_bytes[] > af_threshold[]
+        if af_gc_count[] == 1
+            gc()
+        end
         err = ccall((:af_device_gc,af_lib),af_err,())
+        af_gc_count[] += 1
+    else
+        af_gc_count[] = 0
     end
     return err
 end
@@ -40,10 +49,7 @@ end
 
 function _error(err::af_err)
     if err == 0
-        err = afgc()
-        if err == 0
-            return
-        end
+        return
     end
     str = err_to_string(err)
     str2 = get_last_error()
