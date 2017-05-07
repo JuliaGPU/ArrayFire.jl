@@ -10,3 +10,6 @@ using Base.Test
     include("blackscholes.jl")
     include("autodiff.jl")
 end
+
+gc()
+device_gc()
