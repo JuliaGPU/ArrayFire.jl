@@ -4,14 +4,14 @@ import Base: RefValue, @pure, display, show
 export constant, select, get_last_error, err_to_string, sort_index
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
 
-global const af_alloc_bytes = RefValue{Csize_t}(0)
-global const af_alloc_buffers = RefValue{Csize_t}(0)
-global const af_lock_bytes = RefValue{Csize_t}(0)
-global const af_lock_buffers = RefValue{Csize_t}(0)
 global const af_threshold = Ref(4e9)
 global const af_gc_count = Ref(0)
 
 function afgc()
+    af_alloc_bytes = RefValue{Csize_t}(0)
+    af_alloc_buffers = RefValue{Csize_t}(0)
+    af_lock_bytes = RefValue{Csize_t}(0)
+    af_lock_buffers = RefValue{Csize_t}(0)
     err = ccall((:af_device_mem_info,af_lib),af_err,
                 (Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t}),
                 af_alloc_bytes,af_alloc_buffers,af_lock_bytes,af_lock_buffers)
