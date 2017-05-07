@@ -15,7 +15,8 @@ function afgc()
     err = ccall((:af_device_mem_info,af_lib),af_err,
                 (Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t}),
                 af_alloc_bytes,af_alloc_buffers,af_lock_bytes,af_lock_buffers)
-    if err == 0 && af_alloc_bytes[] > af_threshold[]
+    _error(err)
+    if af_alloc_bytes[] > af_threshold[]
         if af_gc_count[] == 1
             gc()
         end
@@ -24,7 +25,7 @@ function afgc()
     else
         af_gc_count[] = 0
     end
-    return err
+    nothing
 end
 
 function release_array(arr::AFArray)
