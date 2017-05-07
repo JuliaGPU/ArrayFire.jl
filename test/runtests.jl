@@ -7,4 +7,5 @@ using Base.Test
     include("indexing.jl")
     include("sparse.jl")
     include("math.jl")
+    include("blackscholes.jl")
 end

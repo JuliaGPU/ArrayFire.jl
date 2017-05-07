@@ -1,10 +1,10 @@
 #This example has been adopted from https://github.com/IntelLabs/ParallelAccelerator.jl/blob/master/examples/black-scholes/black-scholes.jl
 
 function blackscholes_serial(sptprice,
-                           strike,
-                           rate,
-                           volatility,
-                           time)
+                             strike,
+                             rate,
+                             volatility,
+                             time)
     logterm = log10( sptprice / strike)
     powterm = .5f0 * volatility * volatility
     den = volatility * sqrt(time)
@@ -23,7 +23,7 @@ end
     return out
 end
 
-function run(iterations)
+function runs(iterations)
     sptprice   = Float32[ 42.0 for i = 1:iterations ]
     initStrike = Float32[ 40.0 + (i / iterations) for i = 1:iterations ]
     rate       = Float32[ 0.5 for i = 1:iterations ]
@@ -43,4 +43,4 @@ function run(iterations)
     put2
 end
 
-@inferred run(10^3)
+@inferred runs(10^3)

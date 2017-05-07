@@ -163,7 +163,6 @@ filtf = AFArray(filt)
 srand(AFArray, rand(Int))
 
 include("autodiff.jl")
-include("blackscholes.jl")
 
 @testset "Sizes" begin
     @test size(rand(AFArray, 1)) == (1,)
