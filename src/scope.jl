@@ -28,13 +28,17 @@ function leave_scope(except)
         end
     end
     afgc()
+    return except
 end
 
 function scope(f)
     enter_scope()
-    r = f()
-    leave_scope(r)
-    return r
+    try
+        return leave_scope(f())
+    catch e
+        leave_scope(nothing)
+        throw(e)
+    end
 end
 
 export @afgc
