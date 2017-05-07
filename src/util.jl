@@ -9,7 +9,7 @@ global const af_threshold = Ref(4e9)
 function afgc()
     alloc_bytes, alloc_buffers, lock_bytes, lock_buffers =  device_mem_info()
     if alloc_bytes > af_threshold[]
-        if lock_buffers > af_threshold[]
+        if lock_bytes > af_threshold[]
             gc()
         end
         device_gc()
