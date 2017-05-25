@@ -260,6 +260,14 @@ vcat(first::AFArray, second::AFArray) = cat(1, first, second)
 
 function conv{T,N}(signal::AFArray{T,N}, filter::AFArray)
     out = RefValue{af_array}(0)
+    _error(ccall((:af_convolve1,af_lib),af_err,
+                 (Ptr{af_array},af_array,af_array,af_conv_mode,af_conv_domain),
+                 out,signal.arr,filter.arr,AF_CONV_EXPAND,AF_CONV_AUTO))
+    AFArray{T,N}(out[])
+end
+
+function conv_fft{T,N}(signal::AFArray{T,N}, filter::AFArray)
+    out = RefValue{af_array}(0)
     _error(ccall((:af_fft_convolve1,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_conv_mode),
                  out,signal.arr,filter.arr,AF_CONV_EXPAND))
     AFArray{T,N}(out[])
