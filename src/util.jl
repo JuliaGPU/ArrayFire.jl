@@ -1,5 +1,5 @@
 
-import Base: RefValue, @pure, display, show
+import Base: RefValue, @pure, display, show, clamp
 
 export constant, select, get_last_error, err_to_string, sort_index
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
@@ -368,4 +368,12 @@ function set_seq_param_indexer(_begin::Real,_end::Real,step::Real,dim::dim_t,is_
                  (Ptr{af_index_t},Cdouble,Cdouble,Cdouble,dim_t,Bool),
                  indexer,Cdouble(_begin),Cdouble(_end),Cdouble(step),dim-1,is_batch))
     indexer[]
+end
+
+function clamp{T1,N1,T2,N2}(_in::AFArray{T1,N1},lo::AFArray{T2,N2},hi::AFArray{T2,N2})
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_clamp,af_lib),af_err,
+                 (Ptr{af_array},af_array,af_array,af_array,Bool),
+                 out,_in.arr,lo.arr,hi.arr,bcast[]))
+    AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end

@@ -5,8 +5,8 @@
 export abs, accum, acos, acosh, add, afeval, afinfo, afinit, afversion, all, all_true_all, alloc_device
 export and, any, any_true_all, approx1, approx2, arg, array_to_string, asin, asinh, assign_seq, atan, atan2
 export atanh, bilateral, bitand, bitor, bitshiftl, bitshiftr, bitxor, cbrt, ceil, cholesky, cholesky_inplace
-export clamp, color_space, conjg, convolve1, convolve2, convolve2_sep, convolve3, copy, corrcoef, cos
-export cosh, count, count_all, cov, cplx, cplx2, create_features, create_handle, create_indexers, create_random_engine
+export color_space, conjg, convolve1, convolve2, convolve2_sep, convolve3, copy, corrcoef, cos, cosh, count
+export count_all, cov, cplx, cplx2, create_features, create_handle, create_indexers, create_random_engine
 export create_sparse_array, create_sparse_array_from_dense, create_sparse_array_from_ptr, create_window
 export delete_image_memory, destroy_window, det, device_array, device_gc, device_mem_info, diag_create
 export diag_extract, diff1, diff2, dilate, dilate3, div, dog, dot, dot_all, draw_hist, draw_image, draw_plot
@@ -369,12 +369,6 @@ function maxof{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_maxof,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
-end
-
-function clamp(_in::AFArray,lo::AFArray,hi::AFArray,batch::Bool)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_clamp,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_array,Bool),out,_in.arr,lo.arr,hi.arr,batch))
-    AFArray!(out[])
 end
 
 function rem{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
