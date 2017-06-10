@@ -35,9 +35,9 @@ function scope(f)
     enter_scope()
     try
         return leave_scope(f())
-    catch e
+    catch
         leave_scope(nothing)
-        throw(e)
+        rethrow()
     end
 end
 
