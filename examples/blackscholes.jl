@@ -21,7 +21,7 @@ end
     return out
 end
 
-function runs(iterations)
+@afgc function runs(iterations)
     sptprice   = Float32[ 42.0 for i = 1:iterations ]
     initStrike = Float32[ 40.0 + (i / iterations) for i = 1:iterations ]
     rate       = Float32[ 0.5 for i = 1:iterations ]
@@ -53,16 +53,18 @@ function driver(pwr)
     blackscholes_serial.(Float32[], Float32[], Float32[], Float32[], Float32[])
     blackscholes_serial.(AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]),
                          AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]))
-    tserial, tparallel = runs(iterations)
-    tserial, tparallel = runs(iterations)
-    tserial, tparallel = runs(iterations)
+    tserial, tp1 = runs(iterations)
+    tserial, tp2 = runs(iterations)
+    tserial, tp3 = runs(iterations)
+    tparallel = (tp1 + tp2 + tp3) / 3
     #    println("Time taken for CPU = $tserial")
     #    println("Time taken for GPU = $tparallel")
     println("10^$(pwr) options:")
-    println("    Speedup = $(tserial / tparallel)")
+    @printf("    Speedup = %.2f\n", tserial / tparallel)
     @printf("    CPU rate = 10^%.2f opts/sec\n", log10(iterations / tserial))
     @printf("    GPU rate = 10^%.2f opts/sec\n", log10(iterations / tparallel))
 end
-for k = 4:8
+
+for k = 3:8
     driver(k)
 end
