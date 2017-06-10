@@ -4,7 +4,7 @@
 
 export abs, accum, acos, acosh, add, afeval, afinfo, afinit, afversion, all, all_true_all, alloc_device
 export and, any, any_true_all, approx1, approx2, arg, array_to_string, asin, asinh, assign_seq, atan, atan2
-export atanh, bilateral, bitand, bitor, bitshiftl, bitshiftr, bitxor, cbrt, ceil, cholesky, cholesky_inplace
+export atanh, bilateral, bitand, bitor, bitshiftl, bitshiftr, bitxor, canny, cbrt, ceil, cholesky, cholesky_inplace
 export color_space, conjg, convolve1, convolve2, convolve2_sep, convolve3, copy, corrcoef, cos, cosh, count
 export count_all, cov, cplx, cplx2, create_features, create_handle, create_indexers, create_random_engine
 export create_sparse_array, create_sparse_array_from_dense, create_sparse_array_from_ptr, create_window
@@ -41,7 +41,7 @@ export solve, solve_lu, sort_by_key, sparse_convert_to, sparse_get_col_idx, spar
 export sparse_get_row_idx, sparse_get_storage, sparse_get_values, sqrt, stdev_all, sub, sum, sum_all, sum_nan
 export sum_nan_all, susan, svd_inplace, sync, tan, tanh, tgamma, tile, transform, transform_coordinates
 export translate, transpose_inplace, trunc, unlock_array, unlock_device_ptr, unwrap, upper, var_all, var_all_weighted
-export where, wrap, write_array, ycbcr2rgb
+export wrap, write_array, ycbcr2rgb
 
 function sum{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
@@ -206,12 +206,6 @@ function scan_by_key(key::AFArray,_in::AFArray,dim::Integer,op::af_binary_op,inc
     out = RefValue{af_array}(0)
     _error(ccall((:af_scan_by_key,af_lib),af_err,(Ptr{af_array},af_array,af_array,Cint,af_binary_op,Bool),out,key.arr,_in.arr,Cint(dim - 1),op,inclusive_scan))
     AFArray!(out[])
-end
-
-function where{T,N}(_in::AFArray{T,N})
-    idx = RefValue{af_array}(0)
-    _error(ccall((:af_where,af_lib),af_err,(Ptr{af_array},af_array),idx,_in.arr))
-    AFArray{T,N}(idx[])
 end
 
 function diff1{T,N}(_in::AFArray{T,N},dim::Integer)
@@ -1524,6 +1518,12 @@ function moments_all(_in::AFArray,moment::af_moment_type)
     out = RefValue{Cdouble}(0)
     _error(ccall((:af_moments_all,af_lib),af_err,(Ptr{Cdouble},af_array,af_moment_type),out,_in.arr,moment))
     out[]
+end
+
+function canny{T,N}(_in::AFArray{T,N},threshold_type::af_canny_threshold,low_threshold_ratio::Cfloat,high_threshold_ratio::Cfloat,sobel_window::Integer,is_fast::Bool)
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_canny,af_lib),af_err,(Ptr{af_array},af_array,af_canny_threshold,Cfloat,Cfloat,UInt32,Bool),out,_in.arr,threshold_type,low_threshold_ratio,high_threshold_ratio,UInt32(sobel_window),is_fast))
+    AFArray{T,N}(out[])
 end
 
 function svd_inplace(_in::AFArray)

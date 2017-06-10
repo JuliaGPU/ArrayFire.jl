@@ -1,5 +1,5 @@
 
-import Base: RefValue, @pure, display, show, clamp
+import Base: RefValue, @pure, display, show, clamp, find
 
 export constant, select, get_last_error, err_to_string, sort_index
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
@@ -376,4 +376,10 @@ function clamp{T1,N1,T2,N2}(_in::AFArray{T1,N1},lo::AFArray{T2,N2},hi::AFArray{T
                  (Ptr{af_array},af_array,af_array,af_array,Bool),
                  out,_in.arr,lo.arr,hi.arr,bcast[]))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
+end
+
+function find{T,N}(_in::AFArray{T,N})
+    idx = RefValue{af_array}(0)
+    _error(ccall((:af_where,af_lib),af_err,(Ptr{af_array},af_array),idx,_in.arr))
+    AFArray{Int32,N}(idx[])+1
 end
