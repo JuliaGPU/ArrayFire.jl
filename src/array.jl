@@ -16,7 +16,7 @@ else
     @eval begin
         type AFArray{T,N} <: AbstractArray{T,N}
             arr::af_array
-            function AFArray{T,N}(arr::af_array) where {T,N}
+            function AFArray{T,N}(arr::af_array) where{T,N}
                 a = new{T,N}(arr)
                 finalizer(a, release_array)
                 if !isempty(scopes)
