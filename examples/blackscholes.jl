@@ -37,31 +37,32 @@ function runs(iterations)
     tic()
     put1 = blackscholes_serial.(sptprice, initStrike, rate, volatility, time)
     t1 = toq()
-    println("Serial checksum: ", sum(put1))
+    #    println("Serial checksum: ", sum(put1))
     tic()
     put2 = blackscholes_serial.(sptprice_gpu, initStrike_gpu, rate_gpu, volatility_gpu, time_gpu)
-    afeval(put2)
-    sync(0)
+    sync(put2)
     t2 = toq()
-    println("Parallel checksum: ", sum(put2))
+    #    println("Parallel checksum: ", sum(put2))
+    @assert sum(put1) ≈ sum(put2)
     return t1, t2
 end
 
-function driver()
+function driver(pwr)
+    iterations = 10^pwr
     srand(0)
-    tic()
-    iterations = 10^6
     blackscholes_serial.(Float32[], Float32[], Float32[], Float32[], Float32[])
     blackscholes_serial.(AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]),
                          AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]))
-    println("SELFPRIMED ", toq())
     tserial, tparallel = runs(iterations)
     tserial, tparallel = runs(iterations)
     tserial, tparallel = runs(iterations)
-    println("Time taken for CPU = $tserial")
-    println("Time taken for GPU = $tparallel")
-    println("Speedup = $(tserial / tparallel)")
-    println("CPU rate = ", iterations / tserial, " opts/sec")
-    println("GPU rate = ", iterations / tparallel, " opts/sec")
+    #    println("Time taken for CPU = $tserial")
+    #    println("Time taken for GPU = $tparallel")
+    println("10^$(pwr) options:")
+    println("    Speedup = $(tserial / tparallel)")
+    @printf("    CPU rate = 10^%.2f opts/sec\n", log10(iterations / tserial))
+    @printf("    GPU rate = 10^%.2f opts/sec\n", log10(iterations / tparallel))
 end
-driver()
+for k = 4:8
+    driver(k)
+end
