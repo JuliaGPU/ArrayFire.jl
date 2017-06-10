@@ -1,13 +1,30 @@
-type AFArray{T,N} <: AbstractArray{T,N}
-    arr::af_array
-    function AFArray(arr::af_array)
-        #        @assert get_type(arr) == T "type mismatch: $(get_type(arr)) != $T"
-        a = new(arr)
-        finalizer(a, release_array)
-        if !isempty(scopes)
-            push!(scopes[end], a)
+if VERSION < v"0.6-"
+    @eval begin
+        type AFArray{T,N} <: AbstractArray{T,N}
+            arr::af_array
+            function AFArray(arr::af_array)
+                a = new(arr)
+                finalizer(a, release_array)
+                if !isempty(scopes)
+                    push!(scopes[end], a)
+                end
+                a
+            end
         end
-        a
+    end
+else
+    @eval begin
+        type AFArray{T,N} <: AbstractArray{T,N}
+            arr::af_array
+            function AFArray{T,N}(arr::af_array) where {T,N}
+                a = new{T,N}(arr)
+                finalizer(a, release_array)
+                if !isempty(scopes)
+                    push!(scopes[end], a)
+                end
+                a
+            end
+        end
     end
 end
 
