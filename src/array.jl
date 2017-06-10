@@ -1,4 +1,4 @@
-if VERSION < v"0.6-"
+if VERSION < v"0.6"
     @eval begin
         type AFArray{T,N} <: AbstractArray{T,N}
             arr::af_array
@@ -13,7 +13,7 @@ if VERSION < v"0.6-"
         end
     end
 else
-    @eval begin
+    include_string("
         mutable struct AFArray{T,N} <: AbstractArray{T,N}
             arr::af_array
             function AFArray{T,N}(arr::af_array) where{T,N}
@@ -24,8 +24,7 @@ else
                 end
                 a
             end
-        end
-    end
+        end")
 end
 
 @compat AFVector{T} = AFArray{T,1}
