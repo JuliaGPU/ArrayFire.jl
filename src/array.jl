@@ -1,4 +1,4 @@
-if VERSION < v"0.6"
+if VERSION < v"0.6-"
     @eval begin
         type AFArray{T,N} <: AbstractArray{T,N}
             arr::af_array
