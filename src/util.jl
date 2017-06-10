@@ -1,5 +1,5 @@
 
-import Base: RefValue, @pure, display, show, clamp, find
+import Base: RefValue, @pure, display, show, clamp, find, cumsum, cumprod, cummin, cummax
 
 export constant, select, get_last_error, err_to_string, sort_index
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
@@ -383,3 +383,8 @@ function find{T,N}(_in::AFArray{T,N})
     _error(ccall((:af_where,af_lib),af_err,(Ptr{af_array},af_array),idx,_in.arr))
     AFArray{Int32,N}(idx[])+1
 end
+
+cumsum(a::AFArray, dim::Int=1) = scan(a, dim, AF_BINARY_ADD, true)
+cumprod(a::AFArray, dim::Int=1) = scan(a, dim, AF_BINARY_MUL, true)
+cummin(a::AFArray, dim::Int=1) = scan(a, dim, AF_BINARY_MIN, true)
+cummax(a::AFArray, dim::Int=1) = scan(a, dim, AF_BINARY_MAX, true)
