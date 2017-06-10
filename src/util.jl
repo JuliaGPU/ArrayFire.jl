@@ -388,3 +388,8 @@ cumsum(a::AFArray, dim::Int=1) = scan(a, dim, AF_BINARY_ADD, true)
 cumprod(a::AFArray, dim::Int=1) = scan(a, dim, AF_BINARY_MUL, true)
 cummin(a::AFArray, dim::Int=1) = scan(a, dim, AF_BINARY_MIN, true)
 cummax(a::AFArray, dim::Int=1) = scan(a, dim, AF_BINARY_MAX, true)
+
+function sync(a::AFArray)
+    afeval(a)
+    sync(get_device_id(a))
+end
