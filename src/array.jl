@@ -14,7 +14,7 @@ if VERSION < v"0.6-"
     end
 else
     @eval begin
-        type AFArray{T,N} <: AbstractArray{T,N}
+        mutable struct AFArray{T,N} <: AbstractArray{T,N}
             arr::af_array
             function AFArray{T,N}(arr::af_array) where{T,N}
                 a = new{T,N}(arr)
