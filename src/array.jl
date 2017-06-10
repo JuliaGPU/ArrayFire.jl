@@ -266,22 +266,26 @@ end
 
 import Base: fill, zeros, ones
 
-fill(::Type{AFArray}, a, dims) = constant(a, dims)
-fill{T,N}(::Type{AFArray{T}}, a, dims::NTuple{N,Int}) = constant(T(a), dims)
-fill{T,N}(::Type{AFArray{T,N}}, a, dims::NTuple{N,Int}) = constant(T(a), dims)
-zeros{T,N}(::Type{AFArray{T}}, dims::NTuple{N,Int}) = constant(T(0), dims)
-zeros{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(0), dims)
-ones{T,N}(::Type{AFArray{T}}, dims::NTuple{N,Int}) = constant(T(1), dims)
-ones{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(1), dims)
-
+fill(::Type{AFArray}, a, dims::Int...) = constant(a, dims)
 fill{T}(::Type{AFArray{T}}, a, dims::Int...) = constant(T(a), dims)
 fill{T,N}(::Type{AFArray{T,N}}, a, dims::Int...) = constant(T(a), dims)
-zeros{T,N}(a::AFArray{T,N}) = constant(T(0), size(a))
+fill{N}(::Type{AFArray}, a, dims::NTuple{N,Int}) = constant(a, dims)
+fill{T,N}(::Type{AFArray{T}}, a, dims::NTuple{N,Int}) = constant(T(a), dims)
+fill{T,N}(::Type{AFArray{T,N}}, a, dims::NTuple{N,Int}) = constant(T(a), dims)
+
+zeros(::Type{AFArray}, dims::Int...) = constant(0., dims)
 zeros{T}(::Type{AFArray{T}}, dims::Int...) = constant(T(0), dims)
 zeros{T,N}(::Type{AFArray{T,N}}, dims::Int...) = constant(T(0), dims)
-ones{T,N}(a::AFArray{T,N}) = constant(T(1), size(a))
+zeros{T,N}(::Type{AFArray{T}}, dims::NTuple{N,Int}) = constant(T(0), dims)
+zeros{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(0), dims)
+zeros{T,N}(a::AFArray{T,N}) = constant(T(0), size(a))
+
+ones(::Type{AFArray}, dims::Int...) = constant(1., dims)
 ones{T}(::Type{AFArray{T}}, dims::Int...) = constant(T(1), dims)
 ones{T,N}(::Type{AFArray{T,N}}, dims::Int...) = constant(T(1), dims)
+ones{T,N}(::Type{AFArray{T}}, dims::NTuple{N,Int}) = constant(T(1), dims)
+ones{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(1), dims)
+ones{T,N}(a::AFArray{T,N}) = constant(T(1), size(a))
 
 function abs{T,N}(_in::AFArray{Complex{T},N})
     out = RefValue{af_array}(0)
