@@ -34,7 +34,7 @@ end
 
 export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
 
-import Base: convert, copy, deepcopy_internal, broadcast, issparse, sparse, full
+import Base: convert, copy, deepcopy_internal, issparse, sparse, full
 
 sparse{T,N}(a::AFArray{T,N}) = create_sparse_array_from_dense(a, AF_STORAGE_CSR)
 
@@ -78,19 +78,18 @@ median{T<:Real}(a::AFArray{T}) = median_all(a)[1]
 sum{T<:Real,N}(a::AFArray{T,N}) = T(sum_all(a)[1])
 sum{T<:Complex,N}(a::AFArray{T,N}) = T(sum_all(a)...)
 
-function broadcast(f, A::AFArray, Bs...)
+import Base.Broadcast: promote_containertype, broadcast_c, _containertype
+
+_containertype(::Type{<:AFArray}) = AFArray
+
+promote_containertype(::Type{AFArray}, ::Type{AFArray}) = AFArray
+promote_containertype(::Type{AFArray}, ct) = AFArray
+promote_containertype(ct, ::Type{AFArray}) = AFArray
+
+@inline function broadcast_c(f, ::Type{AFArray}, A, Bs...)
     old, bcast[] = bcast[], true
     try
         return f(A, Bs...)
-    finally
-        bcast[] = old
-    end
-end
-
-function broadcast(f, A0::Number, A::AFArray, Bs...)
-    old, bcast[] = bcast[], true
-    try
-        return f(A0, A, Bs...)
     finally
         bcast[] = old
     end
