@@ -78,23 +78,6 @@ median{T<:Real}(a::AFArray{T}) = median_all(a)[1]
 sum{T<:Real,N}(a::AFArray{T,N}) = T(sum_all(a)[1])
 sum{T<:Complex,N}(a::AFArray{T,N}) = T(sum_all(a)...)
 
-import Base.Broadcast: promote_containertype, broadcast_c, _containertype
-
-_containertype(::Type{<:AFArray}) = AFArray
-
-promote_containertype(::Type{AFArray}, ::Type{AFArray}) = AFArray
-promote_containertype(::Type{AFArray}, ct) = AFArray
-promote_containertype(ct, ::Type{AFArray}) = AFArray
-
-@inline function broadcast_c(f, ::Type{AFArray}, A, Bs...)
-    bcast[] =  true
-    try
-        return f(A, Bs...)
-    finally
-        bcast[] = false
-    end
-end
-
 import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=, &, |, <<, >>, xor
 
 -{T}(a::AFArray{T})       = T(0) - a
@@ -256,10 +239,45 @@ if VERSION < v"0.6-"
         .>>(a::AFArray, b::AFArray)  = bitshiftr(a, b, true)
         xor(a, b) = a $ b
     end
-    import Base: erf, erfc
+    import Base: erf, erfc, broadcast
+
+    function broadcast(f, A::AFArray, Bs...)
+        bcast[] =  true
+        try
+            return f(A, Bs...)
+        finally
+            bcast[] = false
+        end
+    end
+
+    function broadcast(f, A0::Number, A::AFArray, Bs...)
+        bcast[] =  true
+        try
+            return f(A, Bs...)
+        finally
+            bcast[] = false
+        end
+    end
 else
     using SpecialFunctions
     import SpecialFunctions: erf, erfc
+
+    import Base.Broadcast: promote_containertype, broadcast_c, _containertype
+
+    _containertype(::Type{<:AFArray}) = AFArray
+
+    promote_containertype(::Type{AFArray}, ::Type{AFArray}) = AFArray
+    promote_containertype(::Type{AFArray}, ct) = AFArray
+    promote_containertype(ct, ::Type{AFArray}) = AFArray
+
+    @inline function broadcast_c(f, ::Type{AFArray}, A, Bs...)
+        bcast[] =  true
+        try
+            return f(A, Bs...)
+        finally
+            bcast[] = false
+        end
+    end
 end
 
 import Base: fill, zeros, ones
