@@ -80,7 +80,7 @@ sum{T<:Complex,N}(a::AFArray{T,N}) = T(sum_all(a)...)
 
 import Base.Broadcast: promote_containertype, broadcast_c, _containertype
 
-_containertype(::Type{<:AFArray}) = AFArray
+_containertype(::Type{AFArray}) = AFArray
 
 promote_containertype(::Type{AFArray}, ::Type{AFArray}) = AFArray
 promote_containertype(::Type{AFArray}, ct) = AFArray
