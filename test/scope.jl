@@ -14,15 +14,15 @@
     @afgc function sc2(a, b)
         for k = 1:10
             @afgc c, b = sc1(a, b)
-            afeval(c)
-            afeval(b)
+            sync(c)
+            sync(b)
         end
         return b
     end
 
     b = sc2(a, b)
 
-    afeval(b)
+    sync(b)
 
     ending = device_mem_info()[4]
 
