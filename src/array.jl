@@ -87,11 +87,11 @@ promote_containertype(::Type{AFArray}, ct) = AFArray
 promote_containertype(ct, ::Type{AFArray}) = AFArray
 
 @inline function broadcast_c(f, ::Type{AFArray}, A, Bs...)
-    old, bcast[] = bcast[], true
+    bcast[] =  true
     try
         return f(A, Bs...)
     finally
-        bcast[] = old
+        bcast[] = false
     end
 end
 
