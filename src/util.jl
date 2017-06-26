@@ -32,6 +32,22 @@ global const bcast = Ref{Bool}(false)
 
 function __init__()
     Libdl.dlopen(af_lib)
+
+    backend_envvar_name = "JULIA_ARRAYFIRE_BACKEND"
+    if haskey(ENV, backend_envvar_name)
+        backend_str = lowercase(ENV[backend_envvar_name])
+        backends = Dict(
+            "cpu" => AF_BACKEND_CPU,
+            "cuda" => AF_BACKEND_CUDA,
+            "opencl" => AF_BACKEND_OPENCL
+        )
+        if haskey(backends, backend_str)
+            set_backend(backends[backend_str])
+        else
+            error("Unknown arrayfire backend \"$backend_str\".")
+        end
+    end
+
     afinit()
     afinfo()
     nothing
