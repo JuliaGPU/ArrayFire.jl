@@ -392,4 +392,5 @@ cummax(a::AFArray, dim::Int=1) = scan(a, dim, AF_BINARY_MAX, true)
 function sync(a::AFArray)
     afeval(a)
     sync(get_device_id(a))
+    a
 end
