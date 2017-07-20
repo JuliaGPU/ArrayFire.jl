@@ -1,7 +1,7 @@
 global const cwin = Ref{Int}(0)
 global const windows = Dict{Int,af_window}()
 
-export figure, plot, image
+# export figure, plot, image
 
 function figure(n)
     if !haskey(windows, n)
