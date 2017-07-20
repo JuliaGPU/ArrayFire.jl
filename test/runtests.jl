@@ -2,6 +2,10 @@
 using ArrayFire
 using Base.Test
 
+@testset "FFT" begin
+    include("fft.jl")
+end
+
 @testset "Main" begin
     include("scope.jl")
     include("indexing.jl")
