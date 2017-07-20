@@ -47,18 +47,18 @@ count .-= minimum(count)
 count ./= maximum(count)
 img = AFArray(Array{Float32}(count))
 
-image(img)
+ArrayFire.image(img)
 
 count = mandelbrotGPU(AFArray(z0), 1)
 count = mandelbrotGPU(AFArray(z0), maxIterations)
 gpu_time = @elapsed count = mandelbrotGPU(AFArray(z0), maxIterations)
 
-figure(2)
+ArrayFire.figure(2)
 count -= min_all(count)[1]
 count /= max_all(count)[1]
 img = AFArray{Float32}(count)
 
-image(img)
+ArrayFire.image(img)
 
 
 @show cpu_time, gpu_time, cpu_time/gpu_time
