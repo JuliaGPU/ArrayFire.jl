@@ -9,5 +9,6 @@ include("random.jl")
 include("graphics.jl")
 include("scope.jl")
 include("indexing.jl")
+include("fft.jl")
 
 end

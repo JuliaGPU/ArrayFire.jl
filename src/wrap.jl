@@ -12,16 +12,14 @@ export delete_image_memory, destroy_window, det, device_array, device_gc, device
 export diag_extract, diff1, diff2, dilate, dilate3, div, dog, dot, dot_all, draw_hist, draw_image, draw_plot
 export draw_plot3, draw_plot_2d, draw_plot_3d, draw_plot_nd, draw_scatter, draw_scatter3, draw_scatter_2d
 export draw_scatter_3d, draw_scatter_nd, draw_surface, draw_vector_field_2d, draw_vector_field_3d, draw_vector_field_nd
-export eq, erf, erfc, erode, erode3, exp, expm1, factorial, fast, fft, fft2, fft2_c2r, fft2_inplace, fft2_r2c
-export fft3, fft3_c2r, fft3_inplace, fft3_r2c, fft_c2r, fft_convolve1, fft_convolve2, fft_convolve3, fft_inplace
-export fft_r2c, fir, flip, floor, free_device, full, gaussian_kernel, ge, get_active_backend, get_available_backends
-export get_backend_count, get_backend_id, get_data_ptr, get_dbl_support, get_default_random_engine, get_device
-export get_device_count, get_device_id, get_device_ptr, get_dims, get_elements, get_features_num, get_features_orientation
-export get_features_score, get_features_size, get_features_xpos, get_features_ypos, get_manual_eval_flag
-export get_mem_step_size, get_revision, get_seed, gloh, gradient, gray2rgb, grid, gt, hamming_matcher
-export harris, hist_equal, histogram, homography, hsv2rgb, hypot, identity, ifft, ifft2, ifft2_inplace
-export ifft3, ifft3_inplace, ifft_inplace, iir, imag, imax, imax_all, imin, imin_all, index, index_gen
-export inverse, iota, is_bool, is_column, is_complex, is_double, is_empty, is_floating, is_image_io_available
+export eq, erf, erfc, erode, erode3, exp, expm1, factorial, fast, fir, flip, floor, free_device, full
+export gaussian_kernel, ge, get_active_backend, get_available_backends, get_backend_count, get_backend_id
+export get_data_ptr, get_dbl_support, get_default_random_engine, get_device, get_device_count, get_device_id
+export get_device_ptr, get_dims, get_elements, get_features_num, get_features_orientation, get_features_score
+export get_features_size, get_features_xpos, get_features_ypos, get_manual_eval_flag, get_mem_step_size
+export get_revision, get_seed, gloh, gradient, gray2rgb, grid, gt, hamming_matcher, harris, hist_equal
+export histogram, homography, hsv2rgb, hypot, identity, iir, imag, imax, imax_all, imin, imin_all, index
+export index_gen, inverse, iota, is_bool, is_column, is_complex, is_double, is_empty, is_floating, is_image_io_available
 export is_integer, is_lapack_available, is_locked_array, is_real, is_realfloating, is_row, is_scalar, is_single
 export is_vector, is_window_closed, isinf, isnan, issparse, iszero, le, lgamma, load_image, load_image_memory
 export load_image_native, lock_array, lock_device_ptr, log, log10, log1p, log2, lookup, lower, lt, lu
@@ -34,14 +32,13 @@ export range, rank, read_array_index, read_array_key, read_array_key_check, real
 export release_random_engine, rem, reorder, replace, replace, resize, retain_features, retain_random_engine
 export rgb2gray, rgb2hsv, rgb2ycbcr, root, rotate, round, sat, save_array, save_image, save_image_memory
 export save_image_native, scale, scan, scan_by_key, set_axes_limits_2d, set_axes_limits_3d, set_axes_limits_compute
-export set_axes_titles, set_backend, set_default_random_engine_type, set_device, set_fft_plan_cache_size
-export set_intersect, set_manual_eval_flag, set_mem_step_size, set_position, set_seed, set_size, set_title
-export set_union, set_unique, set_visibility, shift, show, sift, sigmoid, signbit, sin, sinh, skew, sobel_operator
-export solve, solve_lu, sort_by_key, sparse_convert_to, sparse_get_col_idx, sparse_get_info, sparse_get_nnz
-export sparse_get_row_idx, sparse_get_storage, sparse_get_values, sqrt, stdev_all, sub, sum, sum_all, sum_nan
-export sum_nan_all, susan, svd_inplace, sync, tan, tanh, tgamma, tile, transform, transform_coordinates
-export translate, transpose_inplace, trunc, unlock_array, unlock_device_ptr, unwrap, upper, var_all, var_all_weighted
-export wrap, write_array, ycbcr2rgb
+export set_axes_titles, set_backend, set_default_random_engine_type, set_device, set_intersect, set_manual_eval_flag
+export set_mem_step_size, set_position, set_seed, set_size, set_title, set_union, set_unique, set_visibility
+export shift, show, sift, sigmoid, signbit, sin, sinh, skew, sobel_operator, solve, solve_lu, sort_by_key
+export sparse_convert_to, sparse_get_col_idx, sparse_get_info, sparse_get_nnz, sparse_get_row_idx, sparse_get_storage
+export sparse_get_values, sqrt, stdev_all, sub, sum, sum_all, sum_nan, sum_nan_all, susan, svd_inplace
+export sync, tan, tanh, tgamma, tile, transform, transform_coordinates, translate, transpose_inplace, trunc
+export unlock_array, unlock_device_ptr, unwrap, upper, var_all, var_all_weighted, wrap, write_array, ycbcr2rgb
 
 function sum{T,N}(_in::AFArray{T,N},dim::Integer)
     out = RefValue{af_array}(0)
@@ -1702,102 +1699,6 @@ function approx2(_in::AFArray,pos0::AFArray,pos1::AFArray,method::af_interp_type
     AFArray!(out[])
 end
 
-function fft{T,N}(_in::AFArray{T,N},norm_factor::Real,odim0::dim_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_fft,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t),out,_in.arr,Cdouble(norm_factor),odim0))
-    AFArray{T,N}(out[])
-end
-
-function fft_inplace(_in::AFArray,norm_factor::Real)
-    _error(ccall((:af_fft_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
-end
-
-function fft2{T,N}(_in::AFArray{T,N},norm_factor::Real,odim0::dim_t,odim1::dim_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_fft2,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),odim0,odim1))
-    AFArray{T,N}(out[])
-end
-
-function fft2_inplace(_in::AFArray,norm_factor::Real)
-    _error(ccall((:af_fft2_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
-end
-
-function fft3{T,N}(_in::AFArray{T,N},norm_factor::Real,odim0::dim_t,odim1::dim_t,odim2::dim_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_fft3,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),odim0,odim1,odim2))
-    AFArray{T,N}(out[])
-end
-
-function fft3_inplace(_in::AFArray,norm_factor::Real)
-    _error(ccall((:af_fft3_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
-end
-
-function ifft{T,N}(_in::AFArray{T,N},norm_factor::Real,odim0::dim_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_ifft,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t),out,_in.arr,Cdouble(norm_factor),odim0))
-    AFArray{T,N}(out[])
-end
-
-function ifft_inplace(_in::AFArray,norm_factor::Real)
-    _error(ccall((:af_ifft_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
-end
-
-function ifft2{T,N}(_in::AFArray{T,N},norm_factor::Real,odim0::dim_t,odim1::dim_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_ifft2,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),odim0,odim1))
-    AFArray{T,N}(out[])
-end
-
-function ifft2_inplace(_in::AFArray,norm_factor::Real)
-    _error(ccall((:af_ifft2_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
-end
-
-function ifft3{T,N}(_in::AFArray{T,N},norm_factor::Real,odim0::dim_t,odim1::dim_t,odim2::dim_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_ifft3,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),odim0,odim1,odim2))
-    AFArray{T,N}(out[])
-end
-
-function ifft3_inplace(_in::AFArray,norm_factor::Real)
-    _error(ccall((:af_ifft3_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
-end
-
-function fft_r2c{T,N}(_in::AFArray{T,N},norm_factor::Real,pad0::dim_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_fft_r2c,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t),out,_in.arr,Cdouble(norm_factor),pad0))
-    AFArray{Complex{T},N}(out[])
-end
-
-function fft2_r2c{T,N}(_in::AFArray{T,N},norm_factor::Real,pad0::dim_t,pad1::dim_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_fft2_r2c,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),pad0,pad1))
-    AFArray{Complex{T},N}(out[])
-end
-
-function fft3_r2c{T,N}(_in::AFArray{T,N},norm_factor::Real,pad0::dim_t,pad1::dim_t,pad2::dim_t)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_fft3_r2c,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),pad0,pad1,pad2))
-    AFArray{Complex{T},N}(out[])
-end
-
-function fft_c2r{T,N}(_in::AFArray{Complex{T},N},norm_factor::Real,is_odd::Bool)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_fft_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,Cdouble(norm_factor),is_odd))
-    AFArray{T,N}(out[])
-end
-
-function fft2_c2r{T,N}(_in::AFArray{Complex{T},N},norm_factor::Real,is_odd::Bool)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_fft2_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,Cdouble(norm_factor),is_odd))
-    AFArray{T,N}(out[])
-end
-
-function fft3_c2r{T,N}(_in::AFArray{Complex{T},N},norm_factor::Real,is_odd::Bool)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_fft3_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,Cdouble(norm_factor),is_odd))
-    AFArray{T,N}(out[])
-end
-
 function convolve1(signal::AFArray,filter::AFArray,mode::af_conv_mode,domain::af_conv_domain)
     out = RefValue{af_array}(0)
     _error(ccall((:af_convolve1,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_conv_mode,af_conv_domain),out,signal.arr,filter.arr,mode,domain))
@@ -1819,24 +1720,6 @@ end
 function convolve2_sep(col_filter::AFArray,row_filter::AFArray,signal::AFArray,mode::af_conv_mode)
     out = RefValue{af_array}(0)
     _error(ccall((:af_convolve2_sep,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_array,af_conv_mode),out,col_filter.arr,row_filter.arr,signal.arr,mode))
-    AFArray!(out[])
-end
-
-function fft_convolve1(signal::AFArray,filter::AFArray,mode::af_conv_mode)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_fft_convolve1,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_conv_mode),out,signal.arr,filter.arr,mode))
-    AFArray!(out[])
-end
-
-function fft_convolve2(signal::AFArray,filter::AFArray,mode::af_conv_mode)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_fft_convolve2,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_conv_mode),out,signal.arr,filter.arr,mode))
-    AFArray!(out[])
-end
-
-function fft_convolve3(signal::AFArray,filter::AFArray,mode::af_conv_mode)
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_fft_convolve3,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_conv_mode),out,signal.arr,filter.arr,mode))
     AFArray!(out[])
 end
 
@@ -1868,10 +1751,6 @@ function medfilt2{T,N}(_in::AFArray{T,N},wind_length::dim_t,wind_width::dim_t,ed
     out = RefValue{af_array}(0)
     _error(ccall((:af_medfilt2,af_lib),af_err,(Ptr{af_array},af_array,dim_t,dim_t,af_border_type),out,_in.arr,wind_length,wind_width,edge_pad))
     AFArray{T,N}(out[])
-end
-
-function set_fft_plan_cache_size(cache_size::Csize_t)
-    _error(ccall((:af_set_fft_plan_cache_size,af_lib),af_err,(Csize_t,),cache_size))
 end
 
 function create_sparse_array(nRows::dim_t,nCols::dim_t,values::AFArray,rowIdx::AFArray,colIdx::AFArray,stype::af_storage)
