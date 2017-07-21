@@ -119,17 +119,23 @@ fast_fourier = fft(a)
 ## The Execution Model
 `ArrayFire.jl` introduces an `AFArray` type that is a subtype of `AbstractArray`. Operations on `AFArrays` create other `AFArrays`, so data always remains on the device unless it is specifically transferred back. This wrapper provides a simple Julian interface that aims to mimic Base Julia's versatility and ease of use.
 
-**Note on REPL Behaviour**: On the REPL, whenever you create an `AFArray`, the REPL displays the values, just like in Base Julia. This happens because the `showarray` method is overloaded to ensure that every time it is needed to display on the REPL, values are transferred from device to host. This means that every single operation on the REPL involves an implicit memory transfer. This may lead to some slowdown while working interactively depending on the size of the data and memory bandwidth available. You can use a semicolon (`;`) at the end of each statement to disable displaying and avoid that memory transfer. Also, note that in a script, there would be no memory transfer unless a display function is explicitly called (or if you use the `Array` constructor like in the above example).
+**REPL Behaviour**: On the REPL, whenever you create an `AFArray`, the REPL displays the values, just like in Base Julia. This happens because the `showarray` method is overloaded to ensure that every time it is needed to display on the REPL, values are transferred from device to host. This means that every single operation on the REPL involves an implicit memory transfer. This may lead to some slowdown while working interactively depending on the size of the data and memory bandwidth available. You can use a semicolon (`;`) at the end of each statement to disable displaying and avoid that memory transfer. Also, note that in a script, there would be no memory transfer unless a display function is explicitly called (or if you use the `Array` constructor like in the above example).
 
-`arrayfire` is an asynchronous library. This essentially means that whenever you call a particular function in `ArrayFire.jl`, it would return control to the host almost immediately (which in this case in Julia) and continue executing on the device. This is pretty useful because it would mean that host code that's independent of the device can simply execute while the device computes, resulting in better real world performance.
+**Async Behaviour**: `arrayfire` is an asynchronous library. This essentially means that whenever you call a particular function in `ArrayFire.jl`, it would return control to the host almost immediately (which in this case in Julia) and continue executing on the device. This is pretty useful because it would mean that host code that's independent of the device can simply execute while the device computes, resulting in better real world performance.
 
-The library also performs some kernel fusions on elementary arithmetic operations (see the arithmetic section of the Supported Functions). `arrayfire` has an intelligent runtime JIT compliation engine which converts array expressions into the smallest number of OpenCL/CUDA kernels. Kernel fusion not only decreases the number of kernel calls, but also avoids extraneous global memory operations. This asynchronous behaviour ends only when a non-JIT operation is called or an explicit synchronization barrier (`sync(array)`) is called.
+The library also performs some kernel fusions on elementary arithmetic operations (see the arithmetic section of the Supported Functions). `arrayfire` has an intelligent runtime JIT compliation engine which converts array expressions into the smallest number of OpenCL/CUDA kernels. Kernel fusion not only decreases the number of kernel calls, but also avoids extraneous global memory operations. This asynchronous behaviour ends only when a non-JIT operation is called or an explicit synchronization barrier `sync(array)` is called.
+
+**Garbage collection and memory management**: `arrayfire` is using its own memory management that relies on Julia
+  garbage collector releasing refences to unused arrays. Sometimes it could be a bottleneck as Julia garbage collector
+  can be slow and not even notice the pressure in GPU memory usage. The best way to avoid it is to use `@afgc` macro
+  that would free all unused `AFArray` references when leaving the scope of a function or a block. The alternative is to
+  call afgc() periodically.
 
 **A note on benchmarking** : In Julia, one would use the `@time` macro to time execution times of functions. However, in this particular case, `@time` would simply time the function call, and the library would execute asynchronously in the background. This would often lead to misleading timings. Therefore, the right way to time individual operations is to run them multiple times, place an explicit synchronization barrier at the end, and take the average of multiple runs.
 
 Also, note that this doesn't affect how the user writes code. Users can simply write normal Julia code using `ArrayFire.jl` and this asynchronous behaviour is abstracted out. Whenever the data is needed back onto the CPU, an implicit barrier ensures that the computatation is complete, and the values are transferred back.
 
-**A note on operations between CPU and device arrays**:  Consider the following code. It will return an error:
+**operations between CPU and device arrays**:  Consider the following code. It will return an error:
 ```julia
 a = rand(Float32, 10, 10)
 b = AFArray(a)
