@@ -164,6 +164,6 @@ function fft_convolve3(signal::AFArray,filter::AFArray,mode::af_conv_mode)
     AFArray!(out[])
 end
 
-function set_fft_plan_cache_size(cache_size::Csize_t)
+function set_fft_plan_cache_size(cache_size)
     _error(ccall((:af_set_fft_plan_cache_size,af_lib),af_err,(Csize_t,),cache_size))
 end
