@@ -11,6 +11,12 @@ function fft{T<:Complex,N}(_in::AFArray{T,N},norm_factor=1.0,odim0::dim_t=0)
     AFArray{T,N}(out[])
 end
 
+function fft{T<:Real,N}(_in::AFArray{T,N},norm_factor=1.0,odim0::dim_t=0)
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_fft,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t),out,_in.arr,Cdouble(norm_factor),odim0))
+    AFArray{Complex{T},N}(out[])
+end
+
 function fft!(_in::AFArray,norm_factor=1.0)
     _error(ccall((:af_fft_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
 end
@@ -21,6 +27,12 @@ function fft2{T<:Complex,N}(_in::AFArray{T,N},norm_factor=1.0,odim0::dim_t=0,odi
     AFArray{T,N}(out[])
 end
 
+function fft2{T<:Real,N}(_in::AFArray{T,N},norm_factor=1.0,odim0::dim_t=0,odim1::dim_t=0)
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_fft2,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),odim0,odim1))
+    AFArray{Complex{T},N}(out[])
+end
+
 function fft2!(_in::AFArray,norm_factor=1.0)
     _error(ccall((:af_fft2_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
 end
@@ -29,6 +41,12 @@ function fft3{T<:Complex,N}(_in::AFArray{T,N},norm_factor=1.0,odim0::dim_t=0,odi
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft3,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),odim0,odim1,odim2))
     AFArray{T,N}(out[])
+end
+
+function fft3{T<:Real,N}(_in::AFArray{T,N},norm_factor=1.0,odim0::dim_t=0,odim1::dim_t=0,odim2::dim_t=0)
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_fft3,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,dim_t,dim_t,dim_t),out,_in.arr,Cdouble(norm_factor),odim0,odim1,odim2))
+    AFArray{Complex{T},N}(out[])
 end
 
 function fft3!(_in::AFArray,norm_factor=1.0)
