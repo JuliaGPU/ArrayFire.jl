@@ -32,10 +32,7 @@ function mandelbrotGPU(z0, maxIterations)
         z = z .* z .+ z0
         count = count + (abs(z)<= 2)
     end
-    count = log( count )
-    afeval(count)
-    sync(0)
-    count
+    sync(log( count ))
 end
 
 # warmup
