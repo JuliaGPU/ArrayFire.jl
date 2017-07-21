@@ -8,11 +8,11 @@ for T in (Float32, Float64)
     @test Array(bf1) ≈ b1
     @test Array(cf1) ≈ a1
 
-    fft_inplace(af1, 1.0)
+    fft!(af1, 1.0)
     @test eltype(af1) == Complex{T}
     @test Array(af1) ≈ b1
 
-    ifft_inplace(af1, 1 / length(af1))
+    ifft!(af1, 1 / length(af1))
     @test eltype(af1) == Complex{T}
     @test Array(af1) ≈ a1
 
@@ -26,11 +26,11 @@ for T in (Float32, Float64)
     @test Array(bf2) ≈ b2
     @test Array(cf2) ≈ a2
 
-    fft2_inplace(af2, 1.0)
+    fft2!(af2, 1.0)
     @test eltype(af2) == Complex{T}
     @test Array(af2) ≈ b2
 
-    ifft2_inplace(af2, 1 / length(af2))
+    ifft2!(af2, 1 / length(af2))
     @test eltype(af2) == Complex{T}
     @test Array(af2) ≈ a2
 
@@ -44,11 +44,11 @@ for T in (Float32, Float64)
     @test Array(bf3) ≈ b3
     @test Array(cf3) ≈ a3
 
-    fft3_inplace(af3, 1.0)
+    fft3!(af3, 1.0)
     @test eltype(af3) == Complex{T}
     @test Array(af3) ≈ b3
 
-    ifft3_inplace(af3, 1 / length(af3))
+    ifft3!(af3, 1 / length(af3))
     @test eltype(af3) == Complex{T}
     @test Array(af3) ≈ a3
 

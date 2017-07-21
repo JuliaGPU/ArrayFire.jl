@@ -76,7 +76,9 @@ function rewrite(line::Expr)
         hdr = line.args[1].args
         name = replace("$(hdr[1])", "af_", "", 1)
         name = get(renames, name, name)
-        in(name, ignore) && return []
+        if in(name, ignore) || contains(name, "fft")
+	    return []
+	end
         hdr[1] = Symbol(name)
         args = hdr[2:end]
         body = line.args[2].args

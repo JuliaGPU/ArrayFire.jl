@@ -1,8 +1,9 @@
 
-export fft, fft2, fft2_c2r, fft2_inplace, fft2_r2c, ifft, ifft2, ifft3
-export fft3, fft3_c2r, fft3_inplace, fft3_r2c, fft_c2r
-export fft_convolve1, fft_convolve2, fft_convolve3, fft_inplace
-export fft_r2c, set_fft_plan_cache_size, ifft_inplace, ifft2_inplace, ifft3_inplace
+import Base: fft!, ifft!
+export fft, fft2, fft2_c2r, fft2!, fft2_r2c, ifft, ifft2, ifft3
+export fft3, fft3_c2r, fft3!, fft3_r2c, fft_c2r
+export fft_convolve1, fft_convolve2, fft_convolve3, fft!
+export fft_r2c, set_fft_plan_cache_size, ifft!, ifft2!, ifft3!
 
 function fft{T,N}(_in::AFArray{T,N},norm_factor::Real,odim0::dim_t)
     out = RefValue{af_array}(0)
@@ -10,7 +11,7 @@ function fft{T,N}(_in::AFArray{T,N},norm_factor::Real,odim0::dim_t)
     AFArray{T,N}(out[])
 end
 
-function fft_inplace(_in::AFArray,norm_factor::Real)
+function fft!(_in::AFArray,norm_factor::Real)
     _error(ccall((:af_fft_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
 end
 
@@ -20,7 +21,7 @@ function fft2{T,N}(_in::AFArray{T,N},norm_factor::Real,odim0::dim_t,odim1::dim_t
     AFArray{T,N}(out[])
 end
 
-function fft2_inplace(_in::AFArray,norm_factor::Real)
+function fft2!(_in::AFArray,norm_factor::Real)
     _error(ccall((:af_fft2_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
 end
 
@@ -30,7 +31,7 @@ function fft3{T,N}(_in::AFArray{T,N},norm_factor::Real,odim0::dim_t,odim1::dim_t
     AFArray{T,N}(out[])
 end
 
-function fft3_inplace(_in::AFArray,norm_factor::Real)
+function fft3!(_in::AFArray,norm_factor::Real)
     _error(ccall((:af_fft3_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
 end
 
@@ -40,7 +41,7 @@ function ifft{T,N}(_in::AFArray{T,N},norm_factor::Real,odim0::dim_t)
     AFArray{T,N}(out[])
 end
 
-function ifft_inplace(_in::AFArray,norm_factor::Real)
+function ifft!(_in::AFArray,norm_factor::Real)
     _error(ccall((:af_ifft_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
 end
 
@@ -50,7 +51,7 @@ function ifft2{T,N}(_in::AFArray{T,N},norm_factor::Real,odim0::dim_t,odim1::dim_
     AFArray{T,N}(out[])
 end
 
-function ifft2_inplace(_in::AFArray,norm_factor::Real)
+function ifft2!(_in::AFArray,norm_factor::Real)
     _error(ccall((:af_ifft2_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
 end
 
@@ -60,7 +61,7 @@ function ifft3{T,N}(_in::AFArray{T,N},norm_factor::Real,odim0::dim_t,odim1::dim_
     AFArray{T,N}(out[])
 end
 
-function ifft3_inplace(_in::AFArray,norm_factor::Real)
+function ifft3!(_in::AFArray,norm_factor::Real)
     _error(ccall((:af_ifft3_inplace,af_lib),af_err,(af_array,Cdouble),_in.arr,Cdouble(norm_factor)))
 end
 
