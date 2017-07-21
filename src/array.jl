@@ -38,23 +38,22 @@ import Base: Array, SparseMatrixCSC, copy, deepcopy_internal, issparse, sparse, 
 
 sparse{T,N}(a::AFArray{T,N}) = create_sparse_array_from_dense(a, AF_STORAGE_CSR)
 
-@compat AFArray{T1}(a::AFArray{T2,N}) where {T1, T2, N} = recast_array(AFArray{T1}, a)
-@compat AFArray{T1,N}(a::AFArray{T2,N}) where {T1, T2, N} = recast_array(AFArray{T1}, a)
+(::Type{AFArray{T1}}){T1,T2,N}(a::AFArray{T2,N}) = recast_array(AFArray{T1}, a)
+(::Type{AFArray{T1,N}}){T1,T2,N}(a::AFArray{T2,N}) = recast_array(AFArray{T1}, a)
 
-@compat Array{T,N}(a::AFArray{T,N}) where {T,N} = convert_array(a)
-@compat AFArray{T,N}(a::Array{T,N}) where {T,N} = convert_array(a)
+(::Type{Array{T,N}}){T,N}(a::AFArray{T,N}) = convert_array(a)
+(::Type{AFArray{T,N}}){T,N}(a::Array{T,N}) = convert_array(a)
 
-@compat Array{T}(a::AFArray{T,N}) where {T,N} = convert_array(a)
-@compat AFArray{T}(a::Array{T,N}) where {T,N} = convert_array(a)
+(::Type{Array{T}}){T,N}(a::AFArray{T,N}) = convert_array(a)
+(::Type{AFArray{T}}){T,N}(a::Array{T,N}) = convert_array(a)
 
-@compat Array(a::AFArray{T,N}) where {T,N} = convert_array(a)
-@compat AFArray(a::Array{T,N}) where {T,N} = convert_array(a)
+(::Type{Array}){T,N}(a::AFArray{T,N}) = convert_array(a)
+(::Type{AFArray}){T,N}(a::Array{T,N}) = convert_array(a)
 
-@compat AFArray{T}(a::SparseMatrixCSC{T}) where T = convert_array_to_sparse(a)
-@compat AFArray(a::SparseMatrixCSC{T}) where T = convert_array_to_sparse(a)::AFArray{T,2}
+(::Type{AFArray})(a::SparseMatrixCSC) = convert_array_to_sparse(a)
 
-@compat SparseMatrixCSC{T}(a::AFArray{T}) where T = convert_array_to_sparse(a)
-@compat SparseMatrixCSC(a::AFArray{T}) where T = convert_array_to_sparse(a)
+(::Type{SparseMatrixCSC{T}}){T}(a::AFArray{T}) = convert_array_to_sparse(a)
+(::Type{SparseMatrixCSC}){T}(a::AFArray{T}) = convert_array_to_sparse(a)
 
 deepcopy_internal{T,N}(a::AFArray{T,N}, d::ObjectIdDict) = haskey(d, a) ? d[a]::AFArray{T,N} : copy(a)
 
