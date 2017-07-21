@@ -111,8 +111,8 @@ for op in [:+, :-, :*, :/, :.^, :.+, :.-, :.*, :./]
 end
 
 as = Int32[-2 -1 0 1 2]
-@test all(AFArray(sign.(as)) == sign(AFArray(as)))
-@test !any(!(AFArray(sign.(as)) == sign(AFArray(as))))
+@test all(AFArray(sign.(as)) .== sign(AFArray(as)))
+@test !any(!(AFArray(sign.(as)) .== sign(AFArray(as))))
 
 @test (@inferred size(AFArray(rand(1,2,3)))) == (1,2,3)
 @test (@inferred size(AFArray(rand(1,2,3,4)))) == (1,2,3,4)
@@ -128,11 +128,11 @@ amf = AFArray(am)
 @test sum(amf' * amf') ≈ sum(am' * am')
 @test sum(At_mul_Bt(amf, amf)) ≈ sum(am' * am')
 
-@test all(Array(sum(amf, 1)) ≈ sum(am, 1))
-@test all(Array(sum(amf, 2)) ≈ sum(am, 2))
+@test Array(sum(amf, 1)) ≈ sum(am, 1)
+@test Array(sum(amf, 2)) ≈ sum(am, 2)
 
-@test all(Array(prod(amf, 1)) ≈ prod(am, 1))
-@test all(Array(prod(amf, 2)) ≈ prod(am, 2))
+@test Array(prod(amf, 1)) ≈ prod(am, 1)
+@test Array(prod(amf, 2)) ≈ prod(am, 2)
 
 @test all(Array(minimum(amf, 1)) .== minimum(am, 1))
 @test all(Array(minimum(amf, 2)) .== minimum(am, 2))
@@ -146,7 +146,7 @@ amf = AFArray(am)
 @test var(amf) ≈ var(am)
 @test median(amf) == median(am)
 
-@test all(vec(amf) == AFArray(vec(am)))
+@test all(vec(amf) .== AFArray(vec(am)))
 @test typeof(norm(amf)) == Float32
 @test @inferred(norm(amf)) ≈ norm(am)
 u,s,v = @inferred(svd(amf))
