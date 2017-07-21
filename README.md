@@ -236,6 +236,14 @@ include("benchmark.jl")
 include("nmf_benchmark.jl")
 ```
 
+## Backend Selection
+
+When using ArrayFire's [Unified Backend](http://arrayfire.org/docs/unifiedbackend.htm), you can select between the CPU, CUDA and OpenCL backend.
+
+If the backend selected by ArrayFire by default (depends on the available drivers) is not the desired one (depending on the available hardware), you can override the default by setting the environment variable `$JULIA_ARRAYFIRE_BACKEND` before starting Julia (more specifically, before loading the `ArrayFire` module). Possible values for `$JULIA_ARRAYFIRE_BACKEND` are `cpu`, `cuda` and `opencl`.
+
+You may also change the backend at runtime via, e.g., `set_backend(AF_BACKEND_CPU)` (resp. `AF_BACKEND_CUDA` or `AF_BACKEND_OPENCL`).
+
 ## Troubleshooting
 `ArrayFire.jl` isn't working! What do I do?
 >Error loading `libaf`
