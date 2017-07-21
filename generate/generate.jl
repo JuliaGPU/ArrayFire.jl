@@ -45,7 +45,8 @@ const renames = Dict("sign" => "signbit", "product" => "prod", "init" => "afinit
                      "copy_array" => "copy", "get_version" => "afversion", "eval" => "afeval",
                      "min" => "minimum", "max" => "maximum", "any_true" => "any", "all_true" => "all",
                      "select_scalar_l" => "select", "select_scalar_r" => "select", "replace_scalar" => "replace",
-                     "is_sparse" => "issparse", "sparse_to_dense" => "full")
+                     "is_sparse" => "issparse", "sparse_to_dense" => "full",
+		     "cplx" => "complex", "cplx2" => "complex")
 
 const ignore = Set(["example_function", "create_array", "retain_array", "get_data_ref_count", "info_string",
                     "device_info", "alloc_host", "free_host", "alloc_pinned", "free_pinned",
@@ -66,7 +67,7 @@ const maths     = Set(["add", "sub", "mul", "div", "rem", "mod", "atan2", "root"
                        "bitshiftl", "bitshiftr", "bitxor", "bitand", "bitor"])
 const floats    = Set(["signbit"])
 const c2rs      = Set(["fft_c2r", "fft2_c2r", "fft3_c2r", "real", "imag"])
-const complexes = Set(["fft_r2c", "fft2_r2c", "fft3_r2c"])
+const complexes = Set(["fft_r2c", "fft2_r2c", "fft3_r2c", "complex"])
 
 const exports = []
 
