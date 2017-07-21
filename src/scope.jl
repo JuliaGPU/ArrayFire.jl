@@ -27,7 +27,6 @@ function leave_scope(except)
             finalize(k)
         end
     end
-    afgc()
     return except
 end
 
