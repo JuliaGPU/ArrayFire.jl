@@ -16,7 +16,8 @@ function nmf_gpu{T<:Real}(A::AFArray{T}, k::Integer, n::Int=10)
         H = H .* (W'*A) ./ ((W'*W)*H)
         W = W .* (A*H') ./ (W*(H*H'))
     end
-    sync()
+    sync(W)
+    sync(H)
     return W, H
 end
 
