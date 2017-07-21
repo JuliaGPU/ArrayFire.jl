@@ -2,10 +2,6 @@
 using ArrayFire
 using Base.Test
 
-@testset "FFT" begin
-    include("fft.jl")
-end
-
 @testset "Main" begin
     include("scope.jl")
     include("indexing.jl")
@@ -13,6 +9,10 @@ end
     include("math.jl")
     include("blackscholes.jl")
     include("autodiff.jl")
+end
+
+@testset "FFT" begin
+    include("fft.jl")
 end
 
 gc()
