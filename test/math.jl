@@ -146,7 +146,7 @@ amf = AFArray(am)
 @test var(amf) ≈ var(am)
 @test median(amf) == median(am)
 
-@test all(vec(amf) .== AFArray(vec(am)))
+@test vec(amf) ≈ AFArray(vec(am))
 @test typeof(norm(amf)) == Float32
 @test @inferred(norm(amf)) ≈ norm(am)
 u,s,v = @inferred(svd(amf))
