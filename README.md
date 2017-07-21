@@ -149,25 +149,6 @@ AFArray(a) - b # This works too!
 
 **A note on correctness**: Sometimes, `ArrayFire.jl` and Base Julia might return marginally different values from their computation. This is because Julia and `ArrayFire.jl` sometimes use different lower level libraries for BLAS, FFT, etc. For example, Julia uses OpenBLAS for BLAS operations, but `ArrayFire.jl` would use clBLAS for the OpenCL backend and CuBLAS for the CUDA backend, and these libraries might not always the exact same values as OpenBLAS after a certain decimal point. In light of this, users are encouraged to keep testing their codes for correctness.
 
-## Backends
-There are three backends in `ArrayFire.jl`:
-* CUDA Backend
-* OpenCL Backend
-* CPU Backend
-
-There is yet another backend which essentially allows the user to switch backends at runtime. This is called the unified backend. `ArrayFire.jl` starts up with the unified backend. You can switch backends by doing:
-```julia
-setBackend(AF_BACKEND_CPU)
-setBackend(AF_BACKEND_OPENCL)
-setBackend(AF_BACKEND_CUDA)
-```
-You can check which backend you're currently on by doing:
-```julia
-getActiveBackend()
-```
-
-**NOTE**: The unified backend isn't a computational backend by itself but represents an interface to switch between different backends at runtime. `ArrayFire.jl` starts up with the unified backend, but`getActiveBackend()` will return either a particular default backend, depending on how you've installed the library. For example, if you've built `ArrayFire.jl` with the CUDA backend, `getActiveBackend()` will return `CUDA` backend.
-
 ## Supported Functions
 
 ### Creating AFArrays
@@ -242,13 +223,23 @@ include("benchmark.jl")
 include("nmf_benchmark.jl")
 ```
 
-## Backend Selection
+## Backends
+There are three backends in `ArrayFire.jl`:
+* CUDA Backend
+* OpenCL Backend
+* CPU Backend
 
-When using ArrayFire's [Unified Backend](http://arrayfire.org/docs/unifiedbackend.htm), you can select between the CPU, CUDA and OpenCL backend.
+There is yet another backend which essentially allows the user to switch backends at runtime. This is called the unified
+backend. `ArrayFire.jl` starts up with the unified backend.
 
 If the backend selected by ArrayFire by default (depends on the available drivers) is not the desired one (depending on the available hardware), you can override the default by setting the environment variable `$JULIA_ARRAYFIRE_BACKEND` before starting Julia (more specifically, before loading the `ArrayFire` module). Possible values for `$JULIA_ARRAYFIRE_BACKEND` are `cpu`, `cuda` and `opencl`.
 
-You may also change the backend at runtime via, e.g., `set_backend(AF_BACKEND_CPU)` (resp. `AF_BACKEND_CUDA` or `AF_BACKEND_OPENCL`).
+You may also change the backend at runtime via, e.g., `set_backend(AF_BACKEND_CPU)` (resp. `AF_BACKEND_CUDA` or
+`AF_BACKEND_OPENCL`). The unified backend isn't a computational backend by itself but represents an interface to switch
+between different backends at runtime. `ArrayFire.jl` starts up with the unified backend, but `get_active_backend()`
+will return either a particular default backend, depending on how you've installed the library. For example, if you've
+built `ArrayFire.jl` with the CUDA backend, `get_active_backend()` will return `AF_BACKEND_CUDA` backend.
+
 
 ## Troubleshooting
 `ArrayFire.jl` isn't working! What do I do?
