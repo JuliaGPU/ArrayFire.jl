@@ -1,22 +1,3 @@
-a = rand(Float32, 10, 10)
-ad = AFArray(a)
-
-@test norm(fft(a) - Array(fft(ad))) < 1e-6
-@test norm(ifft(a) - Array(ifft(ad, norm_factor = 1/length(a)))) < 1e-6 # Note that the scaling factor is required because ArrayFire's IFFT is unnormalized as opposed to Julia's IFFT.
-b = rfft(a)
-bd = AFArray(b)
-@test norm(irfft(b, size(a,1)) - Array(fftC2R(bd, isodd(size(a,1)), norm_factor = 1/length(a)))) < 1e-6
-@test norm(rfft(a) - Array(fftR2C(ad,0,0))) < 1e-6
-
-# Issue #133
-for sz in ((10,), (10, 10), (10, 10, 10))
-    a = rand(Complex{Float32}, sz...)
-    ad = AFArray(a)
-    fft!(a)
-    fft!(ad)
-    @test norm(a - Array(ad)) < 1e-6
-end
-
 for T in (Float32, Float64)
     a1 = rand(Complex{T}, 10)
     b1 = fft(a1)
@@ -45,11 +26,11 @@ for T in (Float32, Float64)
     @test all(Array(bf2) ≈ b2)
     @test all(Array(cf2) ≈ a2)
 
-    fft_inplace(af2, 1.0)
+    fft2_inplace(af2, 1.0)
     @test eltype(af2) == Complex{T}
     @test all(Array(af2) ≈ b2)
 
-    ifft_inplace(af2, 1 / length(af2))
+    ifft2_inplace(af2, 1 / length(af2))
     @test eltype(af2) == Complex{T}
     @test all(Array(af2) ≈ a2)
 
@@ -63,11 +44,11 @@ for T in (Float32, Float64)
     @test all(Array(bf3) ≈ b3)
     @test all(Array(cf3) ≈ a3)
 
-    fft_inplace(af3, 1.0)
+    fft3_inplace(af3, 1.0)
     @test eltype(af3) == Complex{T}
     @test all(Array(af3) ≈ b3)
 
-    ifft_inplace(af3, 1 / length(af3))
+    ifft3_inplace(af3, 1 / length(af3))
     @test eltype(af3) == Complex{T}
     @test all(Array(af3) ≈ a3)
 
@@ -76,7 +57,7 @@ for T in (Float32, Float64)
     br1 = rfft(ar1)
     arf1 = AFArray(ar1)
     brf1 = fft_r2c(arf1, 1., 0)
-    crf1 = fft_c2r(brf1, 1 / length(arf1), isodd(length(arf1)))
+    crf1 = fft_c2r(brf1, 1 / length(arf1), isodd(size(arf1, 1)))
     @test eltype(brf1) == Complex{T}
     @test eltype(crf1) == T
     @test all(Array(brf1) ≈ br1)
@@ -86,17 +67,17 @@ for T in (Float32, Float64)
     ar2 = rand(T, 10, 11)
     arf2 = AFArray(ar2)
     brf2 = fft2_r2c(arf2, 1., 0, 0)
-    crf2 = fft2_c2r(brf2, 1 / length(arf2), isodd(length(arf2)))
+    crf2 = fft2_c2r(brf2, 1 / length(arf2), isodd(size(arf2, 1)))
     @test eltype(brf2) == Complex{T}
     @test eltype(crf2) == T
     @test all(Array(brf2) ≈ rfft(ar2))
     @test all(Array(crf2) ≈ ar2)
 
 
-    ar3 = rand(T, 10, 11, 12)
+    ar3 = rand(T, 11, 12, 10)
     arf3 = AFArray(ar3)
     brf3 = fft3_r2c(arf3, 1., 0, 0, 0)
-    crf3 = fft3_c2r(brf3, 1 / length(arf3), isodd(length(arf3)))
+    crf3 = fft3_c2r(brf3, 1 / length(arf3), isodd(size(arf3, 1)))
     @test eltype(brf3) == Complex{T}
     @test eltype(crf3) == T
     @test all(Array(brf3) ≈ rfft(ar3))
