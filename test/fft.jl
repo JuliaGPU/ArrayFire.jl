@@ -5,16 +5,16 @@ for T in (Float32, Float64)
     bf1 = fft(af1, 1., 0)
     cf1 = ifft(bf1, 1 / length(bf1), 0)
     @test eltype(bf1) == eltype(cf1) == Complex{T}
-    @test all(Array(bf1) ≈ b1)
-    @test all(Array(cf1) ≈ a1)
+    @test Array(bf1) ≈ b1
+    @test Array(cf1) ≈ a1
 
     fft_inplace(af1, 1.0)
     @test eltype(af1) == Complex{T}
-    @test all(Array(af1) ≈ b1)
+    @test Array(af1) ≈ b1
 
     ifft_inplace(af1, 1 / length(af1))
     @test eltype(af1) == Complex{T}
-    @test all(Array(af1) ≈ a1)
+    @test Array(af1) ≈ a1
 
 
     a2 = rand(Complex{T}, 10, 11)
@@ -23,16 +23,16 @@ for T in (Float32, Float64)
     bf2 = fft2(af2, 1., 0, 0)
     cf2 = ifft2(bf2, 1 / length(bf2), 0, 0)
     @test eltype(bf2) == eltype(cf2) == Complex{T}
-    @test all(Array(bf2) ≈ b2)
-    @test all(Array(cf2) ≈ a2)
+    @test Array(bf2) ≈ b2
+    @test Array(cf2) ≈ a2
 
     fft2_inplace(af2, 1.0)
     @test eltype(af2) == Complex{T}
-    @test all(Array(af2) ≈ b2)
+    @test Array(af2) ≈ b2
 
     ifft2_inplace(af2, 1 / length(af2))
     @test eltype(af2) == Complex{T}
-    @test all(Array(af2) ≈ a2)
+    @test Array(af2) ≈ a2
 
 
     a3 = rand(Complex{T}, 10, 11, 12)
@@ -41,16 +41,16 @@ for T in (Float32, Float64)
     bf3 = fft3(af3, 1., 0, 0, 0)
     cf3 = ifft3(bf3, 1 / length(bf3), 0, 0, 0)
     @test eltype(bf3) == eltype(cf3) == Complex{T}
-    @test all(Array(bf3) ≈ b3)
-    @test all(Array(cf3) ≈ a3)
+    @test Array(bf3) ≈ b3
+    @test Array(cf3) ≈ a3
 
     fft3_inplace(af3, 1.0)
     @test eltype(af3) == Complex{T}
-    @test all(Array(af3) ≈ b3)
+    @test Array(af3) ≈ b3
 
     ifft3_inplace(af3, 1 / length(af3))
     @test eltype(af3) == Complex{T}
-    @test all(Array(af3) ≈ a3)
+    @test Array(af3) ≈ a3
 
 
     ar1 = rand(T, 10)
@@ -60,8 +60,8 @@ for T in (Float32, Float64)
     crf1 = fft_c2r(brf1, 1 / length(arf1), isodd(size(arf1, 1)))
     @test eltype(brf1) == Complex{T}
     @test eltype(crf1) == T
-    @test all(Array(brf1) ≈ br1)
-    @test all(Array(crf1) ≈ ar1)
+    @test Array(brf1) ≈ br1
+    @test Array(crf1) ≈ ar1
 
 
     ar2 = rand(T, 10, 11)
@@ -70,8 +70,8 @@ for T in (Float32, Float64)
     crf2 = fft2_c2r(brf2, 1 / length(arf2), isodd(size(arf2, 1)))
     @test eltype(brf2) == Complex{T}
     @test eltype(crf2) == T
-    @test all(Array(brf2) ≈ rfft(ar2))
-    @test all(Array(crf2) ≈ ar2)
+    @test Array(brf2) ≈ rfft(ar2)
+    @test Array(crf2) ≈ ar2
 
 
     ar3 = rand(T, 11, 12, 10)
@@ -80,6 +80,6 @@ for T in (Float32, Float64)
     crf3 = fft3_c2r(brf3, 1 / length(arf3), isodd(size(arf3, 1)))
     @test eltype(brf3) == Complex{T}
     @test eltype(crf3) == T
-    @test all(Array(brf3) ≈ rfft(ar3))
-    @test all(Array(crf3) ≈ ar3)
+    @test Array(brf3) ≈ rfft(ar3)
+    @test Array(crf3) ≈ ar3
 end
