@@ -1,7 +1,7 @@
 
-import Base: fft!, ifft!, rfft
+import Base: fft!, ifft!, rfft, irfft
 export fft, fft2, fft2_c2r, fft2!, ifft, ifft2, ifft3, rfft2, rfft3
-export fft3, fft3_c2r, fft3!, fft_c2r
+export fft3, irfft3, fft3!, irfft2
 export fft_convolve1, fft_convolve2, fft_convolve3, fft!
 export set_fft_plan_cache_size, ifft!, ifft2!, ifft3!
 
@@ -83,19 +83,19 @@ function rfft3{T<:Real,N}(_in::AFArray{T,N},norm_factor=1.0,pad0::dim_t=0,pad1::
     AFArray{Complex{T},N}(out[])
 end
 
-function fft_c2r{T,N}(_in::AFArray{Complex{T},N},norm_factor=1.0,is_odd::Bool=false)
+function irfft{T,N}(_in::AFArray{Complex{T},N},norm_factor=1.0,is_odd::Bool=false)
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,Cdouble(norm_factor),is_odd))
     AFArray{T,N}(out[])
 end
 
-function fft2_c2r{T,N}(_in::AFArray{Complex{T},N},norm_factor=1.0,is_odd::Bool=false)
+function irfft2{T,N}(_in::AFArray{Complex{T},N},norm_factor=1.0,is_odd::Bool=false)
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft2_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,Cdouble(norm_factor),is_odd))
     AFArray{T,N}(out[])
 end
 
-function fft3_c2r{T,N}(_in::AFArray{Complex{T},N},norm_factor=1.0,is_odd::Bool=false)
+function irfft3{T,N}(_in::AFArray{Complex{T},N},norm_factor=1.0,is_odd::Bool=false)
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft3_c2r,af_lib),af_err,(Ptr{af_array},af_array,Cdouble,Bool),out,_in.arr,Cdouble(norm_factor),is_odd))
     AFArray{T,N}(out[])
