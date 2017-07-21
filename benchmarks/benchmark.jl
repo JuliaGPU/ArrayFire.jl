@@ -1,3 +1,4 @@
+
 using ArrayFire
 function warmup()
     a = rand(Float32, 10,10)
@@ -16,41 +17,36 @@ end
 function matmul(a::AFArray, b::AFArray)
     for i = 1:10
         r = a * b
-        ArrayFire.eval(r)
+        sync(r)
     end
-    sync()
 end
 
 function fast_fourier(a::AFArray)
     for i = 1:10
         r = fft(a)
-        ArrayFire.eval(r)
+        sync(r)
     end
-    sync()
 end
 
 function cholesky(a::AFArray)
     for i = 1:10
-        r = chol(a)
-        ArrayFire.eval(r)
+        r,s = chol(a)
+        sync(r)
     end
-    sync()
 end
 
 function random()
     for i = 1:10
         r = rand(AFArray{Float32}, 5000, 5000)
-        ArrayFire.eval(r)
+        sync(r)
     end
-    sync()
 end
 
 function sorting(a::AFArray)
     for i = 1:10
         r = sort(a)
-        ArrayFire.eval(r)
+        sync(r)
     end
-    sync()
 end
 
 function benchmark()

@@ -4,7 +4,7 @@
 
 export abs, accum, acos, acosh, add, afeval, afinfo, afinit, afversion, all, all_true_all, alloc_device
 export and, any, any_true_all, approx1, approx2, arg, array_to_string, asin, asinh, assign_seq, atan, atan2
-export atanh, bilateral, bitand, bitor, bitshiftl, bitshiftr, bitxor, canny, cbrt, ceil, cholesky, cholesky_inplace
+export atanh, bilateral, bitand, bitor, bitshiftl, bitshiftr, bitxor, canny, cbrt, ceil, cholesky_inplace
 export color_space, complex, complex, conjg, convolve1, convolve2, convolve2_sep, convolve3, copy, corrcoef
 export cos, cosh, count, count_all, cov, create_features, create_handle, create_indexers, create_random_engine
 export create_sparse_array, create_sparse_array_from_dense, create_sparse_array_from_ptr, create_window
@@ -1557,13 +1557,6 @@ function qr_inplace{T,N}(_in::AFArray{T,N})
     tau = RefValue{af_array}(0)
     _error(ccall((:af_qr_inplace,af_lib),af_err,(Ptr{af_array},af_array),tau,_in.arr))
     AFArray{T,N}(tau[])
-end
-
-function cholesky(_in::AFArray,is_upper::Bool)
-    out = RefValue{af_array}(0)
-    info = RefValue{Cint}(0)
-    _error(ccall((:af_cholesky,af_lib),af_err,(Ptr{af_array},Ptr{Cint},af_array,Bool),out,info,_in.arr,is_upper))
-    (AFArray!(out[]),info[])
 end
 
 function cholesky_inplace(_in::AFArray,is_upper::Bool)

@@ -1,15 +1,13 @@
 
-import Base: RefValue, @pure, display, show, clamp, find, cumsum, cumprod, cummin, cummax
+import Base: RefValue, @pure, display, show, clamp, find, cumsum, cumprod, cummin, cummax, chol
 
 export constant, select, get_last_error, err_to_string, sort_index
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
 
-global const af_threshold = Ref(4e9)
-
-function afgc()
+function afgc(threshold = 4e9)
     alloc_bytes, alloc_buffers, lock_bytes, lock_buffers =  device_mem_info()
-    if alloc_bytes > af_threshold[]
-        if lock_bytes > af_threshold[]
+    if alloc_bytes > threshold
+        if lock_bytes > threshold
             gc()
         end
         device_gc()
@@ -409,4 +407,11 @@ function sync(a::AFArray)
     afeval(a)
     sync(get_device_id(a))
     a
+end
+
+function chol{T,N}(_in::AFArray{T,N},is_upper::Bool=false)
+    out = RefValue{af_array}(0)
+    info = RefValue{Cint}(0)
+    _error(ccall((:af_cholesky,af_lib),af_err,(Ptr{af_array},Ptr{Cint},af_array,Bool),out,info,_in.arr,is_upper))
+    (AFArray{T,N}(out[]),info[])
 end
