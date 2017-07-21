@@ -3,7 +3,7 @@ for T in (Float32, Float64)
     b1 = fft(a1)
     af1 = AFArray(a1)
     bf1 = fft(af1)
-    cf1 = ifft(bf1, 1 / length(bf1))
+    cf1 = ifft(bf1)
     @test isa(bf1, AFArray)
     @test isa(cf1, AFArray)
     @test eltype(bf1) == eltype(cf1) == Complex{T}
@@ -14,7 +14,7 @@ for T in (Float32, Float64)
     @test eltype(af1) == Complex{T}
     @test Array(af1) ≈ b1
 
-    ifft!(af1, 1 / length(af1))
+    ifft!(af1)
     @test eltype(af1) == Complex{T}
     @test Array(af1) ≈ a1
 
@@ -23,7 +23,7 @@ for T in (Float32, Float64)
     b2 = fft(a2)
     af2 = AFArray(a2)
     bf2 = fft2(af2)
-    cf2 = ifft2(bf2, 1 / length(bf2))
+    cf2 = ifft2(bf2)
     @test isa(bf2, AFArray)
     @test isa(cf2, AFArray)
     @test eltype(bf2) == eltype(cf2) == Complex{T}
@@ -34,7 +34,7 @@ for T in (Float32, Float64)
     @test eltype(af2) == Complex{T}
     @test Array(af2) ≈ b2
 
-    ifft2!(af2, 1 / length(af2))
+    ifft2!(af2)
     @test eltype(af2) == Complex{T}
     @test Array(af2) ≈ a2
 
@@ -43,7 +43,7 @@ for T in (Float32, Float64)
     b3 = fft(a3)
     af3 = AFArray(a3)
     bf3 = fft3(af3)
-    cf3 = ifft3(bf3, 1 / length(bf3))
+    cf3 = ifft3(bf3)
     @test isa(bf3, AFArray)
     @test isa(cf3, AFArray)
     @test eltype(bf3) == eltype(cf3) == Complex{T}
