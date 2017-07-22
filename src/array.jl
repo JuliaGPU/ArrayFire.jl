@@ -71,6 +71,7 @@ size(a::AFVector) = (s = get_dims(a); (s[1],))
 size(a::AFMatrix) = (s = get_dims(a); (s[1],s[2]))
 size(a::AFVolume) = (s = get_dims(a); (s[1],s[2],s[3]))
 size(a::AFTensor) = (s = get_dims(a); (s[1],s[2],s[3],s[4]))
+size(a::AFArray, dim::Int) = get_dims(a)[dim]
 any(a::AFArray) = any_true_all(a)[1] == 1
 all(a::AFArray) = all_true_all(a)[1] == 1
 maximum{T<:Real}(a::AFArray{T}) = max_all(a)[1]
