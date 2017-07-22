@@ -31,3 +31,7 @@ function image(img)
     draw_image(windows[cwin[]], img, Ref(af_cell(0, 0, pointer(""), AF_COLORMAP_SPECTRUM)))
     show(windows[cwin[]])
 end
+
+function grid(wind::af_window,rows::Integer,cols::Integer)
+    _error(ccall((:af_grid,af_lib),af_err,(af_window,Cint,Cint),wind,Cint(rows),Cint(cols)))
+end

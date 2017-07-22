@@ -17,9 +17,9 @@ export gaussian_kernel, ge, get_active_backend, get_available_backends, get_back
 export get_data_ptr, get_dbl_support, get_default_random_engine, get_device, get_device_count, get_device_id
 export get_device_ptr, get_dims, get_elements, get_features_num, get_features_orientation, get_features_score
 export get_features_size, get_features_xpos, get_features_ypos, get_manual_eval_flag, get_mem_step_size
-export get_revision, get_seed, gloh, gradient, gray2rgb, grid, gt, hamming_matcher, harris, hist_equal
-export histogram, homography, hsv2rgb, hypot, identity, iir, imag, imax, imax_all, imin, imin_all, index
-export index_gen, inverse, iota, is_bool, is_column, is_complex, is_double, is_empty, is_floating, is_image_io_available
+export get_revision, get_seed, gloh, gradient, gray2rgb, gt, hamming_matcher, harris, hist_equal, histogram
+export homography, hsv2rgb, hypot, identity, iir, imag, imax, imax_all, imin, imin_all, index, index_gen
+export inverse, iota, is_bool, is_column, is_complex, is_double, is_empty, is_floating, is_image_io_available
 export is_integer, is_lapack_available, is_locked_array, is_real, is_realfloating, is_row, is_scalar, is_single
 export is_vector, is_window_closed, isinf, isnan, issparse, iszero, le, lgamma, load_image, load_image_memory
 export load_image_native, lock_array, lock_device_ptr, log, log10, log1p, log2, lookup, lower, lt, lu
@@ -1229,10 +1229,6 @@ end
 
 function draw_vector_field_2d(wind::af_window,xPoints::AFArray,yPoints::AFArray,xDirs::AFArray,yDirs::AFArray,props)
     _error(ccall((:af_draw_vector_field_2d,af_lib),af_err,(af_window,af_array,af_array,af_array,af_array,Ptr{af_cell}),wind,xPoints.arr,yPoints.arr,xDirs.arr,yDirs.arr,props))
-end
-
-function grid(wind::af_window,rows::Integer,cols::Integer)
-    _error(ccall((:af_grid,af_lib),af_err,(af_window,Cint,Cint),wind,Cint(rows),Cint(cols)))
 end
 
 function set_axes_limits_compute(wind::af_window,x::AFArray,y::AFArray,z::AFArray,exact::Bool,props)
