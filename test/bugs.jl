@@ -54,14 +54,27 @@ end
 let
     a = rand(Float32, 5, 5)
     ad = AFArray(a)
-    for f in (>, >=, <, <=, ==)
-        for val in (0.5f0, 1)
-            b = broadcast(f, val, a)
-            bd = broadcast(f, val, ad)
-            @test b ≈ Array(bd)
-            b = broadcast(f, a, val)
-            bd = broadcast(f, ad, val)
-            @test b ≈ Array(bd)
+    if VERSION >= v"0.6.0"
+        for f in (>, >=, <, <=, ==)
+            for val in (0.5f0, 1)
+                b = broadcast(f, val, a)
+                bd = broadcast(f, val, ad)
+                @test b ≈ Array(bd)
+                b = broadcast(f, a, val)
+                bd = broadcast(f, ad, val)
+                @test b ≈ Array(bd)
+            end
+        end
+    else
+        for f in (.>, .>=, .<, .<=, .==)
+            for val in (0.5f0, 1)
+                b = f(val, a)
+                bd = f(val, ad)
+                @test b ≈ Array(bd)
+                b = f(a, val)
+                bd = f(ad, val)
+                @test b ≈ Array(bd)
+            end
         end
     end
 end
