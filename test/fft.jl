@@ -117,6 +117,6 @@ for T in (Float32, Float64)
         b = fft(a)
         bd = fft(ad)
         @test b ≈ Array(bd)
-        #        @test rfft(a) ≈ Array(rfft(bd))
+        @test rfft(a) ≈ Array(rfft(ad))
     end
 end
