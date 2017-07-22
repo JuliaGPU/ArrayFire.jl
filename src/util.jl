@@ -418,7 +418,7 @@ function chol{T,N}(_in::AFArray{T,N},is_upper::Bool=false)
 end
 
 abs2{T<:Real}(a::AFArray{T}) = a.*a
-abs2{T<:Complex}(a::AFArray{T}) = (t = abs(a); t.*t)
+abs2{T<:Complex}(a::AFArray{T}) = (r = real(a); i = imag(a); r.*r+i.*i)
 
 function complex{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2})
     batch = bcast[]
