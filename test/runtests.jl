@@ -11,6 +11,10 @@ using Base.Test
     include("autodiff.jl")
 end
 
+@testset "Bugs" begin
+    include("bugs.jl")
+end
+
 @testset "FFT" begin
     include("fft.jl")
 end

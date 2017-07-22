@@ -96,4 +96,19 @@ for T in (Float32, Float64)
     @test eltype(crf3) == T
     @test Array(brf3) ≈ rfft(ar3)
     @test Array(crf3) ≈ ar3
+
+    for sz in ((10,), (10, 10), (10, 10, 10))
+        a = rand(Complex{T}, sz...)
+        ad = AFArray(a)
+        b = fft(a)
+        bd = fft(ad)
+        @test b ≈ Array(bd)
+        @test fft!(a) ≈ Array(fft!(ad))
+
+        a = rand(T, sz...)
+        ad = AFArray(a)
+        b = fft(a)
+        bd = fft(ad)
+        @test b ≈ Array(bd)
+    end
 end

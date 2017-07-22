@@ -207,7 +207,7 @@ function constant{T<:Complex,N}(val::T,sz::NTuple{N,Int})
     arr = RefValue{af_array}(0)
     _error(ccall((:af_constant_complex,af_lib),af_err,
                  (Ptr{af_array},Cdouble,Cdouble,UInt32,Ptr{dim_t},af_dtype),
-                 arr,Cdouble(real(val)),Cdouble(imag(val)),UInt32(N),[sz...],af_type(_type)))
+                 arr,Cdouble(real(val)),Cdouble(imag(val)),UInt32(N),[sz...],af_type(T)))
     AFArray{T,N}(arr[])
 end
 

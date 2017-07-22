@@ -80,6 +80,8 @@ mean{T<:Real}(a::AFArray{T}) = mean_all(a)[1]
 std{T<:Real}(a::AFArray{T}) = sqrt(var_all(a, false)[1])
 var{T<:Real}(a::AFArray{T}) = var_all(a, false)[1]
 median{T<:Real}(a::AFArray{T}) = median_all(a)[1]
+sum{N}(a::AFArray{UInt8,N}) = UInt32(sum_all(a)[1])
+sum{N}(a::AFArray{Bool,N}) = Int64(sum_all(a)[1])
 sum{T<:Real,N}(a::AFArray{T,N}) = T(sum_all(a)[1])
 sum{T<:Complex,N}(a::AFArray{T,N}) = T(sum_all(a)...)
 

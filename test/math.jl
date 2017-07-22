@@ -102,10 +102,16 @@ af3 = AFArray(a3)
 a4 = randn(Float32, 2, 3)
 af4 = AFArray(a4)
 
-for op in [:.>, :.>=, :.==, :.!=, :.<, :.<=]
+for op in [:.>, :.>=, :.!=, :.<, :.<=]
     @test @eval all($op(a3, a4) .== Array(@inferred $op(af3, af4)))
     @test @eval all($op(0, a4) .== Array(@inferred $op(0, af4)))
     @test @eval all($op(a3, 0) .== Array(@inferred $op(af3, 0)))
+end
+
+for op in [:.==]
+    @test @eval all($op(a3, a4) .== Array($op(af3, af4)))
+    @test @eval all($op(0, a4) .== Array($op(0, af4)))
+    @test @eval all($op(a3, 0) .== Array($op(af3, 0)))
 end
 
 c1 = rand()
