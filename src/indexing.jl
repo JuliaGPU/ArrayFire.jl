@@ -12,11 +12,19 @@ create_seq(i::Int) = af_seq(i-1, i-1, 1)
 create_seq(::Colon) = af_seq(1, 1, 0)
 
 set_indexer!(indexers, i, s::Union{Range,Int,Colon}) = set_seq_indexer(indexers, create_seq(s), i, true)
+set_indexer!(indexers, i, s::AFArray{Bool}) = set_array_indexer(indexers, find(s)-1, i)
 set_indexer!(indexers, i, s::AFArray) = set_array_indexer(indexers, s-1, i)
 
 function set_seq_indexer(indexer, idx, dim::dim_t, is_batch::Bool)
-    _error(ccall((:af_set_seq_indexer,af_lib),af_err,(Ptr{af_index_t},Ptr{af_seq},dim_t,Bool),
+    _error(ccall((:af_set_seq_indexer,af_lib),af_err,
+                 (Ptr{af_index_t},Ptr{af_seq},dim_t,Bool),
                  indexer, RefValue{af_seq}(idx), dim, is_batch))
+end
+
+function set_array_indexer(indexer, idx, dim::dim_t)
+    _error(ccall((:af_set_array_indexer,af_lib),af_err,
+                 (Ptr{af_index_t},af_array,dim_t),
+                 indexer,idx.arr,dim))
 end
 
 function release_indexers(indexers)

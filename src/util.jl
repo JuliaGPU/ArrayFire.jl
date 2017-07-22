@@ -369,14 +369,6 @@ function median{T,N}(_in::AFArray{T,N},dim::dim_t)
     AFArray{T,N}(out[])
 end
 
-function set_array_indexer(idx::AFArray,dim::dim_t)
-    indexer = RefValue{af_index_t}(0)
-    _error(ccall((:af_set_array_indexer,af_lib),af_err,
-                 (Ptr{af_index_t},af_array,dim_t),
-                 indexer,idx.arr,dim-1))
-    indexer[]
-end
-
 function set_seq_param_indexer(_begin::Real,_end::Real,step::Real,dim::dim_t,is_batch::Bool)
     indexer = RefValue{af_index_t}(0)
     _error(ccall((:af_set_seq_param_indexer,af_lib),af_err,
