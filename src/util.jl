@@ -419,3 +419,10 @@ end
 
 abs2{T<:Real}(a::AFArray{T}) = a.*a
 abs2{T<:Complex}(a::AFArray{T}) = (t = abs(a); t.*t)
+
+function complex{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2})
+    batch = bcast[]
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_cplx2,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
+    AFArray{Complex{typed(T1,T2)},batched(N1,N2)}(out[])
+end

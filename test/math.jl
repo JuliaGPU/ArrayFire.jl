@@ -72,11 +72,16 @@ end
     @test @inferred all(@inferred all(isinf(arr6), 1)) == false
     @test sum(arr5) == 21
     @test sum(arr6) == 3.
+    @test sum(complex(arr6)) == 3 + 0im
+    @test sum(complex(arr6, arr6)) == 3 + 3im
     @test sum(abs2(arr5)) == 91
     @test sum(abs2(arr6)) == 5.0
     arr9 = AFArray{Complex{Float64},2}([1.0+3im 2. 3.; 4 5 6])
     @test sum(arr9) == 21+3im
     @test sum(abs2(arr9)) == 100.0
+    @test sum(conj(arr9)) == 21-3im
+    @test sum(real(arr9)) == 21
+    @test sum(imag(arr9)) == 3
     @test typeof(@inferred AFArray{Complex{Float32},2}(arr9)) == AFArray{Complex{Float32},2}
     @test typeof(@inferred AFArray{UInt32}(arr9)) == AFArray{UInt32,2}
     b = @inferred(1 + arr1)

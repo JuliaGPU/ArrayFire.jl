@@ -46,7 +46,7 @@ const renames = Dict("sign" => "signbit", "product" => "prod", "init" => "afinit
                      "min" => "minimum", "max" => "maximum", "any_true" => "any", "all_true" => "all",
                      "select_scalar_l" => "select", "select_scalar_r" => "select", "replace_scalar" => "replace",
                      "is_sparse" => "issparse", "sparse_to_dense" => "full",
-		     "cplx" => "complex", "cplx2" => "complex", "conjg" => "conj")
+		     "cplx" => "complex", "conjg" => "conj")
 
 const ignore = Set(["example_function", "create_array", "retain_array", "get_data_ref_count", "info_string",
                     "device_info", "alloc_host", "free_host", "alloc_pinned", "free_pinned",
@@ -56,7 +56,7 @@ const ignore = Set(["example_function", "create_array", "retain_array", "get_dat
                     "randu", "randn", "set_seq_indexer", "release_indexers", "assign_gen", "join", "svd",
                     "sort", "sort_index", "mean", "mean_weighted", "var", "var_weighted",
                     "stdev", "median", "set_array_indexer", "set_seq_param_indexer", "clamp", "where",
-                    "get_scalar", "cholesky"])
+                    "get_scalar", "cholesky", "cplx2"])
 
 const recast = Dict(:Cint => :Integer, :UInt32 => :Integer, :Cdouble => :Real)
 
