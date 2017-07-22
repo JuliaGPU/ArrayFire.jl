@@ -1,5 +1,6 @@
 
-import Base: RefValue, @pure, display, show, clamp, find, cumsum, cumprod, cummin, cummax, chol
+import Base: RefValue, @pure, display, show, clamp, find, cumsum, cumprod, cummin, cummax,
+    chol, abs2
 
 export constant, select, get_last_error, err_to_string, sort_index
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
@@ -415,3 +416,6 @@ function chol{T,N}(_in::AFArray{T,N},is_upper::Bool=false)
     _error(ccall((:af_cholesky,af_lib),af_err,(Ptr{af_array},Ptr{Cint},af_array,Bool),out,info,_in.arr,is_upper))
     (AFArray{T,N}(out[]),info[])
 end
+
+abs2{T<:Real}(a::AFArray{T}) = a.*a
+abs2{T<:Complex}(a::AFArray{T}) = (t = abs(a); t.*t)
