@@ -12,17 +12,13 @@ end
 @testset "Inplace assignment" begin
     a = randn(10)
     af = AFArray(a)
-    b = randn(10)
-    bf = AFArray(b)
     c = zeros(a)
     cf = AFArray(c)
 
-    a .= a .+ b
-    af .= af .+ bf
     c .= af
     cf .= c
 
-    @test Array(af) ≈ a
+    @test c == a
     @test af == cf
     @test typeof(a) == Array{Float64, 1}
     @test typeof(af) == AFArray{Float64, 1}
