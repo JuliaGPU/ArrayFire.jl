@@ -63,7 +63,7 @@ import Base: count, cov, det, div, dot, exp, expm1, factorial, fft, floor, gradi
 import Base: identity, ifft, imag, isinf, isnan, iszero, join, lgamma, log, log10, log1p, log2, lu, maximum, mean, median
 import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, select, show
 import Base: sign, signbit, sin, sinh, sort, sortperm, std, sqrt, sum, svd, tan, tanh, transpose, trunc, var, any, all
-import Base: cat, hcat, vcat, conv
+import Base: cat, hcat, vcat, conv, max, min
 
 eltype{T,N}(a::AFArray{T,N}) = T
 ndims{T,N}(a::AFArray{T,N}) = N
@@ -108,6 +108,8 @@ import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=, &, |, <<, >>, xor
 <<(a::Integer, b::AFArray)  = bitshiftl(constant(a, size(b)), b, false)
 >>(a::Integer, b::AFArray)  = bitshiftr(constant(a, size(b)), b, false)
 xor(a::Integer, b::AFArray) = bitxor(constant(a, size(b)),    b, false)
+max(a::Integer, b::AFArray) = maxof(constant(a, size(b)),    b, false)
+min(a::Integer, b::AFArray) = minof(constant(a, size(b)),    b, false)
 
 +(a::AFArray, b::Number)  = add(a, constant(b, size(a)), false)
 -(a::AFArray, b::Number)  = sub(a, constant(b, size(a)), false)
@@ -129,6 +131,8 @@ xor(a::Integer, b::AFArray) = bitxor(constant(a, size(b)),    b, false)
 <<(a::AFArray, b::Integer)  = bitshiftl(a, constant(b, size(a)), false)
 >>(a::AFArray, b::Integer)  = bitshiftr(a, constant(b, size(a)), false)
 xor(a::AFArray, b::Integer) = bitxor(a,    constant(b, size(a)), false)
+max(a::AFArray, b::Integer) = maxof(a,    constant(b, size(a)), false)
+min(a::AFArray, b::Integer) = minof(a,    constant(b, size(a)), false)
 
 +(a::AFArray, b::AFArray) = add(a, b, bcast[])
 -(a::AFArray, b::AFArray) = sub(a, b, bcast[])
@@ -148,6 +152,8 @@ xor(a::AFArray, b::Integer) = bitxor(a,    constant(b, size(a)), false)
 <<(a::AFArray, b::AFArray)  = bitshiftl(a, b, bcast[])
 >>(a::AFArray, b::AFArray)  = bitshiftr(a, b, bcast[])
 xor(a::AFArray, b::AFArray) = bitxor(a, b, bcast[])
+max(a::AFArray, b::AFArray) = maxof(a, b, bcast[])
+min(a::AFArray, b::AFArray) = minof(a, b, bcast[])
 
 import Base: Ac_mul_B, At_mul_B, A_mul_Bc, Ac_mul_Bc, A_mul_Bt, At_mul_Bt, transpose, ctranspose, vec, reshape
 export A_mul_B

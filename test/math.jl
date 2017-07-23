@@ -195,7 +195,7 @@ a4 = rand(UInt8, 2, 3)
 af4 = AFArray(a4)
 c1 = rand(UInt8)
 
-for op in [:&, :|, :xor]
+for op in [:&, :|, :xor, :min, :max]
     @test @eval all($op.(a3, a4) .== Array(@inferred $op(af3, af4)))
     @test @eval all($op.(c1, a4) .== Array(@inferred $op(c1, af4)))
     @test @eval all($op.(a3, c1) .== Array(@inferred $op(af3, c1)))
@@ -207,7 +207,7 @@ a4 = rand(UInt64, 2, 3)
 af4 = AFArray(a4)
 c1 = rand(UInt64)
 
-for op in [:&, :|, :xor]
+for op in [:&, :|, :xor, :min, :max]
     @test @eval all($op.(a3, a4) .== Array(@inferred $op(af3, af4)))
     @test @eval all($op.(c1, a4) .== Array(@inferred $op(c1, af4)))
     @test @eval all($op.(a3, c1) .== Array(@inferred $op(af3, c1)))
@@ -219,7 +219,7 @@ a4 = mod.(rand(Int64, 2, 3), 10)
 af4 = AFArray(a4)
 c1 = mod(rand(Int64), 10)
 
-for op in [:<<, :>>, :&, :|, :xor]
+for op in [:<<, :>>, :&, :|, :xor, :min, :max]
     @test @eval all($op.(a3, a4) .== Array($op.(af3, af4)))
     @test @eval all($op.(a3, a4) .== Array(@inferred $op(af3, af4)))
     @test @eval all($op.(c1, a4) .== Array(@inferred $op(c1, af4)))
@@ -232,7 +232,7 @@ a4 = rand(Bool, 2, 3)
 af4 = AFArray(a4)
 c1 = rand(Bool)
 
-for op in [:&, :|, :xor]
+for op in [:&, :|, :xor, :min, :max]
     @test @eval all($op.(a3, a4) .== Array(@inferred $op(af3, af4)))
     @test @eval all($op.(c1, a4) .== Array(@inferred $op(c1, af4)))
     @test @eval all($op.(a3, c1) .== Array(@inferred $op(af3, c1)))
