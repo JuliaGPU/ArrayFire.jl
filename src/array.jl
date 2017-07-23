@@ -63,8 +63,9 @@ import Base: count, cov, det, div, dot, exp, expm1, factorial, fft, floor, gradi
 import Base: identity, ifft, imag, isinf, isnan, iszero, join, lgamma, log, log10, log1p, log2, lu, maximum, mean, median
 import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, select, show
 import Base: sign, signbit, sin, sinh, sort, sortperm, std, sqrt, sum, svd, tan, tanh, transpose, trunc, var, any, all
-import Base: cat, hcat, vcat, conv, max, min
+import Base: cat, hcat, vcat, conv, max, min, sizeof
 
+sizeof(a::AFArray) = length(a) * sizeof(eltype(a))
 eltype{T,N}(a::AFArray{T,N}) = T
 ndims{T,N}(a::AFArray{T,N}) = N
 size(a::AFVector) = (s = get_dims(a); (s[1],))
@@ -271,11 +272,12 @@ if VERSION < v"0.6-"
             bcast[] = false
         end
     end
+
 else
     using SpecialFunctions
     import SpecialFunctions: erf, erfc
 
-    import Base.Broadcast: promote_containertype, broadcast_c, _containertype
+    import Base.Broadcast: promote_containertype, broadcast_c, _containertype, broadcast_c!
 
     _containertype(::Type{<:AFArray}) = AFArray
 
@@ -283,10 +285,43 @@ else
     promote_containertype(::Type{AFArray}, ct) = AFArray
     promote_containertype(ct, ::Type{AFArray}) = AFArray
 
-    @inline function broadcast_c(f, ::Type{AFArray}, A, Bs...)
+    function broadcast_c(f, ::Type{AFArray}, A, Bs...)
         bcast[] =  true
         try
             return f(A, Bs...)
+        finally
+            bcast[] = false
+        end
+    end
+
+    function broadcast_c!(f, ::Type{AFArray}, ::Type{AFArray}, C, A, Bs...)
+        bcast[] =  true
+        try
+            r = f(A, Bs...)
+            write_array(C, get_device_ptr(r), UInt(sizeof(r)), afDevice)
+            return r
+        finally
+            bcast[] = false
+        end
+    end
+
+    function broadcast_c!(f, ::Type{Array}, ::Type{AFArray}, C, A, Bs...)
+        bcast[] =  true
+        try
+            r = f(A, Bs...)
+            get_data_ptr(C, r)
+            return r
+        finally
+            bcast[] = false
+        end
+    end
+
+    function broadcast_c!(f, ::Type{AFArray}, ::Type{Array}, C, A, Bs...)
+        bcast[] =  true
+        try
+            r = f(A, Bs...)
+            write_array(C, r, UInt(sizeof(r)), afHost)
+            return r
         finally
             bcast[] = false
         end
