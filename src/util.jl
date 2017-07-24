@@ -54,9 +54,13 @@ end
 
 function _error(err::af_err)
     if err != 0
-        str = err_to_string(err)
-        str2 = get_last_error()
-        error("ArrayFire Error ($err) : $str\n$str2")
+        if err == 101
+            error("Devise out of memory: use afgc() or @afgc to garbage collect more often")
+        else
+            str = err_to_string(err)
+            str2 = get_last_error()
+            error("ArrayFire Error ($err) : $str\n$str2")
+        end
     end
 end
 
