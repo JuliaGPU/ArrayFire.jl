@@ -322,6 +322,7 @@ else
         try
             r = f(A, Bs...)
             write_array(C, get_device_ptr(r), UInt(sizeof(r)), afDevice)
+            unlock_device_ptr(r)
             return r
         finally
             bcast[] = false
