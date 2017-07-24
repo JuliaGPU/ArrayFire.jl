@@ -242,7 +242,7 @@ a5 = rand(Float32, 5)
 af5 = AFArray(a5)
 
 for op in [:abs, :acos, :asin, :atan, :cbrt, :ceil, :cos, :cosh,
-           :exp, :expm1, :factorial, :floor,
+           :exp, :expm1, :factorial, :floor, :erfc,
            :imag, :isinf, :isnan, :lgamma, :log, :log10,
            :log1p, :log2, :real, :round, :sign, :signbit, :sin, :sinh, :sqrt, :tan,
            :tanh, :trunc]
