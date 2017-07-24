@@ -356,7 +356,7 @@ ones{T,N}(a::AFArray{T,N}) = constant(T(1), size(a))
 export swap!
 function swap!{T,N}(a::AFArray{T,N}, b::AFArray{T,N})
     a.arr, b.arr = b.arr, a.arr
-    a, b
+    nothing
 end
 
 function abs{T,N}(_in::AFArray{Complex{T},N})
