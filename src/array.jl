@@ -316,6 +316,17 @@ else
             bcast[] = false
         end
     end
+
+    function broadcast_c!(f, ::Type{AFArray}, ::Type{AFArray}, C, A, Bs...)
+        bcast[] =  true
+        try
+            r = f(A, Bs...)
+            write_array(C, get_device_ptr(r), UInt(sizeof(r)), afDevice)
+            return r
+        finally
+            bcast[] = false
+        end
+    end
 end
 
 import Base: fill, zeros, ones

@@ -15,6 +15,8 @@ end
     c = zeros(a)
     cf = AFArray(c)
 
+    a .= a + a
+    af .= af + af
     c .= af
     cf .= c
 
