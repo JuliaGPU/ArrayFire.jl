@@ -254,7 +254,7 @@ end
 a6 = rand(Float32, 3, 3)
 af6 = AFArray(a6)
 
-for op in [:identity, :cov, :vec]
+for op in [:identity, :cov, :vec, :zeros, :ones, :transpose]
     @testset "$op" begin
         @test @eval $op(a6) ≈ Array(@inferred $op(af6))
     end
