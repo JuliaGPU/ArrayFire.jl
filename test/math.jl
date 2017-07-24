@@ -243,7 +243,7 @@ af5 = AFArray(a5)
 
 for op in [:abs, :acos, :asin, :atan, :cbrt, :ceil, :cos, :cosh,
            :exp, :expm1, :factorial, :floor,
-           :imag, :isinf, :isnan, :iszero, :lgamma, :log, :log10,
+           :imag, :isinf, :isnan, :lgamma, :log, :log10,
            :log1p, :log2, :real, :round, :sign, :signbit, :sin, :sinh, :sqrt, :tan,
            :tanh, :trunc]
     @testset "$op" begin
