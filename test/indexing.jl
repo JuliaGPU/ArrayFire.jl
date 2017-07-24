@@ -26,4 +26,8 @@ end
     @test typeof(af) == AFArray{Float64, 1}
     @test typeof(c) == Array{Float64, 1}
     @test typeof(cf) == AFArray{Float64, 1}
+
+    swap!(cf, af + af)
+    c .= cf
+    @test c == a + a
 end

@@ -353,6 +353,12 @@ ones{T,N}(::Type{AFArray{T}}, dims::NTuple{N,Int}) = constant(T(1), dims)
 ones{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(1), dims)
 ones{T,N}(a::AFArray{T,N}) = constant(T(1), size(a))
 
+export swap!
+function swap!{T,N}(a::AFArray{T,N}, b::AFArray{T,N})
+    a.arr, b.arr = b.arr, a.arr
+    a, b
+end
+
 function abs{T,N}(_in::AFArray{Complex{T},N})
     out = RefValue{af_array}(0)
     _error(ccall((:af_abs,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
