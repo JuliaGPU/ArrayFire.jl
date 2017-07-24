@@ -75,16 +75,17 @@ size(a::AFTensor) = (s = get_dims(a); (s[1],s[2],s[3],s[4]))
 size(a::AFArray, dim::Int) = get_dims(a)[dim]
 any(a::AFArray) = any_true_all(a)[1] == 1
 all(a::AFArray) = all_true_all(a)[1] == 1
-maximum{T<:Real}(a::AFArray{T}) = max_all(a)[1]
-minimum{T<:Real}(a::AFArray{T}) = min_all(a)[1]
-mean{T<:Real}(a::AFArray{T}) = mean_all(a)[1]
-std{T<:Real}(a::AFArray{T}) = sqrt(var_all(a, false)[1])
-var{T<:Real}(a::AFArray{T}) = var_all(a, false)[1]
-median{T<:Real}(a::AFArray{T}) = median_all(a)[1]
+maximum{T<:Real}(a::AFArray{T})::T = max_all(a)[1]
+minimum{T<:Real}(a::AFArray{T})::T = min_all(a)[1]
+mean{T<:Real}(a::AFArray{T})::T = mean_all(a)[1]
+std{T<:Real}(a::AFArray{T})::T = sqrt(var_all(a, false)[1])
+var{T<:Real}(a::AFArray{T})::T = var_all(a, false)[1]
+median{T<:Real}(a::AFArray{T})::T = median_all(a)[1]
+prod{T<:Real}(a::AFArray{T})::T = product_all(a)[1]
 sum{N}(a::AFArray{UInt8,N}) = UInt32(sum_all(a)[1])
 sum{N}(a::AFArray{Bool,N}) = Int64(sum_all(a)[1])
-sum{T<:Real,N}(a::AFArray{T,N}) = T(sum_all(a)[1])
-sum{T<:Complex,N}(a::AFArray{T,N}) = T(sum_all(a)...)
+sum{T<:Real,N}(a::AFArray{T,N})::T = sum_all(a)[1]
+sum{T<:Complex,N}(a::AFArray{T,N})::T = (s = sum_all(a); s[1] + s[2]im)
 
 import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=, &, |, <<, >>, xor
 
