@@ -55,7 +55,7 @@ end
 function _error(err::af_err)
     if err != 0
         if err == 101
-            error("Devise out of memory: use afgc() or @afgc to garbage collect more often")
+            error("Device out of memory: use afgc() or @afgc to garbage collect more often")
         else
             str = err_to_string(err)
             str2 = get_last_error()
