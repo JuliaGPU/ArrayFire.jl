@@ -238,6 +238,34 @@ for op in [:&, :|, :xor, :min, :max]
     @test @eval all($op.(a3, c1) .== Array(@inferred $op(af3, c1)))
 end
 
+a5 = rand(Float32, 5)
+af5 = AFArray(a5)
+
+for op in [:abs, :acos, :asin, :atan, :cbrt, :ceil, :cos, :cosh,
+           :exp, :expm1, :factorial, :floor,
+           :imag, :isinf, :isnan, :iszero, :lgamma, :log, :log10,
+           :log1p, :log2, :real, :round, :sign, :signbit, :sin, :sinh, :sqrt, :tan,
+           :tanh, :trunc]
+    @testset "$op" begin
+        @test @eval $op.(a5) ≈ Array(@inferred $op(af5))
+    end
+end
+
+a6 = rand(Float32, 3, 3)
+af6 = AFArray(a6)
+
+for op in [:identity, :cov, :vec]
+    @testset "$op" begin
+        @test @eval $op(a6) ≈ Array(@inferred $op(af6))
+    end
+end
+
+for op in [:maximum, :minimum, :sum, :prod]
+    @testset "$op" begin
+        @test @eval $op(a6) ≈ @inferred $op(af6)
+    end
+end
+
 a = AFArray([true false true])
 b = AFArray([1 2 3])
 c = AFArray([4 5 6; 7 8 9])
