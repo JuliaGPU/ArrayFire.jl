@@ -5,9 +5,23 @@ import Base: RefValue, @pure, display, show, clamp, find, cumsum, cumprod, cummi
 export constant, select, get_last_error, err_to_string, sort_index
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
 
-function afgc(threshold = 4e9)
+global const af_threshold = Ref(4*1024*1024*1024)
+global const af_gc_count = Ref(0)
+global const af_gc_frequency = Ref(256)
+
+function _afgc()
+    af_gc_count[] += 1
+    if mod(af_gc_count[], af_gc_frequency[]) == 0
+        afgc()
+    end
+end
+
+function afgc(threshold = 0)
+    if threshold != 0
+        af_threshold[] = threshold
+    end
     alloc_bytes, alloc_buffers, lock_bytes, lock_buffers =  device_mem_info()
-    if alloc_bytes > threshold
+    if alloc_bytes > af_threshold[]
         gc()
         device_gc()
     end
@@ -51,7 +65,9 @@ function __init__()
 end
 
 function _error(err::af_err)
-    if err != 0
+    if err == 0
+        _afgc()
+    else
         if err == 101
             error("GPU is out of memory, to avoid this in the future you can:
   @afgc function f(input)   # free all temporary variables inside the function scope
