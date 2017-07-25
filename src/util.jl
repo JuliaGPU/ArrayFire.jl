@@ -5,9 +5,9 @@ import Base: RefValue, @pure, display, show, clamp, find, cumsum, cumprod, cummi
 export constant, select, get_last_error, err_to_string, sort_index
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
 
-global const af_threshold = Ref(4*1024*1024*1024)
-global const af_gc_count = Ref(0)
-global const af_gc_frequency = Ref(256)
+const af_threshold = Ref(4*1024*1024*1024)
+const af_gc_count = Ref(0)
+const af_gc_frequency = Ref(256)
 
 function _afgc()
     af_gc_count[] += 1
