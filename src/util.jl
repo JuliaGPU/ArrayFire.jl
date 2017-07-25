@@ -8,9 +8,7 @@ export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
 function afgc(threshold = 4e9)
     alloc_bytes, alloc_buffers, lock_bytes, lock_buffers =  device_mem_info()
     if alloc_bytes > threshold
-        if lock_bytes > threshold
-            gc()
-        end
+        gc()
         device_gc()
     end
     nothing
@@ -55,7 +53,13 @@ end
 function _error(err::af_err)
     if err != 0
         if err == 101
-            error("Device out of memory: use afgc() or @afgc to garbage collect more often")
+            error("GPU is out of memory, to avoid this in the future you can:
+  @afgc function f(input)   # free all temporary variables inside the function scope
+  swap!(input, output)      # return AFArray in-place in @afgc function
+  @afgc a = b + c           # free all temporary arrays inside the assignment scope
+  @afgc swap!(a, b + c)     # replace with a new value, free the old and all temps
+  afgc(threshold)           # garbage collect after GPU memory usage reaches threshold
+  finalize(array)           # manually free GPU memory")
         else
             str = err_to_string(err)
             str2 = get_last_error()
