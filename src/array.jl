@@ -320,10 +320,8 @@ else
     function broadcast_c!(f, ::Type{AFArray}, ::Type{AFArray}, C, A, Bs...)
         bcast[] =  true
         try
-            r = f(A, Bs...)
-            write_array(C, get_device_ptr(r), UInt(sizeof(r)), afDevice)
-            unlock_device_ptr(r)
-            return r
+            swap!(C, f(A, Bs...))
+            return C
         finally
             bcast[] = false
         end
