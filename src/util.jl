@@ -1,6 +1,5 @@
-
-import Base: RefValue, @pure, display, show, clamp, find, cumsum, cumprod, cummin, cummax,
-    chol, abs2
+import Base: RefValue, @pure, display, show, clamp, find,
+import Base: cumsum, cumprod, cummin, cummax, chol, abs2
 
 export constant, select, get_last_error, err_to_string, sort_index
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
@@ -71,9 +70,8 @@ function _error(err::af_err)
         if err == 101
             error("GPU is out of memory, to avoid this in the future you can:
   @afgc function f(input)   # free all temporary variables inside the function scope
-  swap!(input, output)      # return AFArray in-place in @afgc function
   @afgc a = b + c           # free all temporary arrays inside the assignment scope
-  @afgc swap!(a, b + c)     # replace with a new value, free the old and all temps
+  @afgc a .= b + c          # replace with a new value, free the old and all temps
   afgc(threshold)           # garbage collect after GPU memory usage reaches threshold
   finalize(array)           # manually free GPU memory")
         else
