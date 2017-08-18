@@ -338,11 +338,11 @@ function sort_index{T,N}(_in::AFArray{T,N},dim::Integer=1,isAscending::Bool=true
     _error(ccall((:af_sort_index,af_lib),af_err,
                  (Ptr{af_array},Ptr{af_array},af_array,UInt32,Bool),
                  out,indices,_in.arr,UInt32(dim - 1),isAscending))
-    (AFArray{T,N}(out[]),AFArray{UInt32,N}(indices[]))
+    (AFArray{T,N}(out[]),AFArray{UInt32,N}(indices[])+1)
 end
 
 function sortperm{T,N}(a::AFArray{T,N}, dim::Integer=1,isAscending::Bool=true)
-    sort_index(a,dim,isAscending)[2]+1
+    sort_index(a,dim,isAscending)[2]
 end
 
 function mean{T,N}(_in::AFArray{T,N},dim::dim_t)
