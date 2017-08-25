@@ -113,3 +113,6 @@ let
     a[1,1]  = Float32(1)+Float32(2)im
     @test a[1,1] == 1.0f0 + 2.0f0im
 end
+
+# Issue https://github.com/gaika/ArrayFire.jl/issues/26
+@test im * a == complex(zeros(a), a)
