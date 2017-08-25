@@ -1,6 +1,9 @@
 a = rand(Float32, 10, 10)
 ad = AFArray(a)
 
+# Issue https://github.com/gaika/ArrayFire.jl/issues/26
+@test im * ad == complex(zeros(ad), ad)
+
 # Indexing - issue #96
 let
     b = Float32[1.,2.,3.]
@@ -113,6 +116,3 @@ let
     a[1,1]  = Float32(1)+Float32(2)im
     @test a[1,1] == 1.0f0 + 2.0f0im
 end
-
-# Issue https://github.com/gaika/ArrayFire.jl/issues/26
-@test im * ad == complex(zeros(ad), ad)
