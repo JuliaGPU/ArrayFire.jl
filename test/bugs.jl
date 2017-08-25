@@ -115,4 +115,4 @@ let
 end
 
 # Issue https://github.com/gaika/ArrayFire.jl/issues/26
-@test im * a == complex(zeros(a), a)
+@test im * ad == complex(zeros(ad), ad)
