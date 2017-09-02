@@ -285,3 +285,12 @@ sh = Array(s)
     @test Array(@inferred sort(s)) == sort(sh)
     @test Array(@inferred sortperm(s)) == sortperm(sh)
 end
+
+@testset "IR" begin
+    x = AFArray([1f0; 2f0; 3f0])
+    b = AFArray([1.; 2.])
+    @test Array(@inferred fir(b, x)) == [1f0; 4f0; 7f0]
+    a = AFArray([1f0])
+    b = AFArray{Float32}(b)
+    @test Array(@inferred iir(b, a, x)) == [1f0; 4f0; 7f0]
+end

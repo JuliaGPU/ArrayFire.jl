@@ -1,7 +1,7 @@
 import Base: RefValue, @pure, display, show, clamp, find
 import Base: cumsum, cumprod, cummin, cummax, chol, abs2
 
-export constant, select, get_last_error, err_to_string, sort_index
+export constant, select, get_last_error, err_to_string, sort_index, fir, iir
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
 
 const af_threshold = Ref(4*1024*1024*1024)
@@ -447,4 +447,16 @@ function complex{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2})
     out = RefValue{af_array}(0)
     _error(ccall((:af_cplx2,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{Complex{typed(T1,T2)},batched(N1,N2)}(out[])
+end
+
+function fir{T,N}(b::AFArray,x::AFArray{T,N})
+    y = RefValue{af_array}(0)
+    _error(ccall((:af_fir,af_lib),af_err,(Ptr{af_array},af_array,af_array),y,b.arr,x.arr))
+    AFArray{T,N}(y[])
+end
+
+function iir{T,N}(b::AFArray{T},a::AFArray{T},x::AFArray{T,N})
+    y = RefValue{af_array}(0)
+    _error(ccall((:af_iir,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_array),y,b.arr,a.arr,x.arr))
+    AFArray{T,N}(y[])
 end
