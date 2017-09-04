@@ -14,14 +14,24 @@ end
     af = AFArray(a)
     c = zeros(a)
     cf = AFArray(c)
+    df = AFArray(c)
 
     a .= a + a
-    af .= af + af
+    af .= af .+ af
+    df .= af
     c .= af
     cf .= c
 
     @test c == a
     @test af == cf
+    @test af == df
+
+    df .= a .+ a
+    @test Array(df) == a + a
+
+    a .= af .+ af
+    @test a == Array(af .+ af)
+
     @test typeof(a) == Array{Float64, 1}
     @test typeof(af) == AFArray{Float64, 1}
     @test typeof(c) == Array{Float64, 1}
@@ -29,5 +39,5 @@ end
 
     swap!(cf, af + af)
     c .= cf
-    @test c == a + a
+    @test c == Array(af + af)
 end
