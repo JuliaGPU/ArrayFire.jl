@@ -63,7 +63,7 @@ import Base: count, cov, det, div, dot, exp, expm1, factorial, fft, floor, gradi
 import Base: identity, ifft, imag, isinf, isnan, iszero, join, lgamma, log, log10, log1p, log2, lu, maximum, mean, median
 import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, select, show
 import Base: sign, signbit, sin, sinh, sort, sortperm, std, sqrt, sum, svd, tan, tanh, transpose, trunc, var, any, all
-import Base: cat, hcat, vcat, conv, max, min, sizeof, similar
+import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof
 
 similar(a::AFArray) = zeros(a)
 similar{T}(a::AFArray, ::Type{T}) = zeros(AFArray{T}, size(a))
@@ -88,6 +88,9 @@ sum{N}(a::AFArray{UInt8,N}) = UInt32(sum_all(a)[1])
 sum{N}(a::AFArray{Bool,N}) = Int64(sum_all(a)[1])
 sum{T<:Real,N}(a::AFArray{T,N})::T = sum_all(a)[1]
 sum{T<:Complex,N}(a::AFArray{T,N})::T = (s = sum_all(a); s[1] + s[2]im)
+real{T<:Real}(a::AFArray{T}) = a
+imag{T<:Real}(a::AFArray{T}) = zeros(a)
+length(a::AFArray) = prod(size(a))
 
 import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=, &, |, <<, >>, xor
 
@@ -297,6 +300,22 @@ else
         end
     end
 
+    function Base.broadcast!(::typeof(identity), a::AFArray, b::AFArray)
+        write_array(a, get_device_ptr(b), UInt(sizeof(b)), afDevice)
+        unlock_device_ptr(b)
+        b
+    end
+
+    function Base.broadcast!(::typeof(identity), a::Array, b::AFArray)
+        get_data_ptr(a, b)
+        b
+    end
+
+    function Base.broadcast!(::typeof(identity), a::AFArray, b::Array)
+        write_array(a, b, UInt(sizeof(b)), afHost)
+        b
+    end
+
     function broadcast_c!(f, ::Type{Array}, ::Type{AFArray}, C, A, Bs...)
         bcast[] =  true
         try
@@ -322,12 +341,7 @@ else
     function broadcast_c!(f, ::Type{AFArray}, ::Type{AFArray}, C, A, Bs...)
         bcast[] =  true
         try
-            if f == identity
-                write_array(C, get_device_ptr(A), UInt(sizeof(A)), afDevice)
-                unlock_device_ptr(A)
-            else
-                swap!(C, f(A, Bs...))
-            end
+            swap!(C, f(A, Bs...))
             return C
         finally
             bcast[] = false
