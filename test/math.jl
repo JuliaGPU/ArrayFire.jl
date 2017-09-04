@@ -294,3 +294,8 @@ end
     b = AFArray{Float32}(b)
     @test Array(@inferred iir(b, a, x)) == [1f0; 4f0; 7f0]
 end
+
+ss = similar(s)
+@test typeof(ss) == typeof(s)
+ss[1] = 10
+@test s[1] != 10f0 && ss[1] == 10f0
