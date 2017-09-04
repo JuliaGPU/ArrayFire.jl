@@ -66,6 +66,7 @@ import Base: sign, signbit, sin, sinh, sort, sortperm, std, sqrt, sum, svd, tan,
 import Base: cat, hcat, vcat, conv, max, min, sizeof, similar
 
 similar(a::AFArray) = zeros(a)
+similar{T}(a::AFArray, ::Type{T}) = zeros(AFArray{T}, size(a))
 sizeof(a::AFArray) = length(a) * sizeof(eltype(a))
 eltype{T,N}(a::AFArray{T,N}) = T
 ndims{T,N}(a::AFArray{T,N}) = N
