@@ -301,7 +301,7 @@ else
         end
     end
 
-    function copy!{T,N}(a::AFArray{T,N}, b::AFArray{T,N})
+    function copy!(a::AFArray, b::AFArray)
         write_array(a, get_device_ptr(b), UInt(sizeof(b)), afDevice)
         unlock_device_ptr(b)
         b
