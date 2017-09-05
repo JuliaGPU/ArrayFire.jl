@@ -77,6 +77,8 @@ size(a::AFTensor) = (s = get_dims(a); (s[1],s[2],s[3],s[4]))
 size(a::AFArray, dim::Int) = get_dims(a)[dim]
 any(a::AFArray) = any_true_all(a)[1] == 1
 all(a::AFArray) = all_true_all(a)[1] == 1
+any(f, a::AFArray) = any(f(a))
+all(f, a::AFArray) = all(f(a))
 maximum{T<:Real}(a::AFArray{T})::T = max_all(a)[1]
 minimum{T<:Real}(a::AFArray{T})::T = min_all(a)[1]
 mean{T<:Real}(a::AFArray{T})::T = mean_all(a)[1]
