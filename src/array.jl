@@ -284,6 +284,7 @@ else
     import SpecialFunctions: erf, erfc
 
     import Base.Broadcast: promote_containertype, broadcast_c, _containertype, broadcast_c!
+    import Base: broadcast!, copy!
 
     _containertype(::Type{<:AFArray}) = AFArray
 
@@ -300,18 +301,20 @@ else
         end
     end
 
-    function Base.broadcast!(::typeof(identity), a::AFArray, b::AFArray)
+    function copy!{T,N}(a::AFArray{T,N}, b::AFArray{T,N})
         write_array(a, get_device_ptr(b), UInt(sizeof(b)), afDevice)
         unlock_device_ptr(b)
         b
     end
 
-    function Base.broadcast!(::typeof(identity), a::Array, b::AFArray)
+    broadcast!(::typeof(identity), a::AFArray, b::AFArray) = copy!(a, b)
+
+    function broadcast!(::typeof(identity), a::Array, b::AFArray)
         get_data_ptr(a, b)
         b
     end
 
-    function Base.broadcast!(::typeof(identity), a::AFArray, b::Array)
+    function broadcast!(::typeof(identity), a::AFArray, b::Array)
         write_array(a, b, UInt(sizeof(b)), afHost)
         b
     end
