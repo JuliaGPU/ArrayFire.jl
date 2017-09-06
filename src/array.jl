@@ -303,13 +303,13 @@ else
         end
     end
 
-    function copy!(a::AFArray, b::AFArray)
+    copy!(a::AFArray, b::AFArray) = a.=b
+
+    function broadcast!(::typeof(identity), a::AFArray, b::AFArray)
         write_array(a, get_device_ptr(b), UInt(sizeof(b)), afDevice)
         unlock_device_ptr(b)
         b
     end
-
-    broadcast!(::typeof(identity), a::AFArray, b::AFArray) = copy!(a, b)
 
     function broadcast!(::typeof(identity), a::Array, b::AFArray)
         get_data_ptr(a, b)
