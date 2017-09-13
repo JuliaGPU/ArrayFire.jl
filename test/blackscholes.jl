@@ -1,8 +1,10 @@
 #This example has been adopted from https://github.com/IntelLabs/ParallelAccelerator.jl/blob/master/examples/black-scholes/black-scholes.jl
 
-using ArrayFire
-
-function blackscholes_serial(sptprice, strike, rate, volatility, time)
+function blackscholes_serial(sptprice,
+                             strike,
+                             rate,
+                             volatility,
+                             time)
     logterm = log10( sptprice / strike)
     powterm = .5f0 * volatility * volatility
     den = volatility * sqrt(time)
@@ -21,7 +23,7 @@ end
     return out
 end
 
-@afgc function runs(iterations)
+function runs(iterations)
     sptprice   = Float32[ 42.0 for i = 1:iterations ]
     initStrike = Float32[ 40.0 + (i / iterations) for i = 1:iterations ]
     rate       = Float32[ 0.5 for i = 1:iterations ]
@@ -34,37 +36,11 @@ end
     volatility_gpu = AFArray(volatility)
     time_gpu = AFArray(time)
 
-    tic()
     put1 = blackscholes_serial.(sptprice, initStrike, rate, volatility, time)
-    t1 = toq()
-    #    println("Serial checksum: ", sum(put1))
-    tic()
     put2 = blackscholes_serial.(sptprice_gpu, initStrike_gpu, rate_gpu, volatility_gpu, time_gpu)
     sync(put2)
-    t2 = toq()
-    #    println("Parallel checksum: ", sum(put2))
-    @assert sum(put1) ≈ sum(put2)
-    return t1, t2
+    @test sum(put1) ≈ sum(put2)
+    put2
 end
 
-function driver(pwr)
-    iterations = 10^pwr
-    srand(0)
-    blackscholes_serial.(Float32[], Float32[], Float32[], Float32[], Float32[])
-    blackscholes_serial.(AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]),
-                         AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]))
-    tserial, tp1 = runs(iterations)
-    tserial, tp2 = runs(iterations)
-    tserial, tp3 = runs(iterations)
-    tparallel = (tp1 + tp2 + tp3) / 3
-    #    println("Time taken for CPU = $tserial")
-    #    println("Time taken for GPU = $tparallel")
-    println("10^$(pwr) options:")
-    @printf("    Speedup = %.2f\n", tserial / tparallel)
-    @printf("    CPU rate = 10^%.2f opts/sec\n", log10(iterations / tserial))
-    @printf("    GPU rate = 10^%.2f opts/sec\n", log10(iterations / tparallel))
-end
-
-for k = 3:8
-    driver(k)
-end
+@inferred runs(10^3)
