@@ -1,187 +1,23 @@
+
 using ArrayFire
 using Base.Test
 
-#Basic math
-a = rand(Float32, 10, 10)
-ad = AFArray(a)
-@test sumabs2(Array(ad + 2) - (a + 2)) < 1e-6
-@test sumabs2(Array(ad .+ 2) - (a .+ 2)) < 1e-6
-@test sumabs2(Array(2 + ad) - (2 + a)) < 1e-6
-@test sumabs2(Array(2 .+ ad) - (2 .+ a)) < 1e-6
-@test sumabs2(Array(ad - 2) - (a - 2)) < 1e-6
-@test sumabs2(Array(ad .- 2) - (a .- 2)) < 1e-6
-@test sumabs2(Array(2 - ad) - (2 - a)) < 1e-6
-@test sumabs2(Array(2 .- ad) - (2 .- a)) < 1e-6
-@test sumabs2(Array(ad * 2) - (a * 2)) < 1e-6
-@test sumabs2(Array(ad .* 2) - (a .* 2)) < 1e-6
-@test sumabs2(Array(2 * ad) - (2 * a)) < 1e-6
-@test sumabs2(Array(2 .* ad) - (2 .* a)) < 1e-6
-@test sumabs2(Array(ad / 2) - (a / 2)) < 1e-6
-@test sumabs2(Array(ad ./ 2) - (a ./ 2)) < 1e-6
-@test sumabs2(Array(2 ./ ad) - (2 ./ a)) < 1e-6
-@test sumabs2(Array(ad .^ 2) - (a .^ 2)) < 1e-6
-@test sumabs2(Array(2 .^ ad) - (2 .^ a)) < 1e-6
-
-#Trig functions
-@test sumabs2(Array(sin(ad)) - sin(a)) < 1e-6
-@test sumabs2(Array(cos(ad)) - cos(a)) < 1e-6
-@test sumabs2(Array(tan(ad)) - tan(a)) < 1e-6
-@test sumabs2(Array(sinh(ad)) - sinh(a)) < 1e-6
-@test sumabs2(Array(cosh(ad)) - cosh(a)) < 1e-6
-@test sumabs2(Array(tanh(ad)) - tanh(a)) < 1e-6
-@test sumabs2(Array(atan2(ad, ad)) - atan2(a, a)) < 1e-6
-@test sumabs2(Array(atan2(ad, 2)) - atan2(a, 2)) < 1e-6
-@test sumabs2(Array(atan2(2, ad)) - atan2(2, a)) < 1e-6
-
-#Measures
-@test minimum(a) == minimum(ad)
-@test maximum(a) == maximum(ad)
-@test sumabs2(Array(maximum(ad,1)) - maximum(a,1)) < 1e-6
-@test sumabs2(Array(maximum(ad,2)) - maximum(a,2)) < 1e-6
-@test sumabs2(Array(minimum(ad,1)) - minimum(a,1)) < 1e-6
-@test sumabs2(Array(minimum(ad,2)) - minimum(a,2)) < 1e-6
-@test sumabs2(Array(max(ad,0.5f0)) - max(a,0.5f0)) < 1e-6
-@test sumabs2(Array(min(ad,0.5f0)) - min(a,0.5f0)) < 1e-6
-@test_approx_eq  mean(ad) mean(a)
-@test sumabs2(Array(mean(ad,1)) - mean(a,1)) < 1e-6
-@test sumabs2(Array(mean(ad,2)) - mean(a,2)) < 1e-6
-@test median(ad) == median(a)
-@test sumabs2(Array(median(ad,1)) - median(a,1)) < 1e-6
-@test_approx_eq var(ad) var(a)
-
-#Linalg
-@test sumabs2(Array(ad') - a') < 1e-6
-ld, ud, pd = lu(ad)
-l, u, p = lu(a)
-@test sumabs(Array(ld) - l) < 1e-5
-@test sumabs(Array(ud) - u) < 1e-5
-@test sumabs(Array(pd) - p) < 1e-5
-@test sumabs2(Array(chol(ad*ad')) - chol(a*a')) < 1e-5
-@test sumabs2(Array(ctranspose(chol(ad*ad'))) - ctranspose(chol(a*a'))) < 1e-5
-ud, sd, vtd = svd(ad)
-u, s, v = svd(a)
-@test sumabs(Array(ud) - u) < 1e-4
-@test sumabs(Array(sd) - s) < 1e-4
-@test sumabs(Array(vtd') - v) < 1e-4
-
-#Complex numbers
-@test Array(complex(ad,ad)) == complex(a,a)
-@test Array(real(complex(ad,ad))) == real(complex(a,a))
-@test Array(imag(complex(a,a))) == imag(complex(a,a))
-
-# FFT - Issue #81
-@test sumabs2(fft(a) - Array(fft(ad))) < 1e-6
-@test sumabs2(ifft(a) - Array(ifft(ad, norm_factor = 1/length(a)))) < 1e-6 # Note that the scaling factor is required because ArrayFire's IFFT is unnormalized as opposed to Julia's IFFT.
-b = rfft(a)
-bd = AFArray(b)
-@test sumabs2(irfft(b, size(a,1)) - Array(fftC2R(bd, isodd(size(a,1)), norm_factor = 1/length(a)))) < 1e-6
-@test sumabs2(rfft(a) - Array(fftR2C(ad,0,0))) < 1e-6
-
-# Inference
-@test_throws MethodError ad | ad
-
-# Deepcopy
-ac = deepcopy(ad)
-@test sumabs(ac - ad) == 0
-ac[1] = 0
-@test ac[1] != ad[1]
-
-# Indexing - issue #96
-let
-    b = Float32[1.,2.,3.]
-    bd = AFArray(b)
-    ind = AFArray([false, true, true])
-    @test Array(bd[ind]) == Float32[2., 3.]
-    ind[3] = false
-    @test Array(bd[ind]) == Float32[2.]
+@testset "Main" begin
+    include("scope.jl")
+    include("indexing.jl")
+    include("sparse.jl")
+    include("math.jl")
+    include("blackscholes.jl")
+    include("autodiff.jl")
 end
 
-# Broadcast
-if VERSION >= v"0.5.0"
-    sin(ad) == sin.(ad)
+@testset "Bugs" begin
+    include("bugs.jl")
 end
 
-# Sign - issue #109
-if VERSION >= v"0.5.0"
-    let
-        a = randn(Float32, 10)
-        ad = AFArray(a)
-        @test_throws MethodError signbit(ad)
-        @test Array(signbit.(ad)) == signbit.(a)
-    end
+@testset "FFT" begin
+    include("fft.jl")
 end
 
-# Indexing - issue #115
-let
-    x = rand(Float32, 3,3)
-    xd = AFArray(x)
-    y = x[:, [1,3]]
-    yd = xd[:, [1,3]]
-    @test sumabs2(x - Array(xd)) < 1e-6
-end
-
-# Return types of sum reduction
-let
-    for T in (Float32, Complex{Float32}, Int32, 
-              Int64, UInt32, UInt8, UInt64, Bool)
-        s = AFArray(rand(T, 10))
-        if T == UInt8
-            @test typeof(sum(s)) == UInt32
-        elseif T == Bool
-            @test typeof(sum(s)) == Int64
-        else
-            @test typeof(sum(s)) == T
-        end
-    end
-end
-
-# Issue #125
-let
-    a = rand(Float32, 5, 5)
-    ad = AFArray(a)
-    for f in (.>, .>=, .<, .<=, .==)
-        for val in (0.5f0, 1)
-            b = f(val, a)
-            bd = f(val, ad)
-            @test sumabs2(b - Array(bd)) < 1e-6
-            b = f(a, val)
-            bd = f(ad, val)
-            @test sumabs2(b - Array(bd)) < 1e-6
-        end
-    end
-end
-
-# Issue #131
-let 
-    setDevice(0)
-    for i = 1:10
-        a = rand(AFArray{Float32}, 10)
-        a + 1
-    end
-    sync(0)
-end
-
-# Issue #133
-let 
-    for sz in ((10,), (10, 10), (10, 10, 10))
-        a = rand(Complex{Float32}, sz...)
-        ad = AFArray(a)
-        fft!(a)
-        fft!(ad)
-        @test sumabs2(a - Array(ad)) < 1e-6
-    end
-end
-
-# Issue #143
-let 
-    AD = AFArray(ones(Float32,3,3)+im*ones(Float32,3,3))
-    AH = Array(AD)
-    @test sumabs2(Array(abs(AD)) - abs(AH)) < 1e-6
-end
-
-# Issue #103
-let
-    a = rand(AFArray{Complex64}, 2, 2)
-    a[1]  = Float32(1)+Float32(2)im
-    @test a[1] == 1.0f0 + 2.0f0im
-end
+gc()
+device_gc()

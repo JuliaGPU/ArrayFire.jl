@@ -1,113 +1,86 @@
 import Base: getindex, setindex!
 
-immutable seq
-    start::Cdouble
-    stop::Cdouble
-    step::Cdouble
+if VERSION < v"0.6-"
+    Base.LinearIndexing(::Type{AFArray}) = Base.LinearSlow()
+else
+    Base.IndexStyle(::Type{AFArray}) = Base.IndexCartesian()
 end
 
-function create_seq_object(r::Range)
-    start = r.start - 1
-    stop = r.stop - 1
-    if :step in fieldnames(r)
-        step = r.step
-    else
-        step = 1
+create_seq(r::UnitRange) = af_seq(r.start-1, r.stop-1, 1)
+create_seq(r::StepRange) = af_seq(r.start-1, r.stop-1, r.step)
+create_seq(i::Int) = af_seq(i-1, i-1, 1)
+create_seq(::Colon) = af_seq(1, 1, 0)
+
+set_indexer!(indexers, i, s::Union{Range,Int,Colon}) = set_seq_indexer(indexers, create_seq(s), i, true)
+set_indexer!(indexers, i, s::AFArray{Bool}) = set_array_indexer(indexers, find(s)-1, i)
+set_indexer!(indexers, i, s::AFArray) = set_array_indexer(indexers, s-1, i)
+
+function set_seq_indexer(indexer, idx, dim::dim_t, is_batch::Bool)
+    _error(ccall((:af_set_seq_indexer,af_lib),af_err,
+                 (Ptr{af_index_t},Ptr{af_seq},dim_t,Bool),
+                 indexer, RefValue{af_seq}(idx), dim, is_batch))
+end
+
+function set_array_indexer(indexer, idx, dim::dim_t)
+    _error(ccall((:af_set_array_indexer,af_lib),af_err,
+                 (Ptr{af_index_t},af_array,dim_t),
+                 indexer,idx.arr,dim))
+end
+
+function release_indexers(indexers)
+    _error(ccall((:af_release_indexers,af_lib),af_err,(Ptr{af_index_t},), indexers))
+end
+
+function assign_gen(lhs::AFArray,ndims::dim_t,indices,rhs::AFArray)
+    out = RefValue{af_array}(lhs.arr)
+    _error(ccall((:af_assign_gen,af_lib),af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t},af_array),out,lhs.arr,ndims,indices,rhs.arr))
+end
+
+function create_indexers(idx)
+    indexers = create_indexers()
+    for (i, thing) in enumerate(idx)
+        set_indexer!(indexers, i-1, thing)
     end
-    s = seq(start, stop, step)
+    indexers
 end
 
-function create_seq_object(i::Int)
-    start = i - 1
-    stop = i - 1
-    step = 1
-    s = seq(start, stop, step)
+function getindex{T}(a::AFArray{T}, idx::Union{Range,Int,Colon,AFArray}...)
+    @assert length(idx) <= length(size(a))
+    indexers = create_indexers(idx)
+    out = index_gen(a, length(idx), indexers)
+    release_indexers(indexers)
+    out
 end
 
-function create_seq_object(::Colon)
-    start = 1
-    stop = 1
-    step = 0
-    s = seq(start, stop, step)
-end
-
-immutable index
-    ptr::Ptr{Void}
-end
-
-function getindex{T}(a::AFArray{T}, idx::Union{Range,Int,Colon, AFArray}...)
-    indexers = new_ptr()
-    af_create_indexers(indexers)
-    indexers = index(indexers[])
-    set_up_index!(idx, indexers)
-    out = new_ptr()
-    n = ndims(a)
-    l = length(idx)
-    l <= n || throw(DimensionMismatch("Number of dimensions is lesser than number of indices"))
-    af_index_gen(out, a, l, indexers)
-    af_release_indexers(indexers)
-    outarr = AFArray{T}(out[])
-    if length(outarr) == 1
-        return Array(outarr)[1]
-    else
-        return outarr
-    end
-end 
-
-function getindex{T}(a::AFArray{T}, idx::AFArray...)
-    indexers = new_ptr()
-    af_create_indexers(indexers)
-    indexers = index(indexers[])
-    set_up_index!(idx, indexers)
-    out = new_ptr()
-    n = ndims(a)
-    l = length(idx)
-    l <= n || throw(DimensionMismatch("Number of dimensions is lesser than number of indices"))
-    af_index_gen(out, a, l, indexers)
-    af_release_indexers(indexers)
-    outarr = AFArray{T}(out[])
-    return outarr
-end 
-
-function set_up_index!(idx::Tuple, indexers::index)
-    for (i,thing) in enumerate(idx)
-        t = typeof(thing)
-        if t <: Range || t <: Int || t <: Colon
-            s = create_seq_object(thing)
-            af_set_seq_indexer(indexers, s, i-1, true)
-        elseif t <: AFArray{Bool}
-            _shift = find(thing) - 1
-            af_set_array_indexer(indexers, _shift, i-1)
-        elseif t <: AFArray
-            _shift = thing - 1
-            af_set_array_indexer(indexers, _shift, i-1)
-        end
-    end
+function getindex{T}(a::AFArray{T}, idx::Int...)
+    @assert length(idx) <= length(size(a))
+    indexers = create_indexers(idx)
+    out = index_gen(a, length(idx), indexers)
+    release_indexers(indexers)
+    Array(out)[1]
 end
 
 function setindex!{T,S}(lhs::AFArray{T}, rhs::AFArray{S}, idx::Union{Range,Int,Colon,AFArray}...)
-    indexers = new_ptr()
-    af_create_indexers(indexers)
-    indexers = index(indexers[])
-    set_up_index!(idx, indexers)
-    n = ndims(lhs)
-    l = length(idx)
-    rhs = convert(AFArray{T}, rhs)
-    l <= n || throw(DimensionMismatch("Number of dimensions is lesser than number of indices"))
-    af_assign_gen(pointer_from_objref(lhs), lhs, l, indexers, rhs)
-    af_release_indexers(indexers)
+    @assert length(idx) <= length(size(lhs))
+    indexers = create_indexers(idx)
+    if T == S
+        assign_gen(lhs, length(idx), indexers, rhs)
+    else
+        assign_gen(lhs, length(idx), indexers, convert(AFArray{T}, rhs))
+    end
+    release_indexers(indexers)
     rhs
 end
 
 function setindex!{T,S}(lhs::AFArray{T}, val::S, idx::Union{Range,Int,Colon,AFArray}...)
     sz = get_sizes(idx, lhs)
-    rhs = constant(T(val), sz...)
+    rhs = constant(T(val), sz)
     setindex!(lhs, rhs, idx...)
     val
 end
 
 function get_sizes(idx::Tuple, lhs::AFArray)
-    s = Array(Int, length(idx))
+    s = Array{Int}(length(idx))
     for i = 1:length(idx)
         if typeof(idx[i]) <: Range
             s[i] = length(idx[i])
@@ -119,7 +92,5 @@ function get_sizes(idx::Tuple, lhs::AFArray)
             s[i] = length(idx[i])
         end
     end
-    tuple(s...)
+    (s...)
 end
-
-Base.LinearIndexing(::Type{AFArray}) = Base.LinearSlow()
