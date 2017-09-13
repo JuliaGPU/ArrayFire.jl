@@ -60,6 +60,7 @@ function __init__()
 
     afinit()
     afinfo()
+    set_seed(rand(RandomDevice(), UInt64))
     nothing
 end
 
