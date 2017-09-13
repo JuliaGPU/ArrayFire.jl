@@ -1,7 +1,7 @@
 # ArrayFire.jl
 
-[![Build Status](https://travis-ci.org/gaika/ArrayFire.jl.svg?branch=master)](https://travis-ci.org/gaika/ArrayFire.jl)
-[![codecov](https://codecov.io/gh/gaika/ArrayFire.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/gaika/ArrayFire.jl)
+[![Build Status](https://travis-ci.org/JuliaComputing/ArrayFire.jl.svg?branch=master)](https://travis-ci.org/JuliaComputing/ArrayFire.jl)
+[![codecov](https://codecov.io/gh/JuliaComputing/ArrayFire.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaComputing/ArrayFire.jl)
 
 
 [ArrayFire](http://arrayfire.com) is a library for GPU and accelerated computing. ArrayFire.jl wraps the ArrayFire library for Julia, and provides a Julian interface.
