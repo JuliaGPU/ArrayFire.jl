@@ -42,7 +42,7 @@ function return_val(typ, arg, expr)
 end
 
 const renames = Dict("sign" => "signbit", "product" => "prod", "init" => "afinit", "info" => "afinfo",
-                     "copy_array" => "copy", "get_version" => "afversion", "eval" => "afeval",
+                     "copy_array" => "copy", "get_version" => "afversion",
                      "min" => "minimum", "max" => "maximum", "any_true" => "any", "all_true" => "all",
                      "select_scalar_l" => "select", "select_scalar_r" => "select", "replace_scalar" => "replace",
                      "is_sparse" => "issparse", "sparse_to_dense" => "full",
@@ -56,7 +56,7 @@ const ignore = Set(["example_function", "create_array", "retain_array", "get_dat
                     "randu", "randn", "set_seq_indexer", "release_indexers", "assign_gen", "join", "svd",
                     "sort", "sort_index", "mean", "mean_weighted", "var", "var_weighted",
                     "stdev", "median", "set_array_indexer", "set_seq_param_indexer", "clamp", "where",
-                    "get_scalar", "cholesky", "cplx2", "grid", "fir", "iir"])
+                    "get_scalar", "cholesky", "cplx2", "grid", "fir", "iir", "eval"])
 
 const recast = Dict(:Cint => :Integer, :UInt32 => :Integer, :Cdouble => :Real)
 

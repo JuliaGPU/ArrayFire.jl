@@ -3,6 +3,7 @@ import Base: cumsum, cumprod, cummin, cummax, chol, abs2
 
 export constant, select, get_last_error, err_to_string, sort_index, fir, iir
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
+export afeval
 
 const af_threshold = Ref(4*1024*1024*1024)
 const af_gc_count = Ref(0)
@@ -430,6 +431,11 @@ cummax(a::AFArray, dim::Int=1) = scan(a, dim, AF_BINARY_MAX, true)
 function sync(a::AFArray)
     afeval(a)
     sync(get_device_id(a))
+    a
+end
+
+function afeval(a::AFArray)
+    _error(ccall((:af_eval,af_lib),af_err,(af_array,),a.arr))
     a
 end
 
