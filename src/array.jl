@@ -33,7 +33,7 @@ end
 @compat AFVolume{T} = AFArray{T,3}
 @compat AFTensor{T} = AFArray{T,4}
 
-export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
+export AFArray, AFVector, AFMatrix, AFVolume, AFTensor, linspace
 
 import Base: Array, SparseMatrixCSC, copy, deepcopy_internal, issparse, sparse, full, complex, conj
 
@@ -63,7 +63,7 @@ import Base: count, cov, det, div, dot, exp, expm1, factorial, fft, floor, gradi
 import Base: identity, ifft, imag, isinf, isnan, iszero, join, lgamma, log, log10, log1p, log2, lu, maximum, mean, median
 import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, select, show
 import Base: sign, signbit, sin, sinh, sort, sortperm, std, sqrt, sum, svd, tan, tanh, transpose, trunc, var, any, all
-import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof
+import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof, linspace
 
 similar(a::AFArray) = zeros(a)
 similar{T}(a::AFArray, ::Type{T}) = zeros(AFArray{T}, size(a))
@@ -93,6 +93,18 @@ sum{T<:Complex,N}(a::AFArray{T,N})::T = (s = sum_all(a); s[1] + s[2]im)
 real{T<:Real}(a::AFArray{T}) = a
 imag{T<:Real}(a::AFArray{T}) = zeros(a)
 length(a::AFArray) = prod(size(a))
+range(::Type{AFArray{T}}, a::Int, b::Int) where T = range(1, [b], 0, T) + a
+function range(::Type{AFArray{T1}}, a::T2, b::T2, c::Int) where {T1, T2}
+    x = b .* ones(AFArray{T1}, c)
+    x[1] = a
+    cumsum(x)
+end
+function linspace(::Type{AFArray}, a::T, b::T, c::Int) where T
+    a_fl = Float64(a)
+    b_fl = Float64(b)
+    dx = (b_fl - a_fl)/(Float64(c) - 1.0)
+    range(AFArray{Float64}, a_fl, dx, c)
+end
 
 import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=, &, |, <<, >>, xor
 
