@@ -1,4 +1,4 @@
-import Base: RefValue, @pure, display, show, clamp, find
+import Base: RefValue, @pure, show, clamp, find
 import Base: cumsum, cumprod, cummin, cummax, chol, abs2
 
 export constant, select, get_last_error, err_to_string, sort_index, fir, iir
@@ -35,8 +35,11 @@ end
 export afgc
 
 toa(a) = issparse(a) ?  SparseMatrixCSC(a) : Array(a)
-display(a::AFArray) = (print("AFArray: "); display(toa(a)))
 show(c::IOContext, a::AFArray) = (print(c, "AFArray: "); show(c, toa(a)))
+show(io::IO, a::AFArray) = print(io, "AFArray: ", toa(a))
+function show(io::IO, m::MIME"text/plain", a::AFArray)
+    print(io, "AFArray: "); show(io, m, toa(a))
+end
 
 global const af_lib = is_unix() ? "libaf" : "af"
 global const bcast = Ref{Bool}(false)
