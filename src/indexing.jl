@@ -6,6 +6,21 @@ else
     Base.IndexStyle(::Type{AFArray}) = Base.IndexCartesian()
 end
 
+export allowslow
+
+const _allowslow = Ref(true)
+allowslow(::Type{AFArray}, flag = true) = (_allowslow[] = flag)
+function allowslow(f, ::Type{AFArray}, flag = true)
+    old, _allowslow[] = _allowslow[], flag
+    try
+        return f()
+    finally
+        _allowslow = old
+    end
+end
+
+assertslow(op) = _allowslow[] || error("$op is disabled")
+
 create_seq(r::UnitRange) = af_seq(r.start-1, r.stop-1, 1)
 create_seq(r::StepRange) = af_seq(r.start-1, r.stop-1, r.step)
 create_seq(i::Int) = af_seq(i-1, i-1, 1)
@@ -45,6 +60,7 @@ function create_indexers(idx)
 end
 
 function getindex{T}(a::AFArray{T}, idx::Union{Range,Int,Colon,AFArray}...)
+    assertslow("getindex")
     @assert length(idx) <= length(size(a))
     indexers = create_indexers(idx)
     out = index_gen(a, length(idx), indexers)
@@ -53,6 +69,7 @@ function getindex{T}(a::AFArray{T}, idx::Union{Range,Int,Colon,AFArray}...)
 end
 
 function getindex{T}(a::AFArray{T}, idx::Int...)
+    assertslow("getindex")
     @assert length(idx) <= length(size(a))
     indexers = create_indexers(idx)
     out = index_gen(a, length(idx), indexers)
@@ -61,6 +78,7 @@ function getindex{T}(a::AFArray{T}, idx::Int...)
 end
 
 function setindex!{T,S}(lhs::AFArray{T}, rhs::AFArray{S}, idx::Union{Range,Int,Colon,AFArray}...)
+    assertslow("setindex!")
     @assert length(idx) <= length(size(lhs))
     indexers = create_indexers(idx)
     if T == S
@@ -73,6 +91,7 @@ function setindex!{T,S}(lhs::AFArray{T}, rhs::AFArray{S}, idx::Union{Range,Int,C
 end
 
 function setindex!{T,S}(lhs::AFArray{T}, val::S, idx::Union{Range,Int,Colon,AFArray}...)
+    assertslow("setindex!")
     sz = get_sizes(idx, lhs)
     rhs = constant(T(val), sz)
     setindex!(lhs, rhs, idx...)

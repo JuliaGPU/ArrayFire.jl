@@ -226,6 +226,15 @@ include("benchmark.jl")
 include("nmf_benchmark.jl")
 ```
 
+Note that some operations can be slow due to Base's generic implementations. This is intentional, to enable a "make it work, then make it fast" workflow. When you're ready you can disable slow fallback methods:
+
+```julia
+julia> allowslow(AFArray, false)
+julia> xs[5]
+ERROR: getindex is disabled
+```
+
+
 ## Backends
 There are three backends in `ArrayFire.jl`:
 * CUDA Backend
