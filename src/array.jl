@@ -63,7 +63,7 @@ import Base: count, cov, det, div, dot, exp, expm1, factorial, fft, floor, gradi
 import Base: identity, ifft, imag, isinf, isnan, iszero, join, lgamma, log, log10, log1p, log2, lu, maximum, mean, median
 import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, select, show
 import Base: sign, signbit, sin, sinh, sort, sortperm, std, sqrt, sum, svd, tan, tanh, transpose, trunc, var, any, all
-import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof
+import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof, vecnorm
 
 similar(a::AFArray) = zeros(a)
 similar{T}(a::AFArray, ::Type{T}) = zeros(AFArray{T}, size(a))
