@@ -151,6 +151,15 @@ AFArray(a) - b # This works too!
 
 **A note on correctness**: Sometimes, `ArrayFire.jl` and Base Julia might return marginally different values from their computation. This is because Julia and `ArrayFire.jl` sometimes use different lower level libraries for BLAS, FFT, etc. For example, Julia uses OpenBLAS for BLAS operations, but `ArrayFire.jl` would use clBLAS for the OpenCL backend and CuBLAS for the CUDA backend, and these libraries might not always the exact same values as OpenBLAS after a certain decimal point. In light of this, users are encouraged to keep testing their codes for correctness.
 
+**A note on performance**: Some operations can be slow due to Base's generic implementations. This is intentional, to enable a "make it work, then make it fast" workflow. When you're ready you can disable slow fallback methods:
+
+```julia
+julia> allowslow(AFArray, false)
+julia> xs[5]
+ERROR: getindex is disabled
+```
+
+
 ## Supported Functions
 
 ### Creating AFArrays
@@ -225,15 +234,6 @@ The benchmark scripts are in the benchmark folder, and be run from there by doin
 include("benchmark.jl")
 include("nmf_benchmark.jl")
 ```
-
-Note that some operations can be slow due to Base's generic implementations. This is intentional, to enable a "make it work, then make it fast" workflow. When you're ready you can disable slow fallback methods:
-
-```julia
-julia> allowslow(AFArray, false)
-julia> xs[5]
-ERROR: getindex is disabled
-```
-
 
 ## Backends
 There are three backends in `ArrayFire.jl`:
