@@ -385,6 +385,10 @@ function one{T,N}(a::AFArray{T,N})
     AFArray{T,N}(out[])
 end
 
+import Base.\
+
+\(a::AFArray, b::AFArray) = solve(a, b, AF_MAT_NONE)
+
 export swap!
 function swap!{T,N}(a::AFArray{T,N}, b::AFArray{T,N})
     a.arr, b.arr = b.arr, a.arr
