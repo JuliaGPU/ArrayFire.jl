@@ -377,7 +377,7 @@ ones{T,N}(::Type{AFArray{T}}, dims::NTuple{N,Int}) = constant(T(1), dims)
 ones{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(1), dims)
 ones{T,N}(a::AFArray{T,N}) = constant(T(1), size(a))
 
-zero{T,N}(a::AFArray{T,N}) = constant(T(1), size(a))
+zero{T,N}(a::AFArray{T,N}) = constant(T(0), size(a))
 function one{T,N}(a::AFArray{T,N})
     out = RefValue{af_array}(0)
     _error(ccall((:af_identity,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),
