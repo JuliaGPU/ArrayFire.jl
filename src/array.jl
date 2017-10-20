@@ -354,7 +354,7 @@ else
     end
 end
 
-import Base: fill, zeros, ones
+import Base: fill, zeros, ones, zero, one
 
 fill(::Type{AFArray}, a, dims::Int...) = constant(a, dims)
 fill{T}(::Type{AFArray{T}}, a, dims::Int...) = constant(T(a), dims)
@@ -376,6 +376,14 @@ ones{T,N}(::Type{AFArray{T,N}}, dims::Int...) = constant(T(1), dims)
 ones{T,N}(::Type{AFArray{T}}, dims::NTuple{N,Int}) = constant(T(1), dims)
 ones{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(1), dims)
 ones{T,N}(a::AFArray{T,N}) = constant(T(1), size(a))
+
+zero{T,N}(a::AFArray{T,N}) = constant(T(1), size(a))
+function one{T,N}(a::AFArray{T,N})
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_identity,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),
+                 out,UInt32(N),[size(a)...],af_type(T)))
+    AFArray{T,N}(out[])
+end
 
 export swap!
 function swap!{T,N}(a::AFArray{T,N}, b::AFArray{T,N})
