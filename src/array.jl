@@ -61,7 +61,7 @@ deepcopy_internal{T,N}(a::AFArray{T,N}, d::ObjectIdDict) = haskey(d, a) ? d[a]::
 import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atan2, atanh, cbrt, ceil, clamp, cos, cosh
 import Base: count, cov, det, div, dot, exp, expm1, factorial, fft, floor, gradient, hypot
 import Base: identity, ifft, imag, isinf, isnan, iszero, join, lgamma, log, log10, log1p, log2, lu, maximum, mean, median
-import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, select, show
+import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, select, show, inv
 import Base: sign, signbit, sin, sinh, sort, sortperm, std, sqrt, sum, svd, tan, tanh, transpose, trunc, var, any, all
 import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof, vecnorm
 
@@ -93,6 +93,8 @@ sum{T<:Complex,N}(a::AFArray{T,N})::T = (s = sum_all(a); s[1] + s[2]im)
 real{T<:Real}(a::AFArray{T}) = a
 imag{T<:Real}(a::AFArray{T}) = zeros(a)
 length(a::AFArray) = prod(size(a))
+inv{T<:Complex,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
+inv{T<:Real,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
 
 import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=, &, |, <<, >>, xor
 
