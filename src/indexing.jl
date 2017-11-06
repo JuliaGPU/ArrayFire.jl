@@ -68,6 +68,23 @@ function getindex{T}(a::AFArray{T}, idx::Union{Range,Int,Colon,AFArray}...)
     out
 end
 
+function getindex{T}(a::AFArray{T}, idx::Union{Range,Colon,AFArray}, idx1::Int...)
+    assertslow("getindex")
+    @assert length(idx1) == length(size(a)) - 1
+    indexers = create_indexers((idx, idx1...))
+    out = index_gen_1(a, length(idx1)+1, indexers)
+    release_indexers(indexers)
+    out
+end
+
+function index_gen_1{T,N}(_in::AFArray{T,N},ndims::dim_t,indices)
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_index_gen,af_lib),
+                 af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t}),
+                 out,_in.arr,ndims,indices))
+    AFArray{T,1}(out[])
+end
+
 function getindex{T}(a::AFArray{T}, idx::Int...)
     assertslow("getindex")
     @assert length(idx) <= length(size(a))
