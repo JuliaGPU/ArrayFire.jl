@@ -9,6 +9,9 @@
     @test @inferred(a1[1,1]) == 0
     @test @inferred(a1[:, 1]) == zeros(AFArray{Float64}, 3)
     @test typeof(a1[:, 2]) == AFArray{Float64, 1}
+    a2 = rand(AFArray{Float64}, 4,3,2)
+    @test typeof(a2[:, :, 1]) == AFArray{Float64, 2}
+    @test typeof(a2[:, 1, 1]) == AFArray{Float64, 1}
 end
 
 @testset "Inplace assignment" begin
