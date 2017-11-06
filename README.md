@@ -1,6 +1,4 @@
 # ArrayFire.jl
-[![ArrayFire](http://pkg.julialang.org/badges/ArrayFire_0.5.svg)](http://pkg.julialang.org/?pkg=ArrayFire)
-[![ArrayFire](http://pkg.julialang.org/badges/ArrayFire_0.6.svg)](http://pkg.julialang.org/?pkg=ArrayFire)
 [![Build Status](https://travis-ci.org/JuliaComputing/ArrayFire.jl.svg)](https://travis-ci.org/JuliaComputing/ArrayFire.jl)
 [![codecov](https://codecov.io/gh/JuliaComputing/ArrayFire.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaComputing/ArrayFire.jl)
 
