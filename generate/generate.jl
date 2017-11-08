@@ -46,7 +46,8 @@ const renames = Dict("sign" => "signbit", "product" => "prod", "init" => "afinit
                      "min" => "minimum", "max" => "maximum", "any_true" => "any", "all_true" => "all",
                      "select_scalar_l" => "select", "select_scalar_r" => "select", "replace_scalar" => "replace",
                      "is_sparse" => "issparse", "sparse_to_dense" => "full",
-		     "cplx" => "complex", "conjg" => "conj")
+		     "cplx" => "complex", "conjg" => "conj", "diag_extract" => "diag",
+                     "diag_create" => "diagm")
 
 const ignore = Set(["example_function", "create_array", "retain_array", "get_data_ref_count", "info_string",
                     "device_info", "alloc_host", "free_host", "alloc_pinned", "free_pinned",
@@ -68,6 +69,7 @@ const maths     = Set(["add", "sub", "mul", "div", "rem", "mod", "atan2", "root"
 const floats    = Set(["signbit"])
 const c2rs      = Set(["fft_c2r", "fft2_c2r", "fft3_c2r", "real", "imag"])
 const complexes = Set(["fft_r2c", "fft2_r2c", "fft3_r2c", "complex"])
+const unknowns = Set(["diag", "diagm"])
 
 const exports = []
 
@@ -157,7 +159,7 @@ function rewrite(line::Expr)
                 n = Expr(:call, :batched, :N1, :N2)
                 push!(body, return_val(types[1], args[1], Expr(:curly, :AFArray, t, n)))
             elseif num_input_arrays == 1 && num_output_arrays == 1 && num_out == 1 &&
-                !contains(name, "_sparse") && !contains(name, "_true")
+                !contains(name, "_sparse") && !contains(name, "_true") && !(name in unknowns)
                 hdr[1] = Expr(:curly, hdr[1], :T, :N)
                 for k = 1:length(args)
                     if isa(args[k], Expr) && args[k].args[2] == :AFArray

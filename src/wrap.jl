@@ -8,11 +8,11 @@ export bilateral, bitand, bitor, bitshiftl, bitshiftr, bitxor, canny, cbrt, ceil
 export complex, conj, convolve1, convolve2, convolve2_sep, convolve3, copy, corrcoef, cos, cosh, count
 export count_all, cov, create_features, create_handle, create_indexers, create_random_engine, create_sparse_array
 export create_sparse_array_from_dense, create_sparse_array_from_ptr, create_window, delete_image_memory
-export destroy_window, det, device_array, device_gc, device_mem_info, diag_create, diag_extract, diff1
-export diff2, dilate, dilate3, div, dog, dot, dot_all, draw_hist, draw_image, draw_plot, draw_plot3, draw_plot_2d
-export draw_plot_3d, draw_plot_nd, draw_scatter, draw_scatter3, draw_scatter_2d, draw_scatter_3d, draw_scatter_nd
-export draw_surface, draw_vector_field_2d, draw_vector_field_3d, draw_vector_field_nd, eq, erf, erfc, erode
-export erode3, exp, expm1, factorial, fast, flip, floor, free_device, full, gaussian_kernel, ge, get_active_backend
+export destroy_window, det, device_array, device_gc, device_mem_info, diag, diagm, diff1, diff2, dilate
+export dilate3, div, dog, dot, dot_all, draw_hist, draw_image, draw_plot, draw_plot3, draw_plot_2d, draw_plot_3d
+export draw_plot_nd, draw_scatter, draw_scatter3, draw_scatter_2d, draw_scatter_3d, draw_scatter_nd, draw_surface
+export draw_vector_field_2d, draw_vector_field_3d, draw_vector_field_nd, eq, erf, erfc, erode, erode3
+export exp, expm1, factorial, fast, flip, floor, free_device, full, gaussian_kernel, ge, get_active_backend
 export get_available_backends, get_backend_count, get_backend_id, get_data_ptr, get_dbl_support, get_default_random_engine
 export get_device, get_device_count, get_device_id, get_device_ptr, get_dims, get_elements, get_features_num
 export get_features_orientation, get_features_score, get_features_size, get_features_xpos, get_features_ypos
@@ -932,16 +932,16 @@ function identity(ndims::Integer,dims,_type::Type)
     AFArray!(out[])
 end
 
-function diag_create{T,N}(_in::AFArray{T,N},num::Integer)
+function diagm(_in::AFArray,num::Integer)
     out = RefValue{af_array}(0)
     _error(ccall((:af_diag_create,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(num)))
-    AFArray{T,N}(out[])
+    AFArray!(out[])
 end
 
-function diag_extract{T,N}(_in::AFArray{T,N},num::Integer)
+function diag(_in::AFArray,num::Integer)
     out = RefValue{af_array}(0)
     _error(ccall((:af_diag_extract,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(num)))
-    AFArray{T,N}(out[])
+    AFArray!(out[])
 end
 
 function tile{T,N}(_in::AFArray{T,N},x::Integer,y::Integer,z::Integer,w::Integer)
