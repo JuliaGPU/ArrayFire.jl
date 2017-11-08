@@ -63,7 +63,7 @@ import Base: count, cov, det, div, dot, exp, expm1, factorial, fft, floor, gradi
 import Base: identity, ifft, imag, isinf, isnan, iszero, join, lgamma, log, log10, log1p, log2, lu, maximum, mean, median
 import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, select, show, inv
 import Base: sign, signbit, sin, sinh, sort, sortperm, std, sqrt, sum, svd, tan, tanh, transpose, trunc, var, any, all
-import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof, vecnorm
+import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof, vecnorm, linspace
 
 similar(a::AFArray) = zeros(a)
 similar{T}(a::AFArray, ::Type{T}) = zeros(AFArray{T}, size(a))
@@ -95,6 +95,18 @@ imag{T<:Real}(a::AFArray{T}) = zeros(a)
 length(a::AFArray) = prod(size(a))
 inv{T<:Complex,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
 inv{T<:Real,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
+range(::Type{AFArray{T}}, a::Integer, b::Integer) where T = range(1, [b], 0, T) + a
+function range(::Type{AFArray{T1}}, a::T2, b::T2, c::Integer) where {T1, T2}
+    x = b .* ones(AFArray{T1}, c)
+    x[1] = a
+    cumsum(x)
+end
+function linspace(::Type{AFArray}, a::T, b::T, c::Integer) where T
+    a_fl = Float64(a)
+    b_fl = Float64(b)
+    dx = (b_fl - a_fl)/(Float64(c) - 1.0)
+    range(AFArray{Float64}, a_fl, dx, c)
+end
 
 import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=, &, |, <<, >>, xor
 
