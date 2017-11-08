@@ -13,6 +13,7 @@ allowslow(AFArray, false)
     include("math.jl")
     include("blackscholes.jl")
     include("autodiff.jl")
+    include("array.jl")
 end
 
 @testset "Bugs" begin
