@@ -260,7 +260,7 @@ for op in [:identity, :cov, :vec, :zeros, :ones, :transpose]
     end
 end
 
-for op in [:maximum, :minimum, :sum, :prod, :sizeof, :var, :std, :mean, :median]
+for op in [:maximum, :minimum, :sum, :prod, :sizeof, :var, :std, :mean, :median, :vecnorm]
     @testset "$op" begin
         @test @eval $op(a6) ≈ @inferred $op(af6)
     end

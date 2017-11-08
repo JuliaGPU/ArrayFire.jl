@@ -323,9 +323,10 @@ function conv_fft{T,N}(signal::AFArray{T,N}, filter::AFArray)
     AFArray{T,N}(out[])
 end
 
-norm(a::AFArray{Float32,2})::Float32 = svd(a)[2][1]
-norm(a::AFArray{Float64,2}) = svd(a)[2][1]
+norm(a::AFArray{Float32,2})::Float32 = allowslow(AFArray) do; svd(a)[2][1]; end
+norm(a::AFArray{Float64,2}) = allowslow(AFArray) do; svd(a)[2][1]; end
 norm(a::AFArray) = norm(a, AF_NORM_EUCLID, 0, 0)
+vecnorm(a::AFArray) = norm(a, AF_NORM_EUCLID, 0, 0)
 
 function svd{T}(_in::AFArray{T,2})
     u = RefValue{af_array}(0)

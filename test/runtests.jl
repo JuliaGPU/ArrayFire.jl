@@ -2,9 +2,13 @@
 using ArrayFire
 using Base.Test
 
+allowslow(AFArray, false)
+
 @testset "Main" begin
     include("scope.jl")
-    include("indexing.jl")
+    allowslow(AFArray) do
+        include("indexing.jl")
+    end
     include("sparse.jl")
     include("math.jl")
     include("blackscholes.jl")

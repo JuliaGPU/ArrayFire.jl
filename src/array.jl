@@ -33,7 +33,7 @@ end
 @compat AFVolume{T} = AFArray{T,3}
 @compat AFTensor{T} = AFArray{T,4}
 
-export AFArray, AFVector, AFMatrix, AFVolume, AFTensor, linspace
+export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
 
 import Base: Array, SparseMatrixCSC, copy, deepcopy_internal, issparse, sparse, full, complex, conj
 
@@ -61,9 +61,9 @@ deepcopy_internal{T,N}(a::AFArray{T,N}, d::ObjectIdDict) = haskey(d, a) ? d[a]::
 import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atan2, atanh, cbrt, ceil, clamp, cos, cosh
 import Base: count, cov, det, div, dot, exp, expm1, factorial, fft, floor, gradient, hypot
 import Base: identity, ifft, imag, isinf, isnan, iszero, join, lgamma, log, log10, log1p, log2, lu, maximum, mean, median
-import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, select, show
+import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, select, show, inv
 import Base: sign, signbit, sin, sinh, sort, sortperm, std, sqrt, sum, svd, tan, tanh, transpose, trunc, var, any, all
-import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof, linspace
+import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof, vecnorm, linspace
 
 similar(a::AFArray) = zeros(a)
 similar{T}(a::AFArray, ::Type{T}) = zeros(AFArray{T}, size(a))
@@ -93,6 +93,8 @@ sum{T<:Complex,N}(a::AFArray{T,N})::T = (s = sum_all(a); s[1] + s[2]im)
 real{T<:Real}(a::AFArray{T}) = a
 imag{T<:Real}(a::AFArray{T}) = zeros(a)
 length(a::AFArray) = prod(size(a))
+inv{T<:Complex,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
+inv{T<:Real,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
 range(::Type{AFArray{T}}, a::Int, b::Int) where T = range(1, [b], 0, T) + a
 function range(::Type{AFArray{T1}}, a::T2, b::T2, c::Int) where {T1, T2}
     x = b .* ones(AFArray{T1}, c)
@@ -366,7 +368,7 @@ else
     end
 end
 
-import Base: fill, zeros, ones
+import Base: fill, zeros, ones, zero, one
 
 fill(::Type{AFArray}, a, dims::Int...) = constant(a, dims)
 fill{T}(::Type{AFArray{T}}, a, dims::Int...) = constant(T(a), dims)
@@ -388,6 +390,18 @@ ones{T,N}(::Type{AFArray{T,N}}, dims::Int...) = constant(T(1), dims)
 ones{T,N}(::Type{AFArray{T}}, dims::NTuple{N,Int}) = constant(T(1), dims)
 ones{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(1), dims)
 ones{T,N}(a::AFArray{T,N}) = constant(T(1), size(a))
+
+zero{T,N}(a::AFArray{T,N}) = constant(T(0), size(a))
+function one{T,N}(a::AFArray{T,N})
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_identity,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),
+                 out,UInt32(N),[size(a)...],af_type(T)))
+    AFArray{T,N}(out[])
+end
+
+import Base.\
+
+\(a::AFArray, b::AFArray) = solve(a, b, AF_MAT_NONE)
 
 export swap!
 function swap!{T,N}(a::AFArray{T,N}, b::AFArray{T,N})

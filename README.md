@@ -1,6 +1,4 @@
 # ArrayFire.jl
-[![ArrayFire](http://pkg.julialang.org/badges/ArrayFire_0.5.svg)](http://pkg.julialang.org/?pkg=ArrayFire)
-[![ArrayFire](http://pkg.julialang.org/badges/ArrayFire_0.6.svg)](http://pkg.julialang.org/?pkg=ArrayFire)
 [![Build Status](https://travis-ci.org/JuliaComputing/ArrayFire.jl.svg)](https://travis-ci.org/JuliaComputing/ArrayFire.jl)
 [![codecov](https://codecov.io/gh/JuliaComputing/ArrayFire.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaComputing/ArrayFire.jl)
 
@@ -150,6 +148,15 @@ AFArray(a) - b # This works too!
 ```
 
 **A note on correctness**: Sometimes, `ArrayFire.jl` and Base Julia might return marginally different values from their computation. This is because Julia and `ArrayFire.jl` sometimes use different lower level libraries for BLAS, FFT, etc. For example, Julia uses OpenBLAS for BLAS operations, but `ArrayFire.jl` would use clBLAS for the OpenCL backend and CuBLAS for the CUDA backend, and these libraries might not always the exact same values as OpenBLAS after a certain decimal point. In light of this, users are encouraged to keep testing their codes for correctness.
+
+**A note on performance**: Some operations can be slow due to Base's generic implementations. This is intentional, to enable a "make it work, then make it fast" workflow. When you're ready you can disable slow fallback methods:
+
+```julia
+julia> allowslow(AFArray, false)
+julia> xs[5]
+ERROR: getindex is disabled
+```
+
 
 ## Supported Functions
 
