@@ -95,13 +95,13 @@ imag{T<:Real}(a::AFArray{T}) = zeros(a)
 length(a::AFArray) = prod(size(a))
 inv{T<:Complex,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
 inv{T<:Real,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
-range(::Type{AFArray{T}}, a::Int, b::Int) where T = range(1, [b], 0, T) + a
-function range(::Type{AFArray{T1}}, a::T2, b::T2, c::Int) where {T1, T2}
+range(::Type{AFArray{T}}, a::Integer, b::Integer) where T = range(1, [b], 0, T) + a
+function range(::Type{AFArray{T1}}, a::T2, b::T2, c::Integer) where {T1, T2}
     x = b .* ones(AFArray{T1}, c)
     x[1] = a
     cumsum(x)
 end
-function linspace(::Type{AFArray}, a::T, b::T, c::Int) where T
+function linspace(::Type{AFArray}, a::T, b::T, c::Integer) where T
     a_fl = Float64(a)
     b_fl = Float64(b)
     dx = (b_fl - a_fl)/(Float64(c) - 1.0)
