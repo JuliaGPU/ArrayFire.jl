@@ -935,7 +935,7 @@ end
 function diag_create{T,N}(_in::AFArray{T,N},num::Integer)
     out = RefValue{af_array}(0)
     _error(ccall((:af_diag_create,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(num)))
-    AFArray{T,N}(out[])
+    AFArray{T,2}(out[])
 end
 
 function diag_extract{T,N}(_in::AFArray{T,N},num::Integer)
