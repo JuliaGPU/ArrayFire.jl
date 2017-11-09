@@ -5,10 +5,7 @@ if VERSION < v"0.6-"
             function AFArray(arr::af_array)
                 a = new(arr)
                 finalizer(a, release_array)
-                if !isempty(scopes)
-                    push!(scopes[end], a)
-                end
-                a
+                push_to_scope(a)
             end
         end
     end
@@ -20,10 +17,7 @@ else
                 # @assert get_type(arr) == T
                 a = new{T,N}(arr)
                 finalizer(a, release_array)
-                if !isempty(scopes)
-                    push!(scopes[end], a)
-                end
-                a
+                push_to_scope(a)
             end
         end")
 end

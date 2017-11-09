@@ -8,36 +8,40 @@ end
 
 global const scopes = Vector{Vector{AFArray}}()
 
-function enter_scope()
-    push!(scopes, Vector{AFArray}())
-end
+matches(arr, except::Union{Void,Number,Array{Number}}) = false
+matches(arr, except::AFArray) = arr === except
+matches(arr, except::Tuple) = any(ex -> matches(arr, ex), except)
+matches(arr, except::Any) = error("@afgc return value can be Void, Number, Array, or Tuple")
 
-matches(k, except::Union{Void,Number,Array{Number}}) = false
-matches(k, except::AFArray) = k === except
-matches(k, except) = any(x -> x === k, except)
+function push_to_scope(arr)
+    if !isempty(scopes)
+        push!(scopes[end], arr)
+    end
+    return arr
+end
 
 function leave_scope(except)
     scope = pop!(scopes)
-    for k in scope
-        if matches(k, except)
-            if !isempty(scopes)
-                push!(scopes[end], k)
-            end
+    for arr in scope
+        if matches(arr, except)
+            push_to_scope(arr)
         else
-            finalize(k)
+            finalize(arr)
         end
     end
     return except
 end
 
 function scope(f)
-    enter_scope()
+    push!(scopes, Vector{AFArray}())
+    local except
     try
-        return leave_scope(f())
+        except = f()
     catch
         leave_scope(nothing)
         rethrow()
     end
+    return leave_scope(except)
 end
 
 export @afgc
