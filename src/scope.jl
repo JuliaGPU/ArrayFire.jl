@@ -11,7 +11,7 @@ global const scopes = Vector{Vector{AFArray}}()
 matches(arr, except::Union{Void,Number,Array{<:Number}}) = false
 matches(arr, except::AFArray) = arr === except
 matches(arr, except::Tuple) = any(ex -> matches(arr, ex), except)
-matches{T}(arr, except::T) = error("@afgc return value can be Void, Number, Array, or Tuple but found $T")
+matches{T}(arr, except::T) = error("@afgc return value can be Void, Number, Array{<:Number}, or Tuple but found $T")
 
 function push_to_scope(arr)
     if !isempty(scopes)
