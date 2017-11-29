@@ -266,13 +266,16 @@ for op in [:maximum, :minimum, :sum, :prod, :sizeof, :var, :std, :mean, :median,
     end
 end
 
-a = AFArray([true false true])
-b = AFArray([1 2 3])
-c = AFArray([4 5 6; 7 8 9])
+aa = [true false true]
+bb = [1 2 3]
+cc = [4 5 6; 7 8 9]
+a = AFArray(aa)
+b = AFArray(bb)
+c = AFArray(cc)
 
-@test Array(select(a, b, c)) == [1 5 3; 1 8 3]
-@test Array(select(a, 0, b)) == [0 2 0]
-@test Array(select(a, b, 0)) == [1 0 3]
+@test Array(ifelse(a, b, c)) == ifelse.(aa, bb, cc)
+@test Array(ifelse(a, 0, b)) == ifelse.(aa, 0, bb)
+@test Array(ifelse(a, b, 0)) == ifelse.(aa, bb, 0)
 
 @test size(reshape(c, 6)) == (6, )
 @test size(reshape(c, (3,2))) == (3, 2)
@@ -301,3 +304,8 @@ ss[1] = 10
 @test s[1] != 10f0 && ss[1] == 10f0
 ssa = similar(s, Float64)
 @test typeof(ssa) == AFArray{Float64,1}
+
+aa = [NaN Inf 3]
+a = AFArray(aa)
+
+@test Array(@inferred isfinite(a)) == isfinite.(aa)

@@ -58,7 +58,7 @@ import Base: identity, ifft, imag, isinf, isnan, iszero, join, lgamma, log, log1
 import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, select, show, inv
 import Base: sign, signbit, sin, sinh, sort, sortperm, std, sqrt, sum, svd, tan, tanh, transpose, trunc, var, any, all
 import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof, vecnorm, linspace
-import Base: diag, diagm
+import Base: diag, diagm, isfinite, ifelse
 
 similar(a::AFArray) = zeros(a)
 similar{T}(a::AFArray, ::Type{T}) = zeros(AFArray{T}, size(a))
@@ -102,6 +102,7 @@ function linspace{T}(::Type{AFArray}, a::T, b::T, c::Integer)
     dx = (b_fl - a_fl)/(Float64(c) - 1.0)
     range(AFArray{Float64}, a_fl, dx, c)
 end
+isfinite(a::AFArray) = !isinf(a) & !isnan(a)
 
 import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=, &, |, <<, >>, xor
 

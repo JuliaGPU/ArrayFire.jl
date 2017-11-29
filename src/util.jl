@@ -1,7 +1,7 @@
 import Base: RefValue, @pure, show, clamp, find
 import Base: cumsum, cumprod, cummin, cummax, chol, abs2
 
-export constant, select, get_last_error, err_to_string, sort_index, fir, iir
+export constant, get_last_error, err_to_string, sort_index, fir, iir
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
 export afeval
 
@@ -262,7 +262,7 @@ function constant{N}(val::UInt,sz::NTuple{N,Int})
     AFArray{UInt,N}(arr[])
 end
 
-function select{T1,N1,T2,N2}(cond::AFArray{Bool},a::AFArray{T1,N1},b::AFArray{T2,N2})
+function ifelse{T1,N1,T2,N2}(cond::AFArray{Bool},a::AFArray{T1,N1},b::AFArray{T2,N2})
     out = RefValue{af_array}(0)
     _error(ccall((:af_select,af_lib),af_err,
                  (Ptr{af_array},af_array,af_array,af_array),
@@ -270,7 +270,7 @@ function select{T1,N1,T2,N2}(cond::AFArray{Bool},a::AFArray{T1,N1},b::AFArray{T2
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function select{T1,N1,T2<:Real}(cond::AFArray{Bool},a::AFArray{T1,N1},b::T2)
+function ifelse{T1,N1,T2<:Real}(cond::AFArray{Bool},a::AFArray{T1,N1},b::T2)
     out = RefValue{af_array}(0)
     _error(ccall((:af_select_scalar_r,af_lib),af_err,
                  (Ptr{af_array},af_array,af_array,Cdouble),
@@ -278,7 +278,7 @@ function select{T1,N1,T2<:Real}(cond::AFArray{Bool},a::AFArray{T1,N1},b::T2)
     AFArray{typed(T1,T2),N1}(out[])
 end
 
-function select{T1,T2,N2}(cond::AFArray{Bool},a::T1,b::AFArray{T2,N2})
+function ifelse{T1,T2,N2}(cond::AFArray{Bool},a::T1,b::AFArray{T2,N2})
     out = RefValue{af_array}(0)
     _error(ccall((:af_select_scalar_l,af_lib),af_err,
                  (Ptr{af_array},af_array,Cdouble,af_array),
