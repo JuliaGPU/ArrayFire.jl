@@ -49,6 +49,7 @@ end
 function assign_gen(lhs::AFArray,ndims::dim_t,indices,rhs::AFArray)
     out = RefValue{af_array}(lhs.arr)
     _error(ccall((:af_assign_gen,af_lib),af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t},af_array),out,lhs.arr,ndims,indices,rhs.arr))
+    lhs.arr = out.x
 end
 
 function create_indexers(idx)
@@ -59,18 +60,8 @@ function create_indexers(idx)
     indexers
 end
 
-function getindex{T}(a::AFArray{T}, idx::Union{Range,Int,Colon,AFArray}...)
-    assertslow("getindex")
-    @assert length(idx) <= length(size(a))
-    indexers = create_indexers(idx)
-    out = index_gen(a, length(idx), indexers)
-    release_indexers(indexers)
-    out
-end
-
 function getindex{T}(a::AFArray{T}, idx::Union{Range,Colon,AFArray}, idx1::Int...)
     assertslow("getindex")
-    @assert length(idx1) == length(size(a)) - 1
     indexers = create_indexers((idx, idx1...))
     out = index_gen_1(a, length(idx1)+1, indexers)
     release_indexers(indexers)
@@ -80,7 +71,6 @@ end
 function getindex{T}(a::AFArray{T}, idx0::Union{Range,Colon,AFArray,Int},
                      idx::Union{Range,Colon,AFArray}, idx1::Int...)
     assertslow("getindex")
-    @assert length(idx1) == length(size(a)) - 2
     indexers = create_indexers((idx0, idx, idx1...))
     out = index_gen_2(a, length(idx1)+2, indexers)
     release_indexers(indexers)
@@ -142,6 +132,8 @@ function get_sizes(idx::Tuple, lhs::AFArray)
             s[i] = size(lhs,i)
         elseif typeof(idx[i]) <: Integer
             s[i] = 1
+        elseif typeof(idx[i]) <: AFArray{Bool}
+            s[i] = sum(idx[i])
         elseif typeof(idx[i]) <: AFArray
             s[i] = length(idx[i])
         end
