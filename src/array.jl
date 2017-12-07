@@ -45,6 +45,10 @@ sparse{T,N}(a::AFArray{T,N}) = create_sparse_array_from_dense(a, AF_STORAGE_CSR)
 (::Type{Array}){T,N}(a::AFArray{T,N}) = convert_array(a)
 (::Type{AFArray}){T,N}(a::Array{T,N}) = convert_array(a)
 
+(::Type{AFArray{T,N}}){T,N}(a::SubArray{T,N}) = convert_array(Array(a))
+(::Type{AFArray{T}}){T,N}(a::SubArray{T,N}) = convert_array(Array(a))
+(::Type{AFArray}){T,N}(a::SubArray{T,N}) = convert_array(Array(a))
+
 (::Type{AFArray})(a::SparseMatrixCSC) = convert_array_to_sparse(a)
 
 (::Type{SparseMatrixCSC{T}}){T}(a::AFArray{T}) = convert_array_to_sparse(a)
