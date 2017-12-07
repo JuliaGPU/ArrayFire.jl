@@ -46,7 +46,7 @@ function release_indexers(indexers)
     _error(ccall((:af_release_indexers,af_lib),af_err,(Ptr{af_index_t},), indexers))
 end
 
-function assign_gen(lhs::AFArray,ndims::dim_t,indices,rhs::AFArray)
+function assign_gen!(lhs::AFArray,ndims::dim_t,indices,rhs::AFArray)
     out = RefValue{af_array}(lhs.arr)
     _error(ccall((:af_assign_gen,af_lib),af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t},af_array),out,lhs.arr,ndims,indices,rhs.arr))
     lhs.arr = out[]
@@ -107,9 +107,9 @@ function setindex!{T,S}(lhs::AFArray{T}, rhs::AFArray{S}, idx::Union{Range,Int,C
     @assert length(idx) <= length(size(lhs))
     indexers = create_indexers(idx)
     if T == S
-        assign_gen(lhs, length(idx), indexers, rhs)
+        assign_gen!(lhs, length(idx), indexers, rhs)
     else
-        assign_gen(lhs, length(idx), indexers, convert(AFArray{T}, rhs))
+        assign_gen!(lhs, length(idx), indexers, convert(AFArray{T}, rhs))
     end
     release_indexers(indexers)
     rhs
