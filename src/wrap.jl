@@ -2,36 +2,36 @@
 # Automatically generated using Clang.jl wrap_c, version 0.0.0
 
 
-export abs, accum, acos, acosh, add, afinfo, afinit, afversion, all, all_true_all, alloc_device, and, any
-export any_true_all, approx1, approx2, arg, array_to_string, asin, asinh, assign_seq, atan, atan2, atanh
-export bilateral, bitand, bitor, bitshiftl, bitshiftr, bitxor, canny, cbrt, ceil, cholesky_inplace, color_space
-export complex, conj, convolve1, convolve2, convolve2_sep, convolve3, copy, corrcoef, cos, cosh, count
-export count_all, cov, create_features, create_handle, create_indexers, create_random_engine, create_sparse_array
-export create_sparse_array_from_dense, create_sparse_array_from_ptr, create_window, delete_image_memory
-export destroy_window, det, device_array, device_gc, device_mem_info, diag, diagm, diff1, diff2, dilate
-export dilate3, div, dog, dot, dot_all, draw_hist, draw_image, draw_plot, draw_plot3, draw_plot_2d, draw_plot_3d
-export draw_plot_nd, draw_scatter, draw_scatter3, draw_scatter_2d, draw_scatter_3d, draw_scatter_nd, draw_surface
-export draw_vector_field_2d, draw_vector_field_3d, draw_vector_field_nd, eq, erf, erfc, erode, erode3
-export exp, expm1, factorial, fast, flip, floor, free_device, full, gaussian_kernel, ge, get_active_backend
-export get_available_backends, get_backend_count, get_backend_id, get_data_ptr, get_dbl_support, get_default_random_engine
-export get_device, get_device_count, get_device_id, get_device_ptr, get_dims, get_elements, get_features_num
-export get_features_orientation, get_features_score, get_features_size, get_features_xpos, get_features_ypos
-export get_manual_eval_flag, get_mem_step_size, get_revision, get_seed, gloh, gradient, gray2rgb, gt, hamming_matcher
-export harris, hist_equal, histogram, homography, hsv2rgb, hypot, identity, imag, imax, imax_all, imin
-export imin_all, index, index_gen, inverse, iota, is_bool, is_column, is_complex, is_double, is_empty
-export is_floating, is_image_io_available, is_integer, is_lapack_available, is_locked_array, is_real, is_realfloating
-export is_row, is_scalar, is_single, is_vector, is_window_closed, isinf, isnan, issparse, iszero, le, lgamma
-export load_image, load_image_memory, load_image_native, lock_array, lock_device_ptr, log, log10, log1p
-export log2, lookup, lower, lt, lu, lu_inplace, make_seq, match_template, matmul, max_all, maxfilt, maximum
-export maxof, mean_all, mean_all_weighted, mean_shift, medfilt, medfilt1, medfilt2, median_all, min_all
-export minfilt, minimum, minof, mod, moments, moments_all, mul, nearest_neighbour, neq, norm, not, or
-export orb, pow, pow2, print_array, print_array_gen, print_mem_info, prod, product_all, product_nan, product_nan_all
-export qr, qr_inplace, random_engine_get_seed, random_engine_get_type, random_engine_set_seed, random_engine_set_type
-export random_normal, random_uniform, range, rank, read_array_index, read_array_key, read_array_key_check
-export real, regions, release_features, release_random_engine, rem, reorder, replace, replace, resize
-export retain_features, retain_random_engine, rgb2gray, rgb2hsv, rgb2ycbcr, root, rotate, round, sat, save_array
-export save_image, save_image_memory, save_image_native, scale, scan, scan_by_key, set_axes_limits_2d
-export set_axes_limits_3d, set_axes_limits_compute, set_axes_titles, set_backend, set_default_random_engine_type
+export abs, accum, acos, acosh, add, afinfo, afinit, afversion, all, all_true_all, alloc_device, and, anisotropic_diffusion
+export any, any_true_all, approx1, approx2, arg, array_to_string, asin, asinh, assign_seq, atan, atan2
+export atanh, bilateral, bitand, bitor, bitshiftl, bitshiftr, bitxor, canny, cbrt, ceil, cholesky_inplace
+export color_space, complex, conj, convolve1, convolve2, convolve2_sep, convolve3, copy, corrcoef, cos
+export cosh, count, count_all, cov, create_features, create_handle, create_indexers, create_random_engine
+export create_sparse_array, create_sparse_array_from_dense, create_sparse_array_from_ptr, create_window
+export delete_image_memory, destroy_window, det, device_array, device_gc, device_mem_info, diag, diagm
+export diff1, diff2, dilate, dilate3, div, dog, dot, dot_all, draw_hist, draw_image, draw_plot, draw_plot3
+export draw_plot_2d, draw_plot_3d, draw_plot_nd, draw_scatter, draw_scatter3, draw_scatter_2d, draw_scatter_3d
+export draw_scatter_nd, draw_surface, draw_vector_field_2d, draw_vector_field_3d, draw_vector_field_nd
+export eq, erf, erfc, erode, erode3, exp, expm1, factorial, fast, flip, floor, free_device, full, gaussian_kernel
+export ge, get_active_backend, get_available_backends, get_backend_count, get_backend_id, get_data_ptr
+export get_dbl_support, get_default_random_engine, get_device, get_device_count, get_device_id, get_device_ptr
+export get_dims, get_elements, get_features_num, get_features_orientation, get_features_score, get_features_size
+export get_features_xpos, get_features_ypos, get_manual_eval_flag, get_mem_step_size, get_revision, get_seed
+export gloh, gradient, gray2rgb, gt, hamming_matcher, harris, hist_equal, histogram, homography, hsv2rgb
+export hypot, identity, imag, imax, imax_all, imin, imin_all, index, index_gen, inverse, iota, is_bool
+export is_column, is_complex, is_double, is_empty, is_floating, is_image_io_available, is_integer, is_lapack_available
+export is_locked_array, is_real, is_realfloating, is_row, is_scalar, is_single, is_vector, is_window_closed
+export isinf, isnan, issparse, iszero, le, lgamma, load_image, load_image_memory, load_image_native, lock_array
+export lock_device_ptr, log, log10, log1p, log2, lookup, lower, lt, lu, lu_inplace, make_seq, match_template
+export matmul, max_all, maxfilt, maximum, maxof, mean_all, mean_all_weighted, mean_shift, medfilt, medfilt1
+export medfilt2, median_all, min_all, minfilt, minimum, minof, mod, moments, moments_all, mul, nearest_neighbour
+export neq, norm, not, or, orb, pow, pow2, print_array, print_array_gen, print_mem_info, prod, product_all
+export product_nan, product_nan_all, qr, qr_inplace, random_engine_get_seed, random_engine_get_type, random_engine_set_seed
+export random_engine_set_type, random_normal, random_uniform, range, rank, read_array_index, read_array_key
+export read_array_key_check, real, regions, release_features, release_random_engine, rem, reorder, replace
+export replace, resize, retain_features, retain_random_engine, rgb2gray, rgb2hsv, rgb2ycbcr, root, rotate
+export round, sat, save_array, save_image, save_image_memory, save_image_native, scale, scan, scan_by_key
+export set_axes_limits_2d, set_axes_limits_3d, set_axes_limits_compute, set_axes_titles, set_backend, set_default_random_engine_type
 export set_device, set_intersect, set_manual_eval_flag, set_mem_step_size, set_position, set_seed, set_size
 export set_title, set_union, set_unique, set_visibility, shift, show, sift, sigmoid, signbit, sin, sinh
 export skew, sobel_operator, solve, solve_lu, sort_by_key, sparse_convert_to, sparse_get_col_idx, sparse_get_info
@@ -1506,6 +1506,12 @@ end
 function canny{T,N}(_in::AFArray{T,N},threshold_type::af_canny_threshold,low_threshold_ratio::Cfloat,high_threshold_ratio::Cfloat,sobel_window::Integer,is_fast::Bool)
     out = RefValue{af_array}(0)
     _error(ccall((:af_canny,af_lib),af_err,(Ptr{af_array},af_array,af_canny_threshold,Cfloat,Cfloat,UInt32,Bool),out,_in.arr,threshold_type,low_threshold_ratio,high_threshold_ratio,UInt32(sobel_window),is_fast))
+    AFArray{T,N}(out[])
+end
+
+function anisotropic_diffusion{T,N}(_in::AFArray{T,N},timestep::Cfloat,conductance::Cfloat,iterations::Integer,fftype::af_flux_function,diffusion_kind::af_diffusion_eq)
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_anisotropic_diffusion,af_lib),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,UInt32,af_flux_function,af_diffusion_eq),out,_in.arr,timestep,conductance,UInt32(iterations),fftype,diffusion_kind))
     AFArray{T,N}(out[])
 end
 

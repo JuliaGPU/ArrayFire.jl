@@ -6,11 +6,12 @@ export AF_BACKEND_CPU, AF_BACKEND_CUDA, AF_BACKEND_DEFAULT, AF_BACKEND_OPENCL, A
 export AF_BINARY_MIN, AF_BINARY_MUL, AF_CANNY_THRESHOLD_AUTO_OTSU, AF_CANNY_THRESHOLD_MANUAL, AF_COLORMAP_BLUE
 export AF_COLORMAP_COLORS, AF_COLORMAP_DEFAULT, AF_COLORMAP_HEAT, AF_COLORMAP_MOOD, AF_COLORMAP_RED, AF_COLORMAP_SPECTRUM
 export AF_CONNECTIVITY_4, AF_CONNECTIVITY_8, AF_CONV_AUTO, AF_CONV_DEFAULT, AF_CONV_EXPAND, AF_CONV_FREQ
-export AF_CONV_SPATIAL, AF_ERR_ARG, AF_ERR_ARR_BKND_MISMATCH, AF_ERR_BATCH, AF_ERR_DEVICE, AF_ERR_DIFF_TYPE
-export AF_ERR_DRIVER, AF_ERR_INTERNAL, AF_ERR_INVALID_ARRAY, AF_ERR_LOAD_LIB, AF_ERR_LOAD_SYM, AF_ERR_NONFREE
-export AF_ERR_NOT_CONFIGURED, AF_ERR_NOT_SUPPORTED, AF_ERR_NO_DBL, AF_ERR_NO_GFX, AF_ERR_NO_MEM, AF_ERR_RUNTIME
-export AF_ERR_SIZE, AF_ERR_TYPE, AF_ERR_UNKNOWN, AF_FIF_BMP, AF_FIF_EXR, AF_FIF_HDR, AF_FIF_ICO, AF_FIF_JNG
-export AF_FIF_JP2, AF_FIF_JPEG, AF_FIF_PNG, AF_FIF_PPM, AF_FIF_PPMRAW, AF_FIF_PSD, AF_FIF_RAW, AF_FIF_TIFF
+export AF_CONV_SPATIAL, AF_DIFFUSION_DEFAULT, AF_DIFFUSION_GRAD, AF_DIFFUSION_MCDE, AF_ERR_ARG, AF_ERR_ARR_BKND_MISMATCH
+export AF_ERR_BATCH, AF_ERR_DEVICE, AF_ERR_DIFF_TYPE, AF_ERR_DRIVER, AF_ERR_INTERNAL, AF_ERR_INVALID_ARRAY
+export AF_ERR_LOAD_LIB, AF_ERR_LOAD_SYM, AF_ERR_NONFREE, AF_ERR_NOT_CONFIGURED, AF_ERR_NOT_SUPPORTED, AF_ERR_NO_DBL
+export AF_ERR_NO_GFX, AF_ERR_NO_MEM, AF_ERR_RUNTIME, AF_ERR_SIZE, AF_ERR_TYPE, AF_ERR_UNKNOWN, AF_FIF_BMP
+export AF_FIF_EXR, AF_FIF_HDR, AF_FIF_ICO, AF_FIF_JNG, AF_FIF_JP2, AF_FIF_JPEG, AF_FIF_PNG, AF_FIF_PPM
+export AF_FIF_PPMRAW, AF_FIF_PSD, AF_FIF_RAW, AF_FIF_TIFF, AF_FLUX_DEFAULT, AF_FLUX_EXPONENTIAL, AF_FLUX_QUADRATIC
 export AF_GRAY, AF_HOMOGRAPHY_LMEDS, AF_HOMOGRAPHY_RANSAC, AF_HSV, AF_ID, AF_INTERP_BICUBIC, AF_INTERP_BICUBIC_SPLINE
 export AF_INTERP_BILINEAR, AF_INTERP_BILINEAR_COSINE, AF_INTERP_CUBIC, AF_INTERP_CUBIC_SPLINE, AF_INTERP_LINEAR
 export AF_INTERP_LINEAR_COSINE, AF_INTERP_LOWER, AF_INTERP_NEAREST, AF_LSAD, AF_LSSD, AF_MARKER_CIRCLE
@@ -24,11 +25,11 @@ export AF_RANDOM_ENGINE_MERSENNE_GP11213, AF_RANDOM_ENGINE_PHILOX, AF_RANDOM_ENG
 export AF_RANDOM_ENGINE_THREEFRY_2X32_16, AF_RGB, AF_SAD, AF_SHD, AF_SSD, AF_STORAGE_COO, AF_STORAGE_CSC
 export AF_STORAGE_CSR, AF_STORAGE_DENSE, AF_SUCCESS, AF_YCC_2020, AF_YCC_601, AF_YCC_709, AF_YCbCr, AF_ZNCC
 export AF_ZSAD, AF_ZSSD, afDevice, afHost, af_array, af_backend, af_binary_op, af_border_type, af_canny_threshold
-export af_colormap, af_connectivity, af_conv_domain, af_conv_mode, af_cspace_t, af_dtype, af_err, af_features
-export af_homography_type, af_image_format, af_interp_type, af_marker_type, af_mat_prop, af_match_type
-export af_moment_type, af_norm_type, af_random_engine, af_random_engine_type, af_someenum_t, af_source
-export af_storage, af_window, af_ycc_std, b8, c32, c64, dim_t, f32, f64, intl, s16, s32, s64, u16, u32
-export u64, u8, uintl
+export af_colormap, af_connectivity, af_conv_domain, af_conv_mode, af_cspace_t, af_diffusion_eq, af_dtype
+export af_err, af_features, af_flux_function, af_homography_type, af_image_format, af_interp_type, af_marker_type
+export af_mat_prop, af_match_type, af_moment_type, af_norm_type, af_random_engine, af_random_engine_type
+export af_someenum_t, af_source, af_storage, af_window, af_ycc_std, b8, c32, c64, dim_t, f32, f64, intl
+export s16, s32, s64, u16, u32, u64, u8, uintl
 
 const dim_t = Clonglong
 const intl = Clonglong
@@ -279,6 +280,20 @@ const AF_STORAGE_CSR = (UInt32)(1)
 const AF_STORAGE_CSC = (UInt32)(2)
 const AF_STORAGE_COO = (UInt32)(3)
 # end enum af_storage
+
+# begin enum af_flux_function
+const af_flux_function = UInt32
+const AF_FLUX_QUADRATIC = (UInt32)(1)
+const AF_FLUX_EXPONENTIAL = (UInt32)(2)
+const AF_FLUX_DEFAULT = (UInt32)(0)
+# end enum af_flux_function
+
+# begin enum af_diffusion_eq
+const af_diffusion_eq = UInt32
+const AF_DIFFUSION_GRAD = (UInt32)(1)
+const AF_DIFFUSION_MCDE = (UInt32)(2)
+const AF_DIFFUSION_DEFAULT = (UInt32)(0)
+# end enum af_diffusion_eq
 
 type af_seq
     _begin::Cdouble
