@@ -4,9 +4,9 @@ language: julia
 os:
   - linux
 julia:
-  - 0.5
-  - 0.6
-#  - nightly
+#  - 0.5
+#  - 0.6
+  - nightly
 notifications:
   email: false
 install:
