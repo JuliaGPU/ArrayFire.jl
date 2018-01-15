@@ -1,25 +1,11 @@
-if VERSION < v"0.6-"
-    @eval begin
-        type AFArray{T,N} <: AbstractArray{T,N}
-            arr::af_array
-            function AFArray(arr::af_array)
-                a = new(arr)
-                finalizer(a, release_array)
-                push_to_scope(a)
-            end
-        end
+mutable struct AFArray{T,N} <: AbstractArray{T,N}
+    arr::af_array
+    function AFArray{T,N}(arr::af_array) where {T,N}
+        # @assert get_type(arr) == T
+        a = new{T,N}(arr)
+        finalizer(a, release_array)
+        push_to_scope(a)
     end
-else
-    include_string("
-        mutable struct AFArray{T,N} <: AbstractArray{T,N}
-            arr::af_array
-            function AFArray{T,N}(arr::af_array) where {T,N}
-                # @assert get_type(arr) == T
-                a = new{T,N}(arr)
-                finalizer(a, release_array)
-                push_to_scope(a)
-            end
-        end")
 end
 
 @compat AFVector{T} = AFArray{T,1}
@@ -225,146 +211,74 @@ function reshape{T,N}(_in::AFArray{T},dims::NTuple{N,Int})
 end
 reshape(a::AFArray, t::Int...) = reshape(a, t)
 
-if VERSION < v"0.6-"
-    @eval begin
-        import Base: ./, .*, .+, .-, .^, .==, .<, .>, .<=, .>=, .!=, .<<, .>>
-            export xor
+using SpecialFunctions
+import SpecialFunctions: erf, erfc
 
-        .-{T}(a::AFArray{T})       = T(0) - a
+import Base.Broadcast: promote_containertype, broadcast_c, _containertype, broadcast_c!
+import Base: broadcast!, copy!
 
-        .+(a::Number, b::AFArray)  = add(constant(a, size(b)), b, false)
-        .-(a::Number, b::AFArray)  = sub(constant(a, size(b)), b, false)
-        .*(a::Number, b::AFArray)  = mul(constant(a, size(b)), b, false)
-        ./(a::Number, b::AFArray)  = div(constant(a, size(b)), b, false)
-        .^(a::Number, b::AFArray)  = pow(constant(a, size(b)), b, false)
-        .==(a::Number, b::AFArray) = eq(constant(a, size(b)),  b, false)
-        .<(a::Number, b::AFArray)  = lt(constant(a, size(b)),  b, false)
-        .>(a::Number, b::AFArray)  = gt(constant(a, size(b)),  b, false)
-        .!=(a::Number, b::AFArray) = neq(constant(a, size(b)), b, false)
-        .<=(a::Number, b::AFArray) = le(constant(a, size(b)),  b, false)
-        .>=(a::Number, b::AFArray) = ge(constant(a, size(b)),  b, false)
-        .<<(a::Integer, b::AFArray)  = bitshiftl(constant(a, size(b)), b, false)
-        .>>(a::Integer, b::AFArray)  = bitshiftr(constant(a, size(b)), b, false)
+_containertype(::Type{<:AFArray}) = AFArray
 
-        .+(a::AFArray, b::Number)  = add(a, constant(b, size(a)), false)
-        .-(a::AFArray, b::Number)  = sub(a, constant(b, size(a)), false)
-        .*(a::AFArray, b::Number)  = mul(a, constant(b, size(a)), false)
-        ./(a::AFArray, b::Number)  = div(a, constant(b, size(a)), false)
-        .^(a::AFArray, b::Number)  = pow(a, constant(b, size(a)), false)
-        .==(a::AFArray, b::Number) = eq(a,  constant(b, size(a)), false)
-        .<(a::AFArray, b::Number)  = lt(a,  constant(b, size(a)), false)
-        .>(a::AFArray, b::Number)  = gt(a,  constant(b, size(a)), false)
-        .!=(a::AFArray, b::Number) = neq(a, constant(b, size(a)), false)
-        .<=(a::AFArray, b::Number) = le(a,  constant(b, size(a)), false)
-        .>=(a::AFArray, b::Number) = ge(a,  constant(b, size(a)), false)
-        .<<(a::AFArray, b::Integer)  = bitshiftl(a, constant(b, size(a)), false)
-        .>>(a::AFArray, b::Integer)  = bitshiftr(a, constant(b, size(a)), false)
+promote_containertype(::Type{AFArray}, ::Type{AFArray}) = AFArray
+promote_containertype(::Type{AFArray}, ct) = AFArray
+promote_containertype(ct, ::Type{AFArray}) = AFArray
 
-        .+(a::AFArray, b::AFArray) = add(a, b, true)
-        .-(a::AFArray, b::AFArray) = sub(a, b, true)
-        .*(a::AFArray, b::AFArray) = mul(a, b, true)
-        ./(a::AFArray, b::AFArray) = div(a, b, true)
-        .^(a::AFArray, b::AFArray) = pow(a, b, true)
-        .==(a::AFArray, b::AFArray) = eq(a, b, true)
-        .<(a::AFArray, b::AFArray) = lt(a, b, true)
-        .>(a::AFArray, b::AFArray) = gt(a, b, true)
-        .!=(a::AFArray, b::AFArray) = neq(a, b, true)
-        .<=(a::AFArray, b::AFArray) = le(a, b, true)
-        .>=(a::AFArray, b::AFArray) = ge(a, b, true)
-        .<<(a::AFArray, b::AFArray)  = bitshiftl(a, b, true)
-        .>>(a::AFArray, b::AFArray)  = bitshiftr(a, b, true)
-        xor(a, b) = a $ b
+function broadcast_c(f, ::Type{AFArray}, A, Bs...)
+    bcast[] =  true
+    try
+        return f(A, Bs...)
+    finally
+        bcast[] = false
     end
-    import Base: erf, erfc, broadcast
+end
 
-    function broadcast(f, A::AFArray, Bs...)
-        bcast[] =  true
-        try
-            return f(A, Bs...)
-        finally
-            bcast[] = false
-        end
+copy!(a::AFArray, b::AFArray) = a.=b
+
+function broadcast!(::typeof(identity), a::AFArray, b::AFArray)
+    write_array(a, get_device_ptr(b), UInt(sizeof(b)), afDevice)
+    unlock_device_ptr(b)
+    b
+end
+
+function broadcast!(::typeof(identity), a::Array, b::AFArray)
+    get_data_ptr(a, b)
+    b
+end
+
+function broadcast!(::typeof(identity), a::AFArray, b::Array)
+    write_array(a, b, UInt(sizeof(b)), afHost)
+    b
+end
+
+function broadcast_c!(f, ::Type{Array}, ::Type{AFArray}, C, A, Bs...)
+    bcast[] =  true
+    try
+        r = f(A, Bs...)
+        get_data_ptr(C, r)
+        return r
+    finally
+        bcast[] = false
     end
+end
 
-    function broadcast(f, A0::Number, A::AFArray, Bs...)
-        bcast[] =  true
-        try
-            return f(A, Bs...)
-        finally
-            bcast[] = false
-        end
+function broadcast_c!(f, ::Type{AFArray}, ::Type{Array}, C, A, Bs...)
+    bcast[] =  true
+    try
+        r = f(A, Bs...)
+        write_array(C, r, UInt(sizeof(r)), afHost)
+        return r
+    finally
+        bcast[] = false
     end
+end
 
-else
-    using SpecialFunctions
-    import SpecialFunctions: erf, erfc
-
-    import Base.Broadcast: promote_containertype, broadcast_c, _containertype, broadcast_c!
-    import Base: broadcast!, copy!
-
-    _containertype(::Type{<:AFArray}) = AFArray
-
-    promote_containertype(::Type{AFArray}, ::Type{AFArray}) = AFArray
-    promote_containertype(::Type{AFArray}, ct) = AFArray
-    promote_containertype(ct, ::Type{AFArray}) = AFArray
-
-    function broadcast_c(f, ::Type{AFArray}, A, Bs...)
-        bcast[] =  true
-        try
-            return f(A, Bs...)
-        finally
-            bcast[] = false
-        end
-    end
-
-    copy!(a::AFArray, b::AFArray) = a.=b
-
-    function broadcast!(::typeof(identity), a::AFArray, b::AFArray)
-        write_array(a, get_device_ptr(b), UInt(sizeof(b)), afDevice)
-        unlock_device_ptr(b)
-        b
-    end
-
-    function broadcast!(::typeof(identity), a::Array, b::AFArray)
-        get_data_ptr(a, b)
-        b
-    end
-
-    function broadcast!(::typeof(identity), a::AFArray, b::Array)
-        write_array(a, b, UInt(sizeof(b)), afHost)
-        b
-    end
-
-    function broadcast_c!(f, ::Type{Array}, ::Type{AFArray}, C, A, Bs...)
-        bcast[] =  true
-        try
-            r = f(A, Bs...)
-            get_data_ptr(C, r)
-            return r
-        finally
-            bcast[] = false
-        end
-    end
-
-    function broadcast_c!(f, ::Type{AFArray}, ::Type{Array}, C, A, Bs...)
-        bcast[] =  true
-        try
-            r = f(A, Bs...)
-            write_array(C, r, UInt(sizeof(r)), afHost)
-            return r
-        finally
-            bcast[] = false
-        end
-    end
-
-    function broadcast_c!(f, ::Type{AFArray}, ::Type{AFArray}, C, A, Bs...)
-        bcast[] =  true
-        try
-            swap!(C, f(A, Bs...))
-            return C
-        finally
-            bcast[] = false
-        end
+function broadcast_c!(f, ::Type{AFArray}, ::Type{AFArray}, C, A, Bs...)
+    bcast[] =  true
+    try
+        swap!(C, f(A, Bs...))
+        return C
+    finally
+        bcast[] = false
     end
 end
 
