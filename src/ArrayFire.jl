@@ -1,6 +1,8 @@
 __precompile__()
 module ArrayFire
 
+using Libdl,Random,SparseArrays
+
 include("common.jl")
 include("array.jl")
 include("util.jl")
