@@ -8,10 +8,10 @@ mutable struct AFArray{T,N} <: AbstractArray{T,N}
     end
 end
 
-@compat AFVector{T} = AFArray{T,1}
-@compat AFMatrix{T} = AFArray{T,2}
-@compat AFVolume{T} = AFArray{T,3}
-@compat AFTensor{T} = AFArray{T,4}
+AFVector{T} = AFArray{T,1}
+AFMatrix{T} = AFArray{T,2}
+AFVolume{T} = AFArray{T,3}
+AFTensor{T} = AFArray{T,4}
 
 export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
 
