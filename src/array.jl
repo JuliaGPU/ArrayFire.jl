@@ -94,7 +94,7 @@ imag{T<:Real}(a::AFArray{T}) = zeros(a)
 length(a::AFArray) = prod(size(a))
 inv{T<:Complex,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
 inv{T<:Real,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
-range{T}(::Type{AFArray{T}}, a::Integer, b::Integer) = range(1, [b], 0, T) + a
+range{T}(::Type{AFArray{T}}, a::Integer, b::Integer) = range(1, [b], 0, T) + T(a)
 function range{T1, T2}(::Type{AFArray{T1}}, a::T2, b::T2, c::Integer)
     x = b .* ones(AFArray{T1}, c)
     x[1] = a
