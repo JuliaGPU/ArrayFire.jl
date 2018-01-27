@@ -3,7 +3,7 @@ import Base: cumsum, cumprod, cummin, cummax, chol, abs2
 
 export constant, get_last_error, err_to_string, sort_index, fir, iir
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
-export afeval, iota
+export afeval, iota, sortbykey
 
 const af_threshold = Ref(4*1024*1024*1024)
 const af_gc_count = Ref(0)
@@ -478,4 +478,11 @@ function iota{T,N}(dims::NTuple{N,Int}, typ::Type{T} = Int32)
                  (Ptr{af_array},UInt32,Ptr{dim_t},UInt32,Ptr{dim_t},af_dtype),
                  out,UInt32(N),[dims...],UInt32(1),[1],af_type(T)))
     AFArray{T,N}(out[])+T(1)
+end
+
+function sortbykey{T1,T2,N}(keys::AFArray{T1,N},values::AFArray{T2,N},dim::Integer,isAscending::Bool=true)
+    out_keys = RefValue{af_array}(0)
+    out_values = RefValue{af_array}(0)
+    _error(ccall((:af_sort_by_key,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,af_array,UInt32,Bool),out_keys,out_values,keys.arr,values.arr,UInt32(dim - 1),isAscending))
+    (AFArray{T1,N}(out_keys[]),AFArray{T2,N}(out_values[]))
 end
