@@ -3,7 +3,7 @@ import Base: cumsum, cumprod, cummin, cummax, chol, abs2
 
 export constant, get_last_error, err_to_string, sort_index, fir, iir
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
-export afeval
+export afeval, iota
 
 const af_threshold = Ref(4*1024*1024*1024)
 const af_gc_count = Ref(0)
@@ -470,4 +470,12 @@ function iir{T,N}(b::AFArray{T},a::AFArray{T},x::AFArray{T,N})
     y = RefValue{af_array}(0)
     _error(ccall((:af_iir,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_array),y,b.arr,a.arr,x.arr))
     AFArray{T,N}(y[])
+end
+
+function iota{T,N}(dims::NTuple{N,Int}, typ::Type{T} = Int32)
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_iota,af_lib), af_err,
+                 (Ptr{af_array},UInt32,Ptr{dim_t},UInt32,Ptr{dim_t},af_dtype),
+                 out,UInt32(N),[dims...],UInt32(1),[1],af_type(T)))
+    AFArray{T,N}(out[])+T(1)
 end
