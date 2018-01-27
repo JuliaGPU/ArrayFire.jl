@@ -49,8 +49,10 @@ end
 function assign_gen!(lhs::AFArray,ndims::dim_t,indices,rhs::AFArray)
     out = RefValue{af_array}(lhs.arr)
     _error(ccall((:af_assign_gen,af_lib),af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t},af_array),out,lhs.arr,ndims,indices,rhs.arr))
-    release_array(lhs)
-    lhs.arr = out[]
+    if lhs.arr != out[]
+        release_array(lhs)
+        lhs.arr = out[]
+    end
 end
 
 function create_indexers(idx)
