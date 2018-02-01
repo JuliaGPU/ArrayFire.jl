@@ -352,7 +352,7 @@ function sort_index{T,N}(_in::AFArray{T,N},dim::Integer=1,isAscending::Bool=true
     _error(ccall((:af_sort_index,af_lib),af_err,
                  (Ptr{af_array},Ptr{af_array},af_array,UInt32,Bool),
                  out,indices,_in.arr,UInt32(dim - 1),isAscending))
-    (AFArray{T,N}(out[]),AFArray{UInt32,N}(indices[])+1)
+    (AFArray{T,N}(out[]),AFArray{UInt32,N}(indices[])+UInt32(1))
 end
 
 function sortperm{T,N}(a::AFArray{T,N}, dim::Integer=1,isAscending::Bool=true)
@@ -424,7 +424,11 @@ end
 function find{T,N}(_in::AFArray{T,N})
     idx = RefValue{af_array}(0)
     _error(ccall((:af_where,af_lib),af_err,(Ptr{af_array},af_array),idx,_in.arr))
-    AFArray{Int32,N}(idx[])+1
+    out = AFArray{UInt32,1}(idx[])
+    if length(out) > 0
+        out = out + UInt32(1)
+    end
+    return out
 end
 
 cumsum(a::AFArray, dim::Int=1) = scan(a, dim, AF_BINARY_ADD, true)

@@ -27,8 +27,8 @@ create_seq(i::Int) = af_seq(i-1, i-1, 1)
 create_seq(::Colon) = af_seq(1, 1, 0)
 
 set_indexer!(indexers, i, s::Union{Range,Int,Colon}) = set_seq_indexer(indexers, create_seq(s), i, true)
-set_indexer!(indexers, i, s::AFArray{Bool}) = set_array_indexer(indexers, find(s)-1, i)
-set_indexer!(indexers, i, s::AFArray) = set_array_indexer(indexers, s-1, i)
+set_indexer!(indexers, i, s::AFArray{Bool}) = set_array_indexer(indexers, find(s)-UInt32(1), i)
+set_indexer!(indexers, i, s::AFArray) = set_array_indexer(indexers, s-UInt32(1), i)
 
 function set_seq_indexer(indexer, idx, dim::dim_t, is_batch::Bool)
     _error(ccall((:af_set_seq_indexer,af_lib),af_err,
@@ -58,7 +58,7 @@ end
 function create_indexers(idx)
     indexers = create_indexers()
     for (i, thing) in enumerate(idx)
-        set_indexer!(indexers, i-1, thing)
+        set_indexer!(indexers, i-UInt32(1), thing)
     end
     indexers
 end
