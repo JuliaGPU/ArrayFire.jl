@@ -1,6 +1,7 @@
 
 using ArrayFire
 using Base.Test
+using Libdl,Random,SparseArrays,LinearAlgebra
 
 allowslow(AFArray, false)
 
