@@ -89,7 +89,7 @@ end
 
 @pure batched(n1, n2) = max(n1, n2)
 
-function typed{T1,T2}(::Type{T1},::Type{T2})
+function typed(::Type{T1},::Type{T2}) where {T1,T2}
     if T1 == T2
         return T1
     elseif T1 == Complex{Float64} || T2 == Complex{Float64}
@@ -169,12 +169,12 @@ function get_type(arr::af_array)
     af_jltype(_type[])
 end
 
-function check_type_numdims{T,N}(arr::AFArray{T,N})
+function check_type_numdims(arr::AFArray{T,N}) where {T,N}
     @assert get_type(arr) == T "type mismatch: $(get_type(arr)) != $T"
     @assert get_numdims(arr) == N "dims mismatch: $(get_numdims(arr)) != $N"
 end
 
-function convert_array{T,N}(data::AbstractArray{T,N})
+function convert_array(data::AbstractArray{T,N}) where {T,N}
     arr = RefValue{af_array}(0)
     sz = size(data)
     _error(ccall((:af_create_array,af_lib),af_err,
@@ -183,7 +183,7 @@ function convert_array{T,N}(data::AbstractArray{T,N})
     AFArray{T,N}(arr[])
 end
 
-function convert_array{T,N}(a::AFArray{T,N})
+function convert_array(a::AFArray{T,N}) where {T,N}
     if issparse(a)
         a = full(a)
     end
@@ -213,7 +213,7 @@ function convert_array_to_sparse(a::AFArray)
     end
 end
 
-function recast_array{T1,N,T2}(::Type{AFArray{T1}},_in::AFArray{T2,N})
+function recast_array(::Type{AFArray{T1}},_in::AFArray{T2,N}) where {T1,N,T2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_cast,af_lib),af_err,
                  (Ptr{af_array},af_array,af_dtype),out,_in.arr,af_type(T1)))
@@ -222,7 +222,7 @@ end
 
 AFArray!(arr::af_array) = AFArray{get_type(arr), get_numdims(arr)}(arr)
 
-function constant{T<:Real,N}(val::T,sz::NTuple{N,Int})
+function constant(val::T,sz::NTuple{N,Int}) where {T<:Real,N}
     arr = RefValue{af_array}(0)
     _error(ccall((:af_constant,af_lib),af_err,
                  (Ptr{af_array},Cdouble,UInt32,Ptr{dim_t},af_dtype),
@@ -230,7 +230,7 @@ function constant{T<:Real,N}(val::T,sz::NTuple{N,Int})
     AFArray{T,N}(arr[])
 end
 
-function constant{N}(val::Complex{Bool},sz::NTuple{N,Int})
+function constant(val::Complex{Bool},sz::NTuple{N,Int}) where {N}
     arr = RefValue{af_array}(0)
     _error(ccall((:af_constant_complex,af_lib),af_err,
                  (Ptr{af_array},Cdouble,Cdouble,UInt32,Ptr{dim_t},af_dtype),
@@ -238,7 +238,7 @@ function constant{N}(val::Complex{Bool},sz::NTuple{N,Int})
     AFArray{Complex{Float32},N}(arr[])
 end
 
-function constant{T<:Complex,N}(val::T,sz::NTuple{N,Int})
+function constant(val::T,sz::NTuple{N,Int}) where {T<:Complex,N}
     arr = RefValue{af_array}(0)
     _error(ccall((:af_constant_complex,af_lib),af_err,
                  (Ptr{af_array},Cdouble,Cdouble,UInt32,Ptr{dim_t},af_dtype),
@@ -246,7 +246,7 @@ function constant{T<:Complex,N}(val::T,sz::NTuple{N,Int})
     AFArray{T,N}(arr[])
 end
 
-function constant{N}(val::Int,sz::NTuple{N,Int})
+function constant(val::Int,sz::NTuple{N,Int}) where {N}
     arr = RefValue{af_array}(0)
     _error(ccall((:af_constant_long,af_lib),af_err,
                  (Ptr{af_array},intl,UInt32,Ptr{dim_t}),
@@ -254,7 +254,7 @@ function constant{N}(val::Int,sz::NTuple{N,Int})
     AFArray{Int,N}(arr[])
 end
 
-function constant{N}(val::UInt,sz::NTuple{N,Int})
+function constant(val::UInt,sz::NTuple{N,Int}) where {N}
     arr = RefValue{af_array}(0)
     _error(ccall((:af_constant_ulong,af_lib),af_err,
                  (Ptr{af_array},uintl,UInt32,Ptr{dim_t}),
@@ -262,7 +262,7 @@ function constant{N}(val::UInt,sz::NTuple{N,Int})
     AFArray{UInt,N}(arr[])
 end
 
-function ifelse{T1,N1,T2,N2}(cond::AFArray{Bool},a::AFArray{T1,N1},b::AFArray{T2,N2})
+function ifelse(cond::AFArray{Bool},a::AFArray{T1,N1},b::AFArray{T2,N2}) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_select,af_lib),af_err,
                  (Ptr{af_array},af_array,af_array,af_array),
@@ -270,7 +270,7 @@ function ifelse{T1,N1,T2,N2}(cond::AFArray{Bool},a::AFArray{T1,N1},b::AFArray{T2
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function ifelse{T1,N1,T2<:Real}(cond::AFArray{Bool},a::AFArray{T1,N1},b::T2)
+function ifelse(cond::AFArray{Bool},a::AFArray{T1,N1},b::T2) where {T1,N1,T2<:Real}
     out = RefValue{af_array}(0)
     _error(ccall((:af_select_scalar_r,af_lib),af_err,
                  (Ptr{af_array},af_array,af_array,Cdouble),
@@ -278,7 +278,7 @@ function ifelse{T1,N1,T2<:Real}(cond::AFArray{Bool},a::AFArray{T1,N1},b::T2)
     AFArray{typed(T1,T2),N1}(out[])
 end
 
-function ifelse{T1,T2,N2}(cond::AFArray{Bool},a::T1,b::AFArray{T2,N2})
+function ifelse(cond::AFArray{Bool},a::T1,b::AFArray{T2,N2}) where {T1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_select_scalar_l,af_lib),af_err,
                  (Ptr{af_array},af_array,Cdouble,af_array),
@@ -297,7 +297,7 @@ function get_last_error()
     unsafe_string(msg[])
 end
 
-function cat{T,N1,N2}(dim::Integer,first::AFArray{T,N1},second::AFArray{T,N2})
+function cat(dim::Integer,first::AFArray{T,N1},second::AFArray{T,N2}) where {T,N1,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_join,af_lib),af_err,
                  (Ptr{af_array},Cint,af_array,af_array),
@@ -308,7 +308,7 @@ end
 hcat(first::AFArray, second::AFArray) = cat(2, first, second)
 vcat(first::AFArray, second::AFArray) = cat(1, first, second)
 
-function conv{T,N}(signal::AFArray{T,N}, filter::AFArray)
+function conv(signal::AFArray{T,N}, filter::AFArray) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_convolve1,af_lib),af_err,
                  (Ptr{af_array},af_array,af_array,af_conv_mode,af_conv_domain),
@@ -316,7 +316,7 @@ function conv{T,N}(signal::AFArray{T,N}, filter::AFArray)
     AFArray{T,N}(out[])
 end
 
-function conv_fft{T,N}(signal::AFArray{T,N}, filter::AFArray)
+function conv_fft(signal::AFArray{T,N}, filter::AFArray) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_fft_convolve1,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_conv_mode),
                  out,signal.arr,filter.arr,AF_CONV_EXPAND))
@@ -328,7 +328,7 @@ norm(a::AFArray{Float64,2}) = allowslow(AFArray) do; svd(a)[2][1]; end
 norm(a::AFArray) = norm(a, AF_NORM_EUCLID, 0, 0)
 vecnorm(a::AFArray) = norm(a, AF_NORM_EUCLID, 0, 0)
 
-function svd{T}(_in::AFArray{T,2})
+function svd(_in::AFArray{T,2}) where {T}
     u = RefValue{af_array}(0)
     s = RefValue{af_array}(0)
     vt = RefValue{af_array}(0)
@@ -338,7 +338,7 @@ function svd{T}(_in::AFArray{T,2})
     (AFArray{T,2}(u[]),AFArray{T,1}(s[]),AFArray{T,2}(vt[]))
 end
 
-function sort{T,N}(_in::AFArray{T,N},dim::Integer=1,isAscending::Bool=true)
+function sort(_in::AFArray{T,N},dim::Integer=1,isAscending::Bool=true) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sort,af_lib),af_err,
                  (Ptr{af_array},af_array,UInt32,Bool),
@@ -346,7 +346,7 @@ function sort{T,N}(_in::AFArray{T,N},dim::Integer=1,isAscending::Bool=true)
     AFArray{T,N}(out[])
 end
 
-function sort_index{T,N}(_in::AFArray{T,N},dim::Integer=1,isAscending::Bool=true)
+function sort_index(_in::AFArray{T,N},dim::Integer=1,isAscending::Bool=true) where {T,N}
     out = RefValue{af_array}(0)
     indices = RefValue{af_array}(0)
     _error(ccall((:af_sort_index,af_lib),af_err,
@@ -355,18 +355,18 @@ function sort_index{T,N}(_in::AFArray{T,N},dim::Integer=1,isAscending::Bool=true
     (AFArray{T,N}(out[]),AFArray{UInt32,N}(indices[])+UInt32(1))
 end
 
-function sortperm{T,N}(a::AFArray{T,N}, dim::Integer=1,isAscending::Bool=true)
+function sortperm(a::AFArray{T,N}, dim::Integer=1,isAscending::Bool=true) where {T,N}
     sort_index(a,dim,isAscending)[2]
 end
 
-function mean{T,N}(_in::AFArray{T,N},dim::dim_t)
+function mean(_in::AFArray{T,N},dim::dim_t) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_mean,af_lib),af_err,(Ptr{af_array},af_array,dim_t),
                  out,_in.arr,dim-1))
     AFArray{T,N}(out[])
 end
 
-function mean_weighted{T,N}(_in::AFArray{T,N},weights::AFArray,dim::dim_t)
+function mean_weighted(_in::AFArray{T,N},weights::AFArray,dim::dim_t) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_mean_weighted,af_lib),af_err,
                  (Ptr{af_array},af_array,af_array,dim_t),
@@ -374,7 +374,7 @@ function mean_weighted{T,N}(_in::AFArray{T,N},weights::AFArray,dim::dim_t)
     AFArray{T,N}(out[])
 end
 
-function var{T,N}(_in::AFArray{T,N},isbiased::Bool,dim::dim_t)
+function var(_in::AFArray{T,N},isbiased::Bool,dim::dim_t) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_var,af_lib),af_err,
                  (Ptr{af_array},af_array,Bool,dim_t),
@@ -382,7 +382,7 @@ function var{T,N}(_in::AFArray{T,N},isbiased::Bool,dim::dim_t)
     AFArray{T,N}(out[])
 end
 
-function var_weighted{T,N}(_in::AFArray{T,N},weights::AFArray,dim::dim_t)
+function var_weighted(_in::AFArray{T,N},weights::AFArray,dim::dim_t) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_var_weighted,af_lib),af_err,
                  (Ptr{af_array},af_array,af_array,dim_t),
@@ -390,14 +390,14 @@ function var_weighted{T,N}(_in::AFArray{T,N},weights::AFArray,dim::dim_t)
     AFArray{T,N}(out[])
 end
 
-function stdev{T,N}(_in::AFArray{T,N},dim::dim_t)
+function stdev(_in::AFArray{T,N},dim::dim_t) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_stdev,af_lib),af_err,
                  (Ptr{af_array},af_array,dim_t),out,_in.arr,dim-1))
     AFArray{T,N}(out[])
 end
 
-function median{T,N}(_in::AFArray{T,N},dim::dim_t)
+function median(_in::AFArray{T,N},dim::dim_t) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_median,af_lib),af_err,
                  (Ptr{af_array},af_array,dim_t),
@@ -413,7 +413,7 @@ function set_seq_param_indexer(_begin::Real,_end::Real,step::Real,dim::dim_t,is_
     indexer[]
 end
 
-function clamp{T1,N1,T2,N2}(_in::AFArray{T1,N1},lo::AFArray{T2,N2},hi::AFArray{T2,N2})
+function clamp(_in::AFArray{T1,N1},lo::AFArray{T2,N2},hi::AFArray{T2,N2}) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_clamp,af_lib),af_err,
                  (Ptr{af_array},af_array,af_array,af_array,Bool),
@@ -421,7 +421,7 @@ function clamp{T1,N1,T2,N2}(_in::AFArray{T1,N1},lo::AFArray{T2,N2},hi::AFArray{T
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function find{T,N}(_in::AFArray{T,N})
+function find(_in::AFArray{T,N}) where {T,N}
     idx = RefValue{af_array}(0)
     _error(ccall((:af_where,af_lib),af_err,(Ptr{af_array},af_array),idx,_in.arr))
     out = AFArray{UInt32,1}(idx[])
@@ -447,7 +447,7 @@ function afeval(a::AFArray)
     a
 end
 
-function chol{T,N}(_in::AFArray{T,N},is_upper::Bool=false)
+function chol(_in::AFArray{T,N},is_upper::Bool=false) where {T,N}
     out = RefValue{af_array}(0)
     info = RefValue{Cint}(0)
     _error(ccall((:af_cholesky,af_lib),af_err,(Ptr{af_array},Ptr{Cint},af_array,Bool),out,info,_in.arr,is_upper))
@@ -457,26 +457,26 @@ end
 abs2{T<:Real}(a::AFArray{T}) = a.*a
 abs2{T<:Complex}(a::AFArray{T}) = (r = real(a); i = imag(a); r.*r+i.*i)
 
-function complex{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2})
+function complex(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2}) where {T1,N1,T2,N2}
     batch = bcast[]
     out = RefValue{af_array}(0)
     _error(ccall((:af_cplx2,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{Complex{typed(T1,T2)},batched(N1,N2)}(out[])
 end
 
-function fir{T,N}(b::AFArray,x::AFArray{T,N})
+function fir(b::AFArray,x::AFArray{T,N}) where {T,N}
     y = RefValue{af_array}(0)
     _error(ccall((:af_fir,af_lib),af_err,(Ptr{af_array},af_array,af_array),y,b.arr,x.arr))
     AFArray{T,N}(y[])
 end
 
-function iir{T,N}(b::AFArray{T},a::AFArray{T},x::AFArray{T,N})
+function iir(b::AFArray{T},a::AFArray{T},x::AFArray{T,N}) where {T,N}
     y = RefValue{af_array}(0)
     _error(ccall((:af_iir,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_array),y,b.arr,a.arr,x.arr))
     AFArray{T,N}(y[])
 end
 
-function iota{T,N}(dims::NTuple{N,Int}, typ::Type{T} = Int32)
+function iota(dims::NTuple{N,Int}, typ::Type{T} = Int32) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_iota,af_lib), af_err,
                  (Ptr{af_array},UInt32,Ptr{dim_t},UInt32,Ptr{dim_t},af_dtype),
@@ -484,7 +484,7 @@ function iota{T,N}(dims::NTuple{N,Int}, typ::Type{T} = Int32)
     AFArray{T,N}(out[])+T(1)
 end
 
-function sortbykey{T1,T2,N}(keys::AFArray{T1,N},values::AFArray{T2,N},dim::Integer,isAscending::Bool=true)
+function sortbykey(keys::AFArray{T1,N},values::AFArray{T2,N},dim::Integer,isAscending::Bool=true) where {T1,T2,N}
     out_keys = RefValue{af_array}(0)
     out_values = RefValue{af_array}(0)
     _error(ccall((:af_sort_by_key,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,af_array,UInt32,Bool),out_keys,out_values,keys.arr,values.arr,UInt32(dim - 1),isAscending))

@@ -40,55 +40,55 @@ export sum, sum_all, sum_nan, sum_nan_all, susan, svd_inplace, sync, tan, tanh, 
 export transform_coordinates, translate, transpose_inplace, trunc, unlock_array, unlock_device_ptr, unwrap
 export upper, var_all, var_all_weighted, wrap, write_array, ycbcr2rgb
 
-function sum{T,N}(_in::AFArray{T,N},dim::Integer)
+function sum(_in::AFArray{T,N},dim::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sum,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
-function sum_nan{T,N}(_in::AFArray{T,N},dim::Integer,nanval::Real)
+function sum_nan(_in::AFArray{T,N},dim::Integer,nanval::Real) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sum_nan,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in.arr,Cint(dim - 1),Cdouble(nanval)))
     AFArray{T,N}(out[])
 end
 
-function prod{T,N}(_in::AFArray{T,N},dim::Integer)
+function prod(_in::AFArray{T,N},dim::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_product,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
-function product_nan{T,N}(_in::AFArray{T,N},dim::Integer,nanval::Real)
+function product_nan(_in::AFArray{T,N},dim::Integer,nanval::Real) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_product_nan,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cdouble),out,_in.arr,Cint(dim - 1),Cdouble(nanval)))
     AFArray{T,N}(out[])
 end
 
-function minimum{T,N}(_in::AFArray{T,N},dim::Integer)
+function minimum(_in::AFArray{T,N},dim::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_min,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
-function maximum{T,N}(_in::AFArray{T,N},dim::Integer)
+function maximum(_in::AFArray{T,N},dim::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_max,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
-function all{T,N}(_in::AFArray{T,N},dim::Integer)
+function all(_in::AFArray{T,N},dim::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_all_true,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
-function any{T,N}(_in::AFArray{T,N},dim::Integer)
+function any(_in::AFArray{T,N},dim::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_any_true,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
-function count{T,N}(_in::AFArray{T,N},dim::Integer)
+function count(_in::AFArray{T,N},dim::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_count,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
@@ -187,13 +187,13 @@ function imax_all(_in::AFArray)
     (real[],imag[],idx[])
 end
 
-function accum{T,N}(_in::AFArray{T,N},dim::Integer)
+function accum(_in::AFArray{T,N},dim::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_accum,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
-function scan{T,N}(_in::AFArray{T,N},dim::Integer,op::af_binary_op,inclusive_scan::Bool)
+function scan(_in::AFArray{T,N},dim::Integer,op::af_binary_op,inclusive_scan::Bool) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_scan,af_lib),af_err,(Ptr{af_array},af_array,Cint,af_binary_op,Bool),out,_in.arr,Cint(dim - 1),op,inclusive_scan))
     AFArray{T,N}(out[])
@@ -205,13 +205,13 @@ function scan_by_key(key::AFArray,_in::AFArray,dim::Integer,op::af_binary_op,inc
     AFArray!(out[])
 end
 
-function diff1{T,N}(_in::AFArray{T,N},dim::Integer)
+function diff1(_in::AFArray{T,N},dim::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_diff1,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
 end
 
-function diff2{T,N}(_in::AFArray{T,N},dim::Integer)
+function diff2(_in::AFArray{T,N},dim::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_diff2,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
     AFArray{T,N}(out[])
@@ -224,7 +224,7 @@ function sort_by_key(keys::AFArray,values::AFArray,dim::Integer,isAscending::Boo
     (AFArray!(out_keys[]),AFArray!(out_values[]))
 end
 
-function set_unique{T,N}(_in::AFArray{T,N},is_sorted::Bool)
+function set_unique(_in::AFArray{T,N},is_sorted::Bool) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_set_unique,af_lib),af_err,(Ptr{af_array},af_array,Bool),out,_in.arr,is_sorted))
     AFArray{T,N}(out[])
@@ -242,403 +242,403 @@ function set_intersect(first::AFArray,second::AFArray,is_unique::Bool)
     AFArray!(out[])
 end
 
-function add{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function add(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_add,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function sub{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function sub(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sub,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function mul{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function mul(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_mul,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function div{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function div(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_div,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function lt{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function lt(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_lt,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{Bool,batched(N1,N2)}(out[])
 end
 
-function gt{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function gt(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_gt,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{Bool,batched(N1,N2)}(out[])
 end
 
-function le{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function le(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_le,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{Bool,batched(N1,N2)}(out[])
 end
 
-function ge{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function ge(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_ge,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{Bool,batched(N1,N2)}(out[])
 end
 
-function eq{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function eq(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_eq,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{Bool,batched(N1,N2)}(out[])
 end
 
-function neq{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function neq(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_neq,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{Bool,batched(N1,N2)}(out[])
 end
 
-function and{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function and(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_and,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{Bool,batched(N1,N2)}(out[])
 end
 
-function or{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function or(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_or,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{Bool,batched(N1,N2)}(out[])
 end
 
-function not{T,N}(_in::AFArray{T,N})
+function not(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_not,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{Bool,N}(out[])
 end
 
-function bitand{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function bitand(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_bitand,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function bitor{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function bitor(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_bitor,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function bitxor{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function bitxor(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_bitxor,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function bitshiftl{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function bitshiftl(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_bitshiftl,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function bitshiftr{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function bitshiftr(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_bitshiftr,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function minof{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function minof(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_minof,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function maxof{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function maxof(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_maxof,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function rem{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function rem(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_rem,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function mod{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function mod(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_mod,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function abs{T,N}(_in::AFArray{T,N})
+function abs(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_abs,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function arg{T,N}(_in::AFArray{T,N})
+function arg(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_arg,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function signbit{T,N}(_in::AFArray{T,N})
+function signbit(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sign,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{Float32,N}(out[])
 end
 
-function round{T,N}(_in::AFArray{T,N})
+function round(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_round,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function trunc{T,N}(_in::AFArray{T,N})
+function trunc(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_trunc,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function floor{T,N}(_in::AFArray{T,N})
+function floor(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_floor,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function ceil{T,N}(_in::AFArray{T,N})
+function ceil(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_ceil,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function hypot{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function hypot(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_hypot,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function sin{T,N}(_in::AFArray{T,N})
+function sin(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sin,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function cos{T,N}(_in::AFArray{T,N})
+function cos(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_cos,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function tan{T,N}(_in::AFArray{T,N})
+function tan(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_tan,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function asin{T,N}(_in::AFArray{T,N})
+function asin(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_asin,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function acos{T,N}(_in::AFArray{T,N})
+function acos(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_acos,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function atan{T,N}(_in::AFArray{T,N})
+function atan(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_atan,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function atan2{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function atan2(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_atan2,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function complex{T,N}(_in::AFArray{T,N})
+function complex(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_cplx,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{Complex{T},N}(out[])
 end
 
-function real{T,N}(_in::AFArray{Complex{T},N})
+function real(_in::AFArray{Complex{T},N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_real,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function imag{T,N}(_in::AFArray{Complex{T},N})
+function imag(_in::AFArray{Complex{T},N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_imag,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function conj{T,N}(_in::AFArray{T,N})
+function conj(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_conjg,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function sinh{T,N}(_in::AFArray{T,N})
+function sinh(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sinh,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function cosh{T,N}(_in::AFArray{T,N})
+function cosh(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_cosh,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function tanh{T,N}(_in::AFArray{T,N})
+function tanh(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_tanh,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function asinh{T,N}(_in::AFArray{T,N})
+function asinh(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_asinh,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function acosh{T,N}(_in::AFArray{T,N})
+function acosh(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_acosh,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function atanh{T,N}(_in::AFArray{T,N})
+function atanh(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_atanh,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function root{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function root(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_root,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function pow{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool)
+function pow(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},batch::Bool) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_pow,af_lib),af_err,(Ptr{af_array},af_array,af_array,Bool),out,lhs.arr,rhs.arr,batch))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function pow2{T,N}(_in::AFArray{T,N})
+function pow2(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_pow2,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function exp{T,N}(_in::AFArray{T,N})
+function exp(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_exp,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function sigmoid{T,N}(_in::AFArray{T,N})
+function sigmoid(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sigmoid,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function expm1{T,N}(_in::AFArray{T,N})
+function expm1(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_expm1,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function erf{T,N}(_in::AFArray{T,N})
+function erf(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_erf,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function erfc{T,N}(_in::AFArray{T,N})
+function erfc(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_erfc,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function log{T,N}(_in::AFArray{T,N})
+function log(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_log,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function log1p{T,N}(_in::AFArray{T,N})
+function log1p(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_log1p,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function log10{T,N}(_in::AFArray{T,N})
+function log10(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_log10,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function log2{T,N}(_in::AFArray{T,N})
+function log2(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_log2,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function sqrt{T,N}(_in::AFArray{T,N})
+function sqrt(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sqrt,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function cbrt{T,N}(_in::AFArray{T,N})
+function cbrt(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_cbrt,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function factorial{T,N}(_in::AFArray{T,N})
+function factorial(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_factorial,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function tgamma{T,N}(_in::AFArray{T,N})
+function tgamma(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_tgamma,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function lgamma{T,N}(_in::AFArray{T,N})
+function lgamma(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_lgamma,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function iszero{T,N}(_in::AFArray{T,N})
+function iszero(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_iszero,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{Bool,N}(out[])
 end
 
-function isinf{T,N}(_in::AFArray{T,N})
+function isinf(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_isinf,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{Bool,N}(out[])
 end
 
-function isnan{T,N}(_in::AFArray{T,N})
+function isnan(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_isnan,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{Bool,N}(out[])
@@ -698,7 +698,7 @@ function get_revision()
     ccall((:af_get_revision,af_lib),Cstring,())
 end
 
-function index{T,N}(_in::AFArray{T,N},ndims::Integer,index)
+function index(_in::AFArray{T,N},ndims::Integer,index) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_index,af_lib),af_err,(Ptr{af_array},af_array,UInt32,Ptr{af_seq}),out,_in.arr,UInt32(ndims),index))
     AFArray{T,N}(out[])
@@ -716,7 +716,7 @@ function assign_seq(lhs::AFArray,ndims::Integer,indices,rhs::AFArray)
     AFArray!(out[])
 end
 
-function index_gen{T,N}(_in::AFArray{T,N},ndims::dim_t,indices)
+function index_gen(_in::AFArray{T,N},ndims::dim_t,indices) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_index_gen,af_lib),af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t}),out,_in.arr,ndims,indices))
     AFArray{T,N}(out[])
@@ -734,7 +734,7 @@ function create_handle(ndims::Integer,dims,_type::Type)
     AFArray!(arr[])
 end
 
-function copy{T,N}(_in::AFArray{T,N})
+function copy(_in::AFArray{T,N}) where {T,N}
     arr = RefValue{af_array}(0)
     _error(ccall((:af_copy_array,af_lib),af_err,(Ptr{af_array},af_array),arr,_in.arr))
     AFArray{T,N}(arr[])
@@ -891,13 +891,13 @@ function get_device_id(_in::AFArray)
     device[]
 end
 
-function matmul{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},optLhs::af_mat_prop,optRhs::af_mat_prop)
+function matmul(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},optLhs::af_mat_prop,optRhs::af_mat_prop) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_matmul,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_mat_prop,af_mat_prop),out,lhs.arr,rhs.arr,optLhs,optRhs))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function dot{T1,N1,T2,N2}(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},optLhs::af_mat_prop,optRhs::af_mat_prop)
+function dot(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2},optLhs::af_mat_prop,optRhs::af_mat_prop) where {T1,N1,T2,N2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_dot,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_mat_prop,af_mat_prop),out,lhs.arr,rhs.arr,optLhs,optRhs))
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
@@ -944,37 +944,37 @@ function diag(_in::AFArray,num::Integer)
     AFArray!(out[])
 end
 
-function tile{T,N}(_in::AFArray{T,N},x::Integer,y::Integer,z::Integer,w::Integer)
+function tile(_in::AFArray{T,N},x::Integer,y::Integer,z::Integer,w::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_tile,af_lib),af_err,(Ptr{af_array},af_array,UInt32,UInt32,UInt32,UInt32),out,_in.arr,UInt32(x),UInt32(y),UInt32(z),UInt32(w)))
     AFArray{T,N}(out[])
 end
 
-function reorder{T,N}(_in::AFArray{T,N},x::Integer,y::Integer,z::Integer,w::Integer)
+function reorder(_in::AFArray{T,N},x::Integer,y::Integer,z::Integer,w::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_reorder,af_lib),af_err,(Ptr{af_array},af_array,UInt32,UInt32,UInt32,UInt32),out,_in.arr,UInt32(x),UInt32(y),UInt32(z),UInt32(w)))
     AFArray{T,N}(out[])
 end
 
-function shift{T,N}(_in::AFArray{T,N},x::Integer,y::Integer,z::Integer,w::Integer)
+function shift(_in::AFArray{T,N},x::Integer,y::Integer,z::Integer,w::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_shift,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cint,Cint,Cint),out,_in.arr,Cint(x),Cint(y),Cint(z),Cint(w)))
     AFArray{T,N}(out[])
 end
 
-function flip{T,N}(_in::AFArray{T,N},dim::Integer)
+function flip(_in::AFArray{T,N},dim::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_flip,af_lib),af_err,(Ptr{af_array},af_array,UInt32),out,_in.arr,UInt32(dim - 1)))
     AFArray{T,N}(out[])
 end
 
-function lower{T,N}(_in::AFArray{T,N},is_unit_diag::Bool)
+function lower(_in::AFArray{T,N},is_unit_diag::Bool) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_lower,af_lib),af_err,(Ptr{af_array},af_array,Bool),out,_in.arr,is_unit_diag))
     AFArray{T,N}(out[])
 end
 
-function upper{T,N}(_in::AFArray{T,N},is_unit_diag::Bool)
+function upper(_in::AFArray{T,N},is_unit_diag::Bool) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_upper,af_lib),af_err,(Ptr{af_array},af_array,Bool),out,_in.arr,is_unit_diag))
     AFArray{T,N}(out[])
@@ -1310,7 +1310,7 @@ function is_image_io_available()
     out[]
 end
 
-function resize{T,N}(_in::AFArray{T,N},odim0::dim_t,odim1::dim_t,method::af_interp_type)
+function resize(_in::AFArray{T,N},odim0::dim_t,odim1::dim_t,method::af_interp_type) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_resize,af_lib),af_err,(Ptr{af_array},af_array,dim_t,dim_t,af_interp_type),out,_in.arr,odim0,odim1,method))
     AFArray{T,N}(out[])
@@ -1322,37 +1322,37 @@ function transform(_in::AFArray,transform::AFArray,odim0::dim_t,odim1::dim_t,met
     AFArray!(out[])
 end
 
-function transform_coordinates{T,N}(tf::AFArray{T,N},d0::Cfloat,d1::Cfloat)
+function transform_coordinates(tf::AFArray{T,N},d0::Cfloat,d1::Cfloat) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_transform_coordinates,af_lib),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat),out,tf.arr,d0,d1))
     AFArray{T,N}(out[])
 end
 
-function rotate{T,N}(_in::AFArray{T,N},theta::Cfloat,crop::Bool,method::af_interp_type)
+function rotate(_in::AFArray{T,N},theta::Cfloat,crop::Bool,method::af_interp_type) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_rotate,af_lib),af_err,(Ptr{af_array},af_array,Cfloat,Bool,af_interp_type),out,_in.arr,theta,crop,method))
     AFArray{T,N}(out[])
 end
 
-function translate{T,N}(_in::AFArray{T,N},trans0::Cfloat,trans1::Cfloat,odim0::dim_t,odim1::dim_t,method::af_interp_type)
+function translate(_in::AFArray{T,N},trans0::Cfloat,trans1::Cfloat,odim0::dim_t,odim1::dim_t,method::af_interp_type) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_translate,af_lib),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,dim_t,dim_t,af_interp_type),out,_in.arr,trans0,trans1,odim0,odim1,method))
     AFArray{T,N}(out[])
 end
 
-function scale{T,N}(_in::AFArray{T,N},scale0::Cfloat,scale1::Cfloat,odim0::dim_t,odim1::dim_t,method::af_interp_type)
+function scale(_in::AFArray{T,N},scale0::Cfloat,scale1::Cfloat,odim0::dim_t,odim1::dim_t,method::af_interp_type) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_scale,af_lib),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,dim_t,dim_t,af_interp_type),out,_in.arr,scale0,scale1,odim0,odim1,method))
     AFArray{T,N}(out[])
 end
 
-function skew{T,N}(_in::AFArray{T,N},skew0::Cfloat,skew1::Cfloat,odim0::dim_t,odim1::dim_t,method::af_interp_type,inverse::Bool)
+function skew(_in::AFArray{T,N},skew0::Cfloat,skew1::Cfloat,odim0::dim_t,odim1::dim_t,method::af_interp_type,inverse::Bool) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_skew,af_lib),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,dim_t,dim_t,af_interp_type,Bool),out,_in.arr,skew0,skew1,odim0,odim1,method,inverse))
     AFArray{T,N}(out[])
 end
 
-function histogram{T,N}(_in::AFArray{T,N},nbins::Integer,minval::Real,maxval::Real)
+function histogram(_in::AFArray{T,N},nbins::Integer,minval::Real,maxval::Real) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_histogram,af_lib),af_err,(Ptr{af_array},af_array,UInt32,Cdouble,Cdouble),out,_in.arr,UInt32(nbins),Cdouble(minval),Cdouble(maxval)))
     AFArray{T,N}(out[])
@@ -1382,31 +1382,31 @@ function erode3(_in::AFArray,mask::AFArray)
     AFArray!(out[])
 end
 
-function bilateral{T,N}(_in::AFArray{T,N},spatial_sigma::Cfloat,chromatic_sigma::Cfloat,isColor::Bool)
+function bilateral(_in::AFArray{T,N},spatial_sigma::Cfloat,chromatic_sigma::Cfloat,isColor::Bool) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_bilateral,af_lib),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,Bool),out,_in.arr,spatial_sigma,chromatic_sigma,isColor))
     AFArray{T,N}(out[])
 end
 
-function mean_shift{T,N}(_in::AFArray{T,N},spatial_sigma::Cfloat,chromatic_sigma::Cfloat,iter::Integer,is_color::Bool)
+function mean_shift(_in::AFArray{T,N},spatial_sigma::Cfloat,chromatic_sigma::Cfloat,iter::Integer,is_color::Bool) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_mean_shift,af_lib),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,UInt32,Bool),out,_in.arr,spatial_sigma,chromatic_sigma,UInt32(iter),is_color))
     AFArray{T,N}(out[])
 end
 
-function minfilt{T,N}(_in::AFArray{T,N},wind_length::dim_t,wind_width::dim_t,edge_pad::af_border_type)
+function minfilt(_in::AFArray{T,N},wind_length::dim_t,wind_width::dim_t,edge_pad::af_border_type) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_minfilt,af_lib),af_err,(Ptr{af_array},af_array,dim_t,dim_t,af_border_type),out,_in.arr,wind_length,wind_width,edge_pad))
     AFArray{T,N}(out[])
 end
 
-function maxfilt{T,N}(_in::AFArray{T,N},wind_length::dim_t,wind_width::dim_t,edge_pad::af_border_type)
+function maxfilt(_in::AFArray{T,N},wind_length::dim_t,wind_width::dim_t,edge_pad::af_border_type) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_maxfilt,af_lib),af_err,(Ptr{af_array},af_array,dim_t,dim_t,af_border_type),out,_in.arr,wind_length,wind_width,edge_pad))
     AFArray{T,N}(out[])
 end
 
-function regions{T,N}(_in::AFArray{T,N},connectivity::af_connectivity,ty::Type)
+function regions(_in::AFArray{T,N},connectivity::af_connectivity,ty::Type) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_regions,af_lib),af_err,(Ptr{af_array},af_array,af_connectivity,af_dtype),out,_in.arr,connectivity,af_type(ty)))
     AFArray{T,N}(out[])
@@ -1419,13 +1419,13 @@ function sobel_operator(img::AFArray,ker_size::Integer)
     (AFArray!(dx[]),AFArray!(dy[]))
 end
 
-function rgb2gray{T,N}(_in::AFArray{T,N},rPercent::Cfloat,gPercent::Cfloat,bPercent::Cfloat)
+function rgb2gray(_in::AFArray{T,N},rPercent::Cfloat,gPercent::Cfloat,bPercent::Cfloat) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_rgb2gray,af_lib),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,Cfloat),out,_in.arr,rPercent,gPercent,bPercent))
     AFArray{T,N}(out[])
 end
 
-function gray2rgb{T,N}(_in::AFArray{T,N},rFactor::Cfloat,gFactor::Cfloat,bFactor::Cfloat)
+function gray2rgb(_in::AFArray{T,N},rFactor::Cfloat,gFactor::Cfloat,bFactor::Cfloat) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_gray2rgb,af_lib),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,Cfloat),out,_in.arr,rFactor,gFactor,bFactor))
     AFArray{T,N}(out[])
@@ -1443,55 +1443,55 @@ function gaussian_kernel(rows::Integer,cols::Integer,sigma_r::Real,sigma_c::Real
     AFArray!(out[])
 end
 
-function hsv2rgb{T,N}(_in::AFArray{T,N})
+function hsv2rgb(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_hsv2rgb,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function rgb2hsv{T,N}(_in::AFArray{T,N})
+function rgb2hsv(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_rgb2hsv,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function color_space{T,N}(image::AFArray{T,N},to::af_cspace_t,from::af_cspace_t)
+function color_space(image::AFArray{T,N},to::af_cspace_t,from::af_cspace_t) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_color_space,af_lib),af_err,(Ptr{af_array},af_array,af_cspace_t,af_cspace_t),out,image.arr,to,from))
     AFArray{T,N}(out[])
 end
 
-function unwrap{T,N}(_in::AFArray{T,N},wx::dim_t,wy::dim_t,sx::dim_t,sy::dim_t,px::dim_t,py::dim_t,is_column::Bool)
+function unwrap(_in::AFArray{T,N},wx::dim_t,wy::dim_t,sx::dim_t,sy::dim_t,px::dim_t,py::dim_t,is_column::Bool) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_unwrap,af_lib),af_err,(Ptr{af_array},af_array,dim_t,dim_t,dim_t,dim_t,dim_t,dim_t,Bool),out,_in.arr,wx,wy,sx,sy,px,py,is_column))
     AFArray{T,N}(out[])
 end
 
-function wrap{T,N}(_in::AFArray{T,N},ox::dim_t,oy::dim_t,wx::dim_t,wy::dim_t,sx::dim_t,sy::dim_t,px::dim_t,py::dim_t,is_column::Bool)
+function wrap(_in::AFArray{T,N},ox::dim_t,oy::dim_t,wx::dim_t,wy::dim_t,sx::dim_t,sy::dim_t,px::dim_t,py::dim_t,is_column::Bool) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_wrap,af_lib),af_err,(Ptr{af_array},af_array,dim_t,dim_t,dim_t,dim_t,dim_t,dim_t,dim_t,dim_t,Bool),out,_in.arr,ox,oy,wx,wy,sx,sy,px,py,is_column))
     AFArray{T,N}(out[])
 end
 
-function sat{T,N}(_in::AFArray{T,N})
+function sat(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sat,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function ycbcr2rgb{T,N}(_in::AFArray{T,N},standard::af_ycc_std)
+function ycbcr2rgb(_in::AFArray{T,N},standard::af_ycc_std) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_ycbcr2rgb,af_lib),af_err,(Ptr{af_array},af_array,af_ycc_std),out,_in.arr,standard))
     AFArray{T,N}(out[])
 end
 
-function rgb2ycbcr{T,N}(_in::AFArray{T,N},standard::af_ycc_std)
+function rgb2ycbcr(_in::AFArray{T,N},standard::af_ycc_std) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_rgb2ycbcr,af_lib),af_err,(Ptr{af_array},af_array,af_ycc_std),out,_in.arr,standard))
     AFArray{T,N}(out[])
 end
 
-function moments{T,N}(_in::AFArray{T,N},moment::af_moment_type)
+function moments(_in::AFArray{T,N},moment::af_moment_type) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_moments,af_lib),af_err,(Ptr{af_array},af_array,af_moment_type),out,_in.arr,moment))
     AFArray{T,N}(out[])
@@ -1503,13 +1503,13 @@ function moments_all(_in::AFArray,moment::af_moment_type)
     out[]
 end
 
-function canny{T,N}(_in::AFArray{T,N},threshold_type::af_canny_threshold,low_threshold_ratio::Cfloat,high_threshold_ratio::Cfloat,sobel_window::Integer,is_fast::Bool)
+function canny(_in::AFArray{T,N},threshold_type::af_canny_threshold,low_threshold_ratio::Cfloat,high_threshold_ratio::Cfloat,sobel_window::Integer,is_fast::Bool) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_canny,af_lib),af_err,(Ptr{af_array},af_array,af_canny_threshold,Cfloat,Cfloat,UInt32,Bool),out,_in.arr,threshold_type,low_threshold_ratio,high_threshold_ratio,UInt32(sobel_window),is_fast))
     AFArray{T,N}(out[])
 end
 
-function anisotropic_diffusion{T,N}(_in::AFArray{T,N},timestep::Cfloat,conductance::Cfloat,iterations::Integer,fftype::af_flux_function,diffusion_kind::af_diffusion_eq)
+function anisotropic_diffusion(_in::AFArray{T,N},timestep::Cfloat,conductance::Cfloat,iterations::Integer,fftype::af_flux_function,diffusion_kind::af_diffusion_eq) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_anisotropic_diffusion,af_lib),af_err,(Ptr{af_array},af_array,Cfloat,Cfloat,UInt32,af_flux_function,af_diffusion_eq),out,_in.arr,timestep,conductance,UInt32(iterations),fftype,diffusion_kind))
     AFArray{T,N}(out[])
@@ -1531,7 +1531,7 @@ function lu(_in::AFArray)
     (AFArray!(lower[]),AFArray!(upper[]),AFArray!(pivot[]))
 end
 
-function lu_inplace{T,N}(_in::AFArray{T,N},is_lapack_piv::Bool)
+function lu_inplace(_in::AFArray{T,N},is_lapack_piv::Bool) where {T,N}
     pivot = RefValue{af_array}(0)
     _error(ccall((:af_lu_inplace,af_lib),af_err,(Ptr{af_array},af_array,Bool),pivot,_in.arr,is_lapack_piv))
     AFArray{T,N}(pivot[])
@@ -1545,7 +1545,7 @@ function qr(_in::AFArray)
     (AFArray!(q[]),AFArray!(r[]),AFArray!(tau[]))
 end
 
-function qr_inplace{T,N}(_in::AFArray{T,N})
+function qr_inplace(_in::AFArray{T,N}) where {T,N}
     tau = RefValue{af_array}(0)
     _error(ccall((:af_qr_inplace,af_lib),af_err,(Ptr{af_array},af_array),tau,_in.arr))
     AFArray{T,N}(tau[])
@@ -1569,7 +1569,7 @@ function solve_lu(a::AFArray,piv::AFArray,b::AFArray,options::af_mat_prop)
     AFArray!(x[])
 end
 
-function inverse{T,N}(_in::AFArray{T,N},options::af_mat_prop)
+function inverse(_in::AFArray{T,N},options::af_mat_prop) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_inverse,af_lib),af_err,(Ptr{af_array},af_array,af_mat_prop),out,_in.arr,options))
     AFArray{T,N}(out[])
@@ -1708,19 +1708,19 @@ function convolve2_sep(col_filter::AFArray,row_filter::AFArray,signal::AFArray,m
     AFArray!(out[])
 end
 
-function medfilt{T,N}(_in::AFArray{T,N},wind_length::dim_t,wind_width::dim_t,edge_pad::af_border_type)
+function medfilt(_in::AFArray{T,N},wind_length::dim_t,wind_width::dim_t,edge_pad::af_border_type) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_medfilt,af_lib),af_err,(Ptr{af_array},af_array,dim_t,dim_t,af_border_type),out,_in.arr,wind_length,wind_width,edge_pad))
     AFArray{T,N}(out[])
 end
 
-function medfilt1{T,N}(_in::AFArray{T,N},wind_width::dim_t,edge_pad::af_border_type)
+function medfilt1(_in::AFArray{T,N},wind_width::dim_t,edge_pad::af_border_type) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_medfilt1,af_lib),af_err,(Ptr{af_array},af_array,dim_t,af_border_type),out,_in.arr,wind_width,edge_pad))
     AFArray{T,N}(out[])
 end
 
-function medfilt2{T,N}(_in::AFArray{T,N},wind_length::dim_t,wind_width::dim_t,edge_pad::af_border_type)
+function medfilt2(_in::AFArray{T,N},wind_length::dim_t,wind_width::dim_t,edge_pad::af_border_type) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_medfilt2,af_lib),af_err,(Ptr{af_array},af_array,dim_t,dim_t,af_border_type),out,_in.arr,wind_length,wind_width,edge_pad))
     AFArray{T,N}(out[])
@@ -1744,13 +1744,13 @@ function create_sparse_array_from_dense(dense::AFArray,stype::af_storage)
     AFArray!(out[])
 end
 
-function sparse_convert_to{T,N}(_in::AFArray{T,N},destStorage::af_storage)
+function sparse_convert_to(_in::AFArray{T,N},destStorage::af_storage) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sparse_convert_to,af_lib),af_err,(Ptr{af_array},af_array,af_storage),out,_in.arr,destStorage))
     AFArray{T,N}(out[])
 end
 
-function full{T,N}(sparse::AFArray{T,N})
+function full(sparse::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sparse_to_dense,af_lib),af_err,(Ptr{af_array},af_array),out,sparse.arr))
     AFArray{T,N}(out[])
@@ -1765,19 +1765,19 @@ function sparse_get_info(_in::AFArray)
     (AFArray!(values[]),AFArray!(rowIdx[]),AFArray!(colIdx[]),stype[])
 end
 
-function sparse_get_values{T,N}(_in::AFArray{T,N})
+function sparse_get_values(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sparse_get_values,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function sparse_get_row_idx{T,N}(_in::AFArray{T,N})
+function sparse_get_row_idx(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sparse_get_row_idx,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
 
-function sparse_get_col_idx{T,N}(_in::AFArray{T,N})
+function sparse_get_col_idx(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sparse_get_col_idx,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
@@ -1909,7 +1909,7 @@ function susan(_in::AFArray,radius::Integer,diff_thr::Cfloat,geom_thr::Cfloat,fe
     out[]
 end
 
-function dog{T,N}(_in::AFArray{T,N},radius1::Integer,radius2::Integer)
+function dog(_in::AFArray{T,N},radius1::Integer,radius2::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_dog,af_lib),af_err,(Ptr{af_array},af_array,Cint,Cint),out,_in.arr,Cint(radius1),Cint(radius2)))
     AFArray{T,N}(out[])

@@ -81,12 +81,12 @@ length(a::AFArray) = prod(size(a))
 inv{T<:Complex,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
 inv{T<:Real,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
 range{T}(::Type{AFArray{T}}, a::Integer, b::Integer) = range(1, [b], 0, T) + T(a)
-function range{T1, T2}(::Type{AFArray{T1}}, a::T2, b::T2, c::Integer)
+function range(::Type{AFArray{T1}}, a::T2, b::T2, c::Integer) where {T1, T2}
     x = b .* ones(AFArray{T1}, c)
     x[1] = a
     cumsum(x)
 end
-function linspace{T}(::Type{AFArray}, a::T, b::T, c::Integer)
+function linspace(::Type{AFArray}, a::T, b::T, c::Integer) where {T}
     a_fl = Float64(a)
     b_fl = Float64(b)
     dx = (b_fl - a_fl)/(Float64(c) - 1.0)
@@ -177,34 +177,34 @@ At_mul_Bt(a::AFArray, b::AFArray) = matmul(a, b, AF_MAT_TRANS,  AF_MAT_TRANS)
 
 sign{T,N}(a::AFArray{T,N}) = (AFArray{T,N}(0<a) - AFArray{T,N}(a<0))
 
-function At_mul_B{T1, T2}(a::AFVector{T1},  b::AFArray{T2})
+function At_mul_B(a::AFVector{T1},  b::AFArray{T2}) where {T1, T2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_matmul,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_mat_prop,af_mat_prop),
                  out,a.arr,b.arr,AF_MAT_TRANS, AF_MAT_NONE))
     AFArray{typed(T1,T2),1}(out[])
 end
 
-function A_mul_B{T1,T2}(a::AFMatrix{T1}, b::AFVector{T2})
+function A_mul_B(a::AFMatrix{T1}, b::AFVector{T2}) where {T1,T2}
     out = RefValue{af_array}(0)
     _error(ccall((:af_matmul,af_lib),af_err,(Ptr{af_array},af_array,af_array,af_mat_prop,af_mat_prop),
                  out,a.arr,b.arr,AF_MAT_NONE, AF_MAT_NONE))
     AFArray{typed(T1,T2),1}(out[])
 end
 
-function transpose{T,N}(_in::AFArray{T,N},conjugate::Bool=false)
+function transpose(_in::AFArray{T,N},conjugate::Bool=false) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_transpose,af_lib),af_err,(Ptr{af_array},af_array,Bool),out,_in.arr,conjugate))
     AFArray{T,2}(out[])
 end
 ctranspose(in::AFArray) = transpose(in, true)
 
-function vec{T,N}(_in::AFArray{T,N})
+function vec(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_flat,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,1}(out[])
 end
 
-function reshape{T,N}(_in::AFArray{T},dims::NTuple{N,Int})
+function reshape(_in::AFArray{T},dims::NTuple{N,Int}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_moddims,af_lib),af_err,(Ptr{af_array},af_array,UInt32,Ptr{dim_t}),out,_in.arr,UInt32(length(dims)),[dims...]))
     AFArray{T,N}(out[])
@@ -223,7 +223,7 @@ promote_containertype(::Type{AFArray}, ::Type{AFArray}) = AFArray
 promote_containertype(::Type{AFArray}, ct) = AFArray
 promote_containertype(ct, ::Type{AFArray}) = AFArray
 
-function broadcast_c(f, ::Type{AFArray}, A, Bs...)
+function broadcast_c(f, ::Type, A, Bs...) where {AFArray}
     bcast[] =  true
     try
         return f(A, Bs...)
@@ -250,7 +250,7 @@ function broadcast!(::typeof(identity), a::AFArray, b::Array)
     b
 end
 
-function broadcast_c!(f, ::Type{Array}, ::Type{AFArray}, C, A, Bs...)
+function broadcast_c!(f, ::Type, ::Type{AFArray}, C, A, Bs...) where {Array}
     bcast[] =  true
     try
         r = f(A, Bs...)
@@ -261,7 +261,7 @@ function broadcast_c!(f, ::Type{Array}, ::Type{AFArray}, C, A, Bs...)
     end
 end
 
-function broadcast_c!(f, ::Type{AFArray}, ::Type{Array}, C, A, Bs...)
+function broadcast_c!(f, ::Type, ::Type{Array}, C, A, Bs...) where {AFArray}
     bcast[] =  true
     try
         r = f(A, Bs...)
@@ -272,7 +272,7 @@ function broadcast_c!(f, ::Type{AFArray}, ::Type{Array}, C, A, Bs...)
     end
 end
 
-function broadcast_c!(f, ::Type{AFArray}, ::Type{AFArray}, C, A, Bs...)
+function broadcast_c!(f, ::Type, ::Type{AFArray}, C, A, Bs...) where {AFArray}
     bcast[] =  true
     try
         swap!(C, f(A, Bs...))
@@ -306,7 +306,7 @@ ones{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(1), dims)
 ones{T,N}(a::AFArray{T,N}) = constant(T(1), size(a))
 
 zero{T,N}(a::AFArray{T,N}) = constant(T(0), size(a))
-function one{T,N}(a::AFArray{T,N})
+function one(a::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_identity,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),
                  out,UInt32(N),[size(a)...],af_type(T)))
@@ -318,12 +318,12 @@ import Base.\
 \(a::AFArray, b::AFArray) = solve(a, b, AF_MAT_NONE)
 
 export swap!
-function swap!{T,N}(a::AFArray{T,N}, b::AFArray{T,N})
+function swap!(a::AFArray{T,N}, b::AFArray{T,N}) where {T,N}
     a.arr, b.arr = b.arr, a.arr
     nothing
 end
 
-function abs{T,N}(_in::AFArray{Complex{T},N})
+function abs(_in::AFArray{Complex{T},N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_abs,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])

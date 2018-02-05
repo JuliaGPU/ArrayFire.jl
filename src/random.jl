@@ -1,6 +1,6 @@
 import Base: srand, rand, randn
 
-function rand{T,N}(::Type{AFArray{T,N}}, t::NTuple{N,Int})
+function rand(::Type{AFArray{T,N}}, t::NTuple{N,Int}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_randu,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),
                  out,UInt32(N),[t...],af_type(T)))
@@ -11,7 +11,7 @@ rand{N}(::Type{AFArray}, t::NTuple{N,Int}) = rand(AFArray{Float32,N}, t)
 rand{T}(::Type{AFArray{T}}, t::Int...) = rand(AFArray{T}, t)
 rand(::Type{AFArray}, t::Int...) = rand(AFArray, t)
 
-function randn{T,N}(::Type{AFArray{T,N}}, t::NTuple{N,Int})
+function randn(::Type{AFArray{T,N}}, t::NTuple{N,Int}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_randn,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),
                  out,UInt32(N),[t...],af_type(T)))
