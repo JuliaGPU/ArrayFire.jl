@@ -225,7 +225,7 @@ promote_containertype(::Type{AFArray}, ::Type{AFArray}) = AFArray
 promote_containertype(::Type{AFArray}, ct) = AFArray
 promote_containertype(ct, ::Type{AFArray}) = AFArray
 
-function broadcast_c(f, ::Type, A, Bs...) where {AFArray}
+function broadcast_c(f, ::Type{AFArray}, A, Bs...)
     bcast[] =  true
     try
         return f(A, Bs...)
@@ -252,7 +252,7 @@ function broadcast!(::typeof(identity), a::AFArray, b::Array)
     b
 end
 
-function broadcast_c!(f, ::Type, ::Type{AFArray}, C, A, Bs...) where {Array}
+function broadcast_c!(f, ::Type{AFArray}, ::Type{AFArray}, C, A, Bs...)
     bcast[] =  true
     try
         r = f(A, Bs...)
@@ -263,7 +263,7 @@ function broadcast_c!(f, ::Type, ::Type{AFArray}, C, A, Bs...) where {Array}
     end
 end
 
-function broadcast_c!(f, ::Type, ::Type{Array}, C, A, Bs...) where {AFArray}
+function broadcast_c!(f, ::Type{AFArray}, ::Type{Array}, C, A, Bs...)
     bcast[] =  true
     try
         r = f(A, Bs...)
@@ -274,7 +274,7 @@ function broadcast_c!(f, ::Type, ::Type{Array}, C, A, Bs...) where {AFArray}
     end
 end
 
-function broadcast_c!(f, ::Type, ::Type{AFArray}, C, A, Bs...) where {AFArray}
+function broadcast_c!(f, ::Type{AFArray}, ::Type{AFArray}, C, A, Bs...)
     bcast[] =  true
     try
         swap!(C, f(A, Bs...))

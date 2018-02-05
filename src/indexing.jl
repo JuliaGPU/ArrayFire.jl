@@ -10,7 +10,7 @@ export allowslow
 
 const _allowslow = Ref(true)
 allowslow(::Type{AFArray}, flag = true) = (_allowslow[] = flag)
-function allowslow(f, ::Type, flag = true) where {AFArray}
+function allowslow(f, ::Type{AFArray}, flag = true)
     old, _allowslow[] = _allowslow[], flag
     try
         return f()
