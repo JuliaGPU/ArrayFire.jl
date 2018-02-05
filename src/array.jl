@@ -41,7 +41,7 @@ sparse{T,N}(a::AFArray{T,N}) = create_sparse_array_from_dense(a, AF_STORAGE_CSR)
 (::Type{SparseMatrixCSC{T}}){T}(a::AFArray{T}) = convert_array_to_sparse(a)
 (::Type{SparseMatrixCSC}){T}(a::AFArray{T}) = convert_array_to_sparse(a)
 
-deepcopy_internal{T,N}(a::AFArray{T,N}, d::ObjectIdDict) = haskey(d, a) ? d[a]::AFArray{T,N} : copy(a)
+deepcopy_internal(a::AFArray{T,N}, d::ObjectIdDict) where {T,N} = haskey(d, a) ? d[a]::AFArray{T,N} : copy(a)
 
 import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atan2, atanh, cbrt, ceil, clamp, cos, cosh
 import Base: count, cov, div, exp, expm1, factorial, fft, floor, hypot
@@ -53,10 +53,10 @@ import Base: isfinite, ifelse
 import LinearAlgebra: gradient, lu, rank, det, norm, diag, diagm, svd, chol, vecnorm, dot, qr
 
 similar(a::AFArray) = zeros(a)
-similar{T}(a::AFArray, ::Type{T}) = zeros(AFArray{T}, size(a))
+similar(a::AFArray, ::Type{T}) where {T} = zeros(AFArray{T}, size(a))
 sizeof(a::AFArray) = length(a) * sizeof(eltype(a))
-eltype{T,N}(a::AFArray{T,N}) = T
-ndims{T,N}(a::AFArray{T,N}) = N
+eltype(a::AFArray{T,N}) where {T,N} = T
+ndims(a::AFArray{T,N}) where {T,N} = N
 size(a::AFVector) = (s = get_dims(a); (s[1],))
 size(a::AFMatrix) = (s = get_dims(a); (s[1],s[2]))
 size(a::AFVolume) = (s = get_dims(a); (s[1],s[2],s[3]))
@@ -287,27 +287,27 @@ end
 import Base: fill, zeros, ones, zero, one
 
 fill(::Type{AFArray}, a, dims::Int...) = constant(a, dims)
-fill{T}(::Type{AFArray{T}}, a, dims::Int...) = constant(T(a), dims)
-fill{T,N}(::Type{AFArray{T,N}}, a, dims::Int...) = constant(T(a), dims)
-fill{N}(::Type{AFArray}, a, dims::NTuple{N,Int}) = constant(a, dims)
-fill{T,N}(::Type{AFArray{T}}, a, dims::NTuple{N,Int}) = constant(T(a), dims)
-fill{T,N}(::Type{AFArray{T,N}}, a, dims::NTuple{N,Int}) = constant(T(a), dims)
+fill(::Type{AFArray{T}}, a, dims::Int...) where {T} = constant(T(a), dims)
+fill(::Type{AFArray{T,N}}, a, dims::Int...) where {T,N} = constant(T(a), dims)
+fill(::Type{AFArray}, a, dims::NTuple{N,Int}) where {N} = constant(a, dims)
+fill(::Type{AFArray{T}}, a, dims::NTuple{N,Int}) where {T,N} = constant(T(a), dims)
+fill(::Type{AFArray{T,N}}, a, dims::NTuple{N,Int}) where {T,N} = constant(T(a), dims)
 
 zeros(::Type{AFArray}, dims::Int...) = constant(0., dims)
-zeros{T}(::Type{AFArray{T}}, dims::Int...) = constant(T(0), dims)
-zeros{T,N}(::Type{AFArray{T,N}}, dims::Int...) = constant(T(0), dims)
-zeros{T,N}(::Type{AFArray{T}}, dims::NTuple{N,Int}) = constant(T(0), dims)
-zeros{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(0), dims)
-zeros{T,N}(a::AFArray{T,N}) = constant(T(0), size(a))
+zeros(::Type{AFArray{T}}, dims::Int...) where {T} = constant(T(0), dims)
+zeros(::Type{AFArray{T,N}}, dims::Int...) where {T,N} = constant(T(0), dims)
+zeros(::Type{AFArray{T}}, dims::NTuple{N,Int}) where {T,N} = constant(T(0), dims)
+zeros(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) where {T,N} = constant(T(0), dims)
+zeros(a::AFArray{T,N}) where {T,N} = constant(T(0), size(a))
 
 ones(::Type{AFArray}, dims::Int...) = constant(1., dims)
-ones{T}(::Type{AFArray{T}}, dims::Int...) = constant(T(1), dims)
-ones{T,N}(::Type{AFArray{T,N}}, dims::Int...) = constant(T(1), dims)
-ones{T,N}(::Type{AFArray{T}}, dims::NTuple{N,Int}) = constant(T(1), dims)
-ones{T,N}(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) = constant(T(1), dims)
-ones{T,N}(a::AFArray{T,N}) = constant(T(1), size(a))
+ones(::Type{AFArray{T}}, dims::Int...) where {T} = constant(T(1), dims)
+ones(::Type{AFArray{T,N}}, dims::Int...) where {T,N} = constant(T(1), dims)
+ones(::Type{AFArray{T}}, dims::NTuple{N,Int}) where {T,N} = constant(T(1), dims)
+ones(::Type{AFArray{T,N}}, dims::NTuple{N,Int}) where {T,N} = constant(T(1), dims)
+ones(a::AFArray{T,N}) where {T,N} = constant(T(1), size(a))
 
-zero{T,N}(a::AFArray{T,N}) = constant(T(0), size(a))
+zero(a::AFArray{T,N}) where {T,N} = constant(T(0), size(a))
 function one(a::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_identity,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),
