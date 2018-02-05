@@ -741,11 +741,11 @@ function copy(_in::AFArray{T,N}) where {T,N}
 end
 
 function write_array(arr::AFArray,data,bytes::Csize_t,src::af_source)
-    _error(ccall((:af_write_array,af_lib),af_err,(af_array,Ptr{Void},Csize_t,af_source),arr.arr,data,bytes,src))
+    _error(ccall((:af_write_array,af_lib),af_err,(af_array,Ptr{Cvoid},Csize_t,af_source),arr.arr,data,bytes,src))
 end
 
 function get_data_ptr(data,arr::AFArray)
-    _error(ccall((:af_get_data_ptr,af_lib),af_err,(Ptr{Void},af_array),data,arr.arr))
+    _error(ccall((:af_get_data_ptr,af_lib),af_err,(Ptr{Cvoid},af_array),data,arr.arr))
 end
 
 function set_manual_eval_flag(flag::Bool)
@@ -1023,18 +1023,18 @@ function sync(device::Integer)
 end
 
 function alloc_device(bytes::dim_t)
-    ptr = RefValue{Ptr{Void}}(0)
-    _error(ccall((:af_alloc_device,af_lib),af_err,(Ptr{Ptr{Void}},dim_t),ptr,bytes))
+    ptr = RefValue{Ptr{Cvoid}}(0)
+    _error(ccall((:af_alloc_device,af_lib),af_err,(Ptr{Ptr{Cvoid}},dim_t),ptr,bytes))
     ptr[]
 end
 
 function free_device(ptr)
-    _error(ccall((:af_free_device,af_lib),af_err,(Ptr{Void},),ptr))
+    _error(ccall((:af_free_device,af_lib),af_err,(Ptr{Cvoid},),ptr))
 end
 
 function device_array(data,ndims::Integer,dims,_type::Type)
     arr = RefValue{af_array}(0)
-    _error(ccall((:af_device_array,af_lib),af_err,(Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),arr,data,UInt32(ndims),dims,af_type(_type)))
+    _error(ccall((:af_device_array,af_lib),af_err,(Ptr{af_array},Ptr{Cvoid},UInt32,Ptr{dim_t},af_dtype),arr,data,UInt32(ndims),dims,af_type(_type)))
     AFArray!(arr[])
 end
 
@@ -1088,8 +1088,8 @@ function is_locked_array(arr::AFArray)
 end
 
 function get_device_ptr(arr::AFArray)
-    ptr = RefValue{Ptr{Void}}(0)
-    _error(ccall((:af_get_device_ptr,af_lib),af_err,(Ptr{Ptr{Void}},af_array),ptr,arr.arr))
+    ptr = RefValue{Ptr{Cvoid}}(0)
+    _error(ccall((:af_get_device_ptr,af_lib),af_err,(Ptr{Ptr{Cvoid}},af_array),ptr,arr.arr))
     ptr[]
 end
 
@@ -1280,18 +1280,18 @@ end
 
 function load_image_memory(ptr)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_load_image_memory,af_lib),af_err,(Ptr{af_array},Ptr{Void}),out,ptr))
+    _error(ccall((:af_load_image_memory,af_lib),af_err,(Ptr{af_array},Ptr{Cvoid}),out,ptr))
     AFArray!(out[])
 end
 
 function save_image_memory(_in::AFArray,format::af_image_format)
-    ptr = RefValue{Ptr{Void}}(0)
-    _error(ccall((:af_save_image_memory,af_lib),af_err,(Ptr{Ptr{Void}},af_array,af_image_format),ptr,_in.arr,format))
+    ptr = RefValue{Ptr{Cvoid}}(0)
+    _error(ccall((:af_save_image_memory,af_lib),af_err,(Ptr{Ptr{Cvoid}},af_array,af_image_format),ptr,_in.arr,format))
     ptr[]
 end
 
 function delete_image_memory(ptr)
-    _error(ccall((:af_delete_image_memory,af_lib),af_err,(Ptr{Void},),ptr))
+    _error(ccall((:af_delete_image_memory,af_lib),af_err,(Ptr{Cvoid},),ptr))
 end
 
 function load_image_native(filename)
@@ -1734,7 +1734,7 @@ end
 
 function create_sparse_array_from_ptr(nRows::dim_t,nCols::dim_t,nNZ::dim_t,values,rowIdx,colIdx,_type::Type,stype::af_storage,src::af_source)
     out = RefValue{af_array}(0)
-    _error(ccall((:af_create_sparse_array_from_ptr,af_lib),af_err,(Ptr{af_array},dim_t,dim_t,dim_t,Ptr{Void},Ptr{Cint},Ptr{Cint},af_dtype,af_storage,af_source),out,nRows,nCols,nNZ,values,rowIdx,colIdx,af_type(_type),stype,src))
+    _error(ccall((:af_create_sparse_array_from_ptr,af_lib),af_err,(Ptr{af_array},dim_t,dim_t,dim_t,Ptr{Cvoid},Ptr{Cint},Ptr{Cint},af_dtype,af_storage,af_source),out,nRows,nCols,nNZ,values,rowIdx,colIdx,af_type(_type),stype,src))
     AFArray!(out[])
 end
 

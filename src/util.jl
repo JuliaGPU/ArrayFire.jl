@@ -178,7 +178,7 @@ function convert_array(data::AbstractArray{T,N}) where {T,N}
     arr = RefValue{af_array}(0)
     sz = size(data)
     _error(ccall((:af_create_array,af_lib),af_err,
-                 (Ptr{af_array},Ptr{Void},UInt32,Ptr{dim_t},af_dtype),
+                 (Ptr{af_array},Ptr{Cvoid},UInt32,Ptr{dim_t},af_dtype),
                  arr,data,UInt32(length(sz)),[sz...],af_type(T)))
     AFArray{T,N}(arr[])
 end
@@ -293,7 +293,7 @@ end
 function get_last_error()
     msg = RefValue{Cstring}()
     len = RefValue{dim_t}(0)
-    ccall((:af_get_last_error,af_lib),Void,(Ptr{Cstring},Ptr{dim_t}),msg,len)
+    ccall((:af_get_last_error,af_lib),Cvoid,(Ptr{Cstring},Ptr{dim_t}),msg,len)
     unsafe_string(msg[])
 end
 

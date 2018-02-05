@@ -3,7 +3,7 @@ mutable struct AFArray{T,N} <: AbstractArray{T,N}
     function AFArray{T,N}(arr::af_array) where {T,N}
         # @assert get_type(arr) == T
         a = new{T,N}(arr)
-        finalizer(a, release_array)
+        finalizer(release_array, a)
         push_to_scope(a)
     end
 end
