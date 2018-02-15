@@ -63,7 +63,9 @@ function __init__()
     end
 
     afinit()
-    afinfo()
+    if !haskey(ENV, "JULIA_ARRAYFIRE_SILENT")
+        afinfo()
+    end
     set_seed(rand(RandomDevice(), UInt64))
     nothing
 end
