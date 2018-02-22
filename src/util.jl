@@ -1,5 +1,5 @@
 import Base: RefValue, @pure, show, clamp, find
-import Base: cumsum, cumprod, cummin, cummax, chol, abs2
+import Base: cumsum, cumprod, cummin, cummax, chol, abs2, std
 
 export constant, get_last_error, err_to_string, sort_index, fir, iir
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
@@ -392,7 +392,7 @@ function var_weighted{T,N}(_in::AFArray{T,N},weights::AFArray,dim::dim_t)
     AFArray{T,N}(out[])
 end
 
-function stdev{T,N}(_in::AFArray{T,N},dim::dim_t)
+function std{T,N}(_in::AFArray{T,N},dim::dim_t)
     out = RefValue{af_array}(0)
     _error(ccall((:af_stdev,af_lib),af_err,
                  (Ptr{af_array},af_array,dim_t),out,_in.arr,dim-1))
