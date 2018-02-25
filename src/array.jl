@@ -62,7 +62,7 @@ import Base: identity, ifft, imag, isinf, isnan, iszero, join, lgamma, log, log1
 import Base: minimum, mod, norm, prod, qr, randn, range, rank, real, rem, replace, round, select, show, inv
 import Base: sign, signbit, sin, sinh, sort, sortperm, std, sqrt, sum, svd, tan, tanh, transpose, trunc, var, any, all
 import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof, vecnorm, linspace
-import Base: diag, diagm, isfinite, ifelse
+import Base: diag, diagm, isfinite, ifelse, eye
 
 similar(a::AFArray) = zeros(a)
 similar{T}(a::AFArray, ::Type{T}) = zeros(AFArray{T}, size(a))
@@ -414,3 +414,6 @@ function abs{T,N}(_in::AFArray{Complex{T},N})
     _error(ccall((:af_abs,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
+
+eye{T}(a::AFArray{T,2})::AFArray{T, 2} = identity(2, [size(a)...], T)
+eye{T}(::Type{AFArray{T}}, n::Int)::AFArray{T, 2} = identity(2, [n, n], T)
