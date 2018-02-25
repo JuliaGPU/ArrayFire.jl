@@ -492,3 +492,15 @@ function sortbykey{T1,T2,N}(keys::AFArray{T1,N},values::AFArray{T2,N},dim::Integ
     _error(ccall((:af_sort_by_key,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,af_array,UInt32,Bool),out_keys,out_values,keys.arr,values.arr,UInt32(dim - 1),isAscending))
     (AFArray{T1,N}(out_keys[]),AFArray{T2,N}(out_values[]))
 end
+
+function sum{N}(_in::AFArray{UInt8,N},dim::Integer)
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_sum,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
+    AFArray{UInt32,N}(out[])
+end
+
+function sum{N}(_in::AFArray{Bool,N},dim::Integer)
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_sum,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
+    AFArray{UInt32,N}(out[])
+end
