@@ -106,6 +106,13 @@ function linspace{T}(::Type{AFArray}, a::T, b::T, c::Integer)
     dx = (b_fl - a_fl)/(Float64(c) - 1.0)
     range(AFArray{Float64}, a_fl, dx, c)
 end
+function Base.sum(A::AFArray, ndims)
+    B = A
+    for i in ndims
+        B = sum(B, i)
+    end
+    return B
+end
 isfinite(a::AFArray) = !isinf(a) & !isnan(a)
 
 import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=, &, |, <<, >>, xor
