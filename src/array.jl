@@ -95,17 +95,17 @@ length(a::AFArray) = prod(size(a))
 inv{T<:Complex,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
 inv{T<:Real,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
 range{T}(::Type{AFArray{T}}, a::Integer, b::Integer) = range(1, [b], 0, T) + T(a)
-function range{T1, T2}(::Type{AFArray{T1}}, a::T2, b::T2, c::Integer)
-    x = b .* ones(AFArray{T1}, c)
-    x[1] = a
+function range{T}(::Type{AFArray{T}}, start, step, len::Integer)
+    x = step .* ones(AFArray{T}, len)
+    x[1] = start
     cumsum(x)
 end
-function linspace{T}(::Type{AFArray}, a::T, b::T, c::Integer)
-    a_fl = Float64(a)
-    b_fl = Float64(b)
-    dx = (b_fl - a_fl)/(Float64(c) - 1.0)
-    range(AFArray{Float64}, a_fl, dx, c)
+range(::Type{AFArray}, a::Integer, b::Integer, c::Integer) = range(AFArray{Float64}, a, b, c)
+function linspace{T}(::Type{AFArray{T}}, start, stop, len::Integer)
+    dx = T((stop - start)/(len - 1))
+    range(AFArray{T}, start, dx, len)
 end
+linspace(::Type{AFArray}, start::Integer, stop::Integer, len::Integer) = linspace(AFArray{Float64}, start, stop, len)
 function Base.sum(A::AFArray, ndims)
     B = A
     for i in ndims
