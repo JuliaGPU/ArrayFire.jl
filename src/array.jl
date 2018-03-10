@@ -94,12 +94,10 @@ imag{T<:Real}(a::AFArray{T}) = zeros(a)
 length(a::AFArray) = prod(size(a))
 inv{T<:Complex,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
 inv{T<:Real,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
-range{T}(::Type{AFArray{T}}, start::Integer, len::Integer) = range(1, [len], 0, T) + T(start)
-function range{T}(::Type{AFArray{T}}, start, step, len::Integer)
-    range(1, [len], 0, T) .* T(step) .+ T(start)
-end
-range(::Type{AFArray}, start::Integer, step::Integer, len::Integer) = range(AFArray{Float64}, start, step, len)
-function linspace{T}(::Type{AFArray{T}}, start, stop, len::Integer)
+range{T}(::Type{AFArray{T}}, start::Integer, len::Integer)::AFArray{T,1} = range(1, [len], 0, T) .+ T(start)
+range{T}(::Type{AFArray{T}}, start, step, len::Integer)::AFArray{T,1} = range(1, [len], 0, T) .* T(step) .+ T(start)
+range(::Type{AFArray}, start::Integer, step::Integer, len::Integer)::AFArray{T,1} = range(AFArray{Float64}, start, step, len)
+function linspace{T}(::Type{AFArray{T}}, start, stop, len::Integer)::AFArray{T,1}
     dx = T((stop - start)/(len - 1))
     range(AFArray{T}, start, dx, len)
 end
