@@ -1,4 +1,4 @@
-mutable struct AFArray{T,N} <: AbstractArray{T,N}
+mutable struct AFArray{T,N} # <: AbstractArray{T,N}
     arr::af_array
     function AFArray{T,N}(arr::af_array) where {T,N}
         # @assert get_type(arr) == T
@@ -216,54 +216,41 @@ reshape(a::AFArray, t::Int...) = reshape(a, t)
 using SpecialFunctions
 import SpecialFunctions: erf, erfc
 
-import Base.Broadcast: promote_containertype, broadcast_c, _containertype, broadcast_c!
-import Base: broadcast!, copy!
+import Base: broadcast, broadcast!, copy!
 
-_containertype(::Type{<:AFArray}) = AFArray
-
-promote_containertype(::Type{AFArray}, ::Type{AFArray}) = AFArray
-promote_containertype(::Type{AFArray}, ct) = AFArray
-promote_containertype(ct, ::Type{AFArray}) = AFArray
-
-function broadcast_c(f, ::Type{AFArray}, A, Bs...)
+function broadcast(f, A::AFArray, Bs...)
     bcast[] =  true
-    try
-        return f(A, Bs...)
-    finally
-        bcast[] = false
-    end
+    r = f(A, Bs...)
+    bcast[] = false
+    return r
+end
+
+function broadcast(f, A::Number, B::AFArray, Cs...)
+    bcast[] =  true
+    r = f(A, B, Cs...)
+    bcast[] = false
+    return r
 end
 
 copy!(a::AFArray, b::AFArray) = a.=b
 
-function broadcast!(::typeof(identity), a::AFArray, b::AFArray)
+function broadcast!(::typeof(identity), ::Nothing, a::AFArray, b::AFArray)
     write_array(a, get_device_ptr(b), UInt(sizeof(b)), afDevice)
     unlock_device_ptr(b)
     b
 end
 
-function broadcast!(::typeof(identity), a::Array, b::AFArray)
+function broadcast!(::typeof(identity), ::Nothing, a::Array, b::AFArray)
     get_data_ptr(a, b)
     b
 end
 
-function broadcast!(::typeof(identity), a::AFArray, b::Array)
+function broadcast!(::typeof(identity), ::Nothing, a::AFArray, b::Array)
     write_array(a, b, UInt(sizeof(b)), afHost)
     b
 end
 
-function broadcast_c!(f, ::Type{AFArray}, ::Type{AFArray}, C, A, Bs...)
-    bcast[] =  true
-    try
-        r = f(A, Bs...)
-        get_data_ptr(C, r)
-        return r
-    finally
-        bcast[] = false
-    end
-end
-
-function broadcast_c!(f, ::Type{AFArray}, ::Type{Array}, C, A, Bs...)
+function broadcast!(f, ::Nothing, C::AFArray, A::Array, Bs...)
     bcast[] =  true
     try
         r = f(A, Bs...)
@@ -274,7 +261,7 @@ function broadcast_c!(f, ::Type{AFArray}, ::Type{Array}, C, A, Bs...)
     end
 end
 
-function broadcast_c!(f, ::Type{AFArray}, ::Type{AFArray}, C, A, Bs...)
+function broadcast!(f, ::Nothing, C::AFArray, A::AFArray, Bs...)
     bcast[] =  true
     try
         swap!(C, f(A, Bs...))

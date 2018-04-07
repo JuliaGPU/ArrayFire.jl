@@ -1,7 +1,8 @@
 
 using ArrayFire
-using Base.Test
+using Test
 using Libdl,Random,SparseArrays,LinearAlgebra
+using FFTW
 
 allowslow(AFArray, false)
 
@@ -24,6 +25,3 @@ end
 @testset "FFT" begin
     include("fft.jl")
 end
-
-gc()
-device_gc()
