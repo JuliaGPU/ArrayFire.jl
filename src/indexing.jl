@@ -127,7 +127,7 @@ function setindex!(lhs::AFArray{T}, val::S, idx::Union{Range,Int,Colon,AFArray}.
 end
 
 function get_sizes(idx::Tuple, lhs::AFArray)
-    s = Array{Int}(length(idx))
+    s = Array{Int}(undef, length(idx))
     for i = 1:length(idx)
         if typeof(idx[i]) <: Range
             s[i] = length(idx[i])

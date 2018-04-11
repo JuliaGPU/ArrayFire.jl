@@ -48,7 +48,7 @@ import Base: count, cov, div, exp, expm1, factorial, fft, floor, hypot
 import Base: identity, ifft, imag, isinf, isnan, iszero, join, lgamma, log, log10, log1p, log2, maximum, mean, median
 import Base: minimum, mod, prod, randn, range, real, rem, replace, round, select, show, inv
 import Base: sign, signbit, sin, sinh, sort, sortperm, std, sqrt, sum, tan, tanh, transpose, trunc, var, any, all
-import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof, linspace
+import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof
 import Base: isfinite, ifelse
 import LinearAlgebra: gradient, lu, rank, det, norm, diag, diagm, svd, chol, vecnorm, dot, qr
 
@@ -87,12 +87,6 @@ function range(::Type{AFArray{T1}}, a::T2, b::T2, c::Integer) where {T1, T2}
     x = b .* ones(AFArray{T1}, c)
     x[1] = a
     cumsum(x)
-end
-function linspace(::Type{AFArray}, a::T, b::T, c::Integer) where {T}
-    a_fl = Float64(a)
-    b_fl = Float64(b)
-    dx = (b_fl - a_fl)/(Float64(c) - 1.0)
-    range(AFArray{Float64}, a_fl, dx, c)
 end
 isfinite(a::AFArray) = !isinf(a) & !isnan(a)
 

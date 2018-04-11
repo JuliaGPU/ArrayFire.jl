@@ -1,4 +1,6 @@
 #Basic math
+using DSP
+
 a = rand(Float32, 10, 10)
 ad = AFArray(a)
 
