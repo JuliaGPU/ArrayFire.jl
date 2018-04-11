@@ -14,7 +14,6 @@ allowslow(AFArray, false)
     include("sparse.jl")
     include("math.jl")
     include("blackscholes.jl")
-    include("autodiff.jl")
     include("array.jl")
 end
 
