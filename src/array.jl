@@ -220,16 +220,20 @@ import Base: broadcast, broadcast!, copy!
 
 function broadcast(f, A::AFArray, Bs...)
     bcast[] =  true
-    r = f(A, Bs...)
-    bcast[] = false
-    return r
+    try
+        return f(A, Bs...)
+    finally
+        bcast[] = false
+    end
 end
 
 function broadcast(f, A::Number, B::AFArray, Cs...)
     bcast[] =  true
-    r = f(A, B, Cs...)
-    bcast[] = false
-    return r
+    try
+        return f(A, B, Cs...)
+    finally
+        bcast[] = false
+    end
 end
 
 copy!(a::AFArray, b::AFArray) = a.=b
@@ -271,8 +275,9 @@ function broadcast!(f, ::Nothing, C::AFArray, A::AFArray, Bs...)
     end
 end
 
-import Base: fill, zeros, ones, zero, one
+import Base: fill, zeros, ones, zero, one, ndims
 
+ndims(a::AFArray{T,N}) where {T,N} = N
 fill(::Type{AFArray}, a, dims::Int...) = constant(a, dims)
 fill(::Type{AFArray{T}}, a, dims::Int...) where {T} = constant(T(a), dims)
 fill(::Type{AFArray{T,N}}, a, dims::Int...) where {T,N} = constant(T(a), dims)
