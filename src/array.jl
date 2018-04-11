@@ -275,9 +275,8 @@ function broadcast!(f, ::Nothing, C::AFArray, A::AFArray, Bs...)
     end
 end
 
-import Base: fill, zeros, ones, zero, one, ndims
+import Base: fill, zeros, ones, zero, one
 
-ndims(a::AFArray{T,N}) where {T,N} = N
 fill(::Type{AFArray}, a, dims::Int...) = constant(a, dims)
 fill(::Type{AFArray{T}}, a, dims::Int...) where {T} = constant(T(a), dims)
 fill(::Type{AFArray{T,N}}, a, dims::Int...) where {T,N} = constant(T(a), dims)
