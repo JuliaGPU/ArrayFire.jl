@@ -82,7 +82,7 @@ const afDevice = (UInt32)(0)
 const afHost = (UInt32)(1)
 # end enum af_source
 
-const af_array = Ptr{Void}
+const af_array = Ptr{Nothing}
 
 # begin enum af_interp_type
 const af_interp_type = UInt32
@@ -295,36 +295,36 @@ const AF_DIFFUSION_MCDE = (UInt32)(2)
 const AF_DIFFUSION_DEFAULT = (UInt32)(0)
 # end enum af_diffusion_eq
 
-type af_seq
+struct af_seq
     _begin::Cdouble
     _end::Cdouble
     step::Cdouble
 end
 
-type af_index_t
-    idx::Void
+struct af_index_t
+    idx::Nothing
     isSeq::Bool
     isBatch::Bool
 end
 
-type af_cfloat
+struct af_cfloat
     real::Cfloat
     imag::Cfloat
 end
 
-type af_cdouble
+struct af_cdouble
     real::Cdouble
     imag::Cdouble
 end
 
-const af_features = Ptr{Void}
+const af_features = Ptr{Nothing}
 const af_window = Culonglong
 
-type af_cell
+struct af_cell
     row::Cint
     col::Cint
     title::Cstring
     cmap::af_colormap
 end
 
-const af_random_engine = Ptr{Void}
+const af_random_engine = Ptr{Nothing}
