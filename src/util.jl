@@ -189,7 +189,7 @@ function convert_array(a::AFArray{T,N}) where {T,N}
     if issparse(a)
         a = full(a)
     end
-    ret = Array{T,N}(size(a))
+    ret = Array{T,N}(undef, size(a))
     get_data_ptr(ret, a)
     ret
 end
