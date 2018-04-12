@@ -1,4 +1,5 @@
-import Base: srand, rand, randn
+import Base: rand, randn
+import Random: srand
 
 function rand(::Type{AFArray{T,N}}, t::NTuple{N,Int}) where {T,N}
     out = RefValue{af_array}(0)

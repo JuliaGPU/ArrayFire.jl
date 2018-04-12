@@ -48,7 +48,7 @@ import Base: count, cov, div, exp, expm1, factorial, floor, hypot
 import Base: identity, imag, isinf, isnan, iszero, join, lgamma, log, log10, log1p, log2, maximum, mean, median
 import Base: minimum, mod, prod, randn, range, real, rem, replace, round, select, show, inv
 import Base: sign, signbit, sin, sinh, sort, sortperm, std, sqrt, sum, tan, tanh, transpose, trunc, var, any, all
-import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof
+import Base: cat, hcat, vcat, max, min, sizeof, similar, length, sizeof
 import Base: isfinite, ifelse
 import LinearAlgebra: gradient, lu, rank, det, norm, diag, diagm, svd, chol, vecnorm, dot, qr
 
@@ -170,7 +170,7 @@ Ac_mul_Bc(a::AFArray, b::AFArray) = matmul(a, b, AF_MAT_CTRANS, AF_MAT_CTRANS)
 A_mul_Bt(a::AFArray,  b::AFArray) = matmul(a, b, AF_MAT_NONE,   AF_MAT_TRANS)
 At_mul_Bt(a::AFArray, b::AFArray) = matmul(a, b, AF_MAT_TRANS,  AF_MAT_TRANS)
 
-sign{T,N}(a::AFArray{T,N}) = (AFArray{T,N}(0<a) - AFArray{T,N}(a<0))
+sign(a::AFArray{T,N}) where {T,N} = (AFArray{T,N}(0<a) - AFArray{T,N}(a<0))
 
 function At_mul_B(a::AFVector{T1},  b::AFArray{T2}) where {T1, T2}
     out = RefValue{af_array}(0)
@@ -229,7 +229,7 @@ function broadcast(f, A::Number, B::AFArray, Cs...)
     end
 end
 
-copy!(a::AFArray, b::AFArray) = a.=b
+copy!(a::AFArray, b::AFArray) = (a.=b; b)
 
 function broadcast!(::typeof(identity), ::Nothing, a::AFArray, b::AFArray)
     write_array(a, get_device_ptr(b), UInt(sizeof(b)), afDevice)

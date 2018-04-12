@@ -1,5 +1,5 @@
 import Base: RefValue, @pure, show, clamp, find
-import Base: cumsum, cumprod, cummin, cummax, chol, abs2
+import Base: cumsum, cumprod, abs2
 
 export constant, get_last_error, err_to_string, sort_index, fir, iir
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
@@ -456,8 +456,8 @@ function chol(_in::AFArray{T,N},is_upper::Bool=false) where {T,N}
     (AFArray{T,N}(out[]),info[])
 end
 
-abs2{T<:Real}(a::AFArray{T}) = a.*a
-abs2{T<:Complex}(a::AFArray{T}) = (r = real(a); i = imag(a); r.*r+i.*i)
+abs2(a::AFArray{T}) where {T<:Real} = a.*a
+abs2(a::AFArray{T}) where {T<:Complex} = (r = real(a); i = imag(a); r.*r+i.*i)
 
 function complex(lhs::AFArray{T1,N1},rhs::AFArray{T2,N2}) where {T1,N1,T2,N2}
     batch = bcast[]
