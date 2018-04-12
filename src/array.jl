@@ -18,7 +18,7 @@ export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
 import Base: Array, copy, deepcopy_internal, complex, conj
 import SparseArrays: SparseMatrixCSC, issparse, sparse, full
 
-sparse{T,N}(a::AFArray{T,N}) = create_sparse_array_from_dense(a, AF_STORAGE_CSR)
+sparse(a::AFArray{T,N}) where {T,N} = create_sparse_array_from_dense(a, AF_STORAGE_CSR)
 
 (::Type{AFArray{T1}})(a::AFArray{T2,N}) where {T1,T2,N} = recast_array(AFArray{T1}, a)
 (::Type{AFArray{T1,N}})(a::AFArray{T2,N}) where {T1,T2,N} = recast_array(AFArray{T1}, a)
@@ -41,7 +41,7 @@ sparse{T,N}(a::AFArray{T,N}) = create_sparse_array_from_dense(a, AF_STORAGE_CSR)
 (::Type{SparseMatrixCSC{T}})(a::AFArray{T}) where T = convert_array_to_sparse(a)
 (::Type{SparseMatrixCSC})(a::AFArray{T}) where T = convert_array_to_sparse(a)
 
-deepcopy_internal(a::AFArray{T,N}, d::ObjectIdDict) where {T,N} = haskey(d, a) ? d[a]::AFArray{T,N} : copy(a)
+deepcopy_internal(a::AFArray{T,N}, d::IdDict) where {T,N} = haskey(d, a) ? d[a]::AFArray{T,N} : d[a] = copy(a)
 
 import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atan2, atanh, cbrt, ceil, clamp, cos, cosh
 import Base: count, cov, div, exp, expm1, factorial, fft, floor, hypot
@@ -73,12 +73,12 @@ std{T<:Real}(a::AFArray{T})::T = sqrt(var_all(a, false)[1])
 var{T<:Real}(a::AFArray{T})::T = var_all(a, false)[1]
 median{T<:Real}(a::AFArray{T})::T = median_all(a)[1]
 prod{T<:Real}(a::AFArray{T})::T = product_all(a)[1]
-sum{N}(a::AFArray{UInt8,N}) = UInt32(sum_all(a)[1])
-sum{N}(a::AFArray{Bool,N}) = Int64(sum_all(a)[1])
+sum(a::AFArray{UInt8,N}) where N = UInt32(sum_all(a)[1])
+sum(a::AFArray{Bool,N}) where N = Int64(sum_all(a)[1])
 sum{T<:Real,N}(a::AFArray{T,N})::T = sum_all(a)[1]
 sum{T<:Complex,N}(a::AFArray{T,N})::T = (s = sum_all(a); s[1] + s[2]im)
-real{T<:Real}(a::AFArray{T}) = a
-imag{T<:Real}(a::AFArray{T}) = zeros(a)
+real(a::AFArray{T}) where {T<:Real}= a
+imag(a::AFArray{T}) where {T<:Real}= zeros(a)
 length(a::AFArray) = prod(size(a))
 inv{T<:Complex,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
 inv{T<:Real,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)

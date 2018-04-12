@@ -41,7 +41,7 @@ function show(io::IO, m::MIME"text/plain", a::AFArray)
     print(io, "AFArray: "); show(io, m, toa(a))
 end
 
-global const af_lib = is_unix() ? "libaf" : "af"
+global const af_lib = Sys.isunix() ? "libaf" : "af"
 global const bcast = Ref{Bool}(false)
 
 function __init__()

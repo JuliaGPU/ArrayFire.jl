@@ -1,7 +1,7 @@
 __precompile__()
 module ArrayFire
 
-using Libdl,Random,SparseArrays,LinearAlgebra
+using Libdl,Random,SparseArrays,LinearAlgebra,FFTW
 
 include("common.jl")
 include("array.jl")
