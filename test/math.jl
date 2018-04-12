@@ -146,6 +146,10 @@ amf = AFArray(am)
 
 @test Array(sum(amf, 1)) ≈ sum(am, 1)
 @test Array(sum(amf, 2)) ≈ sum(am, 2)
+@test Array(sum(amf, [1,2])) ≈ sum(am, [1,2])
+@test Array(sum(amf, [2,1])) ≈ sum(am, [2,1])
+@test Array(sum(amf, 1:2)) ≈ sum(am, 1:2)
+@test Array(sum(amf, (1,2))) ≈ sum(am, (1,2))
 
 @test Array(prod(amf, 1)) ≈ prod(am, 1)
 @test Array(prod(amf, 2)) ≈ prod(am, 2)

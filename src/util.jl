@@ -1,5 +1,5 @@
 import Base: RefValue, @pure, show, clamp, find
-import Base: cumsum, cumprod, abs2
+import Base: cumsum, cumprod, abs2,std
 
 export constant, get_last_error, err_to_string, sort_index, fir, iir
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
@@ -392,7 +392,7 @@ function var_weighted(_in::AFArray{T,N},weights::AFArray,dim::dim_t) where {T,N}
     AFArray{T,N}(out[])
 end
 
-function stdev(_in::AFArray{T,N},dim::dim_t) where {T,N}
+function std(_in::AFArray{T,N},dim::dim_t) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_stdev,af_lib),af_err,
                  (Ptr{af_array},af_array,dim_t),out,_in.arr,dim-1))
@@ -491,4 +491,16 @@ function sortbykey(keys::AFArray{T1,N},values::AFArray{T2,N},dim::Integer,isAsce
     out_values = RefValue{af_array}(0)
     _error(ccall((:af_sort_by_key,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,af_array,UInt32,Bool),out_keys,out_values,keys.arr,values.arr,UInt32(dim - 1),isAscending))
     (AFArray{T1,N}(out_keys[]),AFArray{T2,N}(out_values[]))
+end
+
+function sum(_in::AFArray{UInt8,N},dim::Integer) where N
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_sum,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
+    AFArray{UInt32,N}(out[])
+end
+
+function sum(_in::AFArray{Bool,N},dim::Integer) where N
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_sum,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
+    AFArray{UInt32,N}(out[])
 end

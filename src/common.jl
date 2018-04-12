@@ -23,13 +23,13 @@ export AF_NORM_MATRIX_1, AF_NORM_MATRIX_2, AF_NORM_MATRIX_INF, AF_NORM_MATRIX_L_
 export AF_NORM_VECTOR_INF, AF_NORM_VECTOR_P, AF_PAD_SYM, AF_PAD_ZERO, AF_RANDOM_ENGINE_DEFAULT, AF_RANDOM_ENGINE_MERSENNE
 export AF_RANDOM_ENGINE_MERSENNE_GP11213, AF_RANDOM_ENGINE_PHILOX, AF_RANDOM_ENGINE_PHILOX_4X32_10, AF_RANDOM_ENGINE_THREEFRY
 export AF_RANDOM_ENGINE_THREEFRY_2X32_16, AF_RGB, AF_SAD, AF_SHD, AF_SSD, AF_STORAGE_COO, AF_STORAGE_CSC
-export AF_STORAGE_CSR, AF_STORAGE_DENSE, AF_SUCCESS, AF_YCC_2020, AF_YCC_601, AF_YCC_709, AF_YCbCr, AF_ZNCC
-export AF_ZSAD, AF_ZSSD, afDevice, afHost, af_array, af_backend, af_binary_op, af_border_type, af_canny_threshold
-export af_colormap, af_connectivity, af_conv_domain, af_conv_mode, af_cspace_t, af_diffusion_eq, af_dtype
-export af_err, af_features, af_flux_function, af_homography_type, af_image_format, af_interp_type, af_marker_type
-export af_mat_prop, af_match_type, af_moment_type, af_norm_type, af_random_engine, af_random_engine_type
-export af_someenum_t, af_source, af_storage, af_window, af_ycc_std, b8, c32, c64, dim_t, f32, f64, intl
-export s16, s32, s64, u16, u32, u64, u8, uintl
+export AF_STORAGE_CSR, AF_STORAGE_DENSE, AF_SUCCESS, AF_TOPK_DEFAULT, AF_TOPK_MAX, AF_TOPK_MIN, AF_YCC_2020
+export AF_YCC_601, AF_YCC_709, AF_YCbCr, AF_ZNCC, AF_ZSAD, AF_ZSSD, afDevice, afHost, af_array, af_backend
+export af_binary_op, af_border_type, af_canny_threshold, af_colormap, af_connectivity, af_conv_domain
+export af_conv_mode, af_cspace_t, af_diffusion_eq, af_dtype, af_err, af_features, af_flux_function, af_homography_type
+export af_image_format, af_interp_type, af_marker_type, af_mat_prop, af_match_type, af_moment_type, af_norm_type
+export af_random_engine, af_random_engine_type, af_someenum_t, af_source, af_storage, af_topk_function
+export af_window, af_ycc_std, b8, c32, c64, dim_t, f32, f64, intl, s16, s32, s64, u16, u32, u64, u8, uintl
 
 const dim_t = Clonglong
 const intl = Clonglong
@@ -294,6 +294,13 @@ const AF_DIFFUSION_GRAD = (UInt32)(1)
 const AF_DIFFUSION_MCDE = (UInt32)(2)
 const AF_DIFFUSION_DEFAULT = (UInt32)(0)
 # end enum af_diffusion_eq
+
+# begin enum af_topk_function
+const af_topk_function = UInt32
+const AF_TOPK_MAX = (UInt32)(1)
+const AF_TOPK_MIN = (UInt32)(2)
+const AF_TOPK_DEFAULT = (UInt32)(0)
+# end enum af_topk_function
 
 struct af_seq
     _begin::Cdouble

@@ -36,7 +36,7 @@ export set_device, set_intersect, set_manual_eval_flag, set_mem_step_size, set_p
 export set_title, set_union, set_unique, set_visibility, shift, show, sift, sigmoid, signbit, sin, sinh
 export skew, sobel_operator, solve, solve_lu, sort_by_key, sparse_convert_to, sparse_get_col_idx, sparse_get_info
 export sparse_get_nnz, sparse_get_row_idx, sparse_get_storage, sparse_get_values, sqrt, stdev_all, sub
-export sum, sum_all, sum_nan, sum_nan_all, susan, svd_inplace, sync, tan, tanh, tgamma, tile, transform
+export sum, sum_all, sum_nan, sum_nan_all, susan, svd_inplace, sync, tan, tanh, tgamma, tile, topk, transform
 export transform_coordinates, translate, transpose_inplace, trunc, unlock_array, unlock_device_ptr, unwrap
 export upper, var_all, var_all_weighted, wrap, write_array, ycbcr2rgb
 
@@ -1848,6 +1848,13 @@ function corrcoef(X::AFArray,Y::AFArray)
     imagVal = RefValue{Cdouble}(0)
     _error(ccall((:af_corrcoef,af_lib),af_err,(Ptr{Cdouble},Ptr{Cdouble},af_array,af_array),realVal,imagVal,X.arr,Y.arr))
     (realVal[],imagVal[])
+end
+
+function topk(_in::AFArray,k::Integer,dim::Integer,order::af_topk_function)
+    values = RefValue{af_array}(0)
+    indices = RefValue{af_array}(0)
+    _error(ccall((:af_topk,af_lib),af_err,(Ptr{af_array},Ptr{af_array},af_array,Cint,Cint,af_topk_function),values,indices,_in.arr,Cint(k),Cint(dim - 1),order))
+    (AFArray!(values[]),AFArray!(indices[]))
 end
 
 function fast(_in::AFArray,thr::Cfloat,arc_length::Integer,non_max::Bool,feature_ratio::Cfloat,edge::Integer)

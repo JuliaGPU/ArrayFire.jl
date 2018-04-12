@@ -314,3 +314,6 @@ function abs(_in::AFArray{Complex{T},N}) where {T,N}
     _error(ccall((:af_abs,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
 end
+
+eye(a::AFArray{T,2}) where T = identity(2, [size(a)...], T)
+eye(::Type{AFArray{T}}, n::Int) where T = identity(2, [n, n], T)

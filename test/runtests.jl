@@ -1,4 +1,3 @@
-
 using ArrayFire
 using Test
 using Libdl,Random,SparseArrays,LinearAlgebra
@@ -7,6 +6,14 @@ using FFTW
 allowslow(AFArray, false)
 
 @testset "Main" begin
+    @testset "Bugs" begin
+        include("bugs.jl")
+    end
+
+    @testset "FFT" begin
+        include("fft.jl")
+    end
+
     include("scope.jl")
     allowslow(AFArray) do
         include("indexing.jl")
@@ -15,12 +22,4 @@ allowslow(AFArray, false)
     include("math.jl")
     include("blackscholes.jl")
     include("array.jl")
-end
-
-@testset "Bugs" begin
-    include("bugs.jl")
-end
-
-@testset "FFT" begin
-    include("fft.jl")
 end
