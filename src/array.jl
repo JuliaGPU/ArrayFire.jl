@@ -44,8 +44,8 @@ sparse(a::AFArray{T,N}) where {T,N} = create_sparse_array_from_dense(a, AF_STORA
 deepcopy_internal(a::AFArray{T,N}, d::IdDict) where {T,N} = haskey(d, a) ? d[a]::AFArray{T,N} : d[a] = copy(a)
 
 import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atan2, atanh, cbrt, ceil, clamp, cos, cosh
-import Base: count, cov, div, exp, expm1, factorial, fft, floor, hypot
-import Base: identity, ifft, imag, isinf, isnan, iszero, join, lgamma, log, log10, log1p, log2, maximum, mean, median
+import Base: count, cov, div, exp, expm1, factorial, floor, hypot
+import Base: identity, imag, isinf, isnan, iszero, join, lgamma, log, log10, log1p, log2, maximum, mean, median
 import Base: minimum, mod, prod, randn, range, real, rem, replace, round, select, show, inv
 import Base: sign, signbit, sin, sinh, sort, sortperm, std, sqrt, sum, tan, tanh, transpose, trunc, var, any, all
 import Base: cat, hcat, vcat, conv, max, min, sizeof, similar, length, sizeof
@@ -66,23 +66,22 @@ any(a::AFArray) = any_true_all(a)[1] == 1
 all(a::AFArray) = all_true_all(a)[1] == 1
 any(f, a::AFArray) = any(f(a))
 all(f, a::AFArray) = all(f(a))
-maximum{T<:Real}(a::AFArray{T})::T = max_all(a)[1]
-minimum{T<:Real}(a::AFArray{T})::T = min_all(a)[1]
-mean{T<:Real}(a::AFArray{T})::T = mean_all(a)[1]
-std{T<:Real}(a::AFArray{T})::T = sqrt(var_all(a, false)[1])
-var{T<:Real}(a::AFArray{T})::T = var_all(a, false)[1]
-median{T<:Real}(a::AFArray{T})::T = median_all(a)[1]
-prod{T<:Real}(a::AFArray{T})::T = product_all(a)[1]
+maximum(a::AFArray{T}) where {T<:Real} = T(max_all(a)[1])
+minimum(a::AFArray{T}) where {T<:Real} = T(min_all(a)[1])
+mean(a::AFArray{T}) where {T<:Real} = T(mean_all(a)[1])
+std(a::AFArray{T}) where {T<:Real} = T(sqrt(var_all(a, false)[1]))
+var(a::AFArray{T}) where {T<:Real} = T(var_all(a, false)[1])
+median(a::AFArray{T}) where {T<:Real} = T(median_all(a)[1])
+prod(a::AFArray{T}) where {T<:Real} = T(product_all(a)[1])
 sum(a::AFArray{UInt8,N}) where N = UInt32(sum_all(a)[1])
 sum(a::AFArray{Bool,N}) where N = Int64(sum_all(a)[1])
-sum{T<:Real,N}(a::AFArray{T,N})::T = sum_all(a)[1]
-sum{T<:Complex,N}(a::AFArray{T,N})::T = (s = sum_all(a); s[1] + s[2]im)
-real(a::AFArray{T}) where {T<:Real}= a
-imag(a::AFArray{T}) where {T<:Real}= zeros(a)
+sum(a::AFArray{T,N}) where {T<:Real,N} = T(sum_all(a)[1])
+sum(a::AFArray{T,N}) where {T<:Complex,N} = (s = sum_all(a); T(s[1] + s[2]im))
+real(a::AFArray{T}) where {T<:Real} = a
+imag(a::AFArray{T}) where {T<:Real} = zeros(a)
 length(a::AFArray) = prod(size(a))
-inv{T<:Complex,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
-inv{T<:Real,N}(X::AFArray{T,N})::AFArray{T,N} = inverse(X,AF_MAT_NONE)
-range{T}(::Type{AFArray{T}}, a::Integer, b::Integer) = range(1, [b], 0, T) + T(a)
+inv(X::AFArray{T,N}) where {T,N} = inverse(X,AF_MAT_NONE)
+range(::Type{AFArray{T}}, a::Integer, b::Integer) where T = range(1, [b], 0, T) + T(a)
 function range(::Type{AFArray{T1}}, a::T2, b::T2, c::Integer) where {T1, T2}
     x = b .* ones(AFArray{T1}, c)
     x[1] = a
@@ -92,7 +91,7 @@ isfinite(a::AFArray) = !isinf(a) & !isnan(a)
 
 import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=, &, |, <<, >>, xor
 
--{T}(a::AFArray{T})       = T(0) - a
+-(a::AFArray{T}) where T  = T(0) - a
 !(a::AFArray) = not(a)
 
 +(a::Number, b::AFArray)  = add(constant(a, size(b)), b, false)
