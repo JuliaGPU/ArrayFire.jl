@@ -26,9 +26,9 @@ create_seq(r::StepRange) = af_seq(r.start-1, r.stop-1, r.step)
 create_seq(i::Int) = af_seq(i-1, i-1, 1)
 create_seq(::Colon) = af_seq(1, 1, 0)
 
-set_indexer!(indexers, i, s::Union{Range,Int,Colon}) = set_seq_indexer(indexers, create_seq(s), i, true)
-set_indexer!(indexers, i, s::AFArray{Bool}) = set_array_indexer(indexers, find(s)-1, i)
-set_indexer!(indexers, i, s::AFArray) = set_array_indexer(indexers, s-1, i)
+set_indexer!(indexers, i, s::Union{AbstractRange,Int,Colon}) = set_seq_indexer(indexers, create_seq(s), i, true)
+set_indexer!(indexers, i, s::AFArray{Bool}) = set_array_indexer(indexers, find(s)-UInt32(1), i)
+set_indexer!(indexers, i, s::AFArray) = set_array_indexer(indexers, s-UInt32(1), i)
 
 function set_seq_indexer(indexer, idx, dim::dim_t, is_batch::Bool)
     _error(ccall((:af_set_seq_indexer,af_lib),af_err,
@@ -49,18 +49,21 @@ end
 function assign_gen!(lhs::AFArray,ndims::dim_t,indices,rhs::AFArray)
     out = RefValue{af_array}(lhs.arr)
     _error(ccall((:af_assign_gen,af_lib),af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t},af_array),out,lhs.arr,ndims,indices,rhs.arr))
-    lhs.arr = out[]
+    if lhs.arr != out[]
+        release_array(lhs)
+        lhs.arr = out[]
+    end
 end
 
 function create_indexers(idx)
     indexers = create_indexers()
     for (i, thing) in enumerate(idx)
-        set_indexer!(indexers, i-1, thing)
+        set_indexer!(indexers, i-UInt32(1), thing)
     end
     indexers
 end
 
-function getindex{T}(a::AFArray{T}, idx::Union{Range,Colon,AFArray}, idx1::Int...)
+function getindex(a::AFArray{T}, idx::Union{AbstractRange,Colon,AFArray}, idx1::Int...) where {T}
     assertslow("getindex")
     indexers = create_indexers((idx, idx1...))
     out = index_gen_1(a, length(idx1)+1, indexers)
@@ -68,8 +71,8 @@ function getindex{T}(a::AFArray{T}, idx::Union{Range,Colon,AFArray}, idx1::Int..
     out
 end
 
-function getindex{T}(a::AFArray{T}, idx0::Union{Range,Colon,AFArray,Int},
-                     idx::Union{Range,Colon,AFArray}, idx1::Int...)
+function getindex(a::AFArray{T}, idx0::Union{AbstractRange,Colon,AFArray,Int},
+                  idx::Union{AbstractRange,Colon,AFArray}, idx1::Int...) where {T}
     assertslow("getindex")
     indexers = create_indexers((idx0, idx, idx1...))
     out = index_gen_2(a, length(idx1)+2, indexers)
@@ -77,7 +80,7 @@ function getindex{T}(a::AFArray{T}, idx0::Union{Range,Colon,AFArray,Int},
     out
 end
 
-function index_gen_1{T,N}(_in::AFArray{T,N},ndims::dim_t,indices)
+function index_gen_1(_in::AFArray{T,N},ndims::dim_t,indices) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_index_gen,af_lib),
                  af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t}),
@@ -85,7 +88,7 @@ function index_gen_1{T,N}(_in::AFArray{T,N},ndims::dim_t,indices)
     AFArray{T,1}(out[])
 end
 
-function index_gen_2{T,N}(_in::AFArray{T,N},ndims::dim_t,indices)
+function index_gen_2(_in::AFArray{T,N},ndims::dim_t,indices) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_index_gen,af_lib),
                  af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t}),
@@ -93,7 +96,7 @@ function index_gen_2{T,N}(_in::AFArray{T,N},ndims::dim_t,indices)
     AFArray{T,2}(out[])
 end
 
-function getindex{T}(a::AFArray{T}, idx::Int...)
+function getindex(a::AFArray{T}, idx::Int...) where {T}
     assertslow("getindex")
     @assert length(idx) <= length(size(a))
     indexers = create_indexers(idx)
@@ -102,7 +105,7 @@ function getindex{T}(a::AFArray{T}, idx::Int...)
     Array(out)[1]
 end
 
-function setindex!{T,S}(lhs::AFArray{T}, rhs::AFArray{S}, idx::Union{Range,Int,Colon,AFArray}...)
+function setindex!(lhs::AFArray{T}, rhs::AFArray{S}, idx::Union{AbstractRange,Int,Colon,AFArray}...) where {T,S}
     assertslow("setindex!")
     @assert length(idx) <= length(size(lhs))
     indexers = create_indexers(idx)
@@ -115,7 +118,7 @@ function setindex!{T,S}(lhs::AFArray{T}, rhs::AFArray{S}, idx::Union{Range,Int,C
     rhs
 end
 
-function setindex!{T,S}(lhs::AFArray{T}, val::S, idx::Union{Range,Int,Colon,AFArray}...)
+function setindex!(lhs::AFArray{T}, val::S, idx::Union{AbstractRange,Int,Colon,AFArray}...) where {T,S}
     assertslow("setindex!")
     sz = get_sizes(idx, lhs)
     rhs = constant(T(val), sz)
@@ -124,9 +127,9 @@ function setindex!{T,S}(lhs::AFArray{T}, val::S, idx::Union{Range,Int,Colon,AFAr
 end
 
 function get_sizes(idx::Tuple, lhs::AFArray)
-    s = Array{Int}(length(idx))
+    s = Array{Int}(undef, length(idx))
     for i = 1:length(idx)
-        if typeof(idx[i]) <: Range
+        if typeof(idx[i]) <: AbstractRange
             s[i] = length(idx[i])
         elseif idx[i] == Colon()
             s[i] = size(lhs,i)
@@ -138,5 +141,5 @@ function get_sizes(idx::Tuple, lhs::AFArray)
             s[i] = length(idx[i])
         end
     end
-    (s...)
+    (s...,)
 end
