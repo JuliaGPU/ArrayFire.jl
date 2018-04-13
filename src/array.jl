@@ -159,7 +159,7 @@ xor(a::AFArray, b::AFArray) = bitxor(a, b, bcast[])
 max(a::AFArray, b::AFArray) = maxof(a, b, bcast[])
 min(a::AFArray, b::AFArray) = minof(a, b, bcast[])
 
-import Base: Ac_mul_B, At_mul_B, A_mul_Bc, Ac_mul_Bc, A_mul_Bt, At_mul_Bt, transpose, ctranspose, vec, reshape
+import Base: Ac_mul_B, At_mul_B, A_mul_Bc, Ac_mul_Bc, A_mul_Bt, At_mul_Bt, transpose, ctranspose, vec, reshape, adjoint
 export A_mul_B
 
 A_mul_B(a::AFArray,   b::AFArray) = matmul(a, b, AF_MAT_NONE,   AF_MAT_NONE)
@@ -192,6 +192,7 @@ function transpose(_in::AFArray{T,N},conjugate::Bool=false) where {T,N}
     AFArray{T,2}(out[])
 end
 ctranspose(in::AFArray) = transpose(in, true)
+adjoint(in::AFArray) = transpose(in, true)
 
 function vec(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
