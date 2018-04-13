@@ -1,4 +1,4 @@
-import Base: getindex, setindex!
+import Base: getindex, setindex!, lastindex
 
 if VERSION < v"0.6-"
     Base.LinearIndexing(::Type{AFArray}) = Base.LinearSlow()
@@ -143,3 +143,6 @@ function get_sizes(idx::Tuple, lhs::AFArray)
     end
     (s...,)
 end
+
+lastindex(a::AFArray) = length(a)
+lastindex(a::AFArray, d) = size(a, d)
