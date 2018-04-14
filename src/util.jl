@@ -22,7 +22,7 @@ function afgc(threshold = 0)
     end
     alloc_bytes, alloc_buffers, lock_bytes, lock_buffers =  device_mem_info()
     if alloc_bytes > af_threshold[]
-        gc()
+        GC.gc()
         device_gc()
     end
     nothing
