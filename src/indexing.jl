@@ -29,6 +29,7 @@ create_seq(::Colon) = af_seq(1, 1, 0)
 set_indexer!(indexers, i, s::Union{AbstractRange,Int,Colon}) = set_seq_indexer(indexers, create_seq(s), i, true)
 set_indexer!(indexers, i, s::AFArray{Bool}) = set_array_indexer(indexers, find(s)-UInt32(1), i)
 set_indexer!(indexers, i, s::AFArray) = set_array_indexer(indexers, s-UInt32(1), i)
+set_indexer!(indexers, i, s::Vector) = set_indexer!(indexers, i, AFArray(s))
 
 function set_seq_indexer(indexer, idx, dim::dim_t, is_batch::Bool)
     _error(ccall((:af_set_seq_indexer,af_lib),af_err,
@@ -63,7 +64,7 @@ function create_indexers(idx)
     indexers
 end
 
-function getindex(a::AFArray{T}, idx::Union{AbstractRange,Colon,AFArray}, idx1::Int...) where {T}
+function getindex(a::AFArray{T}, idx::Union{AbstractRange,Colon,AFArray,Vector}, idx1::Int...) where {T}
     assertslow("getindex")
     indexers = create_indexers((idx, idx1...))
     out = index_gen_1(a, length(idx1)+1, indexers)
@@ -71,8 +72,8 @@ function getindex(a::AFArray{T}, idx::Union{AbstractRange,Colon,AFArray}, idx1::
     out
 end
 
-function getindex(a::AFArray{T}, idx0::Union{AbstractRange,Colon,AFArray,Int},
-                  idx::Union{AbstractRange,Colon,AFArray}, idx1::Int...) where {T}
+function getindex(a::AFArray{T}, idx0::Union{AbstractRange,Colon,AFArray,Vector,Int},
+                  idx::Union{AbstractRange,Colon,AFArray,Vector}, idx1::Int...) where {T}
     assertslow("getindex")
     indexers = create_indexers((idx0, idx, idx1...))
     out = index_gen_2(a, length(idx1)+2, indexers)

@@ -3,12 +3,12 @@ using Test
 using Libdl,Random,SparseArrays,LinearAlgebra
 using FFTW
 
-allowslow(AFArray, false)
-
 @testset "Main" begin
     @testset "Bugs" begin
         include("bugs.jl")
     end
+
+    allowslow(AFArray, false)
 
     @testset "FFT" begin
         include("fft.jl")
