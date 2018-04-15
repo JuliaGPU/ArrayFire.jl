@@ -7,6 +7,16 @@
 
 ## Installation
 
+Julia v0.6:
+```julia
+Pkg.checkout("ArrayFire")
+```
+
+Julia v0.7:
+```julia
+Pkg.checkout("ArrayFire", "julia-v0.7")
+```
+
 ### OSX
 
 If you are on OSX, the easiest way to install arrayfire is by using [brew](https://brew.sh/):
