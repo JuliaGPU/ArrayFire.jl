@@ -232,23 +232,23 @@ end
 
 copy!(a::AFArray, b::AFArray) = (a.=b; b)
 
-function broadcast!(::typeof(identity), ::Nothing, a::AFArray, b::AFArray)
+function broadcast!(::typeof(identity), a::AFArray, b::AFArray)
     write_array(a, get_device_ptr(b), UInt(sizeof(b)), afDevice)
     unlock_device_ptr(b)
     b
 end
 
-function broadcast!(::typeof(identity), ::Nothing, a::Array, b::AFArray)
+function broadcast!(::typeof(identity), a::Array, b::AFArray)
     get_data_ptr(a, b)
     b
 end
 
-function broadcast!(::typeof(identity), ::Nothing, a::AFArray, b::Array)
+function broadcast!(::typeof(identity), a::AFArray, b::Array)
     write_array(a, b, UInt(sizeof(b)), afHost)
     b
 end
 
-function broadcast!(f, ::Nothing, C::AFArray, A::Array, Bs...)
+function broadcast!(f, C::AFArray, A::Array, Bs...)
     bcast[] =  true
     try
         r = f(A, Bs...)
@@ -259,11 +259,22 @@ function broadcast!(f, ::Nothing, C::AFArray, A::Array, Bs...)
     end
 end
 
-function broadcast!(f, ::Nothing, C::AFArray, A::AFArray, Bs...)
+function broadcast!(f, C::AFArray, A::AFArray, Bs...)
     bcast[] =  true
     try
         swap!(C, f(A, Bs...))
         return C
+    finally
+        bcast[] = false
+    end
+end
+
+function broadcast!(f, C::Array, A::AFArray, Bs...)
+    bcast[] =  true
+    try
+        r = f(A, Bs...)
+        C .= r
+        return r
     finally
         bcast[] = false
     end
