@@ -22,7 +22,7 @@ install:
   - sudo ./ArrayFire-v3.5.1_Linux_x86_64.sh --exclude-subdir --prefix=/usr/local
 before_script:
   - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
-  - julia -e 'Pkg.add("AutoDiffSource"); Pkg.checkout("AutoDiffSource");'
+  - julia -e 'Pkg.add("AutoDiffSource");'
 after_success:
   # push coverage results to Coveralls
   - julia -e 'cd(Pkg.dir("ArrayFire")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
