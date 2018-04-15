@@ -11,7 +11,7 @@
 
 If you are on OSX, the easiest way to install arrayfire is by using [brew](https://brew.sh/):
 ```
-brew install arrayfire
+brew install brewsci/science/arrayfire
 ```
 This would download and install `arrayfire` and link the libraries `libafcpu.so`, and `libafopencl.so` to your `usr/local/lib/` and link `arrayfire.h` to `/usr/local/include`.
 
