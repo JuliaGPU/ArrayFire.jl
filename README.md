@@ -9,11 +9,13 @@
 
 Julia v0.6:
 ```julia
+Pkg.add("ArrayFire")
 Pkg.checkout("ArrayFire")
 ```
 
 Julia v0.7:
 ```julia
+Pkg.add("ArrayFire")
 Pkg.checkout("ArrayFire", "julia-v0.7")
 ```
 
