@@ -4,6 +4,8 @@ using Libdl,Random,SparseArrays,LinearAlgebra
 using FFTW
 
 @testset "Main" begin
+    include("scope.jl")
+
     @testset "Bugs" begin
         include("bugs.jl")
     end
@@ -14,7 +16,6 @@ using FFTW
         include("fft.jl")
     end
 
-    include("scope.jl")
     allowslow(AFArray) do
         include("indexing.jl")
     end
