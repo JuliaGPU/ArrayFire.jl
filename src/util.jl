@@ -310,6 +310,8 @@ end
 hcat(first::AFArray, second::AFArray) = cat(2, first, second)
 vcat(first::AFArray, second::AFArray) = cat(1, first, second)
 
+import DSP: conv
+
 function conv(signal::AFArray{T,N}, filter::AFArray) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_convolve1,af_lib),af_err,
