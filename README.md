@@ -7,64 +7,19 @@
 
 ## Installation
 
-Julia v0.6:
+Install ArrayFire library: either [download a binary](http://arrayfire.com/download) from the official site, or you can [build from source](https://github.com/arrayfire/arrayfire).
+
+In Julia v0.6:
 ```julia
 Pkg.add("ArrayFire")
 Pkg.checkout("ArrayFire")
 ```
 
-Julia v0.7:
+In Julia v0.7:
 ```julia
 Pkg.add("ArrayFire")
 Pkg.checkout("ArrayFire", "julia-v0.7")
 ```
-
-### OSX
-
-If you are on OSX, the easiest way to install arrayfire is by using [brew](https://brew.sh/):
-```
-brew install brewsci/science/arrayfire
-```
-This would download and install `arrayfire` and link the libraries `libafcpu.so`, and `libafopencl.so` to your `usr/local/lib/` and link `arrayfire.h` to `/usr/local/include`.
-
-Note that this binary contains libraries only for the CPU (`libafcpu`) and OpenCL backends (`libafopencl`). If you want the CUDA backend, you have to [download a different binary](http://arrayfire.com/login/?redirect_to=http%3A%2F%2Farrayfire.com%2Fdownload), or [build the library from source](https://github.com/arrayfire/arrayfire/wiki/Build-Instructions-for-OSX).
-
-**NOTE**:
-* Even if you do download an `arrayfire` binary with the CUDA backend (`libafcuda`), you need to have CUDA installed on your system. If you don't already, [check out these instructions](http://docs.nvidia.com/cuda/cuda-installation-guide-mac-os-x/index.html#axzz4Axqo0CMQ) on how to install it on a Mac.
-* You have to build from source for any custom configurations too (such as linking to a different BLAS library).
-
-### Linux
-On Linux, you can either [download a binary](http://arrayfire.com/login/?redirect_to=http%3A%2F%2Farrayfire.com%2Fdownload) from the official site, or you can [build from source](https://github.com/arrayfire/arrayfire/wiki/Build-Instructions-for-Linux).
-
-Now that you have `arrayfire` installed, make sure `libaf` in your system path or `LD_LIBRARY_PATH`. Note that `libaf` is the library for the unified backend. For more information on the unified backend, refer to the backends section.
-
-Now, start Julia, and do:
-```julia
-Pkg.add("ArrayFire")
-```
-
-You can also get the latest nightly version of `ArrayFire.jl` by doing:
-```julia
-Pkg.checkout("ArrayFire")
-```
-
-Check if `ArrayFire.jl` works by running the tests:
-```julia
-Pkg.test("ArrayFire")
-```
-
-If you have any issues getting `ArrayFire.jl` to work, please check the Troubleshooting section below. If it still doesn't work, please file an issue.
-
-### Windows
-Just download the [installer](http://arrayfire.com/download/) after creating an account.
-Follow the installation steps and make sure that you include the library directory into the PATH variable as advised by the installer.
-Now try:
-```julia
-Pkg.add("ArrayFire")
-Pkg.test("ArrayFire")
-```
-
-Arrayfire requires vcomp120.dll. If you do not have Visual Studio installed, install the [Visual C++ redistributable](https://www.microsoft.com/en-us/download/details.aspx?id=40784).
 
 ## Simple Usage
 Congratulations, you've now installed `ArrayFire.jl`! Now what can you do?
