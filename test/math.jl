@@ -279,9 +279,9 @@ a = AFArray(aa)
 b = AFArray(bb)
 c = AFArray(cc)
 
-@test Array(ifelse(a, b, c)) == ifelse.(aa, bb, cc)
-@test Array(ifelse(a, 0, b)) == ifelse.(aa, 0, bb)
-@test Array(ifelse(a, b, 0)) == ifelse.(aa, bb, 0)
+@test Array(select(a, b, c)) == ifelse.(aa, bb, cc)
+@test Array(select(a, 0, b)) == ifelse.(aa, 0, bb)
+@test Array(select(a, b, 0)) == ifelse.(aa, bb, 0)
 
 @test size(reshape(c, 6)) == (6, )
 @test size(reshape(c, (3,2))) == (3, 2)
