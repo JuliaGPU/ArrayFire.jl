@@ -152,7 +152,7 @@ ERROR: getindex is disabled
 ### Signal Processing
 * `fft`, `ifft`, `fft!`, `ifft!`
 * `conv`, `conv2`
-* `fftC2R`, `fftR2C`, `conv3`, `convolve`, `fir, `iir`, `approx1`, `approx2`
+* `fftC2R`, `fftR2C`, `conv3`, `convolve`, `fir`, `iir`, `approx1`, `approx2`
 
 ### Statistics
 * `mean`, `median`, `std`, `var`, `cov`
