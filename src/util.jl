@@ -1,5 +1,5 @@
 import Base: RefValue, @pure, show, clamp, find
-import Base: cumsum, cumprod, abs2, std, select
+import Base: cumsum, cumprod, abs2, select
 
 export constant, get_last_error, err_to_string, sort_index, fir, iir
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
@@ -327,10 +327,8 @@ function conv_fft(signal::AFArray{T,N}, filter::AFArray) where {T,N}
     AFArray{T,N}(out[])
 end
 
-norm(a::AFArray{Float32,2})::Float32 = allowslow(AFArray) do; svd(a)[2][1]; end
-norm(a::AFArray{Float64,2}) = allowslow(AFArray) do; svd(a)[2][1]; end
-norm(a::AFArray) = norm(a, AF_NORM_EUCLID, 0, 0)
-vecnorm(a::AFArray) = norm(a, AF_NORM_EUCLID, 0, 0)
+norm(a::AFArray{T}) where T = T(norm(a, AF_NORM_EUCLID, 0, 0))
+vecnorm(a::AFArray{T}) where T = T(norm(a, AF_NORM_EUCLID, 0, 0))
 
 function svd(_in::AFArray{T,2}) where {T}
     u = RefValue{af_array}(0)

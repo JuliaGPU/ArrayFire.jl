@@ -44,13 +44,15 @@ sparse(a::AFArray{T,N}) where {T,N} = create_sparse_array_from_dense(a, AF_STORA
 deepcopy_internal(a::AFArray{T,N}, d::IdDict) where {T,N} = haskey(d, a) ? d[a]::AFArray{T,N} : d[a] = copy(a)
 
 import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atan2, atanh, cbrt, ceil, clamp, cos, cosh
-import Base: count, cov, div, exp, expm1, factorial, floor, hypot
-import Base: identity, imag, isinf, isnan, iszero, join, lgamma, log, log10, log1p, log2, maximum, mean, median
+import Base: count, div, exp, expm1, floor, hypot
+import Base: identity, imag, isinf, isnan, iszero, join, log, log10, log1p, log2, maximum, mean, median
 import Base: minimum, mod, prod, randn, range, real, rem, replace, round, select, show, inv
-import Base: sign, signbit, sin, sinh, sort, sortperm, std, sqrt, sum, tan, tanh, transpose, trunc, var, any, all
+import Base: sign, signbit, sin, sinh, sort, sortperm, sqrt, sum, tan, tanh, transpose, trunc, any, all
 import Base: cat, hcat, vcat, max, min, sizeof, similar, length, sizeof
 import Base: isfinite, ifelse
 import LinearAlgebra: gradient, lu, rank, det, norm, diag, diagm, svd, chol, vecnorm, dot, qr
+import StatsBase: cov, std, var
+import SpecialFunctions: factorial, lgamma
 
 similar(a::AFArray) = zeros(a)
 similar(a::AFArray, ::Type{T}) where {T} = zeros(AFArray{T}, size(a))

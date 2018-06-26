@@ -3,3 +3,4 @@ Compat 0.18
 SpecialFunctions 0.0.1
 FFTW 0.1.2
 DSP 0.4.0
+StatsBase 0.0.1
