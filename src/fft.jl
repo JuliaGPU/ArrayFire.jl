@@ -1,7 +1,7 @@
 
 import FFTW: fft, ifft, fft!, ifft!, rfft, irfft
 export fft, fft1, fft1!, fft2, fft2!, fft3, fft3!, ifft1, ifft2, ifft3, rfft1, rfft2, rfft3
-export ifft, irfft1, irfft2, irfft3, ifft1!, ifft2!, ifft3!
+export ifft, irfft2, irfft3, ifft1!, ifft2!, ifft3!
 export fft_convolve1, fft_convolve2, fft_convolve3
 export set_fft_plan_cache_size
 
