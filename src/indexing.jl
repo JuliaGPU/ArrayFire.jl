@@ -1,10 +1,6 @@
 import Base: getindex, setindex!, lastindex
 
-if VERSION < v"0.6-"
-    Base.LinearIndexing(::Type{AFArray}) = Base.LinearSlow()
-else
-    Base.IndexStyle(::Type{AFArray}) = Base.IndexCartesian()
-end
+Base.IndexStyle(::Type{AFArray}) = Base.IndexCartesian()
 
 export allowslow
 
