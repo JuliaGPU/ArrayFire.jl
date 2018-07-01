@@ -1,0 +1,131 @@
+[[AbstractFFTs]]
+deps = ["LinearAlgebra"]
+git-tree-sha1 = "f15c60f62d175e65f4b11e865adbe9ba3c821eac"
+uuid = "621f4979-c628-5d54-868e-fcf4e3e8185c"
+version = "0.3.1"
+
+[[Base64]]
+uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
+
+[[BinDeps]]
+deps = ["Compat", "Libdl", "SHA", "URIParser"]
+git-tree-sha1 = "160d5d926e83e0970dd549ad9fe0ac3e8107e83c"
+uuid = "9e28174c-4ba2-5203-b857-d8d62c4213ee"
+version = "0.8.8"
+
+[[BinaryProvider]]
+deps = ["Compat", "SHA"]
+git-tree-sha1 = "88f5e40c04b5aac568656d6464576974eb9afce4"
+uuid = "b99e7846-7c00-51b0-8f62-c81ae34c0232"
+version = "0.3.2"
+
+[[Compat]]
+deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Test", "UUIDs", "Unicode"]
+git-tree-sha1 = "bdf049336fbc4ea0e9464976e9a38092707de25f"
+repo-rev = ""
+repo-url = "/home/src/.julia/dev/Compat"
+uuid = "34da2185-b29b-5c13-b0c7-acf172513d20"
+version = "0.69.0"
+
+[[DSP]]
+deps = ["AbstractFFTs", "Compat", "FFTW", "Polynomials", "Reexport", "SpecialFunctions"]
+git-tree-sha1 = "0ac99956e1ac6bccbcdae0a924ecfa61363d45c7"
+uuid = "717857b8-e6f2-59f4-9121-6e50c889abd2"
+version = "0.4.0"
+
+[[Dates]]
+uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
+
+[[DelimitedFiles]]
+uuid = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+
+[[Distributed]]
+uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
+
+[[FFTW]]
+deps = ["AbstractFFTs", "BinDeps", "Compat", "Libdl", "LinearAlgebra", "Reexport", "Test"]
+git-tree-sha1 = "678106e8c300595a5643dbbca624e39bcb200cad"
+uuid = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
+version = "0.2.2"
+
+[[InteractiveUtils]]
+uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
+
+[[LibGit2]]
+uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
+
+[[Libdl]]
+uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
+
+[[LinearAlgebra]]
+uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+
+[[Markdown]]
+uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
+
+[[Mmap]]
+uuid = "a63ad114-7e13-5084-954f-fe012c677804"
+
+[[Pkg]]
+uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+
+[[Polynomials]]
+deps = ["Compat"]
+git-tree-sha1 = "548a22702594fc372d21fd790aeb3ee377765c1c"
+uuid = "f27b6e38-b328-58d1-80ce-0feddd5e7a45"
+version = "0.3.2"
+
+[[Printf]]
+uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+
+[[REPL]]
+uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
+
+[[Random]]
+uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+
+[[Reexport]]
+git-tree-sha1 = "caba582b2e9ef39b9cfff911aa13c5ca1b9a9896"
+uuid = "189a3867-3050-52da-a836-e630ba90ab69"
+version = "0.1.0"
+
+[[SHA]]
+uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+
+[[Serialization]]
+uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
+
+[[SharedArrays]]
+uuid = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
+
+[[Sockets]]
+uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
+
+[[SparseArrays]]
+uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+
+[[SpecialFunctions]]
+deps = ["BinDeps", "BinaryProvider", "Compat", "Libdl"]
+git-tree-sha1 = "26012894438b28335394f8565cdc02a5dc4ec137"
+repo-rev = ""
+repo-url = "/home/src/.julia/dev/SpecialFunctions"
+uuid = "276daf66-3868-5448-9aa4-cd146d93841b"
+version = "0.6.0+"
+
+[[Statistics]]
+uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+
+[[Test]]
+uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[[URIParser]]
+deps = ["Compat", "Unicode"]
+git-tree-sha1 = "0f9c5e2d14e03fbd00696f9394e288bdd5adacbc"
+uuid = "30578b45-9adc-5946-b283-645ec420af67"
+version = "0.3.1"
+
+[[UUIDs]]
+uuid = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
+
+[[Unicode]]
+uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"

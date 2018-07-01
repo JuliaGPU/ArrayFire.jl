@@ -45,13 +45,13 @@ deepcopy_internal(a::AFArray{T,N}, d::IdDict) where {T,N} = haskey(d, a) ? d[a]:
 
 import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atan2, atanh, cbrt, ceil, clamp, cos, cosh
 import Base: count, div, exp, expm1, floor, hypot
-import Base: identity, imag, isinf, isnan, iszero, join, log, log10, log1p, log2, maximum, mean, median
+import Base: identity, imag, isinf, isnan, iszero, join, log, log10, log1p, log2, maximum
 import Base: minimum, mod, prod, randn, range, real, rem, replace, round, select, show, inv
 import Base: sign, signbit, sin, sinh, sort, sortperm, sqrt, sum, tan, tanh, transpose, trunc, any, all
 import Base: cat, hcat, vcat, max, min, sizeof, similar, length, sizeof
 import Base: isfinite, ifelse
 import LinearAlgebra: gradient, lu, rank, det, norm, diag, diagm, svd, chol, vecnorm, dot, qr
-import StatsBase: cov, std, var
+import Statistics: cov, std, var, mean, median
 import SpecialFunctions: factorial, lgamma
 
 similar(a::AFArray) = zeros(a)

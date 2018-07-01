@@ -1,6 +1,6 @@
 using ArrayFire
 using Test
-using Libdl,Random,SparseArrays,LinearAlgebra,StatsBase
+using Libdl,Random,SparseArrays,LinearAlgebra,Statistics
 using FFTW
 
 @testset "Main" begin
