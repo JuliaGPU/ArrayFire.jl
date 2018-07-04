@@ -1,8 +1,8 @@
 [[AbstractFFTs]]
-deps = ["LinearAlgebra"]
-git-tree-sha1 = "f15c60f62d175e65f4b11e865adbe9ba3c821eac"
+deps = ["Compat", "LinearAlgebra"]
+git-tree-sha1 = "8d59c3b1463b5e0ad05a3698167f85fac90e184d"
 uuid = "621f4979-c628-5d54-868e-fcf4e3e8185c"
-version = "0.3.1"
+version = "0.3.2"
 
 [[Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
@@ -14,18 +14,22 @@ uuid = "9e28174c-4ba2-5203-b857-d8d62c4213ee"
 version = "0.8.8"
 
 [[BinaryProvider]]
-deps = ["Compat", "SHA"]
-git-tree-sha1 = "88f5e40c04b5aac568656d6464576974eb9afce4"
+deps = ["Compat", "Pkg", "SHA"]
+git-tree-sha1 = "94dac52c662ca793008fb689e3daf626b6139943"
 uuid = "b99e7846-7c00-51b0-8f62-c81ae34c0232"
-version = "0.3.2"
+version = "0.3.3"
 
 [[Compat]]
 deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Test", "UUIDs", "Unicode"]
-git-tree-sha1 = "bdf049336fbc4ea0e9464976e9a38092707de25f"
-repo-rev = ""
-repo-url = "/home/src/.julia/dev/Compat"
+git-tree-sha1 = "f3e87ca1e2df8e1e4f82ea504fddf0b9b0894f61"
 uuid = "34da2185-b29b-5c13-b0c7-acf172513d20"
 version = "0.69.0"
+
+[[Conda]]
+deps = ["BinDeps", "Compat", "JSON", "Libdl", "VersionParsing"]
+git-tree-sha1 = "6358e179fb9ad0af5ca9cd4d7c691c413cc121f2"
+uuid = "8f4d0f93-b110-5947-807f-2305c1781a2d"
+version = "0.8.1"
 
 [[DSP]]
 deps = ["AbstractFFTs", "Compat", "FFTW", "Polynomials", "Reexport", "SpecialFunctions"]
@@ -43,13 +47,19 @@ uuid = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 
 [[FFTW]]
-deps = ["AbstractFFTs", "BinDeps", "Compat", "Libdl", "LinearAlgebra", "Reexport", "Test"]
-git-tree-sha1 = "678106e8c300595a5643dbbca624e39bcb200cad"
+deps = ["AbstractFFTs", "BinaryProvider", "Compat", "Conda", "Libdl", "LinearAlgebra", "Reexport", "Test"]
+git-tree-sha1 = "60346335ad3aa60bfbdc358c6d1468bffbcff071"
 uuid = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
-version = "0.2.2"
+version = "0.2.3"
 
 [[InteractiveUtils]]
 uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
+
+[[JSON]]
+deps = ["Dates", "Distributed", "Mmap", "Sockets", "Test", "Unicode"]
+git-tree-sha1 = "723a515212612b2175095fa5fa55da0bb4c377e5"
+uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+version = "0.18.0"
 
 [[LibGit2]]
 uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
@@ -106,11 +116,9 @@ uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [[SpecialFunctions]]
 deps = ["BinDeps", "BinaryProvider", "Compat", "Libdl"]
-git-tree-sha1 = "26012894438b28335394f8565cdc02a5dc4ec137"
-repo-rev = ""
-repo-url = "/home/src/.julia/dev/SpecialFunctions"
+git-tree-sha1 = "1cf00baba50536d254f02082c90b98d6e4e1f968"
 uuid = "276daf66-3868-5448-9aa4-cd146d93841b"
-version = "0.6.0+"
+version = "0.6.0"
 
 [[Statistics]]
 uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
@@ -129,3 +137,9 @@ uuid = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 
 [[Unicode]]
 uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
+
+[[VersionParsing]]
+deps = ["Compat"]
+git-tree-sha1 = "e8524bb636735227fd9d750dfa81f98db8bc5b0c"
+uuid = "81def892-9a0e-5fdd-b105-ffc91e053289"
+version = "1.1.1"
