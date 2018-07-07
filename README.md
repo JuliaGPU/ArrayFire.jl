@@ -9,7 +9,7 @@
 
 Install ArrayFire library: either [download a binary](http://arrayfire.com/download) from the official site, or you can [build from source](https://github.com/arrayfire/arrayfire).
 
-In Julia v0.6:
+In Julia v0.5 and v0.6:
 ```julia
 Pkg.add("ArrayFire")
 Pkg.checkout("ArrayFire")
@@ -152,7 +152,7 @@ ERROR: getindex is disabled
 ### Signal Processing
 * `fft`, `ifft`, `fft!`, `ifft!`
 * `conv`, `conv2`
-* `fftC2R`, `fftR2C`, `conv3`, `convolve`, `fir, `iir`, `approx1`, `approx2`
+* `fftC2R`, `fftR2C`, `conv3`, `convolve`, `fir`, `iir`, `approx1`, `approx2`
 
 ### Statistics
 * `mean`, `median`, `std`, `var`, `cov`
