@@ -12,13 +12,4 @@
 
         @test sum(@inferred iota((2,3))) == 21
     end
-
-    @testset "linspace" begin
-        x = linspace(AFArray, 2, 3, 10)
-        @test Array(x) ≈ collect(linspace(2, 3, 10))
-        @test typeof(x) == AFArray{Float64, 1}
-        x = linspace(AFArray{Float32}, 2, 3, 10)
-        @test Array(x) ≈ collect(linspace(2, 3, 10))
-        @test typeof(x) == AFArray{Float32, 1}
-    end
 end

@@ -1,28 +1,26 @@
-
 using ArrayFire
-using Base.Test
-
-allowslow(AFArray, false)
+using Test
+using Libdl,Random,SparseArrays,LinearAlgebra,Statistics
+using FFTW
 
 @testset "Main" begin
     include("scope.jl")
+
+    @testset "Bugs" begin
+        include("bugs.jl")
+    end
+
+    allowslow(AFArray, false)
+
+    @testset "FFT" begin
+        include("fft.jl")
+    end
+
     allowslow(AFArray) do
         include("indexing.jl")
     end
     include("sparse.jl")
     include("math.jl")
     include("blackscholes.jl")
-    include("autodiff.jl")
     include("array.jl")
 end
-
-@testset "Bugs" begin
-    include("bugs.jl")
-end
-
-@testset "FFT" begin
-    include("fft.jl")
-end
-
-gc()
-device_gc()

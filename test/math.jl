@@ -1,15 +1,17 @@
 #Basic math
+using DSP
+
 a = rand(Float32, 10, 10)
 ad = AFArray(a)
 
 @testset "Math" begin
-    @test sum(abs2, Array(ad + 2) - (a + 2)) < 1e-6
+    @test sum(abs2, Array(ad + 2) - (a .+ 2)) < 1e-6
     @test sum(abs2, Array(ad .+ 2) - (a .+ 2)) < 1e-6
-    @test sum(abs2, Array(2 + ad) - (2 + a)) < 1e-6
+    @test sum(abs2, Array(2 + ad) - (2 .+ a)) < 1e-6
     @test sum(abs2, Array(2 .+ ad) - (2 .+ a)) < 1e-6
-    @test sum(abs2, Array(ad - 2) - (a - 2)) < 1e-6
+    @test sum(abs2, Array(ad - 2) - (a .- 2)) < 1e-6
     @test sum(abs2, Array(ad .- 2) - (a .- 2)) < 1e-6
-    @test sum(abs2, Array(2 - ad) - (2 - a)) < 1e-6
+    @test sum(abs2, Array(2 - ad) - (2 .- a)) < 1e-6
     @test sum(abs2, Array(2 .- ad) - (2 .- a)) < 1e-6
     @test sum(abs2, Array(ad * 2) - (a * 2)) < 1e-6
     @test sum(abs2, Array(ad .* 2) - (a .* 2)) < 1e-6
@@ -144,10 +146,10 @@ amf = AFArray(am)
 
 @test Array(sum(amf, 1)) ≈ sum(am, 1)
 @test Array(sum(amf, 2)) ≈ sum(am, 2)
-@test Array(sum(amf, [1,2])) ≈ sum(am, [1,2])
-@test Array(sum(amf, [2,1])) ≈ sum(am, [2,1])
-@test Array(sum(amf, 1:2)) ≈ sum(am, 1:2)
-@test Array(sum(amf, (1,2))) ≈ sum(am, (1,2))
+# @test Array(sum(amf, [1,2])) ≈ sum(am, dims=[1,2])
+# @test Array(sum(amf, [2,1])) ≈ sum(am, dims=[2,1])
+# @test Array(sum(amf, 1:2)) ≈ sum(am, 1:2)
+# @test Array(sum(amf, (1,2))) ≈ sum(am, (1,2))
 
 @test Array(prod(amf, 1)) ≈ prod(am, 1)
 @test Array(prod(amf, 2)) ≈ prod(am, 2)
@@ -246,7 +248,7 @@ a5 = rand(Float32, 5)
 af5 = AFArray(a5)
 
 for op in [:abs, :acos, :asin, :atan, :cbrt, :ceil, :cos, :cosh,
-           :exp, :expm1, :factorial, :floor, :erfc,
+           :exp, :expm1, :floor, :erfc,
            :imag, :isinf, :isnan, :lgamma, :log, :log10,
            :log1p, :log2, :real, :round, :sign, :signbit, :sin, :sinh, :sqrt, :tan,
            :tanh, :trunc]
@@ -258,7 +260,7 @@ end
 a6 = rand(Float32, 3, 3)
 af6 = AFArray(a6)
 
-for op in [:identity, :cov, :vec, :zeros, :ones, :transpose]
+for op in [:identity, :vec, :zeros, :ones, :transpose]
     @testset "$op" begin
         @test @eval $op(a6) ≈ Array(@inferred $op(af6))
     end
@@ -277,9 +279,9 @@ a = AFArray(aa)
 b = AFArray(bb)
 c = AFArray(cc)
 
-@test Array(ifelse(a, b, c)) == ifelse.(aa, bb, cc)
-@test Array(ifelse(a, 0, b)) == ifelse.(aa, 0, bb)
-@test Array(ifelse(a, b, 0)) == ifelse.(aa, bb, 0)
+@test Array(select(a, b, c)) == ifelse.(aa, bb, cc)
+@test Array(select(a, 0, b)) == ifelse.(aa, 0, bb)
+@test Array(select(a, b, 0)) == ifelse.(aa, bb, 0)
 
 @test size(reshape(c, 6)) == (6, )
 @test size(reshape(c, (3,2))) == (3, 2)
