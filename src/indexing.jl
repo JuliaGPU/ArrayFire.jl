@@ -77,6 +77,15 @@ function getindex(a::AFArray{T}, idx0::Union{AbstractRange,Colon,AFArray,Vector,
     out
 end
 
+function getindex(a::AFArray{T}, idx0::Union{AbstractRange,Colon,AFArray,Vector,Int},
+                  idx::Union{AbstractRange,Colon,AFArray,Vector}, idx1::Union{AbstractRange,Colon,AFArray,Vector}) where {T}
+    assertslow("getindex")
+    indexers = create_indexers((idx0, idx, idx1))
+    out = index_gen_3(a, 3, indexers)
+    release_indexers(indexers)
+    out
+end
+
 function index_gen_1(_in::AFArray{T,N},ndims::dim_t,indices) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_index_gen,af_lib),
@@ -91,6 +100,14 @@ function index_gen_2(_in::AFArray{T,N},ndims::dim_t,indices) where {T,N}
                  af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t}),
                  out,_in.arr,ndims,indices))
     AFArray{T,2}(out[])
+end
+
+function index_gen_3(_in::AFArray{T,N},ndims::dim_t,indices) where {T,N}
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_index_gen,af_lib),
+                 af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t}),
+                 out,_in.arr,ndims,indices))
+    AFArray{T,3}(out[])
 end
 
 function getindex(a::AFArray{T}, idx::Int...) where {T}
