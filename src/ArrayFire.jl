@@ -1,4 +1,3 @@
-__precompile__()
 module ArrayFire
 
 using Libdl,Random,SparseArrays,LinearAlgebra,FFTW,DSP,Statistics
