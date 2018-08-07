@@ -1,9 +1,9 @@
 import Base: RefValue, @pure, show, clamp, find
-import Base: cumsum, cumprod, abs2, select
+import Base: cumsum, cumprod, abs2
 
 export constant, get_last_error, err_to_string, sort_index, fir, iir
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
-export afeval, iota, sortbykey
+export afeval, iota, sortbykey, select
 
 const af_threshold = Ref(4*1024*1024*1024)
 const af_gc_count = Ref(0)
