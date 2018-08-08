@@ -12,6 +12,7 @@ Install ArrayFire library: either [download a binary](http://arrayfire.com/downl
 In Julia v0.5 and v0.6:
 ```julia
 Pkg.add("ArrayFire")
+Pkg.checkout("ArrayFire", "julia-v0.6")
 ```
 
 In Julia v0.7:
