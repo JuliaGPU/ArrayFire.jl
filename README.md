@@ -15,7 +15,7 @@ Pkg.add("ArrayFire")
 Pkg.checkout("ArrayFire", "julia-v0.6")
 ```
 
-In Julia v0.7:
+In Julia v0.7 and 1.0:
 ```julia
 ] add ArrayFire
 ```
