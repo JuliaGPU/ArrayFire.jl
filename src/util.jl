@@ -1,4 +1,4 @@
-import Base: RefValue, @pure, show, clamp, find
+import Base: RefValue, @pure, show, clamp, find, select
 import Base: cumsum, cumprod, abs2
 
 export constant, get_last_error, err_to_string, sort_index, fir, iir
