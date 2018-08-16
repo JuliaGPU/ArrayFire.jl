@@ -126,6 +126,8 @@ af_type(::Type{Float64})          = f64
 af_type(::Type{Complex{Float64}}) = c64
 af_type(::Type{Bool})             = b8
 af_type(::Type{Int32})            = s32
+af_type(::Type{Int16})            = s16
+af_type(::Type{UInt16})           = u16
 af_type(::Type{UInt32})           = u32
 af_type(::Type{UInt8})            = u8
 af_type(::Type{Int64})            = s64
@@ -152,6 +154,10 @@ function af_jltype(i::af_dtype)::Type
         return Int64
     elseif i == u64
         return UInt64
+    elseif i == s16
+        return Int16
+    elseif i == u16
+        return UInt16
     else
         error("Unknown type: $i")
     end
