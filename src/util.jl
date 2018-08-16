@@ -111,6 +111,10 @@ function typed(::Type{T1},::Type{T2}) where {T1,T2}
         return UInt32
     elseif T1 == Int32 || T2 == Int32
         return Int32
+    elseif T1 == UInt16 || T2 == UInt16
+        return UInt16
+    elseif T1 == Int16 || T2 == Int16
+        return Int16
     elseif T1 == UInt8 || T2 == UInt8
         return UInt8
     elseif T1 == Bool || T2 == Bool
