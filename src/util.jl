@@ -3,7 +3,7 @@ import Base: cumsum, cumprod, abs2
 
 export constant, get_last_error, err_to_string, sort_index, fir, iir
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
-export afeval, iota, sortbykey, select
+export afeval, iota, sortbykey, select, find
 
 const af_threshold = Ref(4*1024*1024*1024)
 const af_gc_count = Ref(0)
