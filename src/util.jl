@@ -21,8 +21,10 @@ function afgc(threshold = 0)
         af_threshold[] = threshold
     end
     alloc_bytes, alloc_buffers, lock_bytes, lock_buffers =  device_mem_info()
-    if alloc_bytes > af_threshold[]
+    if lock_bytes > af_threshold[]
         GC.gc()
+        device_gc()
+    elseif alloc_bytes - lock_bytes > af_threshold[]
         device_gc()
     end
     nothing
