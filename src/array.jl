@@ -64,8 +64,8 @@ size(a::AFMatrix) = (s = get_dims(a); (s[1],s[2]))
 size(a::AFVolume) = (s = get_dims(a); (s[1],s[2],s[3]))
 size(a::AFTensor) = (s = get_dims(a); (s[1],s[2],s[3],s[4]))
 size(a::AFArray, dim::Int) = get_dims(a)[dim]
-any(a::AFArray) = any_true_all(a)[1] == 1
-all(a::AFArray) = all_true_all(a)[1] == 1
+any(a::AFArray, dims::Colon) = any_true_all(a)[1] == 1
+all(a::AFArray, dims::Colon) = all_true_all(a)[1] == 1
 any(f, a::AFArray) = any(f(a))
 all(f, a::AFArray) = all(f(a))
 maximum(a::AFArray{T}) where {T<:Real} = T(max_all(a)[1])
@@ -329,3 +329,13 @@ end
 
 eye(a::AFArray{T,2}) where T = identity(2, [size(a)...], T)
 eye(::Type{AFArray{T}}, n::Int) where T = identity(2, [n, n], T)
+
+import Base: cumsum, cumprod
+
+for op in (:minimum, :maximum, :sum, :any, :all)
+    @eval $op(a::AFArray{T,N}; dims=:) where {T,N} = $op(a, dims)
+end
+
+for op in (:sort, :cumsum, :cumprod, :cummin, :cummax)
+    @eval $op(a::AFArray{T,N}; dims=1) where {T,N} = $op(a, dims)
+end

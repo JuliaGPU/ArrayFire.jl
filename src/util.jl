@@ -352,7 +352,7 @@ function svd(_in::AFArray{T,2}) where {T}
     (AFArray{T,2}(u[]),AFArray{T,1}(s[]),AFArray{T,2}(vt[]))
 end
 
-function sort(_in::AFArray{T,N},dim::Integer=1,isAscending::Bool=true) where {T,N}
+function sort(_in::AFArray{T,N},dim::Integer,isAscending::Bool=true) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sort,af_lib),af_err,
                  (Ptr{af_array},af_array,UInt32,Bool),
@@ -445,10 +445,10 @@ function find(_in::AFArray{T,N}) where {T,N}
     return out
 end
 
-cumsum(a::AFArray, dim::Int=1) = scan(a, dim, AF_BINARY_ADD, true)
-cumprod(a::AFArray, dim::Int=1) = scan(a, dim, AF_BINARY_MUL, true)
-cummin(a::AFArray, dim::Int=1) = scan(a, dim, AF_BINARY_MIN, true)
-cummax(a::AFArray, dim::Int=1) = scan(a, dim, AF_BINARY_MAX, true)
+cumsum(a::AFArray, dim::Int) = scan(a, dim, AF_BINARY_ADD, true)
+cumprod(a::AFArray, dim::Int) = scan(a, dim, AF_BINARY_MUL, true)
+cummin(a::AFArray, dim::Int) = scan(a, dim, AF_BINARY_MIN, true)
+cummax(a::AFArray, dim::Int) = scan(a, dim, AF_BINARY_MAX, true)
 
 function sync(a::AFArray)
     afeval(a)
