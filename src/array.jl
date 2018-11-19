@@ -306,10 +306,14 @@ ones(a::AFArray{T,N}) where {T,N} = constant(T(1), size(a))
 
 zero(a::AFArray{T,N}) where {T,N} = constant(T(0), size(a))
 function one(a::AFArray{T,N}) where {T,N}
-    out = RefValue{af_array}(0)
-    _error(ccall((:af_identity,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),
-                 out,UInt32(N),[size(a)...],af_type(T)))
-    AFArray{T,N}(out[])
+    if bcast[]
+        ones(a)
+    else
+        out = RefValue{af_array}(0)
+        _error(ccall((:af_identity,af_lib),af_err,(Ptr{af_array},UInt32,Ptr{dim_t},af_dtype),
+                     out,UInt32(N),[size(a)...],af_type(T)))
+        AFArray{T,N}(out[])
+    end
 end
 
 import Base.\
