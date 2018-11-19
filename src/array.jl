@@ -49,7 +49,7 @@ import Base: identity, imag, isinf, isnan, iszero, join, log, log10, log1p, log2
 import Base: minimum, mod, prod, randn, range, real, rem, replace, round, show, inv
 import Base: sign, signbit, sin, sinh, sort, sortperm, sqrt, sum, tan, tanh, transpose, trunc, any, all
 import Base: cat, hcat, vcat, max, min, sizeof, similar, length, sizeof
-import Base: isfinite, ifelse
+import Base: isfinite, ifelse, isempty
 import LinearAlgebra: gradient, lu, rank, det, norm, diag, diagm, svd, chol, vecnorm, dot, qr
 import Statistics: cov, std, var, mean, median
 import SpecialFunctions: factorial, lgamma
@@ -90,6 +90,7 @@ function range(::Type{AFArray{T1}}, a::T2, b::T2, c::Integer) where {T1, T2}
     cumsum(x)
 end
 isfinite(a::AFArray) = !isinf(a) & !isnan(a)
+isempty(a::AFArray) = (length(a) == 0)
 
 import Base: /, *, +, -, ^, ==, <, >, <=, >=, !, !=, &, |, <<, >>, xor
 
