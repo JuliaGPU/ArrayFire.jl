@@ -1,5 +1,6 @@
 import Base: RefValue, @pure, show, clamp, find, select
 import Base: cumsum, cumprod, abs2
+import LinearAlgebra: cholesky
 
 export constant, get_last_error, err_to_string, sort_index, fir, iir
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
@@ -461,7 +462,7 @@ function afeval(a::AFArray)
     a
 end
 
-function chol(_in::AFArray{T,N},is_upper::Bool=false) where {T,N}
+function cholesky(_in::AFArray{T,N},is_upper::Bool=false) where {T,N}
     out = RefValue{af_array}(0)
     info = RefValue{Cint}(0)
     _error(ccall((:af_cholesky,af_lib),af_err,(Ptr{af_array},Ptr{Cint},af_array,Bool),out,info,_in.arr,is_upper))
