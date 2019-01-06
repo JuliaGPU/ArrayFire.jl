@@ -1,5 +1,5 @@
 #Basic math
-using DSP
+using DSP, Statistics, LinearAlgebra, Random
 
 a = rand(Float32, 10, 10)
 ad = AFArray(a)
@@ -20,7 +20,7 @@ ad = AFArray(a)
     @test sum(abs2, Array(ad / 2) - (a / 2)) < 1e-6
     @test sum(abs2, Array(ad ./ 2) - (a ./ 2)) < 1e-6
     @test sum(abs2, Array(2 ./ ad) - (2 ./ a)) < 1e-6
-    @test sum(abs2, Array(ad .^ 2) - (a .^ 2)) < 1e-6
+    @test sum(abs2, Array(ad .^ 2.0) - (a .^ 2)) < 1e-6
     @test sum(abs2, Array(2 .^ ad) - (2 .^ a)) < 1e-6
 
     #Trig functions
@@ -118,11 +118,11 @@ end
 
 c1 = rand()
 
-for op in [:+, :-, :*, :.+, :.-, :.*, :./, :.^]
+for op in [:*, :.+, :.-, :.*, :./, :.^]
     @test @eval sum($op(c1, a2)) ≈ sum(@inferred $op(c1, af2))
 end
 
-for op in [:+, :-, :*, :/, :.^, :.+, :.-, :.*, :./]
+for op in [:*, :/, :.^, :.+, :.-, :.*, :./]
     @test @eval sum($op(a1, c1)) ≈ sum(@inferred $op(af1, c1))
 end
 
@@ -138,27 +138,27 @@ amf = AFArray(am)
 
 @test sum(amf * amf) ≈ sum(am * am)
 @test sum(amf * amf') ≈ sum(am * am')
-@test sum(A_mul_Bt(amf, amf)) ≈ sum(am * am')
+#@test sum(A_mul_Bt(amf, amf)) ≈ sum(am * am')
 @test sum(amf' * amf) ≈ sum(am' * am)
-@test sum(At_mul_B(amf, amf)) ≈ sum(am' * am)
+#@test sum(At_mul_B(amf, amf)) ≈ sum(am' * am)
 @test sum(amf' * amf') ≈ sum(am' * am')
-@test sum(At_mul_Bt(amf, amf)) ≈ sum(am' * am')
+#@test sum(At_mul_Bt(amf, amf)) ≈ sum(am' * am')
 
-@test Array(sum(amf, 1)) ≈ sum(am, 1)
-@test Array(sum(amf, 2)) ≈ sum(am, 2)
+@test Array(sum(amf, 1)) ≈ sum(am, dims=1)
+@test Array(sum(amf, 2)) ≈ sum(am, dims=2)
 # @test Array(sum(amf, [1,2])) ≈ sum(am, dims=[1,2])
 # @test Array(sum(amf, [2,1])) ≈ sum(am, dims=[2,1])
 # @test Array(sum(amf, 1:2)) ≈ sum(am, 1:2)
 # @test Array(sum(amf, (1,2))) ≈ sum(am, (1,2))
 
-@test Array(prod(amf, 1)) ≈ prod(am, 1)
-@test Array(prod(amf, 2)) ≈ prod(am, 2)
+@test Array(prod(amf, 1)) ≈ prod(am, dims=1)
+@test Array(prod(amf, 2)) ≈ prod(am, dims=2)
 
-@test all(Array(minimum(amf, 1)) .== minimum(am, 1))
-@test all(Array(minimum(amf, 2)) .== minimum(am, 2))
+@test all(Array(minimum(amf, 1)) .== minimum(am, dims=1))
+@test all(Array(minimum(amf, 2)) .== minimum(am, dims=2))
 
-@test all(Array(maximum(amf, 1)) .== maximum(am, 1))
-@test all(Array(maximum(amf, 2)) .== maximum(am, 2))
+@test all(Array(maximum(amf, 1)) .== maximum(am, dims=1))
+@test all(Array(maximum(amf, 2)) .== maximum(am, dims=2))
 @test maximum(amf) == maximum(am)
 @test minimum(amf) == minimum(am)
 @test mean(amf) ≈ mean(am)
@@ -260,13 +260,13 @@ end
 a6 = rand(Float32, 3, 3)
 af6 = AFArray(a6)
 
-for op in [:identity, :vec, :zeros, :ones, :transpose]
+for op in [:identity, :vec, :transpose]
     @testset "$op" begin
         @test @eval $op(a6) ≈ Array(@inferred $op(af6))
     end
 end
 
-for op in [:maximum, :minimum, :sum, :prod, :sizeof, :var, :std, :mean, :median, :vecnorm]
+for op in [:maximum, :minimum, :sum, :prod, :sizeof, :var, :std, :mean, :median]
     @testset "$op" begin
         @test @eval $op(a6) ≈ @inferred $op(af6)
     end

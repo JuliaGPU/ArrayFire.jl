@@ -209,8 +209,8 @@ end
 function convert_array_to_sparse(a::SparseMatrixCSC)
     sz = size(a)
     at = sparse(transpose(a))
-    colptr = AFArray(Vector{Int32}(at.colptr-1))
-    rowval = AFArray(Vector{Int32}(at.rowval-1))
+    colptr = AFArray(Vector{Int32}(at.colptr.-1))
+    rowval = AFArray(Vector{Int32}(at.rowval.-1))
     create_sparse_array(sz[1], sz[2], AFArray(at.nzval), colptr, rowval, AF_STORAGE_CSR)
 end
 
@@ -221,7 +221,7 @@ function convert_array_to_sparse(a::AFArray)
     nzval, colptr, rowval, d = sparse_get_info(a)
     if d == AF_STORAGE_CSR
         transpose(SparseMatrixCSC(sz[2], sz[1],
-                                  Array(colptr+1), Array(rowval+1), Array(nzval)))
+                                  Array(colptr.+1), Array(rowval.+1), Array(nzval)))
     else
         convert_array_to_sparse(sparse_convert_to(a, AF_STORAGE_CSR))
     end
