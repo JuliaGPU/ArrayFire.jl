@@ -1,6 +1,6 @@
 #This example has been adopted from https://github.com/IntelLabs/ParallelAccelerator.jl/blob/master/examples/black-scholes/black-scholes.jl
 
-using ArrayFire
+using ArrayFire, Printf, Random
 
 function blackscholes_serial(sptprice, strike, rate, volatility, time)
     logterm = log10( sptprice / strike)
@@ -34,14 +34,9 @@ end
     volatility_gpu = AFArray(volatility)
     time_gpu = AFArray(time)
 
-    tic()
-    put1 = blackscholes_serial.(sptprice, initStrike, rate, volatility, time)
-    t1 = toq()
+    t1 = @elapsed put1 = blackscholes_serial.(sptprice, initStrike, rate, volatility, time)
     #    println("Serial checksum: ", sum(put1))
-    tic()
-    put2 = blackscholes_serial.(sptprice_gpu, initStrike_gpu, rate_gpu, volatility_gpu, time_gpu)
-    sync(put2)
-    t2 = toq()
+    t2 = @elapsed put2 = sync(blackscholes_serial.(sptprice_gpu, initStrike_gpu, rate_gpu, volatility_gpu, time_gpu))
     #    println("Parallel checksum: ", sum(put2))
     @assert sum(put1) ≈ sum(put2)
     return t1, t2
@@ -49,7 +44,7 @@ end
 
 function driver(pwr)
     iterations = 10^pwr
-    srand(0)
+    Random.seed!(0)
     blackscholes_serial.(Float32[], Float32[], Float32[], Float32[], Float32[])
     blackscholes_serial.(AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]),
                          AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]), AFArray(Float32[1., 2.]))
