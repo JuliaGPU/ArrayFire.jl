@@ -1,4 +1,4 @@
-import Base: RefValue, @pure, show, clamp, find, select
+import Base: RefValue, @pure, show, clamp
 import Base: cumsum, cumprod, abs2
 import LinearAlgebra: cholesky
 

@@ -16,9 +16,9 @@ AFTensor{T} = AFArray{T,4}
 export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
 
 import Base: Array, copy, deepcopy_internal, complex, conj
-import SparseArrays: SparseMatrixCSC, issparse, sparse, full
+import SparseArrays: SparseMatrixCSC, issparse, sparse
 
-export sparse, srand
+export sparse, find, select, ctranspose, atan2, full, gradient
 
 sparse(a::AFArray{T,N}) where {T,N} = create_sparse_array_from_dense(a, AF_STORAGE_CSR)
 
@@ -45,14 +45,14 @@ sparse(a::AFArray{T,N}) where {T,N} = create_sparse_array_from_dense(a, AF_STORA
 
 deepcopy_internal(a::AFArray{T,N}, d::IdDict) where {T,N} = haskey(d, a) ? d[a]::AFArray{T,N} : d[a] = copy(a)
 
-import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atan2, atanh, cbrt, ceil, clamp, cos, cosh
+import Base: size, eltype, ndims, abs, acos, acosh, asin, asinh, atan, atanh, cbrt, ceil, clamp, cos, cosh
 import Base: count, div, exp, expm1, floor, hypot
 import Base: identity, imag, isinf, isnan, iszero, join, log, log10, log1p, log2, maximum
 import Base: minimum, mod, prod, randn, range, real, rem, replace, round, show, inv
 import Base: sign, signbit, sin, sinh, sort, sortperm, sqrt, sum, tan, tanh, transpose, trunc, any, all
 import Base: cat, hcat, vcat, max, min, sizeof, similar, length, sizeof
 import Base: isfinite, ifelse, isempty
-import LinearAlgebra: gradient, lu, rank, det, norm, diag, diagm, svd, chol, vecnorm, dot, qr
+import LinearAlgebra: lu, rank, det, norm, diag, diagm, svd, cholesky, dot, qr
 import Statistics: cov, std, var, mean, median
 import SpecialFunctions: factorial, lgamma
 
@@ -164,8 +164,8 @@ xor(a::AFArray, b::AFArray) = bitxor(a, b, bcast[])
 max(a::AFArray, b::AFArray) = maxof(a, b, bcast[])
 min(a::AFArray, b::AFArray) = minof(a, b, bcast[])
 
-import Base: Ac_mul_B, At_mul_B, A_mul_Bc, Ac_mul_Bc, A_mul_Bt, At_mul_Bt, transpose, ctranspose, vec, reshape, adjoint
-export A_mul_B
+import Base: transpose, vec, reshape, adjoint
+export A_mul_B, Ac_mul_B, At_mul_B, A_mul_Bc, Ac_mul_Bc, A_mul_Bt, At_mul_Bt, ctranspose
 
 A_mul_B(a::AFArray,   b::AFArray) = matmul(a, b, AF_MAT_NONE,   AF_MAT_NONE)
 Ac_mul_B(a::AFArray,  b::AFArray) = matmul(a, b, AF_MAT_CTRANS, AF_MAT_NONE)
@@ -214,6 +214,8 @@ reshape(a::AFArray, t::Int...) = reshape(a, t)
 
 using SpecialFunctions
 import SpecialFunctions: erf, erfc
+
+include("scope.jl")
 
 function Base.Broadcast.broadcasted(f, A::AFArray, Bs...)
     bcast[] =  true
