@@ -1,5 +1,6 @@
-using ArrayFire
-function nmf{T<:Real}(A::AbstractMatrix{T}, k::Integer, n::Int=10)
+using ArrayFire, Logging
+
+function nmf(A::AbstractMatrix{T}, k::Integer, n::Int=10) where {T<:Real}
     W = rand(T, size(A,1), k)
     H = rand(T, k, size(A,2))
     for j = 1:n
@@ -9,19 +10,24 @@ function nmf{T<:Real}(A::AbstractMatrix{T}, k::Integer, n::Int=10)
     return W, H
 end
 
-function nmf_gpu{T<:Real}(A::AFArray{T}, k::Integer, n::Int=10)
+@afgc function nmf(A::AFArray{T}, k::Integer, n::Int=10) where {T<:Real}
     W = rand(AFArray{T}, size(A,1), k)
     H = rand(AFArray{T}, k, size(A,2))
     for j = 1:n
         H = H .* (W'*A) ./ ((W'*W)*H)
         W = W .* (A*H') ./ (W*(H*H'))
     end
+    return W, H
+end
+
+function nmf_gpu(A::AFArray{T}, k::Integer, n::Int=10) where {T<:Real}
+    W, H = nmf(A, k, n)
     sync(W)
     sync(H)
     return W, H
 end
 
-info("Warmup")
+@info("Warmup")
 a = rand(Float32,10,10)
 ad = AFArray(a)
 nmf(a,2)
@@ -30,13 +36,13 @@ for i = 1:10
     dim = i*1000
     a = rand(Float32,dim,dim)
     ad = AFArray(a)
-    info("Start Timing Dim = $dim !")
+    @info("Start Timing Dim = $dim")
     t1 = @elapsed nmf(a,2)
     t2 = @elapsed nmf_gpu(ad,2)
     println("tcpu = $t1")
     println("tgpu = $t2")
     println("Speedup = $(t1/t2)")
-    gc()
+    GC.gc()
 end
 #=a = rand(1000,1000)
 ad = AFArray(a)
