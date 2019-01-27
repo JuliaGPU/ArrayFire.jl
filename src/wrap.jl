@@ -8,7 +8,7 @@ export atanh, bilateral, bitand, bitor, bitshiftl, bitshiftr, bitxor, canny, cbr
 export color_space, complex, conj, convolve1, convolve2, convolve2_sep, convolve3, copy, corrcoef, cos
 export cosh, count, count_all, cov, create_features, create_handle, create_indexers, create_random_engine
 export create_sparse_array, create_sparse_array_from_dense, create_sparse_array_from_ptr, create_window
-export delete_image_memory, destroy_window, det, device_array, device_gc, device_mem_info, diag, diagm
+export delete_image_memory, destroy_window, det, device_array, device_gc, diag, diagm
 export diff1, diff2, dilate, dilate3, div, dog, dot, dot_all, draw_hist, draw_image, draw_plot, draw_plot3
 export draw_plot_2d, draw_plot_3d, draw_plot_nd, draw_scatter, draw_scatter3, draw_scatter_2d, draw_scatter_3d
 export draw_scatter_nd, draw_surface, draw_vector_field_2d, draw_vector_field_3d, draw_vector_field_nd
@@ -1038,21 +1038,8 @@ function device_array(data,ndims::Integer,dims,_type::Type)
     AFArray!(arr[])
 end
 
-function device_mem_info()
-    alloc_bytes = RefValue{Csize_t}(0)
-    alloc_buffers = RefValue{Csize_t}(0)
-    lock_bytes = RefValue{Csize_t}(0)
-    lock_buffers = RefValue{Csize_t}(0)
-    _error(ccall((:af_device_mem_info,af_lib),af_err,(Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t}),alloc_bytes,alloc_buffers,lock_bytes,lock_buffers))
-    (alloc_bytes[],alloc_buffers[],lock_bytes[],lock_buffers[])
-end
-
 function print_mem_info(msg,device_id::Integer)
     _error(ccall((:af_print_mem_info,af_lib),af_err,(Cstring,Cint),msg,Cint(device_id)))
-end
-
-function device_gc()
-    _error(ccall((:af_device_gc,af_lib),af_err,()))
 end
 
 function set_mem_step_size(step_bytes::Csize_t)

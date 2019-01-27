@@ -4,8 +4,6 @@ using Libdl,Random,SparseArrays,LinearAlgebra,Statistics
 using FFTW
 
 @testset "Main" begin
-    include("scope.jl")
-
     @testset "Bugs" begin
         include("bugs.jl")
     end

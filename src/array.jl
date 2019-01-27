@@ -1,10 +1,9 @@
 mutable struct AFArray{T,N} # <: AbstractArray{T,N}
     arr::af_array
     function AFArray{T,N}(arr::af_array) where {T,N}
-        # @assert get_type(arr) == T
+        @assert get_type(arr) == T
         a = new{T,N}(arr)
         finalizer(release_array, a)
-        push_to_scope(a)
     end
 end
 
@@ -214,8 +213,6 @@ reshape(a::AFArray, t::Int...) = reshape(a, t)
 
 using SpecialFunctions
 import SpecialFunctions: erf, erfc
-
-include("scope.jl")
 
 function Base.Broadcast.broadcasted(f, A::AFArray, Bs...)
     bcast[] =  true

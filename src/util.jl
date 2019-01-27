@@ -4,29 +4,37 @@ import LinearAlgebra: cholesky
 
 export constant, get_last_error, err_to_string, sort_index, fir, iir
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
-export afeval, iota, sortbykey, select, find
+export afeval, iota, sortbykey, select, find, device_mem_info, setafgcthreshold
 
 const af_threshold = Ref(4*1024*1024*1024)
-const af_gc_count = Ref(0)
-const af_gc_frequency = Ref(256)
 
-function _afgc()
-    af_gc_count[] += 1
-    if mod(af_gc_count[], af_gc_frequency[]) == 0
-        afgc()
-    end
+function device_gc()
+    _error(ccall((:af_device_gc,af_lib),af_err,()), false)
 end
 
-function afgc(threshold = 0)
-    if threshold != 0
-        af_threshold[] = threshold
-    end
-    alloc_bytes, alloc_buffers, lock_bytes, lock_buffers =  device_mem_info()
-    if lock_bytes > af_threshold[]
-        GC.gc()
-        device_gc()
-    elseif alloc_bytes - lock_bytes > af_threshold[]
-        device_gc()
+function device_mem_info()
+    alloc_bytes = RefValue{Csize_t}(0)
+    alloc_buffers = RefValue{Csize_t}(0)
+    lock_bytes = RefValue{Csize_t}(0)
+    lock_buffers = RefValue{Csize_t}(0)
+    _error(ccall((:af_device_mem_info,af_lib),af_err,
+                 (Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t},Ptr{Csize_t}),
+                 alloc_bytes,alloc_buffers,lock_bytes,lock_buffers),
+           false)
+    (alloc_bytes[],alloc_buffers[],lock_bytes[],lock_buffers[])
+end
+
+function setafgcthreshold(threshold)
+    af_threshold[] = threshold
+end
+
+function _afgc()
+    for full in (false, true)
+        alloc_bytes, alloc_buffers, lock_bytes, lock_buffers =  device_mem_info()
+        if max(lock_bytes, alloc_bytes - lock_bytes) > af_threshold[]
+            GC.gc(full)
+            device_gc()
+        end
     end
     nothing
 end
@@ -34,8 +42,6 @@ end
 function release_array(arr::AFArray)
     ccall((:af_release_array,af_lib),af_err,(af_array,),arr.arr)
 end
-
-export afgc
 
 toa(a) = issparse(a) ?  SparseMatrixCSC(a) : Array(a)
 show(c::IOContext, a::AFArray) = (print(c, "AFArray: "); show(c, toa(a)))
@@ -73,22 +79,19 @@ function __init__()
     nothing
 end
 
-function _error(err::af_err)
+function _error(err::af_err, gc = true)
     if err == 0
-        _afgc()
-    else
-        if err == 101
-            error("GPU is out of memory, to avoid this in the future you can:
-  @afgc function f(input)   # free all temporary variables inside the function scope
-  @afgc a = b + c           # free all temporary arrays inside the assignment scope
-  @afgc a .= b + c          # replace with a new value, free the old and all temps
-  afgc(threshold)           # garbage collect after GPU memory usage reaches threshold
-  finalize(array)           # manually free GPU memory")
-        else
-            str = err_to_string(err)
-            str2 = get_last_error()
-            error("ArrayFire Error ($err) : $str\n$str2")
+        if gc
+            _afgc()
         end
+    elseif err == AF_ERR_NO_MEM
+        error("GPU is out of memory, to avoid this in the future you can:
+  setafgcthreshold(threshold) # lower garbage collect threshold (default 4Gb)
+  finalize(array)             # manually free GPU memory")
+    else
+        str = err_to_string(err)
+        str2 = get_last_error()
+        error("ArrayFire Error ($err) : $str\n$str2")
     end
 end
 
@@ -180,7 +183,7 @@ end
 function get_type(arr::af_array)
     _type = RefValue{af_dtype}(0)
     _error(ccall((:af_get_type,af_lib),af_err,
-                 (Ptr{af_dtype},af_array),_type,arr))
+                 (Ptr{af_dtype},af_array),_type,arr), false)
     af_jltype(_type[])
 end
 
