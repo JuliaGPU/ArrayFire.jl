@@ -30,22 +30,22 @@ set_indexer!(indexers, i, s::Vector) = set_indexer!(indexers, i, AFArray(s))
 function set_seq_indexer(indexer, idx, dim::dim_t, is_batch::Bool)
     _error(ccall((:af_set_seq_indexer,af_lib),af_err,
                  (Ptr{af_index_t},Ptr{af_seq},dim_t,Bool),
-                 indexer, RefValue{af_seq}(idx), dim, is_batch))
+                 indexer, RefValue{af_seq}(idx), dim, is_batch), false)
 end
 
 function set_array_indexer(indexer, idx, dim::dim_t)
     _error(ccall((:af_set_array_indexer,af_lib),af_err,
                  (Ptr{af_index_t},af_array,dim_t),
-                 indexer,idx.arr,dim))
+                 indexer,idx.arr,dim), false)
 end
 
 function release_indexers(indexers)
-    _error(ccall((:af_release_indexers,af_lib),af_err,(Ptr{af_index_t},), indexers))
+    _error(ccall((:af_release_indexers,af_lib),af_err,(Ptr{af_index_t},), indexers), false)
 end
 
 function assign_gen!(lhs::AFArray,ndims::dim_t,indices,rhs::AFArray)
     out = RefValue{af_array}(lhs.arr)
-    _error(ccall((:af_assign_gen,af_lib),af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t},af_array),out,lhs.arr,ndims,indices,rhs.arr))
+    _error(ccall((:af_assign_gen,af_lib),af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t},af_array),out,lhs.arr,ndims,indices,rhs.arr), false)
     if lhs.arr != out[]
         release_array(lhs)
         lhs.arr = out[]
@@ -90,7 +90,7 @@ function index_gen_1(_in::AFArray{T,N},ndims::dim_t,indices) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_index_gen,af_lib),
                  af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t}),
-                 out,_in.arr,ndims,indices))
+                 out,_in.arr,ndims,indices), false)
     AFArray{T,1}(out[])
 end
 
@@ -98,7 +98,7 @@ function index_gen_2(_in::AFArray{T,N},ndims::dim_t,indices) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_index_gen,af_lib),
                  af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t}),
-                 out,_in.arr,ndims,indices))
+                 out,_in.arr,ndims,indices), false)
     AFArray{T,2}(out[])
 end
 
@@ -106,7 +106,7 @@ function index_gen_3(_in::AFArray{T,N},ndims::dim_t,indices) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_index_gen,af_lib),
                  af_err,(Ptr{af_array},af_array,dim_t,Ptr{af_index_t}),
-                 out,_in.arr,ndims,indices))
+                 out,_in.arr,ndims,indices), false)
     AFArray{T,3}(out[])
 end
 
