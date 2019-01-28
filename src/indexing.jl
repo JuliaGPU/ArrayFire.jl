@@ -23,7 +23,7 @@ create_seq(i::Int) = af_seq(i-1, i-1, 1)
 create_seq(::Colon) = af_seq(1, 1, 0)
 
 set_indexer!(indexers, i, s::Union{AbstractRange,Int,Colon}) = set_seq_indexer(indexers, create_seq(s), i, true)
-set_indexer!(indexers, i, s::AFArray{Bool}) = set_array_indexer(indexers, find(s), i)
+set_indexer!(indexers, i, s::AFArray{Bool}) = set_array_indexer(indexers, af_where(s), i)
 set_indexer!(indexers, i, s::AFArray) = set_array_indexer(indexers, s-UInt32(1), i)
 set_indexer!(indexers, i, s::Vector) = set_indexer!(indexers, i, AFArray(s))
 

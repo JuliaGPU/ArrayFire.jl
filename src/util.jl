@@ -439,14 +439,15 @@ function clamp(_in::AFArray{T1,N1},lo::AFArray{T2,N2},hi::AFArray{T2,N2}) where 
     AFArray{typed(T1,T2),batched(N1,N2)}(out[])
 end
 
-function find(_in::AFArray{T,N}) where {T,N}
+function af_where(_in::AFArray{T,N}) where {T,N}
     idx = RefValue{af_array}(0)
     _error(ccall((:af_where,af_lib),af_err,(Ptr{af_array},af_array),idx,_in.arr))
+    @show get_type(idx[])
     return AFArray{UInt32,1}(idx[])
 end
 
 function findall(_in::AFArray{T,N}) where {T,N}
-    out = find(_in)
+    out = af_where(_in)
     if length(out) > 0
         out = out + UInt32(1)
     end
