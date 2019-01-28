@@ -21,7 +21,7 @@ end
     return out
 end
 
-@afgc function runs(iterations)
+function runs(iterations)
     sptprice   = Float32[ 42.0 for i = 1:iterations ]
     initStrike = Float32[ 40.0 + (i / iterations) for i = 1:iterations ]
     rate       = Float32[ 0.5 for i = 1:iterations ]
