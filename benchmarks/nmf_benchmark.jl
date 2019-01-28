@@ -10,21 +10,14 @@ function nmf(A::AbstractMatrix{T}, k::Integer, n::Int=10) where {T<:Real}
     return W, H
 end
 
-@afgc function nmf(A::AFArray{T}, k::Integer, n::Int=10) where {T<:Real}
+function nmf_gpu(A::AFArray{T}, k::Integer, n::Int=10) where {T<:Real}
     W = rand(AFArray{T}, size(A,1), k)
     H = rand(AFArray{T}, k, size(A,2))
     for j = 1:n
         H = H .* (W'*A) ./ ((W'*W)*H)
         W = W .* (A*H') ./ (W*(H*H'))
     end
-    return W, H
-end
-
-function nmf_gpu(A::AFArray{T}, k::Integer, n::Int=10) where {T<:Real}
-    W, H = nmf(A, k, n)
-    sync(W)
-    sync(H)
-    return W, H
+    return sync(W), sync(H)
 end
 
 @info("Warmup")
