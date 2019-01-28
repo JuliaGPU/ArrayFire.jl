@@ -17,7 +17,7 @@ export AFArray, AFVector, AFMatrix, AFVolume, AFTensor
 import Base: Array, copy, deepcopy_internal, complex, conj
 import SparseArrays: SparseMatrixCSC, issparse, sparse
 
-export sparse, find, select, ctranspose, atan2, full, gradient
+export sparse, select, ctranspose, atan2, full, gradient
 
 sparse(a::AFArray{T,N}) where {T,N} = create_sparse_array_from_dense(a, AF_STORAGE_CSR)
 
