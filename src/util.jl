@@ -442,7 +442,6 @@ end
 function af_where(_in::AFArray{T,N}) where {T,N}
     idx = RefValue{af_array}(0)
     _error(ccall((:af_where,af_lib),af_err,(Ptr{af_array},af_array),idx,_in.arr))
-    @show get_type(idx[])
     return AFArray{UInt32,1}(idx[])
 end
 
