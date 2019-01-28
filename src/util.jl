@@ -1,10 +1,10 @@
-import Base: RefValue, @pure, show, clamp
+import Base: RefValue, @pure, show, clamp, findall
 import Base: cumsum, cumprod, abs2
 import LinearAlgebra: cholesky
 
 export constant, get_last_error, err_to_string, sort_index, fir, iir
 export mean_weighted, var_weighted, set_array_indexer, set_seq_param_indexer
-export afeval, iota, sortbykey, select, find, device_mem_info, setafgcthreshold
+export afeval, iota, sortbykey, select, device_mem_info, setafgcthreshold
 
 const af_threshold = Ref(4*1024*1024*1024)
 
@@ -442,7 +442,11 @@ end
 function find(_in::AFArray{T,N}) where {T,N}
     idx = RefValue{af_array}(0)
     _error(ccall((:af_where,af_lib),af_err,(Ptr{af_array},af_array),idx,_in.arr))
-    out = AFArray{UInt32,1}(idx[])
+    return AFArray{UInt32,1}(idx[])
+end
+
+function findall(_in::AFArray{T,N}) where {T,N}
+    out = find(_in)
     if length(out) > 0
         out = out + UInt32(1)
     end
