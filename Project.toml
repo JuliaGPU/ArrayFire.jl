@@ -1,7 +1,7 @@
 name = "ArrayFire"
 uuid = "b19378d9-d87a-599a-927f-45f220a2c452"
 authors = ["Joe Petviashvili <joe@gnom.us>"]
-version = "0.7.0"
+version = "1.0.0"
 
 [deps]
 Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
