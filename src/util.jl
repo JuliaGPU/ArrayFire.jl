@@ -40,7 +40,7 @@ function _afgc()
 end
 
 function release_array(arr::AFArray)
-    ccall((:af_release_array,af_lib),af_err,(af_array,),arr.arr)
+    _error(ccall((:af_release_array,af_lib),af_err,(af_array,),arr.arr), false)
 end
 
 toa(a) = issparse(a) ?  SparseMatrixCSC(a) : Array(a)
