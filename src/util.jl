@@ -33,7 +33,9 @@ function _afgc()
         alloc_bytes, alloc_buffers, lock_bytes, lock_buffers =  device_mem_info()
         if max(lock_bytes, alloc_bytes - lock_bytes) > af_threshold[]
             GC.gc(full)
-            device_gc()
+            if full
+                device_gc()
+            end
         end
     end
     nothing
