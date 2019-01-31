@@ -16,10 +16,10 @@ install:
   - sudo apt-add-repository -y ppa:keithw/glfw3
   - sudo apt-get update
   - sudo apt-get install libfreeimage-dev libatlas3gf-base libfftw3-dev cmake libglfw3-dev mesa-utils
-  - wget -q http://arrayfire.s3.amazonaws.com/3.5.1/ArrayFire-v3.5.1_Linux_x86_64.sh
+  - wget -q http://arrayfire.s3.amazonaws.com/3.6.2/ArrayFire-v3.6.2_Linux_x86_64.sh
   - ls -l
-  - sudo chmod +x ArrayFire-v3.5.1_Linux_x86_64.sh
-  - sudo ./ArrayFire-v3.5.1_Linux_x86_64.sh --exclude-subdir --prefix=/usr/local
+  - sudo chmod +x ArrayFire-v3.6.2_Linux_x86_64.sh
+  - sudo ./ArrayFire-v3.6.2_Linux_x86_64.sh --exclude-subdir --prefix=/usr/local
 before_script:
   - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
   # - julia -e 'using Pkg; Pkg.add("AutoDiffSource");'
