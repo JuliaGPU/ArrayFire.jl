@@ -33,7 +33,7 @@ export replace, resize, retain_features, retain_random_engine, rgb2gray, rgb2hsv
 export round, sat, save_array, save_image, save_image_memory, save_image_native, scale, scan, scan_by_key
 export set_axes_limits_2d, set_axes_limits_3d, set_axes_limits_compute, set_axes_titles, set_backend, set_default_random_engine_type
 export set_device, set_intersect, set_manual_eval_flag, set_mem_step_size, set_position, set_seed, set_size
-export set_title, set_union, set_unique, set_visibility, shift, show, sift, sigmoid, signbit, sin, sinh
+export set_title, set_union, set_unique, set_visibility, shift, show_window, sift, sigmoid, signbit, sin, sinh
 export skew, sobel_operator, solve, solve_lu, sort_by_key, sparse_convert_to, sparse_get_col_idx, sparse_get_info
 export sparse_get_nnz, sparse_get_row_idx, sparse_get_storage, sparse_get_values, sqrt, stdev_all, sub
 export sum, sum_all, sum_nan, sum_nan_all, susan, svd_inplace, sync, tan, tanh, tgamma, tile, topk, transform
@@ -1230,7 +1230,7 @@ function set_axes_titles(wind::af_window,xtitle,ytitle,ztitle,props)
     _error(ccall((:af_set_axes_titles,af_lib),af_err,(af_window,Cstring,Cstring,Cstring,Ptr{af_cell}),wind,xtitle,ytitle,ztitle,props))
 end
 
-function show(wind::af_window)
+function show_window(wind::af_window)
     _error(ccall((:af_show,af_lib),af_err,(af_window,),wind))
 end
 
