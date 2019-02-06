@@ -5,8 +5,8 @@ gridSize = 2048
 xlim = [-0.748766713922161, -0.748766707771757]
 ylim = [ 0.123640844894862,  0.123640851045266]
 
-x = linspace( xlim[1], xlim[2], gridSize )
-y = linspace( ylim[1], ylim[2], gridSize )
+x = range( xlim[1], xlim[2], length = gridSize )
+y = range( ylim[1], ylim[2], length = gridSize )
 
 xGrid = [i for i in x, j in y]
 yGrid = [j for i in x, j in y]
