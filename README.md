@@ -43,7 +43,7 @@ b = Array(bd)
 Here are other examples of simple usage:
 
 ```julia
-using ArrayFire
+using ArrayFire, LinearAlgebra
 
 # Random number generation
 a = rand(AFArray{Float64}, 100, 100)
@@ -76,7 +76,7 @@ transposer = a'
 
 # Linear Algebra
 lu_fact = lu(a)
-cholesky_fact = chol(a*a')  # Multiplied to create a positive definite matrix
+cholesky_fact = cholesky(a*a')  # Multiplied to create a positive definite matrix
 qr_fact = qr(a)
 svd_fact = svd(a)
 
@@ -134,7 +134,7 @@ ERROR: getindex is disabled
 * `signbit` (works only in vectorized form on Julia v0.5 - Ref issue #109)
 
 ### Linear Algebra
-* `chol`, `svd`, `lu`, `qr`, `svdfact!`, `lufact!`, `qrfact!`
+* `cholesky`, `svd`, `lu`, `qr`, `svdfact!`, `lufact!`, `qrfact!`
 * `*(matmul)`, `A_mul_Bt`, `At_mul_B`, `At_mul_Bt`, `Ac_mul_B`, `A_mul_Bc`, `Ac_mul_Bc`
 * `transpose`, `transpose!`, `ctranspose`, `ctranspose!`
 * `det`, `inv`, `rank`, `norm`, `dot`, `diag`, `\`
