@@ -1,6 +1,6 @@
 The ArrayFire.jl package is licensed under the MIT "Expat" License:
 
-> Copyright (c) 2015-19: Joe Petviashvili, Julia Computing, Inc. and contributors
+> Copyright (c) 2015-19: Julia Computing, Inc. and contributors
 >
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal
