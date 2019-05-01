@@ -1,4 +1,4 @@
-mutable struct AFArray{T,N} # <: AbstractArray{T,N}
+mutable struct AFArray{T,N} <: AbstractArray{T,N}
     arr::af_array
     function AFArray{T,N}(arr::af_array) where {T,N}
         @assert get_type(arr) == T
