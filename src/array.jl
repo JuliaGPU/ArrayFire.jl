@@ -345,3 +345,7 @@ end
 for op in (:sort, :cumsum, :cumprod, :cummin, :cummax)
     @eval $op(a::AFArray{T,N}; dims=1) where {T,N} = $op(a, dims)
 end
+
+function clamp(_in::AFArray{T1,N1},lo::N2,hi::N2) where {T1,N1,N2}
+    return clamp(_in, constant(lo, size(_in)), constant(hi, size(_in)))
+end
