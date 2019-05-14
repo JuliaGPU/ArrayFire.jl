@@ -1755,19 +1755,19 @@ end
 function sparse_get_values(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sparse_get_values,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{T,N}(out[])
+    AFArray{T,1}(out[])
 end
 
 function sparse_get_row_idx(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sparse_get_row_idx,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{T,N}(out[])
+    AFArray{Int32,1}(out[])
 end
 
 function sparse_get_col_idx(_in::AFArray{T,N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sparse_get_col_idx,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
-    AFArray{T,N}(out[])
+    AFArray{Int32,1}(out[])
 end
 
 function sparse_get_nnz(_in::AFArray)
