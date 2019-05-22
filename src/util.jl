@@ -325,6 +325,14 @@ function cat(dim::Integer,first::AFArray{T,N1},second::AFArray{T,N2}) where {T,N
     AFArray!(out[])
 end
 
+function cat(A::AFArray...; dims::Integer)
+    out = RefValue{af_array}(0)
+    _error(ccall((:af_join_many,af_lib),af_err,
+                 (Ptr{af_array},Cint, Cuint, Ptr{af_array}),
+                 out,Cint(dims - 1), Cuint(length(A)), [map(x->x.arr, A)...]))
+    AFArray!(out[])
+end
+
 hcat(first::AFArray, second::AFArray) = cat(2, first, second)
 vcat(first::AFArray, second::AFArray) = cat(1, first, second)
 
