@@ -322,7 +322,7 @@ function cat(dim::Integer,first::AFArray{T,N1},second::AFArray{T,N2}) where {T,N
     _error(ccall((:af_join,af_lib),af_err,
                  (Ptr{af_array},Cint,af_array,af_array),
                  out,Cint(dim - 1),first.arr,second.arr))
-    AFArray{T,batched(N1,N2)}(out[])
+    AFArray!(out[])
 end
 
 hcat(first::AFArray, second::AFArray) = cat(2, first, second)
