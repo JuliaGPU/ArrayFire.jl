@@ -479,6 +479,12 @@ function afeval(a::AFArray)
     a
 end
 
+function afeval(A::AFArray...)
+    _error(ccall((:af_eval_multiple,af_lib),af_err,(Cuint, Ptr{af_array}),
+                 Cuint(length(A)), [map(x->x.arr, A)...]))
+    A
+end
+
 function cholesky(_in::AFArray{T,N},is_upper::Bool=false) where {T,N}
     out = RefValue{af_array}(0)
     info = RefValue{Cint}(0)
