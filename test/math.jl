@@ -56,9 +56,9 @@ end
     @test arr4 == [1, 2]
     arr5 = AFArray{Int,2}([1 2 3; 4 5 6])
     @test (@inferred size(arr5)) == (2,3)
-    @test size(@inferred cat(2, arr1, arr5)) == (2, 4)
-    @test size(@inferred hcat(arr1, arr5)) == (2, 4)
-    @test size(@inferred vcat(arr1', arr5')) == (4, 2)
+    @test size(cat(2, arr1, arr5)) == (2, 4)
+    @test size(hcat(arr1, arr5)) == (2, 4)
+    @test size(vcat(arr1', arr5')) == (4, 2)
     arr6 = @inferred AFArray([1., 2.])
     arr7 = @inferred Array(arr6)
     @test @inferred eltype(arr6) == eltype(arr7)
