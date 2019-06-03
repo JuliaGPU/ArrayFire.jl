@@ -484,6 +484,7 @@ function afeval(A::AFArray...)
                  Cuint(length(A)), [map(x->x.arr, A)...]))
     A
 end
+afeval(A::Tuple) = afeval(A...)
 
 function cholesky(_in::AFArray{T,N},is_upper::Bool=false) where {T,N}
     out = RefValue{af_array}(0)
