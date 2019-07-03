@@ -1,7 +1,7 @@
 name = "ArrayFire"
 uuid = "b19378d9-d87a-599a-927f-45f220a2c452"
 authors = ["Julia Computing"]
-version = "1.0.2"
+version = "1.0.3"
 
 [deps]
 DSP = "717857b8-e6f2-59f4-9121-6e50c889abd2"
