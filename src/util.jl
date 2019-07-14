@@ -144,6 +144,7 @@ af_type(::Type{UInt32})           = u32
 af_type(::Type{UInt8})            = u8
 af_type(::Type{Int64})            = s64
 af_type(::Type{UInt64})           = u64
+af_type(::Type{Float16})          = f16
 
 function af_jltype(i::af_dtype)::Type
     if i == f32
@@ -170,6 +171,8 @@ function af_jltype(i::af_dtype)::Type
         return Int16
     elseif i == u16
         return UInt16
+    elseif i == f16
+        return Float16
     else
         error("Unknown type: $i")
     end

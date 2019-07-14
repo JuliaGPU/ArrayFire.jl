@@ -28,7 +28,7 @@ export af_binary_op, af_border_type, af_canny_threshold, af_colormap, af_connect
 export af_conv_mode, af_cspace_t, af_diffusion_eq, af_dtype, af_err, af_features, af_flux_function, af_homography_type
 export af_image_format, af_interp_type, af_marker_type, af_mat_prop, af_match_type, af_moment_type, af_norm_type
 export af_random_engine, af_random_engine_type, af_someenum_t, af_source, af_storage, af_topk_function
-export af_window, af_ycc_std, b8, c32, c64, dim_t, f32, f64, intl, s16, s32, s64, u16, u32, u64, u8, uintl
+export af_window, af_ycc_std, b8, c32, c64, dim_t, f16, f32, f64, intl, s16, s32, s64, u16, u32, u64, u8, uintl
 
 const dim_t = Clonglong
 const intl = Clonglong
@@ -73,6 +73,7 @@ const s64 = (UInt32)(8)
 const u64 = (UInt32)(9)
 const s16 = (UInt32)(10)
 const u16 = (UInt32)(11)
+const f16 = (UInt32)(12)
 # end enum af_dtype
 
 # begin enum af_source
