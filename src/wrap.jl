@@ -43,7 +43,7 @@ export upper, var_all, var_all_weighted, wrap, write_array, ycbcr2rgb
 function sum(_in::AFArray{T,N},dim::Integer) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_sum,af_lib),af_err,(Ptr{af_array},af_array,Cint),out,_in.arr,Cint(dim - 1)))
-    AFArray{T,N}(out[])
+    AFArray!(out[])
 end
 
 function sum_nan(_in::AFArray{T,N},dim::Integer,nanval::Real) where {T,N}
