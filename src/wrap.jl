@@ -1396,7 +1396,7 @@ end
 function regions(_in::AFArray{T,N},connectivity::af_connectivity,ty::Type) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_regions,af_lib),af_err,(Ptr{af_array},af_array,af_connectivity,af_dtype),out,_in.arr,connectivity,af_type(ty)))
-    AFArray{T,N}(out[])
+    AFArray!(out[])
 end
 
 function sobel_operator(img::AFArray,ker_size::Integer)
