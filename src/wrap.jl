@@ -380,7 +380,7 @@ function abs(_in::AFArray{T,N}) where {T,N}
     AFArray{T,N}(out[])
 end
 
-function arg(_in::AFArray{T,N}) where {T,N}
+function arg(_in::AFArray{Complex{T},N}) where {T,N}
     out = RefValue{af_array}(0)
     _error(ccall((:af_arg,af_lib),af_err,(Ptr{af_array},af_array),out,_in.arr))
     AFArray{T,N}(out[])
