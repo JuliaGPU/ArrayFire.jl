@@ -69,6 +69,8 @@ any(a::AFArray, dims::Colon) = any_true_all(a)[1] == 1
 all(a::AFArray, dims::Colon) = all_true_all(a)[1] == 1
 any(f, a::AFArray) = any(f(a))
 all(f, a::AFArray) = all(f(a))
+any(f::Function, a::AFArray) = any(f(a))
+all(f::Function, a::AFArray) = all(f(a))
 maximum(a::AFArray{T}) where {T<:Real} = T(max_all(a)[1])
 minimum(a::AFArray{T}) where {T<:Real} = T(min_all(a)[1])
 mean(a::AFArray{T}) where {T<:Real} = T(mean_all(a)[1])
