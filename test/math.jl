@@ -168,7 +168,11 @@ amf = AFArray(am)
 
 @test Array(vec(amf)) == vec(am)
 @test typeof(norm(amf)) == Float32
+@test typeof(norm(amf, 1)) == Float32
+@test typeof(norm(amf, Inf)) == Float32
 @test @inferred(norm(amf)) ≈ norm(am)
+@test @inferred(norm(amf, 1)) ≈ norm(am, 1)
+@test @inferred(norm(amf, Inf)) ≈ norm(am, Inf)
 u,s,v = @inferred(svd(amf))
 
 signal = rand(Float32, 100)

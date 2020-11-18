@@ -359,6 +359,12 @@ function conv_fft(signal::AFArray{T,N}, filter::AFArray) where {T,N}
 end
 
 norm(a::AFArray{T}) where T = T(norm(a, AF_NORM_EUCLID, 0, 0))
+function norm(a::AFArray{T}, p::Real) where T
+    p == 1 && return T(norm(a, AF_NORM_VECTOR_1, 0, 0))
+    p == 2 && return T(norm(a, AF_NORM_VECTOR_2, 0, 0))
+    p == Inf && return T(norm(a, AF_NORM_VECTOR_INF, 0, 0))
+    return T(norm(a, AF_NORM_VECTOR_P, T(p), 0))
+end
 vecnorm(a::AFArray{T}) where T = T(norm(a, AF_NORM_EUCLID, 0, 0))
 
 function svd(_in::AFArray{T,2}) where {T}
