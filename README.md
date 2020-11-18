@@ -155,10 +155,10 @@ ERROR: getindex is disabled
 * `sortIndex`, `sortByKey`, `diff2`, `minidx`, `maxidx`
 
 ### Backend Functions
-* `getActiveBackend`, `getBackendCount`, `getAvailableBackends`, `setBackend`, `getBackendId`, `sync`, `getActiveBackendId`
+* `get_active_backend`, `get_backend_count`, `get_available_backends`, `set_backend`, `get_backend_id`, `sync`, `get_active_backend_id`
 
 ### Device Functions
-* `getDevice`, `setDevice`, `getNumDevices`
+* `get_device`, `set_device`, `get_device_count`
 
 ### Image Processing
 * `scale`, `hist`
